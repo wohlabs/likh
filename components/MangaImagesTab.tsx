@@ -1,4 +1,4 @@
-import { FlatList, Image, SectionList, Text } from "react-native";
+import { FlatList, Image, SectionList, StyleSheet, Text } from "react-native";
 
 const DATA = [
 	{
@@ -97,7 +97,7 @@ export default function MangaImagesTab() {
 			sections={DATA}
 			keyExtractor={(item) => item.id}
 			style={{ flex: 1 }}
-			renderSectionHeader={({ section: { title } }) => <Text>{title}</Text>}
+			renderSectionHeader={({ section: { title } }) => <Text style={{fontWeight: 'bold'}}>{title}</Text>}
 			renderItem={({ item }) => (
 				<FlatList
 					data={formatData(item.images, 3)}
@@ -107,7 +107,7 @@ export default function MangaImagesTab() {
 					renderItem={({ item }: any) => (
 						<Image
 							source={{ uri: item.uri }}
-							style={{ flex: 1, aspectRatio: "0.8", resizeMode: "contain" }}
+							style={styles.mangaCoverImage}
 						/>
 					)}
 				/>
@@ -115,3 +115,7 @@ export default function MangaImagesTab() {
 		/>
 	);
 }
+
+const styles = StyleSheet.create({
+	mangaCoverImage: { flex: 1, aspectRatio: "0.8", resizeMode: "contain" }
+});
