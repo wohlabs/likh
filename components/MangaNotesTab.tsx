@@ -1,9 +1,51 @@
-import { Text, View } from "react-native";
+import { SectionList, Text } from "react-native";
+
+const DATA = [
+	{
+		title: "Chapter 2",
+		data: [
+			{
+				id: 1,
+				note: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+				hasImage: true,
+			},
+			{
+				id: 2,
+				note: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+				hasImage: false,
+			},
+			{
+				id: 3,
+				note: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+				hasImage: true,
+			},
+		],
+	},
+	{
+		title: "Chapter 69",
+		data: [
+			{
+				id: 1,
+				note: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+				hasImage: false,
+			},
+			{
+				id: 2,
+				note: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+				hasImage: false,
+			}
+		],
+	},
+];
 
 export default function MangaNotesTab() {
 	return (
-		<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-			<Text>Notes Tab</Text>
-		</View>
+		<SectionList
+			sections={DATA}
+			keyExtractor={(_, index) => index.toString()}
+			style={{ flex: 1 }}
+			renderSectionHeader={({ section: { title } }) => <Text style={{fontWeight: 'bold'}}>{title}</Text>}
+			renderItem={({ item: { note } }) => <Text>{note}</Text>}
+		/>
 	);
 }
