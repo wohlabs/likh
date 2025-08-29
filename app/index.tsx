@@ -1,5 +1,6 @@
+import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { FlatList, Image, Text, View } from "react-native";
+import { FlatList, Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 const MANGA_QUERY = `
 	query {
@@ -11,7 +12,6 @@ const MANGA_QUERY = `
 				}
 				coverImage {
 					large
-					medium
 				}
 			}
 		}
@@ -30,6 +30,7 @@ type MangaProps = {
 };
 
 export default function Index() {
+	const router = useRouter();
 	const [mangaList, setMangaList] = useState<MangaProps[]>([]);
 	const [loading, setLoading] = useState(true);
 
@@ -55,28 +56,26 @@ export default function Index() {
 	}, []);
 
 	return (
-		<View
-			style={{
-				flex: 1,
-				justifyContent: "center",
-				alignItems: "center",
-			}}
-		>
+		<View>
 			<FlatList
 				data={mangaList}
 				keyExtractor={(item) => item.id}
 				numColumns={2}
-				style={{ width: '100%' }}
 				renderItem={({ item }) => (
-					<View style={{ flex: 1, alignItems: 'center' }}>
+					<Pressable style={{ flex:1 }} onPress={() => { router.navigate('/manga/123') }}>
 						<Image
 							source={{ uri: item.coverImage.large }}
-							style={{ width: 150, height: 220, resizeMode: 'contain'}}
+							style={styles.mangaCoverImage}
 						/>
-						<Text style={{textAlign: 'center'}}>{item.title.userPreferred}</Text>
-					</View>
+						<Text style={styles.mangaTitle}>{item.title.userPreferred}</Text>
+					</Pressable>
 				)}
 			/>
 		</View>
 	);
 }
+
+const styles = StyleSheet.create({
+	mangaTitle: {textAlign: 'center'},
+	mangaCoverImage: { width: '100%', aspectRatio: '0.8', resizeMode: 'contain'}
+});
