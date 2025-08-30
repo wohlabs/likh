@@ -1,4 +1,5 @@
-import { FlatList, Image, SectionList, StyleSheet, Text } from "react-native";
+import { router } from "expo-router";
+import { FlatList, Image, Pressable, SectionList, StyleSheet, Text } from "react-native";
 
 const DATA = [
 	{
@@ -105,10 +106,12 @@ export default function MangaImagesTab() {
 					numColumns={3}
 					style={{ flex: 1 }}
 					renderItem={({ item }: any) => (
-						<Image
-							source={{ uri: item.uri }}
-							style={styles.mangaCoverImage}
-						/>
+						<Pressable style={{flex: 1}} onPress={() => router.navigate('/manga/123/viewer')}>
+							<Image
+								source={{ uri: item.uri }}
+								style={styles.mangaCoverImage}
+							/>
+						</Pressable>
 					)}
 				/>
 			)}
