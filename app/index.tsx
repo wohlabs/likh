@@ -65,6 +65,7 @@ export default function Index() {
 					<Pressable style={{ flex:1 }} onPress={() => { router.navigate('/manga/123') }}>
 						<Image
 							source={{ uri: item.coverImage.large }}
+							resizeMode="contain"
 							style={styles.mangaCoverImage}
 						/>
 						<Text style={styles.mangaTitle}>{item.title.userPreferred}</Text>
@@ -77,5 +78,5 @@ export default function Index() {
 
 const styles = StyleSheet.create({
 	mangaTitle: {textAlign: 'center'},
-	mangaCoverImage: { width: '100%', aspectRatio: '0.8', resizeMode: 'contain'}
+	mangaCoverImage: { width: '100%', aspectRatio: '0.8'}
 });

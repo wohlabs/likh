@@ -110,6 +110,7 @@ export default function MangaImagesTab() {
 							<Image
 								source={{ uri: item.uri }}
 								style={styles.mangaCoverImage}
+								resizeMode="contain"
 							/>
 						</Pressable>
 					)}
@@ -120,5 +121,5 @@ export default function MangaImagesTab() {
 }
 
 const styles = StyleSheet.create({
-	mangaCoverImage: { flex: 1, aspectRatio: "0.8", resizeMode: "contain" }
+	mangaCoverImage: { flex: 1, aspectRatio: "0.8" }
 });

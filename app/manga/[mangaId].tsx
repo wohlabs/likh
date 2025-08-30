@@ -44,5 +44,5 @@ export default function MangaDetails({ navigation }: any) {
 
 const styles = StyleSheet.create({
 	tabTitle: { fontSize: 14, fontWeight: "bold" },
-	mangaCoverImage: { width: '100%', aspectRatio: '0.8', resizeMode: 'contain'}
+	mangaCoverImage: { width: '100%', aspectRatio: '0.8'}
 });

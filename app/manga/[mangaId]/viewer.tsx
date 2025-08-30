@@ -111,7 +111,7 @@ export default function MangaViewer()
 				onSnapToItem={setActiveIndex}
 				renderItem={(item) => (
 				<View style={{ flex: 1 }}>
-					<Image source={{uri: item.item.image}} style={{ resizeMode: "contain", width: "100%", height: "100%"}}/>
+					<Image source={{uri: item.item.image}} resizeMode="contain" style={{ width: "100%", height: "100%"}}/>
 					<Animated.View style={{ position: "absolute", bottom: 0, backgroundColor: "gray", padding: 0, borderRadius: 25, overflow: "hidden", height: animation, width: "100%", borderBottomLeftRadius: 0,
 					borderBottomEndRadius: 0,
 					margin: 0
@@ -139,11 +139,6 @@ export default function MangaViewer()
 
 
 const styles = StyleSheet.create({
-	mainImage: {
-		width: width,
-		height: 300,
-		resizeMode: "cover",
-	},
 	thumbnailRow: {
 		flexDirection: "row",
 		justifyContent: "center",
