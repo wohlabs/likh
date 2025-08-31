@@ -1,4 +1,5 @@
-import { SectionList, Text } from "react-native";
+import { router } from "expo-router";
+import { Pressable, SectionList, Text } from "react-native";
 
 const DATA = [
 	{
@@ -45,7 +46,14 @@ export default function MangaNotesTab() {
 			keyExtractor={(_, index) => index.toString()}
 			style={{ flex: 1 }}
 			renderSectionHeader={({ section: { title } }) => <Text style={{fontWeight: 'bold'}}>{title}</Text>}
-			renderItem={({ item: { note } }) => <Text>{note}</Text>}
+			renderItem={({ item: { note } }) =>
+				<Pressable
+					style={{ flex: 1, margin: 5 }}
+					onPress={() => router.navigate("/manga/123/viewer")}
+				>
+					<Text>{note}</Text>
+				</Pressable>
+			}
 		/>
 	);
 }
