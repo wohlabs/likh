@@ -1,4 +1,6 @@
+import { Ionicons } from "@expo/vector-icons"; // or any icon library
 import { router } from "expo-router";
+import React from "react";
 import
 	{
 		FlatList,
@@ -144,9 +146,10 @@ export default function MangaImagesTab() {
 					keyExtractor={(item: any) => item.id}
 					numColumns={3}
 					style={{ flex: 1 }}
+					columnWrapperStyle={{ marginLeft: 5, marginRight: 5 }}
 					renderItem={({ item }: any) => (
 						<Pressable
-							style={{ flex: 1 }}
+							style={{ flex: 1, margin: 5 }}
 							onPress={() => router.navigate("/manga/123/viewer")}
 						>
 							<Image
@@ -154,6 +157,32 @@ export default function MangaImagesTab() {
 								style={styles.mangaCoverImage}
 								resizeMode="center"
 							/>
+							{item.uri && (
+								<>
+									<Ionicons
+										name="chatbox"
+										size={28}
+										color="black"
+										style={{
+											position: "absolute",
+											right: 2,
+											top: 2,
+											textShadowColor: "black",
+										}}
+									/>
+									<Ionicons
+										name="chatbox"
+										size={24}
+										color="white"
+										style={{
+											position: "absolute",
+											right: 4,
+											top: 3,
+											textShadowColor: "black",
+										}}
+									/>
+								</>
+							)}
 						</Pressable>
 					)}
 				/>
