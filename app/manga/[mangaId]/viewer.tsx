@@ -140,7 +140,7 @@ export default function MangaViewer() {
 							{expanded ? <Text>v</Text> : <Text>^</Text>}
 							<Text>Notes</Text>
 							{expanded ? (
-								<Text style={{ flex: 1, padding: 10, color: data[activeIndex].text ? "black" : "gray" }}>
+								<Text style={{ flex: 1, padding: 10, color: data[activeIndex].text ? "black" : "gray", textAlign: data[activeIndex].text ? "left" : "center" }}>
 									{data[activeIndex].text ? data[activeIndex].text : "No notes available for this image."}
 								</Text>
 							) : null}
