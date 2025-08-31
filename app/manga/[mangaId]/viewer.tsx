@@ -94,7 +94,7 @@ export default function MangaViewer() {
 				>
 					<Gallery
 						ref={viewerRef}
-						data={data.map((item) => ({ uri: item.image, id: item.id }))}
+						data={data.map((item) => ({ uri: item.image, id: item.id, text: item.text }))}
 						keyExtractor={(item) => item.id}
 						style={{ flex: 1, backgroundColor: "transparent" }}
 						containerDimensions={{
@@ -140,12 +140,8 @@ export default function MangaViewer() {
 							{expanded ? <Text>v</Text> : <Text>^</Text>}
 							<Text>Notes</Text>
 							{expanded ? (
-								<Text style={{ flex: 1, padding: 10 }}>
-									Lorem ipsum dolor sit amet consectetur adipisicing elit.
-									Itaque, quis velit cum dolores iure cupiditate, odit
-									laudantium minima possimus optio consequatur blanditiis
-									voluptatum tempore ipsa excepturi ratione debitis asperiores
-									doloribus.
+								<Text style={{ flex: 1, padding: 10, color: data[activeIndex].text ? "black" : "gray" }}>
+									{data[activeIndex].text ? data[activeIndex].text : "No notes available for this image."}
 								</Text>
 							) : null}
 						</TouchableOpacity>
