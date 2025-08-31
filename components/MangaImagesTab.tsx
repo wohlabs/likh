@@ -18,10 +18,7 @@ const data = DATA.map((section) => {
 		data: [ // SectionList expects an array of items
 			{
 				id: section.id,
-				images: section.notes.filter((note)=> note.image != undefined).map((img) => ({
-					id: img.id,
-					uri: img.image,
-				})),
+				images: section.notes.filter((note)=> note.image != undefined),
 			},
 		],
 	};
@@ -60,14 +57,14 @@ export default function MangaImagesTab() {
 					renderItem={({ item }: any) => (
 						<Pressable
 							style={{ flex: 1, margin: 5 }}
-							onPress={() => { item.uri && router.navigate("/manga/123/viewer")}}
+							onPress={() => { item.image && router.navigate("/manga/123/viewer")}}
 						>
 							<Image
-								source={{ uri: item.uri }}
+								source={{ uri: item.image }}
 								style={styles.mangaCoverImage}
 								resizeMode="center"
 							/>
-							{item.uri && (
+							{item.text && (
 								<>
 									<Ionicons
 										name="chatbox"
