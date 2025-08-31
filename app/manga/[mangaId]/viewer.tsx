@@ -1,3 +1,4 @@
+import { getData } from "@/components/util";
 import { Stack } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import
@@ -11,9 +12,6 @@ import
 		View,
 	} from "react-native";
 import Gallery, { GalleryRef } from "react-native-awesome-gallery";
-import DATA from "../../../components/data.json";
-
-const data = DATA.map((section) => section.notes).flat().filter((note) => note.image); // get all notes with images
 
 export default function MangaViewer() {
 	const COLLAPSED_NOTE_HEIGHT = 70;
@@ -28,8 +26,21 @@ export default function MangaViewer() {
 	const viewerRef = useRef<GalleryRef>(null);
 	const thumbnailRef = useRef<FlatList<any>>(null);
 	const THUMBNAIL_SIZE = 80;
+	type NoteItem = { id: string; image: string; text?: string };
+	const [data, setData] = useState<any[]>([{id : 1}]);
 
 	useEffect(() => {
+		const fetchData = async () => {
+			const DATA = await getData();
+			let tempData = DATA.map((section: any) => section.notes).flat().filter((note: any) => note.image) // get all notes with images
+			if (tempData.length == 0) tempData = [{id: 1}]
+			setData(tempData);
+		};
+		fetchData();
+	}, []);
+
+	useEffect(() => {
+		if (data.length == 0 && activeIndex < 0) return;
 		thumbnailRef.current?.scrollToIndex({
 			index: activeIndex,
 			animated: true,
@@ -94,7 +105,7 @@ export default function MangaViewer() {
 				>
 					<Gallery
 						ref={viewerRef}
-						data={data.map((item) => ({ uri: item.image, id: item.id, text: item.text }))}
+						data={data.map((item: any) => ({ uri: item.image, id: item.id, text: item.text }))}
 						keyExtractor={(item) => item.id}
 						style={{ flex: 1, backgroundColor: "transparent" }}
 						containerDimensions={{
@@ -138,10 +149,10 @@ export default function MangaViewer() {
 							}}
 						>
 							{expanded ? <Text>v</Text> : <Text>^</Text>}
-							<Text style={{color: data[activeIndex].text ? "black" : "gray"}}>Notes</Text>
-							{expanded ? (
-								<Text style={{ flex: 1, padding: 10, color: data[activeIndex].text ? "black" : "gray", textAlign: data[activeIndex].text ? "left" : "center" }}>
-									{data[activeIndex].text ? data[activeIndex].text : "No notes available for this image."}
+							{data.length > 0 && <Text style={{color: data[activeIndex]?.text ? "black" : "gray"}}>Notes</Text>}
+							{data.length > 0 && expanded ? (
+								<Text style={{ flex: 1, padding: 10, color: data[activeIndex]?.text ? "black" : "gray", textAlign: data[activeIndex]?.text ? "left" : "center" }}>
+									{data[activeIndex]?.text ? data[activeIndex].text : "No notes available for this image."}
 								</Text>
 							) : null}
 						</TouchableOpacity>

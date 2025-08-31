@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons"; // or any icon library
 import { router } from "expo-router";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import
 	{
 		FlatList,
@@ -8,21 +8,23 @@ import
 		Pressable,
 		SectionList,
 		StyleSheet,
-		Text,
+		Text
 	} from "react-native";
-import DATA from "./data.json";
+import { getData } from "./util";
 
-const data = DATA.map((section) => {
-	return {
-		title: `Chapter ${section.chapter}`,
-		data: [ // SectionList expects an array of items
-			{
-				id: section.id,
-				images: section.notes.filter((note)=> note.image != undefined),
-			},
-		],
-	};
-});
+
+// storing some initial data for testing
+// import DATA from "./data.json";
+// const storeData = async () => {
+//   try {
+// 	const jsonValue = JSON.stringify(DATA)
+//     await AsyncStorage.setItem('DATA', jsonValue);
+// 	console.log("saved data successfully")
+//   } catch (e) {
+//     // saving error
+//   }
+// };
+// storeData()
 
 const formatData = (data: Array<any>, numColumns: number) => {
 	// source: https://www.youtube.com/watch?v=8wv0kjsirso
@@ -39,6 +41,30 @@ const formatData = (data: Array<any>, numColumns: number) => {
 };
 
 export default function MangaImagesTab() {
+	const [data, setData] = useState([]);
+	useEffect(() => {
+		const fetchData = async () => {
+			const DATA = await getData();
+			setData(
+				DATA.map((section: any) => {
+					return {
+						title: `Chapter ${section.chapter}`,
+						data: [
+							// SectionList expects an array of items
+							{
+								id: section.id,
+								images: section.notes.filter(
+									(note: any) => note.image != undefined
+								),
+							},
+						],
+					};
+				})
+			);
+		};
+		fetchData();
+	}, []);
+
 	return (
 		<SectionList
 			sections={data}
@@ -57,7 +83,9 @@ export default function MangaImagesTab() {
 					renderItem={({ item }: any) => (
 						<Pressable
 							style={{ flex: 1, margin: 5 }}
-							onPress={() => { item.image && router.navigate("/manga/123/viewer")}}
+							onPress={() => {
+								item.image && router.navigate("/manga/123/viewer");
+							}}
 						>
 							<Image
 								source={{ uri: item.image }}
