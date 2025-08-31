@@ -28,7 +28,7 @@ export default function MangaDetails({ navigation }: any) {
 
 	return (
 		<>
-			<Stack.Screen options={{ title: "Manga Title" }} />
+			<Stack.Screen options={{ title: "Tianguan Cifu" }} />
 			<Tab.Navigator
 				screenOptions={{
 					tabBarIndicatorStyle: { backgroundColor: "blue" },
