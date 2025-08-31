@@ -18,7 +18,7 @@ const data = DATA.map((section) => {
 		data: [
 			{
 				id: section.id,
-				images: section.notes.map((img) => ({
+				images: section.notes.filter((note)=> note.image != undefined).map((img) => ({
 					id: img.id,
 					uri: img.image,
 				})),

@@ -94,8 +94,8 @@ export default function MangaViewer() {
 				>
 					<Gallery
 						ref={viewerRef}
-						data={data.map((item) => ({ uri: item.image }))}
-						keyExtractor={(item) => item.uri}
+						data={data.map((item) => ({ uri: item.image, id: item.id }))}
+						keyExtractor={(item) => item.id}
 						style={{ flex: 1, backgroundColor: "transparent" }}
 						containerDimensions={{
 							width: carouselDimension.width,
