@@ -11,7 +11,6 @@ import
 		View,
 	} from "react-native";
 import Gallery, { GalleryRef } from "react-native-awesome-gallery";
-import { useSharedValue } from "react-native-reanimated";
 
 const data = [
 	{
@@ -96,9 +95,7 @@ export default function MangaViewer() {
 		height: 0,
 	});
 	const animation = useRef(new Animated.Value(COLLAPSED_NOTE_HEIGHT)).current; // initial height: 0
-	const ref = React.useRef<any>(null);
 	const viewerRef = useRef<GalleryRef>(null);
-	const progress = useSharedValue<number>(0);
 	const thumbnailRef = useRef<FlatList<any>>(null);
 	const THUMBNAIL_SIZE = 80;
 
@@ -123,7 +120,7 @@ export default function MangaViewer() {
 	return (
 		<View style={{ height: "100%", width: "100%", flex: 1 }}>
 			<Stack.Screen options={{ title: "Tianguan Cifu" }} />
-			<View style={{ height: THUMBNAIL_SIZE, width: "100%" }}>
+			<View style={{ height: THUMBNAIL_SIZE, width: "100%", zIndex: 1, backgroundColor: "white" }}>
 				<FlatList
 					ref={thumbnailRef}
 					data={data}
@@ -180,8 +177,7 @@ export default function MangaViewer() {
 								<Image
 									source={{ uri: item.uri }}
 									style={{
-										width: "100%",
-										height: "100%",
+										flex: 1,
 										backgroundColor: "transparent",
 									}}
 									resizeMode="contain"
@@ -193,15 +189,14 @@ export default function MangaViewer() {
 						style={{
 							position: "absolute",
 							bottom: 0,
-							backgroundColor: "gray",
-							padding: 0,
+							backgroundColor: "lightgray",
+							padding: 5,
 							borderRadius: 25,
 							overflow: "hidden",
 							height: animation,
 							width: "100%",
 							borderBottomLeftRadius: 0,
 							borderBottomEndRadius: 0,
-							margin: 0,
 						}}
 					>
 						<TouchableOpacity
