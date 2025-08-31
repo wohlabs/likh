@@ -7,11 +7,11 @@
 				"id": 1,
 				"image":
 					"https://preview.redd.it/manhua-chapter-87-spoiler-hualian-screen-captures-ive-been-v0-njyxu6jili3a1.jpg?width=1080&crop=smart&auto=webp&s=5a9139155b273fa906e7152db3c035be81fb1ed5",
-				"notes": "Some notes"
+				"text": "Some notes"
 			},
 			{
 				"id": 2,
-				"notes": "Only notes, no images. First one"
+				"text": "Only notes, no images. First one"
 			},
 			{
 				"id": 3,
@@ -26,11 +26,11 @@
 				"id": 5,
 				"image":
 					"https://preview.redd.it/xf1dltl7nw881.jpg?width=640&crop=smart&auto=webp&s=7b07229e1383c78087483a6831f2a496e9cfa774",
-				"notes": "Some notes"
+				"text": "Some notes"
 			},
 			{
 				"id": 6,
-				"notes": "Only notes, no images"
+				"text": "Only notes, no images"
 			}
 		]
 	},
@@ -41,17 +41,17 @@
 			{
 				"id": 7,
 				"image": "https://pbs.twimg.com/media/EdS_LqCUYAAJeYu.jpg:large",
-				"notes": "Some notes"
+				"text": "Some notes"
 			},
 			{
 				"id": 8,
-				"notes": "Only notes, no images. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+				"text": "Only notes, no images. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
 			},
 			{
 				"id": 9,
 				"image":
 					"https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/856317be-7d5c-440c-813a-68e6a74148aa/dhap05n-6cbd2465-fac6-4f12-b610-30ed8b705ede.png/v1/fill/w_1024,h_2189,q_80,strp/oh__my_favourite_memory_by_kirsten7767_dhap05n-fullview.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MjE4OSIsInBhdGgiOiJcL2ZcLzg1NjMxN2JlLTdkNWMtNDQwYy04MTNhLTY4ZTZhNzQxNDhhYVwvZGhhcDA1bi02Y2JkMjQ2NS1mYWM2LTRmMTItYjYxMC0zMGVkOGI3MDVlZGUucG5nIiwid2lkdGgiOiI8PTEwMjQifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6aW1hZ2Uub3BlcmF0aW9ucyJdfQ.5ASSjbvXThnHcWh1dtj0XpC6uaFx1koKYcH34zwZPyU",
-				"notes": "Some notes"
+				"text": "Some notes"
 			}
 		]
 	},
