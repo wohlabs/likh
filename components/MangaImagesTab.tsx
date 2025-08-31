@@ -150,7 +150,7 @@ export default function MangaImagesTab() {
 					renderItem={({ item }: any) => (
 						<Pressable
 							style={{ flex: 1, margin: 5 }}
-							onPress={() => router.navigate("/manga/123/viewer")}
+							onPress={() => { item.uri && router.navigate("/manga/123/viewer")}}
 						>
 							<Image
 								source={{ uri: item.uri }}
