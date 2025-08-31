@@ -15,7 +15,7 @@ import DATA from "./data.json";
 const data = DATA.map((section) => {
 	return {
 		title: `Chapter ${section.chapter}`,
-		data: [
+		data: [ // SectionList expects an array of items
 			{
 				id: section.id,
 				images: section.notes.filter((note)=> note.image != undefined).map((img) => ({
