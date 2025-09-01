@@ -18,6 +18,21 @@ const MANGA_QUERY = `
 		}
 	}`;
 
+export const MANGA_SEARCH_QUERY = `
+query ($search: String, $page: Int, $perPage: Int) {
+	Page (page: $page, perPage: $perPage) {
+		media (search: $search, type: MANGA, sort: TRENDING_DESC) {
+			id
+			title {
+				userPreferred
+			}
+			coverImage {
+				large
+			}
+		}
+	}
+}
+`
 
 export const getMangaData = async (mangaId: string) => {
 	try {
@@ -70,6 +85,27 @@ export const getMangaDetails = async (mangaId: string) =>
 	.then((response) => response.data)
 	.then((data) => {
 		return data
+	})
+	.catch((error) => {
+		console.error(error);
+	});
+	return data;
+}
+
+export const searchMangaByString = async (searchString: string, page: number = 1, perPage: number = 10) =>
+{
+	const data = await fetch("https://graphql.anilist.co", {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			'Accept': 'application/json',
+		},
+		body: JSON.stringify({ query: MANGA_SEARCH_QUERY, variables: {search : searchString, page, perPage} })
+	})
+	.then((response) => response.json())
+	.then((response) => response.data)
+	.then((data) => {
+		return data.Page.media
 	})
 	.catch((error) => {
 		console.error(error);

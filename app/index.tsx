@@ -1,6 +1,8 @@
-import { useRouter } from "expo-router";
+import { MANGA_SEARCH_QUERY } from "@/components/util";
+import { Ionicons } from "@expo/vector-icons";
+import { Stack, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { FlatList, Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { FlatList, Image, Keyboard, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 const MANGA_QUERY = `
 	query {
@@ -33,29 +35,71 @@ export default function Index() {
 	const router = useRouter();
 	const [mangaList, setMangaList] = useState<MangaProps[]>([]);
 	const [loading, setLoading] = useState(true);
+	const [isSearching, setSearching] = useState(false)
+	const [searchString, setSearchString] = useState("")
 
-	useEffect(() => {
+	const populateMangaList = () => {
 		fetch("https://graphql.anilist.co", {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 				'Accept': 'application/json',
 			},
-			body: JSON.stringify({ query: MANGA_QUERY })
+			body: JSON.stringify({ query: isSearching && searchString.length > 0 ? MANGA_SEARCH_QUERY : MANGA_QUERY, variables: {search: searchString} })
 		})
 		.then((response) => response.json())
 		.then((response) => response.data)
 		.then((data) => {
-			setMangaList(data.Page.media);
+			if (data)
+			{
+				setMangaList(data.Page.media);
+			}
+			else
+			{
+				setMangaList([]);
+			}
 			setLoading(false);
 		})
 		.catch((error) => {
 			console.error(error);
 			setLoading(false);
 		});
-	}, []);
+	}
+
+	useEffect(() => {
+		populateMangaList()
+	}, [isSearching]);
 
 	return (
+		<>
+		<Stack.Screen
+			options={{
+			headerRight: () => (
+				<Ionicons
+					name= {isSearching ? "close" : "search"}
+					size={25}
+					onPress={() => setSearching(!isSearching)}
+				/>
+			),
+			headerTitle: () => (
+				isSearching ? <TextInput
+					placeholder="Search..."
+					value={searchString}
+					onChangeText={setSearchString}
+					style={{
+						backgroundColor: "#f0f0f0",
+						borderRadius: 8,
+						paddingHorizontal: 10,
+						width: "100%",
+						height: 36,
+					}}
+					returnKeyType="search"
+					onSubmitEditing={() => { populateMangaList(); Keyboard.dismiss()}}
+				/>
+				: <Text>Library</Text>
+			)
+			}}
+		/>
 		<View>
 			<FlatList
 				data={mangaList}
@@ -73,6 +117,7 @@ export default function Index() {
 				)}
 			/>
 		</View>
+		</>
 	);
 }
 
