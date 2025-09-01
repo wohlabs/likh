@@ -62,7 +62,7 @@ export default function Index() {
 				keyExtractor={(item) => item.id}
 				numColumns={2}
 				renderItem={({ item }) => (
-					<Pressable style={{ flex:1 }} onPress={() => { router.navigate('/manga/123') }}>
+					<Pressable style={{ flex:1 }} onPress={() => { router.navigate(`/manga/${item.id}`) }}>
 						<Image
 							source={{ uri: item.coverImage.large }}
 							resizeMode="contain"

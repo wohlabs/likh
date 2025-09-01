@@ -1,14 +1,15 @@
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { Pressable, SectionList, Text, TouchableOpacity, View } from "react-native";
-import { getData } from "./util";
+import { getMangaData } from "./util";
 
 export default function MangaNotesTab() {
+	const { mangaId } = useLocalSearchParams(); // <-- get from URL
 	const [data, setData] = useState([]);
 	useEffect(() => {
 		const fetchData = async () => {
-			const DATA = await getData();
+			const DATA = await getMangaData(mangaId.toString());
 			setData(
 				DATA.map((chapter: any) => {
 					return {
@@ -48,7 +49,7 @@ export default function MangaNotesTab() {
 							padding: 10,
 							backgroundColor: "lightblue",
 						}}
-						onPress={() => router.navigate("/manga/123/viewer")}
+						onPress={() => router.navigate(`/manga/${mangaId}/viewer`)}
 					>
 						<View
 							style={{ flexDirection: "row", justifyContent: "space-between" }}

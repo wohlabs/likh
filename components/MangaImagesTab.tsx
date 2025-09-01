@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons"; // or any icon library
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import
 	{
@@ -11,20 +11,7 @@ import
 		Text,
 		TouchableOpacity,
 	} from "react-native";
-import { getData } from "./util";
-
-// storing some initial data for testing
-// import DATA from "./data.json";
-// const storeData = async () => {
-//   try {
-// 	const jsonValue = JSON.stringify(DATA)
-//     await AsyncStorage.setItem('DATA', jsonValue);
-// 	console.log("saved data successfully")
-//   } catch (e) {
-//     // saving error
-//   }
-// };
-// storeData()
+import { getMangaData } from "./util";
 
 const formatData = (data: Array<any>, numColumns: number) => {
 	// source: https://www.youtube.com/watch?v=8wv0kjsirso
@@ -42,9 +29,10 @@ const formatData = (data: Array<any>, numColumns: number) => {
 
 export default function MangaImagesTab() {
 	const [data, setData] = useState([]);
+	const { mangaId } = useLocalSearchParams(); // <-- get from URL
 	useEffect(() => {
 		const fetchData = async () => {
-			const DATA = await getData();
+			const DATA = await getMangaData(mangaId.toString());
 			setData(
 				DATA.map((section: any) => {
 					return {
@@ -59,7 +47,7 @@ export default function MangaImagesTab() {
 							},
 						],
 					};
-				})
+				}).filter((section:any) => section.data[0].images.length > 0) // remove chapters with no images
 			);
 		};
 		fetchData();
@@ -69,7 +57,7 @@ export default function MangaImagesTab() {
 		<>
 			<SectionList
 				sections={data}
-				keyExtractor={(item) => item.id.toString()}
+				keyExtractor={(_, index) => index.toString()}
 				style={{ flex: 1 }}
 				renderSectionHeader={({ section: { title } }) => (
 					<Text style={{ fontWeight: "bold" }}>{title}</Text>
@@ -77,7 +65,7 @@ export default function MangaImagesTab() {
 				renderItem={({ item }) => (
 					<FlatList
 						data={formatData(item.images, 3)}
-						keyExtractor={(item: any) => item.id}
+						keyExtractor={(_, index) => index.toString()}
 						numColumns={3}
 						style={{ flex: 1 }}
 						columnWrapperStyle={{ marginLeft: 5, marginRight: 5 }}
@@ -85,7 +73,7 @@ export default function MangaImagesTab() {
 							<Pressable
 								style={{ flex: 1, margin: 5 }}
 								onPress={() => {
-									item.image && router.navigate("/manga/123/viewer");
+									item.image && router.navigate(`/manga/${mangaId}/viewer`);
 								}}
 							>
 								<Image
@@ -124,7 +112,7 @@ export default function MangaImagesTab() {
 					/>
 				)}
 			/>
-			<TouchableOpacity style={{height: 60, width: "100%", alignItems: "center", backgroundColor: "green", justifyContent: "center"}} onPress={() => router.navigate("/add_note")}>
+			<TouchableOpacity style={{height: 60, width: "100%", alignItems: "center", backgroundColor: "green", justifyContent: "center"}} onPress={() => router.navigate(`/manga/${mangaId}/add_note`)}>
 				<Ionicons name="add" size={35} color={"white"}/>
 			</TouchableOpacity>
 		</>

@@ -1,5 +1,5 @@
-import { getData } from "@/components/util";
-import { Stack } from "expo-router";
+import { getMangaData } from "@/components/util";
+import { Stack, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import
 	{
@@ -14,6 +14,7 @@ import
 import Gallery, { GalleryRef } from "react-native-awesome-gallery";
 
 export default function MangaViewer() {
+	const { mangaId } = useLocalSearchParams(); // <-- get from URL
 	const COLLAPSED_NOTE_HEIGHT = 70;
 	const [expanded, setExpanded] = useState(false);
 	const [activeIndex, setActiveIndex] = useState(0);
@@ -31,7 +32,7 @@ export default function MangaViewer() {
 
 	useEffect(() => {
 		const fetchData = async () => {
-			const DATA = await getData();
+			const DATA = await getMangaData(mangaId.toString());
 			let tempData = DATA.map((section: any) => section.notes).flat().filter((note: any) => note.image) // get all notes with images
 			if (tempData.length == 0) tempData = [{id: 1}]
 			setData(tempData);
@@ -65,7 +66,7 @@ export default function MangaViewer() {
 				<FlatList
 					ref={thumbnailRef}
 					data={data}
-					keyExtractor={(item) => item.id}
+					keyExtractor={(_, index) => index.toString()}
 					horizontal
 					snapToAlignment="center"
 					showsHorizontalScrollIndicator={true}
@@ -106,7 +107,7 @@ export default function MangaViewer() {
 					<Gallery
 						ref={viewerRef}
 						data={data.map((item: any) => ({ uri: item.image, id: item.id, text: item.text }))}
-						keyExtractor={(item) => item.id}
+						keyExtractor={(_, index) => index.toString()}
 						style={{ flex: 1, backgroundColor: "transparent" }}
 						containerDimensions={{
 							width: carouselDimension.width,
