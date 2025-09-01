@@ -1,34 +1,28 @@
+import { getMangaDetails } from "@/components/util";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { Stack } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 import MangaImagesTab from "../../components/MangaImagesTab";
 import MangaNotesTab from "../../components/MangaNotesTab";
 
-const MANGA_QUERY = `
-	query GetManga($id: Int) {
-		Media(id: $id, type: MANGA) {
-			id
-			title {
-				userPreferred
-			}
-			coverImage {
-				large
-			}
-			description
-			genres
-			chapters
-			volumes
-			status
-		}
-	}`;
-
 const Tab = createMaterialTopTabNavigator();
 
 export default function MangaDetails({ navigation }: any) {
+	const { mangaId } = useLocalSearchParams(); // <-- get from URL
+	const [mangaName, setMangaName] = useState<string>("Fetching...")
+
+	useEffect(() => {
+		const populateMangaData = async () => {
+			const manga = await getMangaDetails(mangaId.toString());
+			setMangaName(manga.Media.title.userPreferred);
+		};
+		populateMangaData();
+	}, []);
 
 	return (
 		<>
-			<Stack.Screen options={{ title: "Tianguan Cifu" }} />
+			<Stack.Screen options={{ title: mangaName }} />
 			<Tab.Navigator
 				screenOptions={{
 					tabBarIndicatorStyle: { backgroundColor: "blue" },

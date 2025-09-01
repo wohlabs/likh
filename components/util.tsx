@@ -1,5 +1,24 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+const MANGA_QUERY = `
+	query GetManga($id: Int) {
+		Media(id: $id, type: MANGA) {
+			id
+			title {
+				userPreferred
+			}
+			coverImage {
+				large
+			}
+			description
+			genres
+			chapters
+			volumes
+			status
+		}
+	}`;
+
+
 export const getMangaData = async (mangaId: string) => {
 	try {
 		const jsonValue = await AsyncStorage.getItem("manga_" + mangaId.toString());
@@ -36,3 +55,24 @@ export const addMangaNote = async (mangaId: string, chapter: number, image: stri
 	}
 	return true
 };
+
+export const getMangaDetails = async (mangaId: string) =>
+{
+	const data = await fetch("https://graphql.anilist.co", {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			'Accept': 'application/json',
+		},
+		body: JSON.stringify({ query: MANGA_QUERY, variables: {id : mangaId} })
+	})
+	.then((response) => response.json())
+	.then((response) => response.data)
+	.then((data) => {
+		return data
+	})
+	.catch((error) => {
+		console.error(error);
+	});
+	return data;
+}

@@ -1,6 +1,6 @@
 import * as ImagePicker from "expo-image-picker";
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import
 	{
 		Image,
@@ -12,13 +12,22 @@ import
 		TouchableWithoutFeedback,
 		View,
 	} from "react-native";
-import { addMangaNote } from '../../../components/util';
+import { addMangaNote, getMangaDetails } from '../../../components/util';
 
 export default function AddNoteScreen() {
 	const [value, onChangeText] = useState("");
 	const [image, setImage] = useState<string | null>(null);
 	const [chapter, setChapter] = useState<string>() // -1 = all/general
 	const { mangaId } = useLocalSearchParams(); // <-- get from URL
+	const [mangaName, setMangaName] = useState<string>("Fetching...");
+
+	useEffect(() => {
+		const populateMangaData = async () => {
+			const manga = await getMangaDetails(mangaId.toString());
+			setMangaName(manga.Media.title.userPreferred);
+		};
+		populateMangaData();
+	}, []);
 
 	const pickImage = async () => {
 		// No permissions request is necessary for launching the image library
@@ -37,7 +46,7 @@ export default function AddNoteScreen() {
 		<TouchableWithoutFeedback style={{ flex: 1 }} onPress={Keyboard.dismiss}>
 			<View style={{ flex: 1, padding: 10 }}>
 				<Stack.Screen options={{ title: "Add note" }} />
-				<Text>Manhwa/Manga: Tianguan Cifu</Text>
+				<Text>Manhwa/Manga: {mangaName}</Text>
 				<View style={{ flexDirection: "row", justifyContent: "center" }}>
 					<Text>Chapter: </Text>
 					<TextInput

@@ -1,4 +1,4 @@
-import { getMangaData } from "@/components/util";
+import { getMangaData, getMangaDetails } from "@/components/util";
 import { Stack, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import
@@ -29,6 +29,16 @@ export default function MangaViewer() {
 	const THUMBNAIL_SIZE = 80;
 	type NoteItem = { id: string; image: string; text?: string };
 	const [data, setData] = useState<any[]>([{id : 1}]);
+	const [mangaName, setMangaName] = useState<string>("Fetching...")
+
+	useEffect(() => {
+		const populateMangaData = async () => {
+			const manga = await getMangaDetails(mangaId.toString());
+			setMangaName(manga.Media.title.userPreferred);
+		};
+		populateMangaData();
+	}, []);
+
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -61,7 +71,7 @@ export default function MangaViewer() {
 	};
 	return (
 		<View style={{ height: "100%", width: "100%", flex: 1 }}>
-			<Stack.Screen options={{ title: "Tianguan Cifu" }} />
+			<Stack.Screen options={{ title: mangaName }} />
 			<View style={{ height: THUMBNAIL_SIZE, width: "100%", zIndex: 1, backgroundColor: "white" }}>
 				<FlatList
 					ref={thumbnailRef}
