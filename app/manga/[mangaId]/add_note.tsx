@@ -1,4 +1,3 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from "expo-image-picker";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
@@ -13,37 +12,13 @@ import
 		TouchableWithoutFeedback,
 		View,
 	} from "react-native";
+import { addMangaNote } from '../../../components/util.tsx';
 
 export default function AddNoteScreen() {
 	const [value, onChangeText] = useState("");
 	const [image, setImage] = useState<string | null>(null);
 	const [chapter, setChapter] = useState<string>() // -1 = all/general
 	const { mangaId } = useLocalSearchParams(); // <-- get from URL
-
-	const addNote = async () => {
-		try {
-			let currentMangaData: Array<any> = JSON.parse((await AsyncStorage.getItem("manga_" + mangaId.toString()))?.toString() || "[]");
-			let index = currentMangaData.findIndex((manga: any) => manga.chapter == (chapter || -1));
-			if (index < 0)
-			{
-				currentMangaData.push({
-					id: currentMangaData.length,
-					chapter: chapter ? Number(chapter) : -1,
-					notes: []
-				})
-				index = currentMangaData.length - 1;
-			}
-			let newChapterData:any = currentMangaData[index];
-			newChapterData.notes.push({
-				image: image || undefined,
-				text: value.trim().length > 0 ? value.trim() : undefined
-			})
-			currentMangaData[index] = newChapterData
-			await AsyncStorage.setItem('manga_' + mangaId.toString(), JSON.stringify(currentMangaData));
-		} catch (e) {
-			// saving error
-		}
-	};
 
 	const pickImage = async () => {
 		// No permissions request is necessary for launching the image library
@@ -146,7 +121,7 @@ export default function AddNoteScreen() {
 							borderRadius: 10,
 							margin: 10,
 						}}
-						onPress={addNote}
+						onPress={() => addMangaNote(mangaId.toString(), Number(chapter) || -1, image, value)}
 					>
 						<Text>Add</Text>
 					</TouchableOpacity>
