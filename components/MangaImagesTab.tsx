@@ -124,7 +124,7 @@ export default function MangaImagesTab() {
 					/>
 				)}
 			/>
-			<TouchableOpacity style={{height: 60, width: "100%", alignItems: "center", backgroundColor: "green", justifyContent: "center"}}>
+			<TouchableOpacity style={{height: 60, width: "100%", alignItems: "center", backgroundColor: "green", justifyContent: "center"}} onPress={() => router.navigate("/add_note")}>
 				<Ionicons name="add" size={35} color={"white"}/>
 			</TouchableOpacity>
 		</>
