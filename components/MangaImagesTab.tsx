@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons"; // or any icon library
-import { router, useLocalSearchParams } from "expo-router";
-import React, { useEffect, useState } from "react";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import React, { useCallback, useEffect, useState } from "react";
 import
 	{
 		FlatList,
@@ -30,28 +30,34 @@ const formatData = (data: Array<any>, numColumns: number) => {
 export default function MangaImagesTab() {
 	const [data, setData] = useState([]);
 	const { mangaId } = useLocalSearchParams(); // <-- get from URL
+	const fetchData = async () => {
+		const DATA = await getMangaData(mangaId.toString());
+		setData(
+			DATA.map((section: any) => {
+				return {
+					title: `Chapter ${section.chapter}`,
+					data: [
+						// SectionList expects an array of items
+						{
+							id: section.id,
+							images: section.notes.filter(
+								(note: any) => note.image != undefined
+							),
+						},
+					],
+				};
+			}).filter((section:any) => section.data[0].images.length > 0) // remove chapters with no images
+		);
+	};
 	useEffect(() => {
-		const fetchData = async () => {
-			const DATA = await getMangaData(mangaId.toString());
-			setData(
-				DATA.map((section: any) => {
-					return {
-						title: `Chapter ${section.chapter}`,
-						data: [
-							// SectionList expects an array of items
-							{
-								id: section.id,
-								images: section.notes.filter(
-									(note: any) => note.image != undefined
-								),
-							},
-						],
-					};
-				}).filter((section:any) => section.data[0].images.length > 0) // remove chapters with no images
-			);
-		};
 		fetchData();
 	}, []);
+
+	useFocusEffect(
+		useCallback(() => {
+			fetchData()
+		}, [])
+	)
 
 	return (
 		<>

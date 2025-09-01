@@ -1,26 +1,32 @@
 import { Ionicons } from "@expo/vector-icons";
-import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
 import { Pressable, SectionList, Text, TouchableOpacity, View } from "react-native";
 import { getMangaData } from "./util";
 
 export default function MangaNotesTab() {
 	const { mangaId } = useLocalSearchParams(); // <-- get from URL
 	const [data, setData] = useState([]);
+	const fetchData = async () => {
+		const DATA = await getMangaData(mangaId.toString());
+		setData(
+			DATA.map((chapter: any) => {
+				return {
+					title: `Chapter ${chapter.chapter}`,
+					data: chapter.notes.filter((note: any) => note.text !== undefined), // only keep notes with text
+				};
+			}).filter((chapter: any) => chapter.data.length > 0) // only keep chapters with notes
+		);
+	};
 	useEffect(() => {
-		const fetchData = async () => {
-			const DATA = await getMangaData(mangaId.toString());
-			setData(
-				DATA.map((chapter: any) => {
-					return {
-						title: `Chapter ${chapter.chapter}`,
-						data: chapter.notes.filter((note: any) => note.text !== undefined), // only keep notes with text
-					};
-				}).filter((chapter: any) => chapter.data.length > 0) // only keep chapters with notes
-			);
-		};
 		fetchData();
 	}, []);
+
+	useFocusEffect(
+		useCallback(() => {
+			fetchData()
+		}, [])
+	)
 
 	return (
 		<>

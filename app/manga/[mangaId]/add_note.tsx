@@ -1,5 +1,5 @@
 import * as ImagePicker from "expo-image-picker";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import
 	{
@@ -12,7 +12,7 @@ import
 		TouchableWithoutFeedback,
 		View,
 	} from "react-native";
-import { addMangaNote } from '../../../components/util.tsx';
+import { addMangaNote } from '../../../components/util';
 
 export default function AddNoteScreen() {
 	const [value, onChangeText] = useState("");
@@ -121,7 +121,12 @@ export default function AddNoteScreen() {
 							borderRadius: 10,
 							margin: 10,
 						}}
-						onPress={() => addMangaNote(mangaId.toString(), Number(chapter) || -1, image, value)}
+						onPress={async () => {
+							if (await addMangaNote(mangaId.toString(), Number(chapter) || -1, image, value))
+							{
+								router.back()
+							}
+						}}
 					>
 						<Text>Add</Text>
 					</TouchableOpacity>
