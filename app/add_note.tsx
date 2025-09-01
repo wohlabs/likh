@@ -1,10 +1,25 @@
+import * as ImagePicker from 'expo-image-picker';
 import { Stack } from "expo-router";
 import { useState } from "react";
-import { Image, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Image, Pressable, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function AddNoteScreen()
 {
 	const [value, onChangeText] = useState('');
+	const [image, setImage] = useState<string | null>(null);
+
+	const pickImage = async () => {
+		// No permissions request is necessary for launching the image library
+		let result = await ImagePicker.launchImageLibraryAsync({
+			mediaTypes: ['images'],
+			allowsEditing: true,
+			quality: 1,
+		});
+
+		if (!result.canceled) {
+			setImage(result.assets[0].uri);
+		}
+	};
 
 	return (
 		<View style={{flex: 1}}>
@@ -17,10 +32,11 @@ export default function AddNoteScreen()
 			<View style={{flexDirection: "row"}}>
 				<Text>Image: </Text>
 				<View style={{flex: 1, maxHeight: 200, minHeight: 100}}>
-
-					<Image defaultSource={{ uri: "https://static.vecteezy.com/system/resources/thumbnails/022/059/000/small_2x/no-image-available-icon-vector.jpg" }} 
-					source={{ uri: "https://static.vecteezy.com/system/resources/thumbnails/022/059/000/small_2x/no-image-available-icon-vector.jpg" }}
-					resizeMode="center" style={{flex: 1, maxHeight: 200, minHeight: 100, aspectRatio: 1, backgroundColor: "red"}} />
+					<Pressable onPress={pickImage}>
+						<Image defaultSource={{ uri: "https://static.vecteezy.com/system/resources/thumbnails/022/059/000/small_2x/no-image-available-icon-vector.jpg" }} 
+						source={{ uri: image || "https://static.vecteezy.com/system/resources/thumbnails/022/059/000/small_2x/no-image-available-icon-vector.jpg" }}
+						resizeMode="center" style={{flex: 1, maxHeight: 200, minHeight: 100, aspectRatio: 1}} />
+					</Pressable>
 				</View>
 				</View>
 			<Text>Note:</Text>
