@@ -1,5 +1,6 @@
-import { MANGA_SEARCH_QUERY } from "@/components/util";
+import { formatData, MANGA_SEARCH_QUERY } from "@/components/util";
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Stack, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { FlatList, Image, Keyboard, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
@@ -20,6 +21,22 @@ const MANGA_QUERY = `
 	}
 `;
 
+const LIBRARY_MANGA_QUERY = `
+	query ($ids: [Int]){
+		Page(page: 1, perPage: 50) {
+			media(id_in: $ids, type: MANGA, sort: TRENDING_DESC) {
+				id
+				title {
+					userPreferred
+				}
+				coverImage {
+					large
+				}
+			}
+		}
+	}
+`
+
 type MangaProps = {
 	id: string;
 	title: {
@@ -38,14 +55,37 @@ export default function Index() {
 	const [isSearching, setSearching] = useState(false)
 	const [searchString, setSearchString] = useState("")
 
-	const populateMangaList = () => {
+	const populateMangaList = async () => {
+		let libraryMangaIds: number[] = []
+		try {
+			const storageKeys = await AsyncStorage.getAllKeys();
+			libraryMangaIds = storageKeys.filter((value) => value.startsWith("manga_")).map((value) =>value.replace("manga_", "")).map((value) => Number(value))
+			console.log(libraryMangaIds)
+		} catch (error) {
+			console.error("Could not fetch mangaIds")
+		}
+		let query = {}
+		if (isSearching && searchString.length > 0)
+		{
+			query = {
+				query: MANGA_SEARCH_QUERY,
+				variables: {search: searchString}
+			}
+		}
+		else
+		{
+			query = {
+				query: LIBRARY_MANGA_QUERY,
+				variables: {ids: libraryMangaIds}
+			}
+		}
 		fetch("https://graphql.anilist.co", {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 				'Accept': 'application/json',
 			},
-			body: JSON.stringify({ query: isSearching && searchString.length > 0 ? MANGA_SEARCH_QUERY : MANGA_QUERY, variables: {search: searchString} })
+			body: JSON.stringify(query)
 		})
 		.then((response) => response.json())
 		.then((response) => response.data)
@@ -102,17 +142,17 @@ export default function Index() {
 		/>
 		<View>
 			<FlatList
-				data={mangaList}
+				data={formatData(mangaList, 2)}
 				keyExtractor={(item) => item.id}
 				numColumns={2}
 				renderItem={({ item }) => (
 					<Pressable style={{ flex:1 }} onPress={() => { router.navigate(`/manga/${item.id}`) }}>
 						<Image
-							source={{ uri: item.coverImage.large }}
+							source={{ uri: item.coverImage?.large }}
 							resizeMode="contain"
 							style={styles.mangaCoverImage}
 						/>
-						<Text style={styles.mangaTitle}>{item.title.userPreferred}</Text>
+						<Text style={styles.mangaTitle}>{item.title?.userPreferred}</Text>
 					</Pressable>
 				)}
 			/>

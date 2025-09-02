@@ -11,21 +11,8 @@ import
 		Text,
 		TouchableOpacity,
 	} from "react-native";
-import { getMangaData } from "./util";
+import { formatData, getMangaData } from "./util";
 
-const formatData = (data: Array<any>, numColumns: number) => {
-	// source: https://www.youtube.com/watch?v=8wv0kjsirso
-	const numberOfFullRows = Math.floor(data.length / numColumns);
-	let numberOfElementsLastRow = data.length - numberOfFullRows * numColumns;
-	while (
-		numberOfElementsLastRow !== numColumns &&
-		numberOfElementsLastRow !== 0
-	) {
-		data.push({});
-		numberOfElementsLastRow++;
-	}
-	return data;
-};
 
 export default function MangaImagesTab() {
 	const [data, setData] = useState([]);
