@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "AniNote",
-    "slug": "AniNote",
+    "slug": "aninote",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -16,7 +16,10 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -34,7 +37,7 @@
           "backgroundColor": "#ffffff"
         }
       ],
-	  [
+      [
         "expo-image-picker",
         {
           "photosPermission": "The app accesses your photos to let you share them with your friends."
@@ -43,6 +46,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "feaf4a33-4f78-4e34-9534-a576e59d4f93"
+      }
+    },
+    "owner": "jaikog01"
   }
 }
