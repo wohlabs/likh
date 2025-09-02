@@ -139,11 +139,12 @@ export default function Index() {
 			)
 			}}
 		/>
-		<View>
+		<View style={{flex: 1}}>
 			<FlatList
 				data={formatData(mangaList, 2)}
 				keyExtractor={(item) => item.id}
 				numColumns={2}
+				style={{flex: 1}}
 				renderItem={({ item }) => (
 					<Pressable style={{ flex:1 }} onPress={() => { router.navigate(`/manga/${item.id}`) }}>
 						<Image
