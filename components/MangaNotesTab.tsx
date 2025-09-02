@@ -57,7 +57,7 @@ export default function MangaNotesTab() {
 							padding: 10,
 							backgroundColor: "lightblue",
 						}}
-						onPress={() => router.navigate(`/manga/${mangaId}/viewer`)}
+						onPress={() => image && router.navigate(`/manga/${mangaId}/viewer`)}
 					>
 						<View
 							style={{ flexDirection: "row", justifyContent: "space-between" }}
