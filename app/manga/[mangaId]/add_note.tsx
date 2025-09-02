@@ -47,7 +47,7 @@ export default function AddNoteScreen() {
 			<View style={{ flex: 1, padding: 10 }}>
 				<Stack.Screen options={{ title: "Add note" }} />
 				<Text>Manhwa/Manga: {mangaName}</Text>
-				<View style={{ flexDirection: "row", justifyContent: "center" }}>
+				<View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
 					<Text>Chapter: </Text>
 					<TextInput
 						numberOfLines={1}
@@ -55,12 +55,15 @@ export default function AddNoteScreen() {
 						keyboardType="number-pad"
 						value={chapter}
 						onChangeText={(text) => setChapter(text)}
+						placeholder={"(All)"}
+						placeholderTextColor={"gray"}
 						style={{
 							backgroundColor: "white",
 							outlineColor: "black",
 							flex: 1,
 							outlineWidth: 1,
 							margin: 2,
+							padding: 5
 						}}
 					/>
 				</View>
@@ -95,6 +98,7 @@ export default function AddNoteScreen() {
 					numberOfLines={4}
 					onChangeText={(text) => onChangeText(text)}
 					placeholder="Your note here..."
+					placeholderTextColor={"gray"}
 					value={value}
 					style={{
 						flex: 1,
