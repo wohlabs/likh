@@ -64,10 +64,10 @@ export default function Index() {
 			console.error("Could not fetch mangaIds")
 		}
 		let query = {}
-		if (isSearching && searchString.length > 0)
+		if (isSearching)
 		{
 			query = {
-				query: MANGA_SEARCH_QUERY,
+				query: searchString.length > 0 ? MANGA_SEARCH_QUERY : MANGA_QUERY,
 				variables: {search: searchString}
 			}
 		}
