@@ -20,9 +20,11 @@ export default function MangaImagesTab() {
 	const fetchData = async () => {
 		const DATA = await getMangaData(mangaId.toString());
 		setData(
-			DATA.map((section: any) => {
+			DATA
+			.sort((a:any, b:any) => a.chapter - b.chapter)
+			.map((section: any) => {
 				return {
-					title: `Chapter ${section.chapter}`,
+					title: section.chapter >= 0 ? `Chapter ${section.chapter}` : "All",
 					data: [
 						// SectionList expects an array of items
 						{
@@ -53,7 +55,14 @@ export default function MangaImagesTab() {
 				keyExtractor={(_, index) => index.toString()}
 				style={{ flex: 1 }}
 				renderSectionHeader={({ section: { title } }) => (
-					<Text style={{ fontWeight: "bold" }}>{title}</Text>
+					<Text
+						style={{
+							fontWeight: "bold",
+							fontSize: 20,
+							padding: 10,
+							backgroundColor: "white",
+						}}
+					>{title}</Text>
 				)}
 				renderItem={({ item }) => (
 					<FlatList
@@ -66,7 +75,9 @@ export default function MangaImagesTab() {
 							<Pressable
 								style={{ flex: 1, margin: 5 }}
 								onPress={() => {
-									item.image && router.navigate(`/manga/${mangaId}/viewer`);
+									item.image && router.navigate(`/manga/${mangaId}/viewer`, {
+
+									});
 								}}
 							>
 								<Image

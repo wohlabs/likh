@@ -10,9 +10,11 @@ export default function MangaNotesTab() {
 	const fetchData = async () => {
 		const DATA = await getMangaData(mangaId.toString());
 		setData(
-			DATA.map((chapter: any) => {
+			DATA
+			.sort((a:any, b:any) => a.chapter - b.chapter)
+			.map((chapter: any) => {
 				return {
-					title: `Chapter ${chapter.chapter}`,
+					title: chapter.chapter >= 0 ? `Chapter ${chapter.chapter}` : "All",
 					data: chapter.notes.filter((note: any) => note.text !== undefined), // only keep notes with text
 				};
 			}).filter((chapter: any) => chapter.data.length > 0) // only keep chapters with notes
