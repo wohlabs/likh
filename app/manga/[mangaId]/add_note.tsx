@@ -117,6 +117,9 @@ export default function AddNoteScreen() {
 							borderRadius: 10,
 							margin: 10,
 						}}
+						onPress={async () => {
+							router.back()
+						}}
 					>
 						<Text>Cancel</Text>
 					</TouchableOpacity>
