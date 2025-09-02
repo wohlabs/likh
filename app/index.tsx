@@ -60,7 +60,6 @@ export default function Index() {
 		try {
 			const storageKeys = await AsyncStorage.getAllKeys();
 			libraryMangaIds = storageKeys.filter((value) => value.startsWith("manga_")).map((value) =>value.replace("manga_", "")).map((value) => Number(value))
-			console.log(libraryMangaIds)
 		} catch (error) {
 			console.error("Could not fetch mangaIds")
 		}
