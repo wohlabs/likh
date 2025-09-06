@@ -141,9 +141,9 @@ export default function Index() {
 		/>
 		<View style={{flex: 1}}>
 			<FlatList
-				data={formatData(mangaList, 2)}
+				data={formatData(mangaList, 5)}
 				keyExtractor={(item) => item.id}
-				numColumns={2}
+				numColumns={5}
 				style={{flex: 1}}
 				renderItem={({ item }) => (
 					<Pressable style={{ flex:1 }} onPress={() => { router.navigate(`/manga/${item.id}`) }}>
@@ -156,6 +156,13 @@ export default function Index() {
 					</Pressable>
 				)}
 			/>
+			<View style={{height: 60, width: "50%", position: "absolute", bottom: 25, left:"50%", transform: "translateX(-50%)", flexDirection: "row", alignItems: "center"}}>
+				<View style={{ flex: 1, backgroundColor: "white", flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: 5, borderRadius: 10, shadowColor: "black", shadowOffset: {width: 0, height: 4}, shadowOpacity: 0.3, shadowRadius: 5}} >
+					<Ionicons name="search" size={20} style={{position: "relative", margin: 5}}/>
+					<TextInput style={{flex: 1, margin: 5, borderWidth: 0, borderColor: "transparent", fontSize: 20, padding: 5}} underlineColorAndroid={"transparent"} onSubmitEditing={() => { populateMangaList(); }} value={searchString} onChangeText={setSearchString}/>
+				</View>
+				<Ionicons name="add" size={40} style={{ width: 40, height: 40, position: "relative", margin: 5, backgroundColor: "white", borderRadius: "50%", aspectRatio: 1, shadowColor: "black", shadowOffset: {width: 0, height: 4}, shadowOpacity: 0.3, shadowRadius: 5}} color={"black"}/>
+			</View>
 		</View>
 		</>
 	);
