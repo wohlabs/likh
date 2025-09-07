@@ -66,9 +66,9 @@ export default function MangaImagesTab() {
 				)}
 				renderItem={({ item }) => (
 					<FlatList
-						data={formatData(item.images, 3)}
+						data={formatData(item.images, 5)}
 						keyExtractor={(_, index) => index.toString()}
-						numColumns={3}
+						numColumns={5}
 						style={{ flex: 1 }}
 						columnWrapperStyle={{ marginLeft: 5, marginRight: 5 }}
 						renderItem={({ item }: any) => (
@@ -83,7 +83,7 @@ export default function MangaImagesTab() {
 								<Image
 									source={{ uri: item.image }}
 									style={styles.mangaCoverImage}
-									resizeMode="center"
+									resizeMode="cover"
 								/>
 								{item.text && (
 									<>
