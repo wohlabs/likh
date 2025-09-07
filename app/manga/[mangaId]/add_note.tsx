@@ -5,6 +5,7 @@ import
 	{
 		Image,
 		Keyboard,
+		Platform,
 		Pressable,
 		Text,
 		TextInput,
@@ -14,8 +15,25 @@ import
 	} from "react-native";
 import { addMangaNote, getMangaDetails } from '../../../components/util';
 
+
+const KeyboardDismissWrapper = ({ children }: any) => {
+	if (Platform.OS === 'web') {
+		return <View style={{ flex: 1 }}>{children}</View>; // Don't block clicks
+	}
+
+	return (
+		<TouchableWithoutFeedback
+		onPress={Keyboard.dismiss}
+		accessible={false}
+		style={{ flex: 1 }}
+		>
+		<View style={{ flex: 1 }}>{children}</View>
+		</TouchableWithoutFeedback>
+	);
+};
+
 export default function AddNoteScreen() {
-	const [value, onChangeText] = useState("");
+	const [text, onChangeText] = useState("");
 	const [image, setImage] = useState<string | null>(null);
 	const [chapter, setChapter] = useState<string>() // -1 = all/general
 	const { mangaId } = useLocalSearchParams(); // <-- get from URL
@@ -43,8 +61,8 @@ export default function AddNoteScreen() {
 	};
 
 	return (
-		<TouchableWithoutFeedback style={{ flex: 1 }} onPress={Keyboard.dismiss}>
-			<View style={{ flex: 1, padding: 10 }}>
+		<KeyboardDismissWrapper>
+			<View style={{ flex: 1, padding: 10 }} pointerEvents="box-none">
 				<Stack.Screen options={{ title: "Add note" }} />
 				<Text>Manhwa/Manga: {mangaName}</Text>
 				<View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
@@ -96,10 +114,10 @@ export default function AddNoteScreen() {
 					editable
 					multiline
 					numberOfLines={4}
-					onChangeText={(text) => onChangeText(text)}
 					placeholder="Your note here..."
 					placeholderTextColor={"gray"}
-					value={value}
+					value={text}
+					onChangeText={onChangeText}
 					style={{
 						flex: 1,
 						padding: 10,
@@ -138,8 +156,10 @@ export default function AddNoteScreen() {
 							margin: 10,
 						}}
 						onPress={async () => {
-							if (await addMangaNote(mangaId.toString(), Number(chapter) || -1, image, value))
+							console.log("Adding note...")
+							if (await addMangaNote(mangaId.toString(), Number(chapter) || -1, image, text))
 							{
+								console.log("Note added!")
 								router.back()
 							}
 						}}
@@ -148,6 +168,6 @@ export default function AddNoteScreen() {
 					</TouchableOpacity>
 				</View>
 			</View>
-		</TouchableWithoutFeedback>
+		</KeyboardDismissWrapper>
 	);
 }
