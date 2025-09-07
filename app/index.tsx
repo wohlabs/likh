@@ -51,6 +51,7 @@ type MangaProps = {
 export default function Index() {
 	const router = useRouter();
 	const [mangaList, setMangaList] = useState<MangaProps[]>([]);
+	const [filteredMangaList, setFilteredMangaList] = useState<MangaProps[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [isSearching, setSearching] = useState(false)
 	const [searchString, setSearchString] = useState("")
@@ -109,6 +110,10 @@ export default function Index() {
 		populateMangaList()
 	}, [isSearching]);
 
+	useEffect(() => {
+		setFilteredMangaList(mangaList.filter((manga) => manga.title?.userPreferred?.toLowerCase().includes(searchString.toLowerCase())))
+	}, [mangaList, searchString]);
+
 	return (
 		<>
 		<Stack.Screen
@@ -119,7 +124,7 @@ export default function Index() {
 		/>
 		<View style={{flex: 1}}>
 			<FlatList
-				data={formatData(mangaList, 5)}
+				data={formatData(filteredMangaList, 5)}
 				keyExtractor={(item) => item.id}
 				numColumns={5}
 				style={{flex: 1}}
