@@ -3,7 +3,7 @@ import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Stack, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { FlatList, Image, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { FlatList, Image, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 const MANGA_QUERY = `
 	query {
@@ -146,7 +146,11 @@ export default function Index() {
 					<Ionicons name="search" size={20} style={{position: "relative", margin: 5}}/>
 					<TextInput style={{flex: 1, margin: 5, borderWidth: 0, borderColor: "transparent", fontSize: 20, padding: 5}} underlineColorAndroid={"transparent"} onSubmitEditing={() => { populateMangaList(); }} value={searchString} onChangeText={setSearchString}/>
 				</View>
-				<Ionicons name="add" size={40} style={{ width: 40, height: 40, position: "relative", margin: 5, backgroundColor: "white", borderRadius: "50%", aspectRatio: 1, shadowColor: "black", shadowOffset: {width: 0, height: 4}, shadowOpacity: 0.3, shadowRadius: 5}} color={"black"}/>
+				<TouchableOpacity
+					onPress={() => { setSearching(!isSearching); }}
+					style={{width: 40, height: 40, margin: 5, aspectRatio: 1, shadowOpacity: 0.3, shadowRadius: 5, backgroundColor: "white", borderRadius: "100%", shadowColor: "black", shadowOffset: {width: 0, height: 4} }}>
+					<Ionicons name="add" size={40} style={{ width: "100%", height: "100%", position: "relative" }} color={"black"}/>
+				</TouchableOpacity>
 			</View>
 		</View>
 		</>
