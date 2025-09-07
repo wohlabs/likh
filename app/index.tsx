@@ -3,7 +3,7 @@ import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Stack, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { FlatList, Image, Keyboard, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { FlatList, Image, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 const MANGA_QUERY = `
 	query {
@@ -113,30 +113,8 @@ export default function Index() {
 		<>
 		<Stack.Screen
 			options={{
-			headerRight: () => (
-				<Ionicons
-					name= {isSearching ? "close" : "search"}
-					size={25}
-					onPress={() => setSearching(!isSearching)}
-				/>
-			),
-			headerTitle: () => (
-				isSearching ? <TextInput
-					placeholder="Search..."
-					value={searchString}
-					onChangeText={setSearchString}
-					style={{
-						backgroundColor: "#f0f0f0",
-						borderRadius: 8,
-						paddingHorizontal: 10,
-						width: "100%",
-						height: 36,
-					}}
-					returnKeyType="search"
-					onSubmitEditing={() => { populateMangaList(); Keyboard.dismiss()}}
-				/>
-				: <Text>Library</Text>
-			)
+				title: "Library",
+				headerTitleAlign: "center"
 			}}
 		/>
 		<View style={{flex: 1}}>
