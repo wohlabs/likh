@@ -90,7 +90,7 @@ export default function Index() {
 		.then((response) => response.json())
 		.then((response) => response.data)
 		.then((data) => {
-			if (data)
+			if (data && data.Page && data.Page.media)
 			{
 				setMangaList(data.Page.media);
 			}
@@ -129,6 +129,7 @@ export default function Index() {
 				numColumns={5}
 				style={{flex: 1}}
 				renderItem={({ item }) => (
+					item?.id ?
 					<Pressable style={{ flex:1 }} onPress={() => { router.navigate(`/manga/${item.id}`) }}>
 						<Image
 							source={{ uri: item.coverImage?.large }}
@@ -137,6 +138,7 @@ export default function Index() {
 						/>
 						<Text style={styles.mangaTitle}>{item.title?.userPreferred}</Text>
 					</Pressable>
+					: <View style={{ flex: 1, backgroundColor: "transparent", margin: 5 }} />
 				)}
 			/>
 			<View style={{height: 60, width: "50%", position: "absolute", bottom: 25, left:"50%", transform: "translateX(-50%)", flexDirection: "row", alignItems: "center"}}>
