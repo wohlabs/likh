@@ -1,4 +1,4 @@
-import { formatData, MANGA_SEARCH_QUERY } from "@/components/util";
+import { addMangaToLibrary, formatData, MANGA_SEARCH_QUERY } from "@/components/util";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Stack, useRouter } from "expo-router";
@@ -202,9 +202,14 @@ export default function Index() {
 								/>
 								<Text style={{textAlign: "left", fontSize: 20, flex: 1}}>{item.title?.userPreferred}</Text>
 								<TouchableOpacity
-									style={{width: 40, height: 40, margin: 5, aspectRatio: 1,
-										backgroundColor: mangaList.find((elem) => elem.id === item.id) ? "lightgray" : "green", borderRadius: "100%", justifyContent: "center" }}>
-										<Ionicons name="add" size={40} style={{ }} color={"white"}/>
+									style={{
+										width: 40, height: 40, margin: 5, aspectRatio: 1,
+										borderRadius: "100%", justifyContent: "center" ,
+										backgroundColor: mangaList.find((elem) => elem.id === item.id) ? "lightgray" : "green",
+									}}
+									onPress={async () => { await addMangaToLibrary(item.id); populateMangaList(); }}
+								>
+									<Ionicons name="add" size={40} style={{ }} color={"white"}/>
 								</TouchableOpacity>
 							</Pressable>
 						)}

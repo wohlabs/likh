@@ -43,6 +43,18 @@ export const getMangaData = async (mangaId: string) => {
 	}
 };
 
+export const addMangaToLibrary = async (mangaId: string) : Promise<boolean> => {
+	const storageKey = "manga_" + mangaId;
+	try {
+		let currentMangaData: Array<any> = JSON.parse((await AsyncStorage.getItem(storageKey))?.toString() || "[]");
+		await AsyncStorage.setItem('manga_' + mangaId.toString(), JSON.stringify(currentMangaData));
+	} catch (e) {
+		// saving error
+		return false
+	}
+	return true
+};
+
 export const addMangaNote = async (mangaId: string, chapter: number, image: string | null, text: string | null) : Promise<boolean> => {
 	if (image === null && (text === null || text.trim().length == 0)) return false;
 	const storageKey = "manga_" + mangaId;
