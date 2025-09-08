@@ -22,15 +22,7 @@ export default function MangaDetails({ navigation }: any) {
 	return (
 		<>
 			<Stack.Screen options={{ title: mangaName }} />
-			<Tab.Navigator
-				screenOptions={{
-					tabBarIndicatorStyle: { backgroundColor: "blue" },
-					tabBarLabelStyle: styles.tabTitle,
-				}}
-			>
-				<Tab.Screen name="Images" component={MangaImagesTab} />
-				{/* <Tab.Screen name="Notes" component={MangaNotesTab} /> */}
-			</Tab.Navigator>
+			<MangaImagesTab />
 		</>
 	);
 }
