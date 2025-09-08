@@ -4,7 +4,6 @@ import { Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 import MangaImagesTab from "../../components/MangaImagesTab";
-import MangaNotesTab from "../../components/MangaNotesTab";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -30,7 +29,7 @@ export default function MangaDetails({ navigation }: any) {
 				}}
 			>
 				<Tab.Screen name="Images" component={MangaImagesTab} />
-				<Tab.Screen name="Notes" component={MangaNotesTab} />
+				{/* <Tab.Screen name="Notes" component={MangaNotesTab} /> */}
 			</Tab.Navigator>
 		</>
 	);

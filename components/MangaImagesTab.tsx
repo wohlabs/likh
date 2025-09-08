@@ -10,6 +10,7 @@ import
 		StyleSheet,
 		Text,
 		TouchableOpacity,
+		View,
 	} from "react-native";
 import { formatData, getMangaData } from "./util";
 
@@ -66,14 +67,14 @@ export default function MangaImagesTab() {
 				)}
 				renderItem={({ item }) => (
 					<FlatList
-						data={formatData(item.images, 5)}
+						data={formatData(item.images, 2)}
 						keyExtractor={(_, index) => index.toString()}
-						numColumns={5}
+						numColumns={2}
 						style={{ flex: 1 }}
 						columnWrapperStyle={{ marginLeft: 5, marginRight: 5 }}
 						renderItem={({ item }: any) => (
-							<Pressable
-								style={{ flex: 1, margin: 5 }}
+							item.image ? <Pressable
+								style={{ flex: 1, height: 200, margin: 5, flexDirection: "row", borderRadius: 10, borderColor: "black", borderWidth: 2 }}
 								onPress={() => {
 									item.image && router.navigate(`/manga/${mangaId}/viewer`, {
 
@@ -82,36 +83,17 @@ export default function MangaImagesTab() {
 							>
 								<Image
 									source={{ uri: item.image }}
-									style={styles.mangaCoverImage}
+									style={{ height: "100%", width: "30%" }}
 									resizeMode="cover"
 								/>
-								{item.text && (
-									<>
-										<Ionicons
-											name="chatbox"
-											size={28}
-											color="black"
-											style={{
-												position: "absolute",
-												right: 2,
-												top: 2,
-												textShadowColor: "black",
-											}}
-										/>
-										<Ionicons
-											name="chatbox"
-											size={24}
-											color="white"
-											style={{
-												position: "absolute",
-												right: 4,
-												top: 3,
-												textShadowColor: "black",
-											}}
-										/>
-									</>
-								)}
+								<View style={{ flex: 1, padding: 10 }}>
+									<Text>6/3/2025 @ 14:00PM</Text>
+									<Text>Chapter 5</Text>
+									<Text>{item.text}</Text>
+								</View>
 							</Pressable>
+							:
+							<View style={{flex: 1, margin: 5}}></View>
 						)}
 					/>
 				)}
