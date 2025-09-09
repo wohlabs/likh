@@ -36,7 +36,8 @@ const KeyboardDismissWrapper = ({ children }: any) => {
 export default function AddNoteScreen() {
 	const [text, onChangeText] = useState("");
 	const [image, setImage] = useState<string | null>(null);
-	const [chapter, setChapter] = useState<string>() // -1 = all/general
+	const [startChapter, setStartChapter] = useState<string>() // -1 = all/general
+	const [endChapter, setEndChapter] = useState<string>() // -1 = all/general
 	const { mangaId } = useLocalSearchParams(); // <-- get from URL
 	const [mangaName, setMangaName] = useState<string>("Fetching...");
 
@@ -63,116 +64,141 @@ export default function AddNoteScreen() {
 
 	return (
 		<KeyboardDismissWrapper>
-			<View style={{ flex: 1, padding: 10 }} pointerEvents="box-none">
+			<View style={{ flex: 1, padding: 10, flexDirection: "row" }} pointerEvents="box-none">
 				<Stack.Screen options={{ title: "Add note" }} />
-				<Text>Manhwa/Manga: {mangaName}</Text>
-				<View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
-					<Text>Chapter: </Text>
-					<TextInput
-						numberOfLines={1}
-						editable
-						keyboardType="number-pad"
-						value={chapter}
-						onChangeText={(text) => setChapter(text)}
-						placeholder={"(All)"}
-						placeholderTextColor={"gray"}
+				<Pressable onPress={pickImage} style={{
+					flex: 2,
+					margin: 10,
+					backgroundColor: "white",
+				}}>
+					<Image
+						defaultSource={{
+							uri: "https://png.pngtree.com/png-clipart/20190705/original/pngtree-vector-add-icon-png-image_4232053.jpg",
+						}}
+						source={{
+							uri: image || "https://static.thenounproject.com/png/187803-200.png"
+						}}
+						resizeMode="contain"
 						style={{
-							backgroundColor: "white",
-							outlineColor: "black",
 							flex: 1,
-							outlineWidth: 1,
-							margin: 2,
-							padding: 5
+							width: "100%",
+							borderRadius: 10,
+							borderColor: "black",
+							borderWidth: 2
+
 						}}
 					/>
-				</View>
-				<View style={{ flexDirection: "row" }}>
-					<Text>Image: </Text>
-					<View style={{ flex: 1, maxHeight: 200, minHeight: 100 }}>
-						<Pressable onPress={pickImage}>
-							<Image
-								defaultSource={{
-									uri: "https://static.vecteezy.com/system/resources/thumbnails/022/059/000/small_2x/no-image-available-icon-vector.jpg",
-								}}
-								source={{
-									uri:
-										image ||
-										"https://static.vecteezy.com/system/resources/thumbnails/022/059/000/small_2x/no-image-available-icon-vector.jpg",
-								}}
-								resizeMode="center"
-								style={{
-									flex: 1,
-									maxHeight: 200,
-									minHeight: 100,
-									aspectRatio: 1,
-								}}
-							/>
-						</Pressable>
+				</Pressable>
+				<View style={{ flexDirection: "column", flex: 3}}>
+					<Text style={{fontSize: 20}}>Manhwa/Manga: {mangaName}</Text>
+					<View style={{ flexDirection: "row", alignItems: "center"}}>
+						<Text style={{fontSize: 20}}>Chapter: </Text>
+						<TextInput
+							numberOfLines={1}
+							editable
+							keyboardType="number-pad"
+							value={startChapter}
+							onChangeText={(text) => setStartChapter(text)}
+							placeholder={"Start"}
+							placeholderTextColor={"gray"}
+							style={{
+								backgroundColor: "white",
+								outlineColor: "black",
+								outlineWidth: 1,
+								margin: 2,
+								padding: 5,
+								fontSize: 20
+							}}
+						/>
+						<Text>-</Text>
+						<TextInput
+							numberOfLines={1}
+							editable
+							keyboardType="number-pad"
+							value={endChapter}
+							onChangeText={(text) => setEndChapter(text)}
+							placeholder={"End (optional)"}
+							placeholderTextColor={"gray"}
+							style={{
+								backgroundColor: "white",
+								outlineColor: "black",
+								outlineWidth: 1,
+								margin: 2,
+								padding: 5,
+								fontSize: 20
+							}}
+						/>
 					</View>
-				</View>
-				<Text>Note:</Text>
-				<TextInput
-					editable
-					multiline
-					numberOfLines={4}
-					placeholder="Your note here..."
-					placeholderTextColor={"gray"}
-					value={text}
-					onChangeText={onChangeText}
-					style={{
-						flex: 1,
-						padding: 10,
-						backgroundColor: "white",
-						outlineColor: "black",
-						fontSize: 18,
-						margin: 5,
-						outlineWidth: 1,
-					}}
-				/>
-				<View style={{ height: 60, flexDirection: "row" }}>
-					<TouchableOpacity
+					<Text style={{fontSize: 20}}>Note:</Text>
+					<TextInput
+						editable
+						multiline
+						numberOfLines={4}
+						placeholder="Your note here..."
+						placeholderTextColor={"gray"}
+						value={text}
+						onChangeText={onChangeText}
 						style={{
-							flex: 1,
-							justifyContent: "center",
-							alignContent: "center",
-							alignItems: "center",
-							backgroundColor: "gray",
-							borderRadius: 10,
-							margin: 10,
+							padding: 10,
+							backgroundColor: "white",
+							outlineColor: "black",
+							fontSize: 20,
+							margin: 5,
+							outlineWidth: 1,
+							flex: 1
 						}}
-						onPress={async () => {
-							router.back()
-						}}
-					>
-						<Text>Cancel</Text>
-					</TouchableOpacity>
-					<TouchableOpacity
-						style={{
-							flex: 1,
-							justifyContent: "center",
-							alignContent: "center",
-							alignItems: "center",
-							backgroundColor: "lightblue",
-							borderRadius: 10,
-							margin: 10,
-						}}
-						onPress={async () => {
-							console.log("Adding note...")
-							let entry: INoteEntry = {
-								id: crypto.randomUUID(),
-								images: image ? [image] : undefined,
-								text: text.trim().length > 0 ? text : undefined
-							}
-							if (entry.images === undefined && entry.text === undefined) return; // reject empty notes
-							if (await addMangaNote(mangaId.toString(), entry))
-							{
-								console.log("Note added!")
+					/>
+					<View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
+						<TouchableOpacity
+							style={{
+								justifyContent: "center",
+								alignContent: "center",
+								alignItems: "center",
+								backgroundColor: "gray",
+								borderRadius: 10,
+								margin: 10,
+								padding: 10,
+								flex: 1
+							}}
+							onPress={async () => {
 								router.back()
-							}
-						}}
-					>
-						<Text>Add</Text>
-					</TouchableOpacity>
+							}}
+						>
+							<Text>Cancel</Text>
+						</TouchableOpacity>
+						<TouchableOpacity
+							style={{
+								justifyContent: "center",
+								alignContent: "center",
+								alignItems: "center",
+								backgroundColor: "lightblue",
+								borderRadius: 10,
+								margin: 10,
+								padding: 10,
+								flex: 1
+							}}
+							onPress={async () => {
+								console.log("Adding note...")
+								let entry: INoteEntry = {
+									id: crypto.randomUUID(),
+									startChapter: startChapter ? parseInt(startChapter) : -1,
+									endChapter: endChapter ? parseInt(endChapter) : undefined,
+									createdAt: (new Date()).toISOString(),
+									modifiedAt: (new Date()).toISOString(),
+									images: image ? [image] : undefined,
+									text: text.trim().length > 0 ? text : undefined
+								}
+								if (entry.images === undefined && entry.text === undefined) return; // reject empty notes
+								if (await addMangaNote(mangaId.toString(), entry))
+								{
+									console.log("Note added!")
+									router.navigate(`/manga/${mangaId}`);
+								}
+							}}
+						>
+							<Text>Add</Text>
+						</TouchableOpacity>
+					</View>
 				</View>
 			</View>
 		</KeyboardDismissWrapper>
