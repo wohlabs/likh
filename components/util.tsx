@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { IMangaNotes, INoteEntry } from './INotes';
 
 const MANGA_QUERY = `
 	query GetManga($id: Int) {
@@ -34,12 +35,13 @@ query ($search: String, $page: Int, $perPage: Int) {
 }
 `
 
-export const getMangaData = async (mangaId: string) => {
+export const getMangaData = async (mangaId: string) : Promise<IMangaNotes> => {
 	try {
-		const jsonValue = await AsyncStorage.getItem("manga_" + mangaId.toString());
-		return jsonValue != null ? JSON.parse(jsonValue) : [];
+		const notes = await AsyncStorage.getItem("manga_" + mangaId.toString());
+		return JSON.parse(notes || "[]");
 	} catch (e) {
 		// error reading value
+		return [];
 	}
 };
 
@@ -55,27 +57,12 @@ export const addMangaToLibrary = async (mangaId: string) : Promise<boolean> => {
 	return true
 };
 
-export const addMangaNote = async (mangaId: string, chapter: number, image: string | null, text: string | null) : Promise<boolean> => {
-	if (image === null && (text === null || text.trim().length == 0)) return false;
+export const addMangaNote = async (mangaId: string, entry: INoteEntry) : Promise<boolean> => {
 	const storageKey = "manga_" + mangaId;
 	try {
-		let currentMangaData: Array<any> = JSON.parse((await AsyncStorage.getItem(storageKey))?.toString() || "[]");
-		let index = currentMangaData.findIndex((manga: any) => manga.chapter == chapter);
-		if (index < 0)
-		{
-			currentMangaData.push({
-				chapter: chapter,
-				notes: []
-			})
-			index = currentMangaData.length - 1;
-		}
-		let newChapterData:any = currentMangaData[index];
-		newChapterData.notes.push({
-			image: image || undefined,
-			text: text && text.trim().length > 0 ? text.trim() : undefined
-		})
-		currentMangaData[index] = newChapterData
-		await AsyncStorage.setItem('manga_' + mangaId.toString(), JSON.stringify(currentMangaData));
+		let notes: IMangaNotes = await getMangaData(mangaId);
+		notes.push(entry)
+		await AsyncStorage.setItem('manga_' + mangaId.toString(), JSON.stringify(notes));
 	} catch (e) {
 		// saving error
 		return false

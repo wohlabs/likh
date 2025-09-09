@@ -1,3 +1,4 @@
+import { INoteEntry } from "@/components/INotes";
 import * as ImagePicker from "expo-image-picker";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
@@ -157,7 +158,13 @@ export default function AddNoteScreen() {
 						}}
 						onPress={async () => {
 							console.log("Adding note...")
-							if (await addMangaNote(mangaId.toString(), Number(chapter) || -1, image, text))
+							let entry: INoteEntry = {
+								id: crypto.randomUUID(),
+								images: image ? [image] : undefined,
+								text: text.trim().length > 0 ? text : undefined
+							}
+							if (entry.images === undefined && entry.text === undefined) return; // reject empty notes
+							if (await addMangaNote(mangaId.toString(), entry))
 							{
 								console.log("Note added!")
 								router.back()
