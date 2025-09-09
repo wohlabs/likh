@@ -72,23 +72,30 @@ export default function AddNoteScreen() {
 			<View style={{ flex: 1, padding: 10, flexDirection: "row" }} pointerEvents="box-none">
 				<Stack.Screen options={{ title: "Add note" }} />
 				<View style={{ flex: 2, margin: 10, flexDirection: "column" }}>
-					<Image
-						defaultSource={{
-							uri: "https://png.pngtree.com/png-clipart/20190705/original/pngtree-vector-add-icon-png-image_4232053.jpg",
-						}}
-						source={{
-							uri: images[currentImageIndex] || "https://static.thenounproject.com/png/187803-200.png"
-						}}
-						resizeMode="contain"
-						style={{
-							flex: 1,
-							width: "100%",
-							borderRadius: 10,
-							borderColor: "black",
-							borderWidth: 2,
-							backgroundColor: "white"
-						}}
-					/>
+					{
+						images.length > 0 ? 
+						<Image
+							defaultSource={{
+								uri: "https://png.pngtree.com/png-clipart/20190705/original/pngtree-vector-add-icon-png-image_4232053.jpg",
+							}}
+							source={{
+								uri: images[currentImageIndex] || "https://static.thenounproject.com/png/187803-200.png"
+							}}
+							resizeMode="contain"
+							style={{
+								flex: 1,
+								width: "100%",
+								borderRadius: 10,
+								borderColor: "black",
+								borderWidth: 2,
+								backgroundColor: "white"
+							}}
+						/>
+						:
+						<View style={{flex: 1, justifyContent: "center", alignItems: "center", borderColor: "black", borderWidth: 2, borderRadius: 10, borderStyle:"dashed"}}>
+							<Text style={{fontSize: 28, color: "lightgray"}}>Add an image using the + icon</Text>
+						</View>
+					}
 					<View style={{height: 100, flexDirection: "row"}}>
 						<FlatList
 							data={images}
