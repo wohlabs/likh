@@ -4,7 +4,7 @@ export type INoteEntry = {
 	modifiedAt: string; // modification timestamp
 	startChapter: number;
 	endChapter?: number;
-	images?: string[];
+	images: string[]; // could be an empty array
 	text?: string
 };
 

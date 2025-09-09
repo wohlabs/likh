@@ -1,9 +1,11 @@
 import { INoteEntry } from "@/components/INotes";
+import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import
 	{
+		FlatList,
 		Image,
 		Keyboard,
 		Platform,
@@ -35,7 +37,8 @@ const KeyboardDismissWrapper = ({ children }: any) => {
 
 export default function AddNoteScreen() {
 	const [text, onChangeText] = useState("");
-	const [image, setImage] = useState<string | null>(null);
+	const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
+	const [images, setImages] = useState<string[]>([]);
 	const [startChapter, setStartChapter] = useState<string>() // -1 = all/general
 	const [endChapter, setEndChapter] = useState<string>() // -1 = all/general
 	const { mangaId } = useLocalSearchParams(); // <-- get from URL
@@ -58,7 +61,9 @@ export default function AddNoteScreen() {
 		});
 
 		if (!result.canceled) {
-			setImage(result.assets[0].uri);
+			let newImages = [...images, result.assets[0].uri]
+			setImages(newImages);
+			setCurrentImageIndex(newImages.length - 1); // set to last image
 		}
 	};
 
@@ -66,17 +71,13 @@ export default function AddNoteScreen() {
 		<KeyboardDismissWrapper>
 			<View style={{ flex: 1, padding: 10, flexDirection: "row" }} pointerEvents="box-none">
 				<Stack.Screen options={{ title: "Add note" }} />
-				<Pressable onPress={pickImage} style={{
-					flex: 2,
-					margin: 10,
-					backgroundColor: "white",
-				}}>
+				<View style={{ flex: 2, margin: 10, flexDirection: "column" }}>
 					<Image
 						defaultSource={{
 							uri: "https://png.pngtree.com/png-clipart/20190705/original/pngtree-vector-add-icon-png-image_4232053.jpg",
 						}}
 						source={{
-							uri: image || "https://static.thenounproject.com/png/187803-200.png"
+							uri: images[currentImageIndex] || "https://static.thenounproject.com/png/187803-200.png"
 						}}
 						resizeMode="contain"
 						style={{
@@ -84,11 +85,38 @@ export default function AddNoteScreen() {
 							width: "100%",
 							borderRadius: 10,
 							borderColor: "black",
-							borderWidth: 2
-
+							borderWidth: 2,
+							backgroundColor: "white"
 						}}
 					/>
-				</Pressable>
+					<View style={{height: 100, flexDirection: "row"}}>
+						<FlatList
+							data={images}
+							renderItem={({ item, index }) => (
+								<Pressable onPress={() => {setCurrentImageIndex(index)}}>
+									<Image
+										source={{ uri: item }}
+										resizeMode="cover"
+										style={{
+											height: "100%",
+											aspectRatio: 1,
+											borderRadius: 10,
+											borderColor: "black",
+											borderWidth: 2,
+											marginRight: 5
+										}}
+									/>
+								</Pressable>
+							)}
+							horizontal
+							style={{ flex: 1, marginTop: 10 }}
+							keyExtractor={(_, index) => index.toString()}
+						/>
+						<Pressable onPress={pickImage} style={{justifyContent: "center"}}>
+							<Ionicons name="add-circle" size={50}/>
+						</Pressable>
+					</View>
+				</View>
 				<View style={{ flexDirection: "column", flex: 3}}>
 					<Text style={{fontSize: 20}}>Manhwa/Manga: {mangaName}</Text>
 					<View style={{ flexDirection: "row", alignItems: "center"}}>
@@ -185,7 +213,7 @@ export default function AddNoteScreen() {
 									endChapter: endChapter ? parseInt(endChapter) : undefined,
 									createdAt: (new Date()).toISOString(),
 									modifiedAt: (new Date()).toISOString(),
-									images: image ? [image] : undefined,
+									images: images,
 									text: text.trim().length > 0 ? text : undefined
 								}
 								if (entry.images === undefined && entry.text === undefined) return; // reject empty notes
