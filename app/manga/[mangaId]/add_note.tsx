@@ -161,7 +161,7 @@ export default function AddNoteScreen() {
 								flex: 1
 							}}
 							onPress={async () => {
-								router.back()
+								router.navigate(`/manga/${mangaId}`);
 							}}
 						>
 							<Text>Cancel</Text>
