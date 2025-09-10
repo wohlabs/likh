@@ -11,6 +11,7 @@ import
 		TouchableOpacity,
 		View
 	} from "react-native";
+import Carousel from "react-native-reanimated-carousel";
 import { IMangaNotes, INoteEntry } from "./INotes";
 import { formatData, getMangaData } from "./util";
 
@@ -43,13 +44,34 @@ export default function MangaImagesTab() {
 					item.id ? <Pressable
 						style={{ flex: 1, height: 200, margin: 5, flexDirection: "row", borderRadius: 10, borderColor: "black", borderWidth: 2 }}
 						onPress={() => {
-							item.images && router.navigate(`/manga/${mangaId}/viewer`);
+							// item.images && router.navigate(`/manga/${mangaId}/viewer`);
 						}}
 					>
-						<Image
-							source={{ uri: item.images && item.images.length > 0 ? item.images?.at(0) : undefined }}
-							style={{ height: "100%", width: "30%" }}
-							resizeMode="cover"
+						 <Carousel
+							height={200}
+							pagingEnabled={true}
+							snapEnabled={true}
+							width={200}
+							data={item.images}
+							loop={false}
+							mode={"horizontal-stack"}
+							style={{
+							}}
+
+							modeConfig={{
+								snapDirection: "left",
+								stackInterval: 18,
+							}}
+							customConfig={() => ({ type: "positive", viewCount: 3 })}
+							renderItem={({ item, index }) => (
+								<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} key={index}>
+									<Image
+										source={{ uri: item }}
+										style={{ height: "80%", aspectRatio: 1, backgroundColor: "white", borderRadius: 10 }}
+										resizeMode="cover"
+									/>
+								</View>
+							)}
 						/>
 						<View style={{ flex: 1, padding: 10 }}>
 							<Text>6/3/2025 @ 14:00PM</Text>

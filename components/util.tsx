@@ -65,6 +65,7 @@ export const addMangaNote = async (mangaId: string, entry: INoteEntry) : Promise
 		await AsyncStorage.setItem('manga_' + mangaId.toString(), JSON.stringify(notes));
 	} catch (e) {
 		// saving error
+		console.log("save error", e)
 		return false
 	}
 	return true
