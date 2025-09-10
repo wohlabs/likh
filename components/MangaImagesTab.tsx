@@ -47,32 +47,44 @@ export default function MangaImagesTab() {
 							// item.images && router.navigate(`/manga/${mangaId}/viewer`);
 						}}
 					>
-						 <Carousel
-							height={200}
-							pagingEnabled={true}
-							snapEnabled={true}
-							width={200}
-							data={item.images}
-							loop={false}
-							mode={"horizontal-stack"}
-							style={{
-							}}
+						{(item.images && item.images.length > 0) && // render carousel if there are images
+							(item.images.length > 1 ? 
+							(<Carousel
+								height={200}
+								width={200}
+								data={item.images}
+								loop={false}
+								pagingEnabled={true}
+								snapEnabled={true}
+								enabled={true}
+								mode={"horizontal-stack"}
 
-							modeConfig={{
-								snapDirection: "left",
-								stackInterval: 18,
-							}}
-							customConfig={() => ({ type: "positive", viewCount: 3 })}
-							renderItem={({ item, index }) => (
-								<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} key={index}>
-									<Image
-										source={{ uri: item }}
-										style={{ height: "80%", aspectRatio: 1, backgroundColor: "white", borderRadius: 10 }}
-										resizeMode="cover"
-									/>
-								</View>
-							)}
-						/>
+								modeConfig={{
+									snapDirection: 'left',
+									rotateZDeg: 50
+								}}
+
+								customConfig={() => ({ type: "positive", viewCount: 1 })}
+								renderItem={({ item, index }) => (
+									<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} key={index}>
+										<Image
+											source={{ uri: item }}
+											style={{ height: "80%", aspectRatio: 1, backgroundColor: "white", borderRadius: 10 }}
+											resizeMode="cover"
+										/>
+									</View>
+								)}
+							/>)
+							:
+							(<View style={{ width: 200, height: 200, justifyContent: "center", alignItems: "center" }} key={0}>
+								<Image
+									source={{ uri: item.images[0] }}
+									style={{ height: "80%", aspectRatio: 1, backgroundColor: "white", borderRadius: 10 }}
+									resizeMode="cover"
+								/>
+							</View>)
+					)
+					}
 						<View style={{ flex: 1, padding: 10 }}>
 							<Text>6/3/2025 @ 14:00PM</Text>
 							<Text>Chapter 5</Text>
