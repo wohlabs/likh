@@ -1,3 +1,4 @@
+import { INoteEntry } from "@/components/INotes";
 import { getMangaData, getMangaDetails } from "@/components/util";
 import { Stack, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
@@ -43,8 +44,7 @@ export default function MangaViewer() {
 	useEffect(() => {
 		const fetchData = async () => {
 			const DATA = await getMangaData(mangaId.toString());
-			let tempData = DATA.map((section: any) => section.notes).flat().filter((note: any) => note.image) // get all notes with images
-			if (tempData.length == 0) tempData = [{id: 1}]
+			let tempData = DATA.map((note: INoteEntry) => note.images).flat().filter((image) => image != undefined) // get all notes with images
 			setData(tempData);
 		};
 		fetchData();
@@ -91,7 +91,7 @@ export default function MangaViewer() {
 					renderItem={({ item, index }) => (
 						<TouchableOpacity onPress={() => setActiveIndex(index)}>
 							<Image
-								source={{ uri: item.image }}
+								source={{ uri: item }}
 								style={[
 									styles.thumbnail,
 									activeIndex === index && styles.activeThumbnail,
@@ -116,7 +116,7 @@ export default function MangaViewer() {
 				>
 					<Gallery
 						ref={viewerRef}
-						data={data.map((item: any) => ({ uri: item.image, id: item.id, text: item.text }))}
+						data={data}
 						keyExtractor={(_, index) => index.toString()}
 						style={{ flex: 1, backgroundColor: "transparent" }}
 						containerDimensions={{
@@ -127,7 +127,7 @@ export default function MangaViewer() {
 						renderItem={({ item }) => {
 							return (
 								<Image
-									source={{ uri: item.uri }}
+									source={{ uri: item }}
 									style={{
 										flex: 1,
 										backgroundColor: "transparent",
