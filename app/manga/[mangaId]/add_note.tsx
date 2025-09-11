@@ -47,7 +47,7 @@ export default function AddNoteScreen() {
 	useEffect(() => {
 		const populateMangaData = async () => {
 			const manga = await getMangaDetails(mangaId.toString());
-			setMangaName(manga.Media?.title.userPreferred || "Unknown Manga");
+			setMangaName(manga?.title.userPreferred || "Unknown");
 		};
 		populateMangaData();
 	}, []);
