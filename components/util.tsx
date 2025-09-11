@@ -35,6 +35,17 @@ query ($search: String, $page: Int, $perPage: Int) {
 }
 `
 
+export type IMangaDetails = {
+	id: string;
+	title: { userPreferred?: string };
+	coverImage?: { large?: string };
+	description?: string;
+	genres?: string[];
+	chapters?: number;
+	// volumes?: number;
+	status?: string;
+};
+
 export const getMangaData = async (mangaId: string) : Promise<IMangaNotes> => {
 	try {
 		const notes = await AsyncStorage.getItem("manga_" + mangaId.toString());
@@ -71,7 +82,7 @@ export const addMangaNote = async (mangaId: string, entry: INoteEntry) : Promise
 	return true
 };
 
-export const getMangaDetails = async (mangaId: string) =>
+export const getMangaDetails = async (mangaId: string) : Promise<IMangaDetails | undefined> =>
 {
 	const data = await fetch("https://graphql.anilist.co", {
 		method: 'POST',
@@ -86,8 +97,12 @@ export const getMangaDetails = async (mangaId: string) =>
 	.then((data) => {
 		return data
 	})
+	.then((media) => {
+		return media.Media as IMangaDetails;
+	})
 	.catch((error) => {
 		console.error(error);
+		return undefined
 	});
 	return data;
 }

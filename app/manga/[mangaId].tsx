@@ -1,27 +1,42 @@
-import { getMangaDetails } from "@/components/util";
+import { getMangaDetails, IMangaDetails } from "@/components/util";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { StyleSheet } from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
 import MangaImagesTab from "../../components/MangaImagesTab";
 
 const Tab = createMaterialTopTabNavigator();
 
 export default function MangaDetails({ navigation }: any) {
 	const { mangaId } = useLocalSearchParams(); // <-- get from URL
-	const [mangaName, setMangaName] = useState<string>("Fetching...")
+	const [manga, setManga] = useState<IMangaDetails>();
 
 	useEffect(() => {
 		const populateMangaData = async () => {
 			const manga = await getMangaDetails(mangaId.toString());
-			setMangaName(manga.Media.title.userPreferred);
+			setManga(manga);
 		};
 		populateMangaData();
 	}, []);
 
 	return (
 		<>
-			<Stack.Screen options={{ title: mangaName }} />
+			<Stack.Screen options={{ title: manga?.title.userPreferred || "Unknown", headerShown: false }} />
+			<View style={{ alignItems: 'center', height: 300, width: '100%', justifyContent: 'center', flexDirection: 'row' }}>
+				<View style={{height: '100%', width: '70%', flexDirection: 'row'}}>
+					<Image
+						source={{ uri: manga?.coverImage?.large }}
+						resizeMode="contain"
+						style={{height: '100%', aspectRatio: '1'}}
+					/>
+					<View style={{ flex: 1}}>
+						<View style={{flex: 1, flexDirection: 'row', alignItems: 'flex-end'}}>
+							<Text style={{fontSize: 24, fontWeight: 'bold', alignItems: 'flex-end', textAlignVertical: 'bottom'}}>{manga?.title.userPreferred}</Text>
+						</View>
+						<Text style={{flex: 2}}>{manga?.description}</Text>
+					</View>
+				</View>
+			</View>
 			<MangaImagesTab />
 		</>
 	);
