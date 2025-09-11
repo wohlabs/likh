@@ -4,7 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { router, Stack, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { FlatList, Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, Image, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import Carousel from "react-native-reanimated-carousel";
 
 const Tab = createMaterialTopTabNavigator();
@@ -13,6 +13,8 @@ export default function MangaDetails({ navigation }: any) {
 	const { mangaId } = useLocalSearchParams(); // <-- get from URL
 	const [manga, setManga] = useState<IMangaDetails>();
 	const [data, setData] = useState<IMangaNotes>([]);
+	const [filteredNotes, setFilteredNotes] = useState<IMangaNotes>([]);
+	const [searchString, setSearchString] = useState<string>("");
 
 	useEffect(() => {
 		const populateMangaData = async () => {
@@ -36,6 +38,11 @@ export default function MangaDetails({ navigation }: any) {
 		}, [])
 	)
 
+	useEffect(() => {
+		setFilteredNotes(
+			searchString.trim().length == 0 ? data : data.filter((note: INoteEntry) => (note.text && note.text.toLowerCase().includes(searchString.toLowerCase()))));
+	}, [searchString]);
+
 
 	return (
 		<ScrollView style={{}}>
@@ -56,7 +63,7 @@ export default function MangaDetails({ navigation }: any) {
 				</View>
 			</View>
 			<FlatList
-				data={formatData(data, 2)}
+				data={formatData(filteredNotes, 2)}
 				keyExtractor={(_, index) => index.toString()}
 				numColumns={2}
 				style={{ flexGrow: 0 }}
@@ -118,9 +125,17 @@ export default function MangaDetails({ navigation }: any) {
 					<View style={{ flex: 1, margin: 5}}></View>
 				)}
 			/>
-			<TouchableOpacity style={{height: 60, width: "100%", alignItems: "center", backgroundColor: "green", justifyContent: "center"}} onPress={() => router.navigate(`/manga/${mangaId}/add_note`)}>
-				<Ionicons name="add" size={35} color={"white"}/>
-			</TouchableOpacity>
+			<View style={{height: 60, width: "50%", position: "sticky", bottom: 25, left:"50%", transform: "translateX(-50%)", flexDirection: "row", alignItems: "center"}}>
+				<View style={{ flex: 1, backgroundColor: "white", flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: 5, borderRadius: 10, shadowColor: "black", shadowOffset: {width: 0, height: 4}, shadowOpacity: 0.3, shadowRadius: 5}} >
+					<Ionicons name="search" size={20} style={{position: "relative", margin: 5}}/>
+					<TextInput style={{flex: 1, margin: 5, borderWidth: 0, borderColor: "transparent", fontSize: 20, padding: 5}} underlineColorAndroid={"transparent"} onChangeText={(text) => setSearchString(text)} />
+				</View>
+				<TouchableOpacity
+					onPress={() => router.navigate(`/manga/${mangaId}/add_note`)}
+					style={{width: 40, height: 40, margin: 5, aspectRatio: 1, shadowOpacity: 0.3, shadowRadius: 5, backgroundColor: "white", borderRadius: "100%", shadowColor: "black", shadowOffset: {width: 0, height: 4} }}>
+					<Ionicons name="add" size={40} style={{ width: "100%", height: "100%", position: "relative" }} color={"black"}/>
+				</TouchableOpacity>
+			</View>
 		</ScrollView>
 	);
 }
