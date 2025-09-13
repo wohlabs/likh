@@ -41,7 +41,7 @@ export default function MangaDetails({ navigation }: any) {
 	useEffect(() => {
 		setFilteredNotes(
 			searchString.trim().length == 0 ? data : data.filter((note: INoteEntry) => (note.text && note.text.toLowerCase().includes(searchString.toLowerCase()))));
-	}, [searchString]);
+	}, [searchString, data]);
 
 
 	return (
