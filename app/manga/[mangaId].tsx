@@ -45,7 +45,7 @@ export default function MangaDetails({ navigation }: any) {
 
 
 	return (
-		<ScrollView style={{}}>
+		<ScrollView contentContainerStyle={{ minHeight: '100%'}}>
 			<Stack.Screen options={{ title: manga?.title.userPreferred || "Unknown", headerShown: false }} />
 			<View style={{ alignItems: 'center', height: 300, width: '100%', justifyContent: 'center', flexDirection: 'row' }}>
 				<View style={{height: '100%', width: '70%', flexDirection: 'row'}}>
@@ -66,7 +66,6 @@ export default function MangaDetails({ navigation }: any) {
 				data={formatData(filteredNotes, 2)}
 				keyExtractor={(_, index) => index.toString()}
 				numColumns={2}
-				style={{ flexGrow: 0 }}
 				contentContainerStyle={{flexGrow: 0}}
 				scrollEnabled={false}
 				columnWrapperStyle={{ marginLeft: 5, marginRight: 5 }}
