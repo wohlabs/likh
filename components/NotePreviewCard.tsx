@@ -4,13 +4,14 @@ import { INoteEntry } from "./INotes";
 
 import { ViewStyle } from "react-native";
 
-export default function NotePreviewCard({ note, style }: { note: INoteEntry, style?: StyleProp<ViewStyle> }) {
+export default function NotePreviewCard({ note, style, onPress }: { note: INoteEntry, style?: StyleProp<ViewStyle>, onPress?: () => void }) {
 	return (
 		<Pressable
 			style={[
 				{ flexDirection: "row", borderRadius: 10, borderColor: "black", borderWidth: 2 },
 				style
 			]}
+			onPress={onPress}
 		>
 			{(note.images && note.images.length > 0) && // render carousel if there are images
 				(note.images.length > 1 ? 
@@ -53,7 +54,7 @@ export default function NotePreviewCard({ note, style }: { note: INoteEntry, sty
 			<View style={{ flex: 1, padding: 10 }}>
 				<Text>{note.modifiedAt || "date @ time"}</Text>
 				<Text>{`Chapter ${note.startChapter}${note.endChapter ? " - " + note.endChapter : ""}`}</Text>
-				<Text>{note.text || "No notes"}</Text>
+				<Text ellipsizeMode="tail" numberOfLines={5}>{note.text || "No notes"}</Text>
 			</View>
 		</Pressable>
 	);
