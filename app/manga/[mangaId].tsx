@@ -6,8 +6,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { router, Stack, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { FlatList, Image, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
-import { IconButton, Modal, Portal } from "react-native-paper";
+import { FlatList, Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import { IconButton, Modal, Portal, Searchbar } from "react-native-paper";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -101,16 +101,19 @@ export default function MangaDetails({ navigation }: any) {
 				</Modal>
 			</Portal>
 			<View style={{height: 60, width: "50%", position: "sticky", bottom: 25, left:"50%", transform: "translateX(-50%)", flexDirection: "row", alignItems: "center"}}>
-				<View style={{ flex: 1, backgroundColor: "white", flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: 5, borderRadius: 10, shadowColor: "black", shadowOffset: {width: 0, height: 4}, shadowOpacity: 0.3, shadowRadius: 5}} >
-					<Ionicons name="search" size={20} style={{position: "relative", margin: 5}}/>
-					<TextInput style={{flex: 1, margin: 5, borderWidth: 0, borderColor: "transparent", fontSize: 20, padding: 5}} underlineColorAndroid={"transparent"} onChangeText={(text) => setSearchString(text)} />
-				</View>
+				<Searchbar
+					placeholder="Search note"
+					onChangeText={setSearchString}
+					style={{margin: 10, borderRadius: 10, flex: 1, shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
+					value={searchString}
+				/>
 				<IconButton
 					icon={"plus"}
-					onPress={() => router.navigate(`/manga/${mangaId}/add_note`)}
 					size={30}
-					style={{shadowOpacity: 0.3, shadowRadius: 5, backgroundColor: "white", borderRadius: "100%", shadowColor: "black", shadowOffset: {width: 0, height: 4} }}>
-				</IconButton>
+					onPress={() => router.navigate(`/manga/${mangaId}/add_note`)}
+					style={{shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
+					mode="contained"
+				/>
 			</View>
 		</ScrollView>
 	);

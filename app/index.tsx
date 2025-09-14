@@ -1,10 +1,9 @@
 import { addMangaToLibrary, formatData, MANGA_SEARCH_QUERY } from "@/components/util";
-import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Stack, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { FlatList, Image, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
-import { IconButton, Modal, Portal } from "react-native-paper";
+import { FlatList, Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { IconButton, Modal, Portal, Searchbar } from "react-native-paper";
 
 const MANGA_QUERY = `
 	query {
@@ -164,25 +163,31 @@ export default function Index() {
 				)}
 			/>
 			<View style={{height: 60, width: "50%", position: "absolute", bottom: 25, left:"50%", transform: "translateX(-50%)", flexDirection: "row", alignItems: "center"}}>
-				<View style={{ flex: 1, backgroundColor: "white", flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: 5, borderRadius: 10, shadowColor: "black", shadowOffset: {width: 0, height: 4}, shadowOpacity: 0.3, shadowRadius: 5}} >
-					<Ionicons name="search" size={20} style={{position: "relative", margin: 5}}/>
-					<TextInput style={{flex: 1, margin: 5, borderWidth: 0, borderColor: "transparent", fontSize: 20, padding: 5}} underlineColorAndroid={"transparent"} onSubmitEditing={() => { populateMangaList(); }} value={searchString} onChangeText={setSearchString}/>
-				</View>
+				<Searchbar
+					placeholder="Search library"
+					onChangeText={setSearchString}
+					onSubmitEditing={() => { populateNewMangaList(); }}
+					style={{margin: 10, borderRadius: 10, flex: 1, shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
+					value={searchString}
+				/>
 				<IconButton
 					icon={"plus"}
 					size={30}
-					containerColor="white"
 					onPress={() => { setSearching(!isSearching); populateNewMangaList(); }}
 					style={{shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
+					mode="contained"
 				/>
 			</View>
 		</View>
 		<Portal>
 			<Modal visible={isSearching} onDismiss={() => setSearching(false)} contentContainerStyle={{padding: 0, margin: 100, height: "80%", backgroundColor: "white", borderRadius: 10 }}>
-				<View style={{ height: 50, backgroundColor: "white", flexDirection: "row", alignItems: "center", justifyContent: "space-between", margin: 10, padding: 5, borderRadius: 10, borderColor: "black", borderWidth: 2 }} >
-					<Ionicons name="search" size={20} style={{position: "relative", margin: 5}}/>
-					<TextInput style={{flex: 1, margin: 5, borderWidth: 0, borderColor: "transparent", fontSize: 20, padding: 5}} underlineColorAndroid={"transparent"} onSubmitEditing={() => { populateNewMangaList(); }} value={newSearchString} onChangeText={setNewSearchString}/>
-				</View>
+				<Searchbar
+					placeholder="Search manga"
+					onChangeText={setNewSearchString}
+					onSubmitEditing={() => { populateNewMangaList(); }}
+					style={{margin: 10, borderRadius: 10}}
+					value={newSearchString}
+				/>
 				<FlatList
 					data={newMangaList}
 					keyExtractor={(item) => item.id}
