@@ -1,7 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
-import { FlatList, Image, Pressable, StyleProp, Text, TouchableOpacity, View, ViewStyle } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import { FlatList, Image, Pressable, ScrollView, StyleProp, Text, TouchableOpacity, View, ViewStyle } from "react-native";
 import { INoteEntry } from "./INotes";
 
 export default function NoteViewer({mangaTitle, note, style}: { mangaTitle?: string, note: INoteEntry, style?: StyleProp<ViewStyle>}) {
