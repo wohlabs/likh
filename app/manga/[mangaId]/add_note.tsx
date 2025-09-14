@@ -118,7 +118,7 @@ export default function AddNoteScreen() {
 							style={{ flex: 1, alignSelf: "stretch", margin: 10 }}
 							keyExtractor={(_, index) => index.toString()}
 						/>
-						<IconButton icon={"plus"} onPress={pickImage} style={{justifyContent: "center"}} mode="contained"/>
+						<IconButton icon={"plus"} size={30} onPress={pickImage} style={{justifyContent: "center"}} mode="contained"/>
 					</View>
 				</View>
 				<View style={{ flexDirection: "column", flex: 3}}>
