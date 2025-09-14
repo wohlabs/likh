@@ -12,10 +12,10 @@ import
 		Pressable,
 		Text,
 		TextInput,
-		TouchableOpacity,
 		TouchableWithoutFeedback,
-		View,
+		View
 	} from "react-native";
+import { Button } from "react-native-paper";
 import { addMangaNote, getMangaDetails } from '../../../components/util';
 
 
@@ -184,34 +184,26 @@ export default function AddNoteScreen() {
 						}}
 					/>
 					<View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
-						<TouchableOpacity
+						<Button
 							style={{
 								justifyContent: "center",
-								alignContent: "center",
 								alignItems: "center",
-								backgroundColor: "gray",
-								borderRadius: 10,
-								margin: 10,
-								padding: 10,
-								flex: 1
+								flex: 1,
+								margin: 2
 							}}
-							onPress={async () => {
-								router.navigate(`/manga/${mangaId}`);
-							}}
+							onPress={() => router.navigate(`/manga/${mangaId}`) }
+							mode="contained-tonal"
 						>
-							<Text>Cancel</Text>
-						</TouchableOpacity>
-						<TouchableOpacity
+							Cancel
+						</Button>
+						<Button
 							style={{
 								justifyContent: "center",
-								alignContent: "center",
 								alignItems: "center",
-								backgroundColor: "lightblue",
-								borderRadius: 10,
-								margin: 10,
-								padding: 10,
-								flex: 1
+								flex: 1,
+								margin: 2
 							}}
+
 							onPress={async () => {
 								console.log("Adding note...")
 								let entry: INoteEntry = {
@@ -223,16 +215,17 @@ export default function AddNoteScreen() {
 									images: images,
 									text: text.trim().length > 0 ? text : undefined
 								}
-								if (entry.images === undefined && entry.text === undefined) return; // reject empty notes
+								if ((entry.images === undefined || entry.images.length == 0)  && entry.text === undefined) return; // reject empty notes
 								if (await addMangaNote(mangaId.toString(), entry))
 								{
 									console.log("Note added!")
 									router.navigate(`/manga/${mangaId}`);
 								}
 							}}
+							mode="contained"
 						>
-							<Text>Add</Text>
-						</TouchableOpacity>
+							Add
+						</Button>
 					</View>
 				</View>
 			</View>

@@ -3,8 +3,8 @@ import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Stack, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { FlatList, Image, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { Modal, Portal } from "react-native-paper";
+import { FlatList, Image, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { IconButton, Modal, Portal } from "react-native-paper";
 
 const MANGA_QUERY = `
 	query {
@@ -168,11 +168,13 @@ export default function Index() {
 					<Ionicons name="search" size={20} style={{position: "relative", margin: 5}}/>
 					<TextInput style={{flex: 1, margin: 5, borderWidth: 0, borderColor: "transparent", fontSize: 20, padding: 5}} underlineColorAndroid={"transparent"} onSubmitEditing={() => { populateMangaList(); }} value={searchString} onChangeText={setSearchString}/>
 				</View>
-				<TouchableOpacity
+				<IconButton
+					icon={"plus"}
+					size={30}
+					containerColor="white"
 					onPress={() => { setSearching(!isSearching); populateNewMangaList(); }}
-					style={{width: 40, height: 40, margin: 5, aspectRatio: 1, shadowOpacity: 0.3, shadowRadius: 5, backgroundColor: "white", borderRadius: "100%", shadowColor: "black", shadowOffset: {width: 0, height: 4} }}>
-					<Ionicons name="add" size={40} style={{ width: "100%", height: "100%", position: "relative" }} color={"black"}/>
-				</TouchableOpacity>
+					style={{shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
+				/>
 			</View>
 		</View>
 		<Portal>
@@ -194,16 +196,12 @@ export default function Index() {
 								style={{height: "100%", aspectRatio: 0.8}}
 							/>
 							<Text style={{textAlign: "left", fontSize: 20, flex: 1}}>{item.title?.userPreferred}</Text>
-							<TouchableOpacity
-								style={{
-									width: 40, height: 40, margin: 5, aspectRatio: 1,
-									borderRadius: "100%", justifyContent: "center" ,
-									backgroundColor: mangaList.find((elem) => elem.id === item.id) ? "lightgray" : "green",
-								}}
+							<IconButton
+								icon={"plus"}
+								iconColor="white"
+								containerColor={mangaList.find((elem) => elem.id === item.id) ? "lightgray" : "green"}
 								onPress={async () => { await addMangaToLibrary(item.id); populateMangaList(); }}
-							>
-								<Ionicons name="add" size={40} style={{ }} color={"white"}/>
-							</TouchableOpacity>
+							/>
 						</Pressable>
 					)}
 				/>

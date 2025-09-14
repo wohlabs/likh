@@ -6,8 +6,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { router, Stack, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { FlatList, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { Modal, Portal } from "react-native-paper";
+import { FlatList, Image, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { IconButton, Modal, Portal } from "react-native-paper";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -105,11 +105,12 @@ export default function MangaDetails({ navigation }: any) {
 					<Ionicons name="search" size={20} style={{position: "relative", margin: 5}}/>
 					<TextInput style={{flex: 1, margin: 5, borderWidth: 0, borderColor: "transparent", fontSize: 20, padding: 5}} underlineColorAndroid={"transparent"} onChangeText={(text) => setSearchString(text)} />
 				</View>
-				<TouchableOpacity
+				<IconButton
+					icon={"plus"}
 					onPress={() => router.navigate(`/manga/${mangaId}/add_note`)}
-					style={{width: 40, height: 40, margin: 5, aspectRatio: 1, shadowOpacity: 0.3, shadowRadius: 5, backgroundColor: "white", borderRadius: "100%", shadowColor: "black", shadowOffset: {width: 0, height: 4} }}>
-					<Ionicons name="add" size={40} style={{ width: "100%", height: "100%", position: "relative" }} color={"black"}/>
-				</TouchableOpacity>
+					size={30}
+					style={{shadowOpacity: 0.3, shadowRadius: 5, backgroundColor: "white", borderRadius: "100%", shadowColor: "black", shadowOffset: {width: 0, height: 4} }}>
+				</IconButton>
 			</View>
 		</ScrollView>
 	);
