@@ -95,7 +95,7 @@ export default function AddNoteScreen() {
 							<Text style={{fontSize: 28, color: "lightgray"}}>Add an image using the + icon</Text>
 						</View>
 					}
-					<View style={{height: 100, flexDirection: "row"}}>
+					<View style={{height: 100, flexDirection: "row", alignItems: "center"}}>
 						<FlatList
 							data={images}
 							renderItem={({ item, index }) => (
@@ -115,7 +115,7 @@ export default function AddNoteScreen() {
 								</Pressable>
 							)}
 							horizontal
-							style={{ flex: 1, marginTop: 10 }}
+							style={{ flex: 1, alignSelf: "stretch", margin: 10 }}
 							keyExtractor={(_, index) => index.toString()}
 						/>
 						<IconButton icon={"plus"} onPress={pickImage} style={{justifyContent: "center"}} mode="contained"/>
