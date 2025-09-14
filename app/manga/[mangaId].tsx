@@ -19,6 +19,7 @@ export default function MangaDetails({ navigation }: any) {
 	const [searchString, setSearchString] = useState<string>("");
 	const [isViewingOverlay, setIsViewingOverlay] = useState<boolean>(false);
 	const [viewerNote, setViewerNote] = useState<INoteEntry>({id: "", text: "", images: [], startChapter: -1, endChapter: -1, createdAt: "", modifiedAt: ""});
+	const [viewerNoteIndex, setViewerNoteIndex] = useState<number>(0);
 
 	useEffect(() => {
 		const populateMangaData = async () => {
@@ -47,6 +48,9 @@ export default function MangaDetails({ navigation }: any) {
 			searchString.trim().length == 0 ? data : data.filter((note: INoteEntry) => (note.text && note.text.toLowerCase().includes(searchString.toLowerCase()))));
 	}, [searchString, data]);
 
+	useEffect(() => {
+		setViewerNote(filteredNotes[viewerNoteIndex]);
+	}, [filteredNotes, viewerNoteIndex]);
 
 	return (
 		<ScrollView contentContainerStyle={{ minHeight: '100%'}}>
@@ -73,17 +77,25 @@ export default function MangaDetails({ navigation }: any) {
 				contentContainerStyle={{flexGrow: 0}}
 				scrollEnabled={false}
 				columnWrapperStyle={{ marginLeft: 5, marginRight: 5 }}
-				renderItem={({ item }: { item: INoteEntry }) => (
+				renderItem={({ item, index }: { item: INoteEntry, index: any }) => (
 					item.id ?
-					<NotePreviewCard note={item} style={{ flex: 1, height: 200, margin: 5}} onPress={()=> {setViewerNote(item); setIsViewingOverlay(true)}}/>
+					<NotePreviewCard note={item} style={{ flex: 1, height: 200, margin: 5}} onPress={()=> {setViewerNoteIndex(index); setIsViewingOverlay(true)}}/>
 					:
 					<View style={{ flex: 1, margin: 5}}></View>
 				)}
 			/>
 			<Overlay isVisible={isViewingOverlay} onBackdropPress={() => {setIsViewingOverlay(false)}} overlayStyle={{padding: 0, width: "80%", height: "80%", backgroundColor: "transparent", borderRadius: 10, shadowColor: "transparent", flexDirection: "row", justifyContent: "center", alignItems: "center"}} >
-				<Ionicons name="arrow-back" size={30} color={"black"}/>
-					<NoteViewer note={viewerNote} mangaTitle={manga?.title.userPreferred} style={{height: "100%", backgroundColor: "white", borderRadius: 10, shadowOffset: {width: 0, height: 4}, shadowOpacity: 0.3, shadowRadius: 5}}/>
-				<Ionicons name="arrow-forward" size={30} color={"black"}/>
+				<Ionicons name="arrow-back" size={50} color={"white"}
+					style={{opacity: viewerNoteIndex != 0 ? 1 : 0 }}
+					onPress={() => setViewerNoteIndex(viewerNoteIndex-1)}
+					pointerEvents={ viewerNoteIndex == 0  ? 'none' : 'auto'}
+				/>
+				<NoteViewer note={viewerNote} mangaTitle={manga?.title.userPreferred} style={{height: "100%", backgroundColor: "white", borderRadius: 10, shadowOffset: {width: 0, height: 4}, shadowOpacity: 0.3, shadowRadius: 5}}/>
+				<Ionicons name="arrow-forward" size={50} color={"white"}
+					style={{opacity: viewerNoteIndex != filteredNotes.length - 1 ? 1 : 0 }} 
+					onPress={() => setViewerNoteIndex(viewerNoteIndex+1)}
+					pointerEvents={ viewerNoteIndex == filteredNotes.length - 1  ? 'none' : 'auto'}
+				/>
 			</Overlay>
 			<View style={{height: 60, width: "50%", position: "sticky", bottom: 25, left:"50%", transform: "translateX(-50%)", flexDirection: "row", alignItems: "center"}}>
 				<View style={{ flex: 1, backgroundColor: "white", flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: 5, borderRadius: 10, shadowColor: "black", shadowOffset: {width: 0, height: 4}, shadowOpacity: 0.3, shadowRadius: 5}} >

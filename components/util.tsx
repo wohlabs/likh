@@ -130,14 +130,15 @@ export const searchMangaByString = async (searchString: string, page: number = 1
 
 export const formatData = (data: Array<any>, numColumns: number) => {
 	// source: https://www.youtube.com/watch?v=8wv0kjsirso
-	const numberOfFullRows = Math.floor(data.length / numColumns);
-	let numberOfElementsLastRow = data.length - numberOfFullRows * numColumns;
+	const copyData = [...data];
+	const numberOfFullRows = Math.floor(copyData.length / numColumns);
+	let numberOfElementsLastRow = copyData.length - numberOfFullRows * numColumns;
 	while (
 		numberOfElementsLastRow !== numColumns &&
 		numberOfElementsLastRow !== 0
 	) {
-		data.push({});
+		copyData.push({});
 		numberOfElementsLastRow++;
 	}
-	return data;
+	return copyData;
 };
