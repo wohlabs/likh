@@ -1,5 +1,4 @@
 import { INoteEntry } from "@/components/INotes";
-import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
@@ -15,7 +14,7 @@ import
 		TouchableWithoutFeedback,
 		View
 	} from "react-native";
-import { Button } from "react-native-paper";
+import { Button, IconButton } from "react-native-paper";
 import { addMangaNote, getMangaDetails } from '../../../components/util';
 
 
@@ -119,9 +118,7 @@ export default function AddNoteScreen() {
 							style={{ flex: 1, marginTop: 10 }}
 							keyExtractor={(_, index) => index.toString()}
 						/>
-						<Pressable onPress={pickImage} style={{justifyContent: "center"}}>
-							<Ionicons name="add-circle" size={50}/>
-						</Pressable>
+						<IconButton icon={"plus"} onPress={pickImage} style={{justifyContent: "center"}} mode="contained"/>
 					</View>
 				</View>
 				<View style={{ flexDirection: "column", flex: 3}}>
