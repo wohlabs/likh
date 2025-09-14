@@ -1,5 +1,6 @@
+import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
-import { FlatList, Image, Pressable, StyleProp, Text, View, ViewStyle } from "react-native";
+import { FlatList, Image, Pressable, StyleProp, Text, TouchableOpacity, View, ViewStyle } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { INoteEntry } from "./INotes";
 
@@ -66,6 +67,23 @@ export default function NoteViewer({mangaTitle, note, style}: { mangaTitle?: str
 				<ScrollView>
 					<Text selectable={true} style={{fontSize: 20}}>{note.text}</Text>
 				</ScrollView>
+				<View style={{ flexDirection: "row"}}>
+					<TouchableOpacity style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", height: 40, flex: 1 }}>
+						<Ionicons name="share" size={20} />
+						<Text>Share</Text>
+					</TouchableOpacity>
+					<TouchableOpacity style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", height: 40, flex: 1  }}>
+						<Ionicons name="pencil" size={20} />
+						<Text>Edit</Text>
+					</TouchableOpacity>
+					<TouchableOpacity style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", height: 40, flex: 1  }}>
+						<Ionicons name="heart" size={20} />
+						<Text>Favorite</Text>
+					</TouchableOpacity>
+					<TouchableOpacity style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", height: 40 }}>
+						<Ionicons name="ellipsis-horizontal" size={20} />
+					</TouchableOpacity>
+				</View>
 			</View>
 		</View>
 	)
