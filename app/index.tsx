@@ -1,10 +1,10 @@
 import { addMangaToLibrary, formatData, MANGA_SEARCH_QUERY } from "@/components/util";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Overlay } from '@rneui/themed';
 import { Stack, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { FlatList, Image, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Modal, Portal } from "react-native-paper";
 
 const MANGA_QUERY = `
 	query {
@@ -175,38 +175,40 @@ export default function Index() {
 				</TouchableOpacity>
 			</View>
 		</View>
-		<Overlay isVisible={isSearching} onBackdropPress={() => setSearching(false)} overlayStyle={{padding: 0, width: "80%", height: "80%", backgroundColor: "white", borderRadius: 10 }}>
-			<View style={{ height: 50, backgroundColor: "white", flexDirection: "row", alignItems: "center", justifyContent: "space-between", margin: 10, padding: 5, borderRadius: 10, borderColor: "black", borderWidth: 2 }} >
-				<Ionicons name="search" size={20} style={{position: "relative", margin: 5}}/>
-				<TextInput style={{flex: 1, margin: 5, borderWidth: 0, borderColor: "transparent", fontSize: 20, padding: 5}} underlineColorAndroid={"transparent"} onSubmitEditing={() => { populateNewMangaList(); }} value={newSearchString} onChangeText={setNewSearchString}/>
-			</View>
-			<FlatList
-				data={newMangaList}
-				keyExtractor={(item) => item.id}
-				numColumns={1}
-				style={{flex: 1}}
-				renderItem={({ item }) => (
-					<Pressable style={{ height: 150, width: "100%", flexDirection: "row", alignItems: "center", padding: 5 }} onPress={() => { router.navigate(`/manga/${item.id}`) }}>
-						<Image
-							source={{ uri: item.coverImage?.large }}
-							resizeMode="contain"
-							style={{height: "100%", aspectRatio: 0.8}}
-						/>
-						<Text style={{textAlign: "left", fontSize: 20, flex: 1}}>{item.title?.userPreferred}</Text>
-						<TouchableOpacity
-							style={{
-								width: 40, height: 40, margin: 5, aspectRatio: 1,
-								borderRadius: "100%", justifyContent: "center" ,
-								backgroundColor: mangaList.find((elem) => elem.id === item.id) ? "lightgray" : "green",
-							}}
-							onPress={async () => { await addMangaToLibrary(item.id); populateMangaList(); }}
-						>
-							<Ionicons name="add" size={40} style={{ }} color={"white"}/>
-						</TouchableOpacity>
-					</Pressable>
-				)}
-			/>
-		</Overlay>
+		<Portal>
+			<Modal visible={isSearching} onDismiss={() => setSearching(false)} contentContainerStyle={{padding: 0, margin: 100, height: "80%", backgroundColor: "white", borderRadius: 10 }}>
+				<View style={{ height: 50, backgroundColor: "white", flexDirection: "row", alignItems: "center", justifyContent: "space-between", margin: 10, padding: 5, borderRadius: 10, borderColor: "black", borderWidth: 2 }} >
+					<Ionicons name="search" size={20} style={{position: "relative", margin: 5}}/>
+					<TextInput style={{flex: 1, margin: 5, borderWidth: 0, borderColor: "transparent", fontSize: 20, padding: 5}} underlineColorAndroid={"transparent"} onSubmitEditing={() => { populateNewMangaList(); }} value={newSearchString} onChangeText={setNewSearchString}/>
+				</View>
+				<FlatList
+					data={newMangaList}
+					keyExtractor={(item) => item.id}
+					numColumns={1}
+					style={{flex: 1}}
+					renderItem={({ item }) => (
+						<Pressable style={{ height: 150, width: "100%", flexDirection: "row", alignItems: "center", padding: 5 }} onPress={() => { router.navigate(`/manga/${item.id}`) }}>
+							<Image
+								source={{ uri: item.coverImage?.large }}
+								resizeMode="contain"
+								style={{height: "100%", aspectRatio: 0.8}}
+							/>
+							<Text style={{textAlign: "left", fontSize: 20, flex: 1}}>{item.title?.userPreferred}</Text>
+							<TouchableOpacity
+								style={{
+									width: 40, height: 40, margin: 5, aspectRatio: 1,
+									borderRadius: "100%", justifyContent: "center" ,
+									backgroundColor: mangaList.find((elem) => elem.id === item.id) ? "lightgray" : "green",
+								}}
+								onPress={async () => { await addMangaToLibrary(item.id); populateMangaList(); }}
+							>
+								<Ionicons name="add" size={40} style={{ }} color={"white"}/>
+							</TouchableOpacity>
+						</Pressable>
+					)}
+				/>
+			</Modal>
+		</Portal>
 		</>
 	);
 }
