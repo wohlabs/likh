@@ -64,7 +64,7 @@ export default function NoteViewer({mangaTitle, note, style}: { mangaTitle?: str
 				</View>
 				<Text style={{fontSize: 20, fontWeight: "bold"}}>Note:</Text>
 				<ScrollView>
-					<Text style={{fontSize: 20}}>{note.text}</Text>
+					<Text selectable={true} style={{fontSize: 20}}>{note.text}</Text>
 				</ScrollView>
 			</View>
 		</View>
