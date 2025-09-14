@@ -4,10 +4,10 @@ import NoteViewer from "@/components/NoteViewer";
 import { formatData, getMangaData, getMangaDetails, IMangaDetails } from "@/components/util";
 import { Ionicons } from "@expo/vector-icons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { Overlay } from "@rneui/base";
 import { router, Stack, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { FlatList, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Modal, Portal } from "react-native-paper";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -84,19 +84,22 @@ export default function MangaDetails({ navigation }: any) {
 					<View style={{ flex: 1, margin: 5}}></View>
 				)}
 			/>
-			<Overlay isVisible={isViewingOverlay} onBackdropPress={() => {setIsViewingOverlay(false)}} overlayStyle={{padding: 0, width: "80%", height: "80%", backgroundColor: "transparent", borderRadius: 10, shadowColor: "transparent", flexDirection: "row", justifyContent: "center", alignItems: "center"}} >
-				<Ionicons name="arrow-back" size={50} color={"white"}
-					style={{opacity: viewerNoteIndex != 0 ? 1 : 0 }}
-					onPress={() => setViewerNoteIndex(viewerNoteIndex-1)}
-					pointerEvents={ viewerNoteIndex == 0  ? 'none' : 'auto'}
-				/>
-				<NoteViewer note={viewerNote} mangaTitle={manga?.title.userPreferred} style={{height: "100%", backgroundColor: "white", borderRadius: 10, shadowOffset: {width: 0, height: 4}, shadowOpacity: 0.3, shadowRadius: 5}}/>
-				<Ionicons name="arrow-forward" size={50} color={"white"}
-					style={{opacity: viewerNoteIndex != filteredNotes.length - 1 ? 1 : 0 }} 
-					onPress={() => setViewerNoteIndex(viewerNoteIndex+1)}
-					pointerEvents={ viewerNoteIndex == filteredNotes.length - 1  ? 'none' : 'auto'}
-				/>
-			</Overlay>
+			<Portal>
+				<Modal visible={isViewingOverlay} onDismiss={() => {setIsViewingOverlay(false)}} contentContainerStyle={{margin: 100, flexDirection: "row", alignItems: "center", height: "80%", shadowOpacity: 0, justifyContent: "center"}}
+					>
+					<Ionicons name="arrow-back" size={50} color={"white"}
+						style={{opacity: viewerNoteIndex != 0 ? 1 : 0 }}
+						onPress={() => setViewerNoteIndex(viewerNoteIndex-1)}
+						pointerEvents={ viewerNoteIndex == 0  ? 'none' : 'auto'}
+					/>
+					<NoteViewer note={viewerNote} mangaTitle={manga?.title.userPreferred} style={{height: "100%", backgroundColor: "white", borderRadius: 10, shadowOpacity: 0.3, shadowRadius: 5}}/>
+					<Ionicons name="arrow-forward" size={50} color={"white"}
+						style={{opacity: viewerNoteIndex != filteredNotes.length - 1 ? 1 : 0 }} 
+						onPress={() => setViewerNoteIndex(viewerNoteIndex+1)}
+						pointerEvents={ viewerNoteIndex == filteredNotes.length - 1  ? 'none' : 'auto'}
+					/>
+				</Modal>
+			</Portal>
 			<View style={{height: 60, width: "50%", position: "sticky", bottom: 25, left:"50%", transform: "translateX(-50%)", flexDirection: "row", alignItems: "center"}}>
 				<View style={{ flex: 1, backgroundColor: "white", flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: 5, borderRadius: 10, shadowColor: "black", shadowOffset: {width: 0, height: 4}, shadowOpacity: 0.3, shadowRadius: 5}} >
 					<Ionicons name="search" size={20} style={{position: "relative", margin: 5}}/>

@@ -1,10 +1,12 @@
-import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
-import { FlatList, Image, Pressable, ScrollView, StyleProp, Text, TouchableOpacity, View, ViewStyle } from "react-native";
+import { FlatList, Image, Pressable, ScrollView, StyleProp, StyleSheet, Text, View, ViewStyle } from "react-native";
+import { Button, IconButton, Menu, useTheme } from 'react-native-paper';
 import { INoteEntry } from "./INotes";
 
 export default function NoteViewer({mangaTitle, note, style}: { mangaTitle?: string, note: INoteEntry, style?: StyleProp<ViewStyle>}) {
 	const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
+	const [optionsVisible, setOptionsVisible] = useState<boolean>(false);
+	const theme = useTheme();
 	return (
 		<View style={[{ flex: 1, padding: 10, flexDirection: "row" }, style]} pointerEvents="box-none">
 			<View style={{ flex: 2, margin: 10, flexDirection: "column" }}>
@@ -66,24 +68,58 @@ export default function NoteViewer({mangaTitle, note, style}: { mangaTitle?: str
 				<ScrollView>
 					<Text selectable={true} style={{fontSize: 20}}>{note.text}</Text>
 				</ScrollView>
-				<View style={{ flexDirection: "row"}}>
-					<TouchableOpacity style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", height: 40, flex: 1 }}>
-						<Ionicons name="share" size={20} />
-						<Text>Share</Text>
-					</TouchableOpacity>
-					<TouchableOpacity style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", height: 40, flex: 1  }}>
-						<Ionicons name="pencil" size={20} />
-						<Text>Edit</Text>
-					</TouchableOpacity>
-					<TouchableOpacity style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", height: 40, flex: 1  }}>
-						<Ionicons name="heart" size={20} />
-						<Text>Favorite</Text>
-					</TouchableOpacity>
-					<TouchableOpacity style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", height: 40 }}>
-						<Ionicons name="ellipsis-horizontal" size={20} />
-					</TouchableOpacity>
+				<View style={{ flexDirection: "row", alignItems: "center"}}>
+					<Button icon={'share'} style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", height: 40, flex: 1 }}
+						onPress={() => {}}
+					>
+						Share
+					</Button>
+					<Button icon={"pencil"}
+						style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", height: 40, flex: 1  }}
+						onPress={() => {}}
+					>
+						Edit
+					</Button>
+					<Button icon='heart'
+						style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", height: 40, flex: 1  }}
+						onPress={() => {}}
+					>
+						Favorite
+					</Button>
+					<Menu
+						visible={optionsVisible}
+						onDismiss={() => setOptionsVisible(false)}
+						anchor={
+							<IconButton icon='dots-horizontal' onPress={() => setOptionsVisible(true)}
+								iconColor={theme.colors.primary}
+							/>
+						}
+					>
+						<Menu.Item 
+							onPress={() => console.log('delete note')} title="Delete" leadingIcon={"delete"}
+						/>
+					</Menu>
 				</View>
 			</View>
 		</View>
 	)
 }
+
+const styles = StyleSheet.create({
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  menu: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 10,
+    minWidth: 150,
+  },
+  menuItem: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+  },
+});
