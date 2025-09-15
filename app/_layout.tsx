@@ -1,5 +1,5 @@
-import { Stack } from "expo-router";
-import { KeyboardAvoidingView, Platform } from "react-native";
+import { router, Stack } from "expo-router";
+import { KeyboardAvoidingView, Platform, Pressable, Text } from "react-native";
 import { DefaultTheme, PaperProvider } from "react-native-paper";
 
 export default function RootLayout() {
@@ -9,9 +9,14 @@ export default function RootLayout() {
 			style={{ flex: 1 }}
 			behavior={Platform.OS === "ios" ? "padding" : "height"}
 		>
-
-			<Stack>
-				<Stack.Screen name="index" options={{ title: "Library" }} />
+			<Stack
+				screenOptions={{
+					headerTitle: () => <Pressable onPress={() => router.navigate("/")}><Text style={{fontWeight: 'bold'}}>aninote</Text></Pressable>,
+					headerTitleAlign: "center",
+					headerLeft: () => null // disable back button
+				}}
+			>
+				<Stack.Screen name="index" />
 				<Stack.Screen name="manga/[mangaId]" />
 			</Stack>
 		</KeyboardAvoidingView>

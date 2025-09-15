@@ -4,7 +4,7 @@ import NoteViewer from "@/components/NoteViewer";
 import { formatData, getMangaData, getMangaDetails, IMangaDetails } from "@/components/util";
 import { Ionicons } from "@expo/vector-icons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { router, Stack, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { FlatList, Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import { IconButton, Modal, Portal, Searchbar } from "react-native-paper";
@@ -59,7 +59,6 @@ export default function MangaDetails({ navigation }: any) {
 
 	return (
 		<ScrollView contentContainerStyle={{ minHeight: '100%'}}>
-			<Stack.Screen options={{ title: manga?.title.userPreferred || "Unknown", headerShown: false }} />
 			<View style={{ alignItems: 'center', height: 300, width: '100%', justifyContent: 'center', flexDirection: 'row' }}>
 				<View style={{height: '100%', width: '70%', flexDirection: 'row'}}>
 					<Image
