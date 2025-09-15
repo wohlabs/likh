@@ -9,6 +9,7 @@ export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}:
 	const [optionsVisible, setOptionsVisible] = useState<boolean>(false);
 	const theme = useTheme();
 	return (
+		note &&
 		<View style={[{ flex: 1, padding: 10, flexDirection: "row" }, style]} pointerEvents="box-none">
 			<View style={{ flex: 2, margin: 10, flexDirection: "column" }}>
 				{
