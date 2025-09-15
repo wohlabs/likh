@@ -82,6 +82,19 @@ export const addMangaNote = async (mangaId: string, entry: INoteEntry) : Promise
 	return true
 };
 
+export const deleteMangaNote = async (mangaId: string, entryId: string) : Promise<boolean> => {
+	const storageKey = "manga_" + mangaId;
+	try {
+		let notes: IMangaNotes = await getMangaData(mangaId);
+		notes = notes.filter((note) => note.id !== entryId)
+		await AsyncStorage.setItem('manga_' + mangaId.toString(), JSON.stringify(notes));
+	} catch (e) {
+		console.log("delete note error", e)
+		return false
+	}
+	return true
+};
+
 export const getMangaDetails = async (mangaId: string) : Promise<IMangaDetails | undefined> =>
 {
 	const data = await fetch("https://graphql.anilist.co", {

@@ -43,6 +43,11 @@ export default function MangaDetails({ navigation }: any) {
 		}, [])
 	)
 
+	const onDelete = () => {
+		setIsViewingOverlay(false);
+		fetchData();
+	}
+
 	useEffect(() => {
 		setFilteredNotes(
 			searchString.trim().length == 0 ? data : data.filter((note: INoteEntry) => (note.text && note.text.toLowerCase().includes(searchString.toLowerCase()))));
@@ -92,7 +97,7 @@ export default function MangaDetails({ navigation }: any) {
 						onPress={() => setViewerNoteIndex(viewerNoteIndex-1)}
 						pointerEvents={ viewerNoteIndex == 0  ? 'none' : 'auto'}
 					/>
-					<NoteViewer note={viewerNote} mangaTitle={manga?.title.userPreferred} style={{height: "100%", backgroundColor: "white", borderRadius: 10, shadowOpacity: 0.3, shadowRadius: 5}}/>
+					<NoteViewer note={viewerNote} mangaId={Array.isArray(mangaId) ? mangaId[0] : mangaId} mangaTitle={manga?.title.userPreferred} style={{height: "100%", backgroundColor: "white", borderRadius: 10, shadowOpacity: 0.3, shadowRadius: 5}} onDelete={onDelete}/>
 					<Ionicons name="arrow-forward" size={50} color={"white"}
 						style={{opacity: viewerNoteIndex != filteredNotes.length - 1 ? 1 : 0 }} 
 						onPress={() => setViewerNoteIndex(viewerNoteIndex+1)}

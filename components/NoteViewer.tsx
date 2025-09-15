@@ -2,8 +2,9 @@ import { useState } from "react";
 import { FlatList, Image, Pressable, ScrollView, StyleProp, StyleSheet, Text, View, ViewStyle } from "react-native";
 import { Button, IconButton, Menu, useTheme } from 'react-native-paper';
 import { INoteEntry } from "./INotes";
+import { deleteMangaNote } from "./util";
 
-export default function NoteViewer({mangaTitle, note, style}: { mangaTitle?: string, note: INoteEntry, style?: StyleProp<ViewStyle>}) {
+export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}: { mangaTitle?: string, mangaId: string, note: INoteEntry, style?: StyleProp<ViewStyle>, onDelete?: () => void }) {
 	const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
 	const [optionsVisible, setOptionsVisible] = useState<boolean>(false);
 	const theme = useTheme();
@@ -96,7 +97,7 @@ export default function NoteViewer({mangaTitle, note, style}: { mangaTitle?: str
 						}
 					>
 						<Menu.Item 
-							onPress={() => console.log('delete note')} title="Delete" leadingIcon={"delete"}
+							onPress={async () => await deleteMangaNote(mangaId, note.id) && onDelete && onDelete()} title="Delete" leadingIcon={"delete"}
 						/>
 					</Menu>
 				</View>
