@@ -49,6 +49,12 @@ const UserSchema = new Schema<IUser>({
 const Note = model<INote>('Note', NoteSchema);
 const User = model<IUser>('User', UserSchema);
 
+// get notes
+app.get(`/notes`, async (req, res) => {
+	const { userId, mangaId } = req.query // temporary. userId shall be determined by session cookie
+	res.json(await Note.find({userId, mangaId}).exec())
+})
+
 // get note of id
 app.get(`/notes/:id`, async (req, res) => {
 	try {
@@ -96,12 +102,6 @@ app.post(`/notes`, async (req, res) => {
 	);
 	await newNote.save()
 	res.json(newNote)
-})
-
-// create new note
-app.get(`/notes`, async (req, res) => {
-	const { userId } = req.body // temporary. userId shall be determined by session cookie
-	res.json(await Note.find({userId}).exec())
 })
 
 // get manga from user's collection
