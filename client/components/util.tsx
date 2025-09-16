@@ -59,10 +59,17 @@ export const getMangaData = async (mangaId: string) : Promise<IMangaNotes> => {
 };
 
 export const addMangaToLibrary = async (mangaId: string) : Promise<boolean> => {
-	const storageKey = "manga_" + mangaId;
 	try {
-		let currentMangaData: Array<any> = JSON.parse((await AsyncStorage.getItem(storageKey))?.toString() || "[]");
-		await AsyncStorage.setItem('manga_' + mangaId.toString(), JSON.stringify(currentMangaData));
+		await fetch(`http://localhost:3000/users/me/manga`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				userId: TEST_USER_ID,
+				mangaId: parseInt(mangaId)
+			})
+		})
 	} catch (e) {
 		// saving error
 		return false
