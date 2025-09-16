@@ -27,7 +27,6 @@ export interface INote extends Document {
 	text?: string
 }
 
-
 const NoteSchema = new Schema<INote>({
 	userId: {type: Schema.ObjectId, ref: 'User'},
 	mangaId: {type: String, required: true },
@@ -39,15 +38,17 @@ const NoteSchema = new Schema<INote>({
 	text: {type: String, default: ""}
 });
 
+const UserSchema = new Schema<IUser>({
+	username: { type: String, required: true, unique: true },
+	password: { type: String, required: true },
+	mangas: { type: [String], default: [] }
+});
+
 const Note = model<INote>('Note', NoteSchema);
+const User = model<IUser>('User', UserSchema);
 
 // get note of id
 app.get(`/note/:id`, async (req, res) => {
-
-})
-
-app.post(`/note`, async (req, res) => {
-	
 })
 
 app.post(`/user/:id`, async (req, res) => {
@@ -55,14 +56,10 @@ app.post(`/user/:id`, async (req, res) => {
 })
 
 app.post(`/user`, async (req, res) => {
-	
 })
 
 // create new note
 app.post(`/note`, async (req, res) => {
-	const newNote = new Note()
-	await newNote.save()
-	res.json(newNote)
 })
 
 const server = app.listen(3000, () =>
