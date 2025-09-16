@@ -13,7 +13,7 @@ app.use(express.json())
 export interface IUser extends Document {
 	username: string;
 	password: string;
-	mangas: string[];
+	manga: string[];
 }
 
 export interface INote extends Document {
@@ -41,25 +41,93 @@ const NoteSchema = new Schema<INote>({
 const UserSchema = new Schema<IUser>({
 	username: { type: String, required: true, unique: true },
 	password: { type: String, required: true },
-	mangas: { type: [String], default: [] }
+	manga: { type: [String], default: [] }
 });
 
 const Note = model<INote>('Note', NoteSchema);
 const User = model<IUser>('User', UserSchema);
 
 // get note of id
-app.get(`/note/:id`, async (req, res) => {
+app.get(`/notes/:id`, async (req, res) => {
+	try {
+		const note = await Note.findById(req.params.id).exec()
+		res.json(note)
+	} catch (error) {
+		res.sendStatus(404)
+	}
 })
 
-app.post(`/user/:id`, async (req, res) => {
-	
+app.delete(`/notes/:id`, async (req, res) => {
+	try {
+		const note = await Note.findByIdAndDelete(req.params.id)
+		res.sendStatus(204)
+	} catch (error) {
+		res.sendStatus(404)
+	}
 })
 
-app.post(`/user`, async (req, res) => {
+app.post(`/users`, async (req, res) => {
+	let { username, password } = req.body
+	const newUser: IUser = new User(
+		{
+			username,
+			password // not encrypted for now
+		}
+	);
+	await newUser.save()
+	res.status(200).json({id: newUser.id})
 })
 
 // create new note
-app.post(`/note`, async (req, res) => {
+app.post(`/notes`, async (req, res) => {
+	let { userId, mangaId, startChapter, endChapter, images, text } = req.body
+	if ((!images || images.length == 0) && !text) return res.sendStatus(400)
+	const newNote: INote = new Note(
+		{
+			userId,
+			mangaId,
+			startChapter,
+			endChapter,
+			images,
+			text
+		}
+	);
+	await newNote.save()
+	res.json(newNote)
+})
+
+// create new note
+app.get(`/notes`, async (req, res) => {
+	const { userId } = req.body // temporary. userId shall be determined by session cookie
+	res.json(await Note.find({userId}).exec())
+})
+
+// add a manga to collection
+app.post(`/users/me/manga`, async (req, res) => {
+	const { userId, mangaId } = req.body // temporary. userId shall be determined by session cookie
+	try
+	{
+		const user: IUser | null = await User.findById(userId).exec();
+		if (user?.manga.indexOf(mangaId) === -1)
+		{
+			user.manga.push(mangaId)
+			user.save()
+			res.status(200).json(user)
+		}
+		else if (!user)
+		{
+			res.sendStatus(404)
+		}
+		else
+		{
+			console.log(user)
+			res.status(200).json(user)
+		}
+	}
+	catch(error)
+	{
+		res.sendStatus(404)
+	}
 })
 
 const server = app.listen(3000, () =>
