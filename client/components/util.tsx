@@ -1,6 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { IMangaNotes, INoteEntry } from './INotes';
 
+export const TEST_USER_ID: string = "68c8cf1de67a0c9e19ce6ee5"
+
 const MANGA_QUERY = `
 	query GetManga($id: Int) {
 		Media(id: $id, type: MANGA) {

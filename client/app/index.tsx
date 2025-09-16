@@ -1,4 +1,4 @@
-import { addMangaToLibrary, formatData, MANGA_SEARCH_QUERY } from "@/components/util";
+import { addMangaToLibrary, formatData, MANGA_SEARCH_QUERY, TEST_USER_ID } from "@/components/util";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Stack, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -61,8 +61,15 @@ export default function Index() {
 	const populateMangaList = async () => {
 		let libraryMangaIds: number[] = []
 		try {
-			const storageKeys = await AsyncStorage.getAllKeys();
-			libraryMangaIds = storageKeys.filter((value) => value.startsWith("manga_")).map((value) =>value.replace("manga_", "")).map((value) => Number(value))
+			const response = await fetch(`http://localhost:3000/users/${TEST_USER_ID}/manga`, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			})
+			.then((res) => res.json())
+			.catch(e => console.log(e));
+			libraryMangaIds = response
 		} catch (error) {
 			console.error("Could not fetch mangaIds")
 		}
