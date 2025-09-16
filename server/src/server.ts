@@ -2,12 +2,14 @@ import express from 'express'
 import { connectDB } from './config/db.js'
 import * as dotenv from 'dotenv'
 import { Schema, model, Document, Types } from 'mongoose'
+import cors from 'cors'
 
 dotenv.config()
 const PORT = process.env.PORT || 5000;
 
 connectDB(process.env.MONGODB_URI || '');
 const app = express()
+app.use(cors())
 app.use(express.json())
 
 export interface IUser extends Document {
@@ -18,7 +20,7 @@ export interface IUser extends Document {
 
 export interface INote extends Document {
 	userId: Types.ObjectId
-	mangaId: string;
+	mangaId: number;
 	createdAt: Date; // creation timestamp
 	modifiedAt: Date; // modification timestamp
 	startChapter: number;
@@ -29,7 +31,7 @@ export interface INote extends Document {
 
 const NoteSchema = new Schema<INote>({
 	userId: {type: Schema.ObjectId, ref: 'User'},
-	mangaId: {type: String, required: true },
+	mangaId: {type: Number, required: true },
 	createdAt: {type: Date, required: true, default: Date.now },
 	modifiedAt: {type: Date, required: true, default: Date.now },
 	startChapter: {type: Number, required: true },
@@ -100,6 +102,19 @@ app.post(`/notes`, async (req, res) => {
 app.get(`/notes`, async (req, res) => {
 	const { userId } = req.body // temporary. userId shall be determined by session cookie
 	res.json(await Note.find({userId}).exec())
+})
+
+// get manga from user's collection
+app.get(`/users/:id/manga`, async (req, res) => {
+	try
+	{
+		const user: IUser | null = await User.findById(req.params.id).exec();
+		res.json(user?.manga)
+	}
+	catch(error)
+	{
+		res.sendStatus(404)
+	}
 })
 
 // add a manga to collection
