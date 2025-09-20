@@ -50,8 +50,24 @@ export type IMangaDetails = {
 
 export const getMangaData = async (mangaId: string) : Promise<IMangaNotes> => {
 	try {
-		const notes = await AsyncStorage.getItem("manga_" + mangaId.toString());
-		return JSON.parse(notes || "[]");
+		const notes = await fetch(`http://localhost:3000/notes?userId=${TEST_USER_ID}&mangaId=${mangaId}`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+			}
+		})
+		.then(data => data.json())
+		.then((data:any[]): IMangaNotes => data.map((item) => ({
+			id: item._id,
+			createdAt: item.createdAt,
+			modifiedAt: item.modifiedAt,
+			startChapter: item.startChapter,
+			endChapter: item.endChapter,
+			images: item.images,
+			text: item.text
+		})))
+		.catch(err => console.log(err))
+		return notes || JSON.parse("[]");
 	} catch (e) {
 		// error reading value
 		return [];
@@ -78,11 +94,18 @@ export const addMangaToLibrary = async (mangaId: string) : Promise<boolean> => {
 };
 
 export const addMangaNote = async (mangaId: string, entry: INoteEntry) : Promise<boolean> => {
-	const storageKey = "manga_" + mangaId;
 	try {
-		let notes: IMangaNotes = await getMangaData(mangaId);
-		notes.push(entry)
-		await AsyncStorage.setItem('manga_' + mangaId.toString(), JSON.stringify(notes));
+		await fetch(`http://localhost:3000/notes`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				mangaId,
+				userId: TEST_USER_ID,
+				...entry
+			})
+		})
 	} catch (e) {
 		// saving error
 		console.log("save error", e)
