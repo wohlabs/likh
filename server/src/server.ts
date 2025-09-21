@@ -53,9 +53,24 @@ const UserSchema = new Schema<IUser>({
 const Note = model<INote>('Note', NoteSchema);
 const User = model<IUser>('User', UserSchema);
 
+const authenticationMiddleware = (req: any, res: any, next: any) => {
+	const authHeader = req.headers.authorization;
+	if (!authHeader) return res.status(401).json({ error: 'Unauthorized' });
+
+	const token = authHeader.split(' ')[1];
+	try {
+		const decoded = jwt.verify(token, JWT_SECRET);
+		req.user = decoded;
+		next();
+	} catch (err) {
+		res.status(401).json({ error: 'Invalid token' });
+	}
+};
+
 // get notes
-app.get(`/notes`, async (req, res) => {
-	const { userId, mangaId } = req.query // temporary. userId shall be determined by session cookie
+app.get(`/notes`, authenticationMiddleware, async (req: any, res) => {
+	const userId = req.user.id
+	const { mangaId } = req.query // temporary. userId shall be determined by session cookie
 	res.json(await Note.find({userId, mangaId}).exec())
 })
 
@@ -84,7 +99,6 @@ app.post(`/users`, async (req, res) => {
 	const hashedPassword = await bcrypt.hash(password, 10);
 	
 	try {
-		console.log(username, password);
 		const newUser = new User({
 			username,
 			password: hashedPassword
@@ -99,7 +113,6 @@ app.post(`/users`, async (req, res) => {
 // Login route
 app.post('/users/login', async (req, res) => {
 	const { username, password } = req.body;
-	console.log(username, password)
 	const user = await User.findOne({ username });
 	if (!user) return res.status(400).json({ error: 'User not found' });
 
@@ -112,9 +125,19 @@ app.post('/users/login', async (req, res) => {
 
 
 // create new note
-app.post(`/notes`, async (req, res) => {
-	let { userId, mangaId, startChapter, endChapter, images, text } = req.body
+app.post(`/notes`, authenticationMiddleware, async (req: any, res) => {
+	const userId = req.user.id;
+	let { mangaId, startChapter, endChapter, images, text } = req.body
+	// invalid note entry
 	if ((!images || images.length == 0) && !text) return res.sendStatus(400)
+
+	const user: IUser | null = await User.findById(userId).exec();
+	if (user?.manga.indexOf(mangaId) === -1)
+	{
+		user.manga.push(mangaId)
+		user.save()
+	}
+
 	const newNote: INote = new Note(
 		{
 			userId,
@@ -130,10 +153,11 @@ app.post(`/notes`, async (req, res) => {
 })
 
 // get manga from user's collection
-app.get(`/users/:id/manga`, async (req, res) => {
+app.get(`/users/me/manga`, authenticationMiddleware, async (req: any, res) => {
+	const userId = req.user.id
 	try
 	{
-		const user: IUser | null = await User.findById(req.params.id).exec();
+		const user: IUser | null = await User.findById(userId).exec();
 		res.json(user?.manga)
 	}
 	catch(error)
@@ -143,8 +167,9 @@ app.get(`/users/:id/manga`, async (req, res) => {
 })
 
 // add a manga to collection
-app.post(`/users/me/manga`, async (req, res) => {
-	const { userId, mangaId } = req.body // temporary. userId shall be determined by session cookie
+app.post(`/users/me/manga`, authenticationMiddleware, async (req: any, res) => {
+	const userId = req.user.id
+	const { mangaId } = req.body
 	try
 	{
 		const user: IUser | null = await User.findById(userId).exec();
@@ -160,7 +185,6 @@ app.post(`/users/me/manga`, async (req, res) => {
 		}
 		else
 		{
-			console.log(user)
 			res.status(200).json(user)
 		}
 	}

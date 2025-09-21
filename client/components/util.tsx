@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { IMangaNotes, INoteEntry } from './INotes';
+import api from '@/api/AxiosInstance';
 
 export const TEST_USER_ID: string = "68c8cf1de67a0c9e19ce6ee5"
 
@@ -50,14 +51,8 @@ export type IMangaDetails = {
 
 export const getMangaData = async (mangaId: string) : Promise<IMangaNotes> => {
 	try {
-		const notes = await fetch(`http://localhost:3000/notes?userId=${TEST_USER_ID}&mangaId=${mangaId}`, {
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-			}
-		})
-		.then(data => data.json())
-		.then((data:any[]): IMangaNotes => data.map((item) => ({
+		const response = await api.get(`http://localhost:3000/notes?mangaId=${mangaId}`);
+		const notes: IMangaNotes = response.data.map((item: any) => ({
 			id: item._id,
 			createdAt: item.createdAt,
 			modifiedAt: item.modifiedAt,
@@ -65,10 +60,10 @@ export const getMangaData = async (mangaId: string) : Promise<IMangaNotes> => {
 			endChapter: item.endChapter,
 			images: item.images,
 			text: item.text
-		})))
-		.catch(err => console.log(err))
+		}))
 		return notes || JSON.parse("[]");
-	} catch (e) {
+	} catch (err: any) {
+		console.error(err.response?.data || err.message);
 		// error reading value
 		return [];
 	}
@@ -76,16 +71,9 @@ export const getMangaData = async (mangaId: string) : Promise<IMangaNotes> => {
 
 export const addMangaToLibrary = async (mangaId: string) : Promise<boolean> => {
 	try {
-		await fetch(`http://localhost:3000/users/me/manga`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				userId: TEST_USER_ID,
-				mangaId: parseInt(mangaId)
-			})
-		})
+		await api.post('/users/me/manga', {
+			mangaId: parseInt(mangaId)
+		});
 	} catch (e) {
 		// saving error
 		return false
@@ -95,16 +83,9 @@ export const addMangaToLibrary = async (mangaId: string) : Promise<boolean> => {
 
 export const addMangaNote = async (mangaId: string, entry: INoteEntry) : Promise<boolean> => {
 	try {
-		await fetch(`http://localhost:3000/notes`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				mangaId,
-				userId: TEST_USER_ID,
-				...entry
-			})
+		await api.post('/notes', {
+			mangaId,
+			...entry
 		})
 	} catch (e) {
 		// saving error
