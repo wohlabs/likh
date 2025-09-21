@@ -107,7 +107,7 @@ export default function MangaDetails({ navigation }: any) {
 			</Portal>
 			<View style={{height: 60, width: "50%", position: "sticky", bottom: 25, left:"50%", transform: "translateX(-50%)", flexDirection: "row", alignItems: "center"}}>
 				<Searchbar
-					placeholder="Search note"
+					placeholder="search note"
 					onChangeText={setSearchString}
 					style={{margin: 10, borderRadius: 10, flex: 1, shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
 					value={searchString}

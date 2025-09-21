@@ -10,11 +10,10 @@ import
 		Platform,
 		Pressable,
 		Text,
-		TextInput,
 		TouchableWithoutFeedback,
 		View
 	} from "react-native";
-import { Button, IconButton } from "react-native-paper";
+import { Button, IconButton, TextInput } from "react-native-paper";
 import { addMangaNote, getMangaDetails } from '../../../components/util';
 import ThemeButton from "@/components/ThemeButton";
 import ThemeText from "@/components/ThemeText";
@@ -133,15 +132,10 @@ export default function AddNoteScreen() {
 							keyboardType="number-pad"
 							value={startChapter}
 							onChangeText={(text) => setStartChapter(text)}
-							placeholder={"Start"}
+							placeholder={"start"}
 							placeholderTextColor={"gray"}
 							style={{
-								backgroundColor: "white",
-								outlineColor: "black",
-								outlineWidth: 1,
 								margin: 2,
-								padding: 5,
-								fontSize: 20
 							}}
 						/>
 						<ThemeText>-</ThemeText>
@@ -151,15 +145,10 @@ export default function AddNoteScreen() {
 							keyboardType="number-pad"
 							value={endChapter}
 							onChangeText={(text) => setEndChapter(text)}
-							placeholder={"End (optional)"}
+							placeholder={"end (optional)"}
 							placeholderTextColor={"gray"}
 							style={{
-								backgroundColor: "white",
-								outlineColor: "black",
 								outlineWidth: 1,
-								margin: 2,
-								padding: 5,
-								fontSize: 20
 							}}
 						/>
 					</View>
@@ -168,17 +157,12 @@ export default function AddNoteScreen() {
 						editable
 						multiline
 						numberOfLines={4}
-						placeholder="Your note here..."
+						placeholder="your note here..."
 						placeholderTextColor={"gray"}
 						value={text}
 						onChangeText={onChangeText}
 						style={{
-							padding: 10,
-							backgroundColor: "white",
-							outlineColor: "black",
-							fontSize: 20,
 							margin: 5,
-							outlineWidth: 1,
 							flex: 1
 						}}
 					/>

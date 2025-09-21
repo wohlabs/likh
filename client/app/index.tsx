@@ -172,7 +172,7 @@ export default function Index() {
 			/>
 			<View style={{height: 60, width: "50%", position: "absolute", bottom: 25, left:"50%", transform: "translateX(-50%)", flexDirection: "row", alignItems: "center"}}>
 				<Searchbar
-					placeholder="Search library"
+					placeholder="search library"
 					onChangeText={setSearchString}
 					onSubmitEditing={() => { populateNewMangaList(); }}
 					style={{margin: 10, borderRadius: 10, flex: 1, shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
@@ -190,7 +190,7 @@ export default function Index() {
 		<Portal>
 			<Modal visible={isSearching} onDismiss={() => setSearching(false)} contentContainerStyle={{padding: 0, margin: 100, height: "80%", backgroundColor: "white", borderRadius: 10 }}>
 				<Searchbar
-					placeholder="Search manga"
+					placeholder="search manga"
 					onChangeText={setNewSearchString}
 					onSubmitEditing={() => { populateNewMangaList(); }}
 					style={{margin: 10, borderRadius: 10}}
