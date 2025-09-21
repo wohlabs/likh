@@ -1,6 +1,7 @@
 import { IMangaNotes, INoteEntry } from "@/components/INotes";
 import NotePreviewCard from "@/components/NotePreviewCard";
 import NoteViewer from "@/components/NoteViewer";
+import ThemeText from "@/components/ThemeText";
 import { formatData, getMangaData, getMangaDetails, IMangaDetails } from "@/components/util";
 import { Ionicons } from "@expo/vector-icons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
@@ -68,9 +69,9 @@ export default function MangaDetails({ navigation }: any) {
 					/>
 					<View style={{ flex: 1}}>
 						<View style={{flex: 1, flexDirection: 'row', alignItems: 'flex-end'}}>
-							<Text style={{fontSize: 24, fontWeight: 'bold', alignItems: 'flex-end', textAlignVertical: 'bottom'}}>{manga?.title.userPreferred}</Text>
+							<ThemeText style={{fontSize: 24, fontWeight: 'bold', alignItems: 'flex-end', textAlignVertical: 'bottom'}}>{manga?.title.userPreferred}</ThemeText>
 						</View>
-						<Text style={{flex: 2}}>{manga?.description}</Text>
+						<ThemeText style={{flex: 2}}>{manga?.description}</ThemeText>
 					</View>
 				</View>
 			</View>

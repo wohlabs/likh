@@ -1,3 +1,4 @@
+import ThemeText from "@/components/ThemeText";
 import { addMangaToLibrary, formatData, MANGA_SEARCH_QUERY, TEST_USER_ID } from "@/components/util";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Stack, useRouter } from "expo-router";
@@ -164,7 +165,7 @@ export default function Index() {
 							resizeMode="contain"
 							style={styles.mangaCoverImage}
 						/>
-						<Text style={styles.mangaTitle}>{item.title?.userPreferred}</Text>
+						<ThemeText style={styles.mangaTitle}>{item.title?.userPreferred}</ThemeText>
 					</Pressable>
 					: <View style={{ flex: 1, backgroundColor: "transparent", margin: 5 }} />
 				)}
@@ -207,7 +208,7 @@ export default function Index() {
 								resizeMode="contain"
 								style={{height: "100%", aspectRatio: 0.8}}
 							/>
-							<Text style={{textAlign: "left", fontSize: 20, flex: 1}}>{item.title?.userPreferred}</Text>
+							<ThemeText style={{textAlign: "left", fontSize: 20, flex: 1}}>{item.title?.userPreferred}</ThemeText>
 							<IconButton
 								icon={"plus"}
 								iconColor="white"

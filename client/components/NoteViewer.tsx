@@ -3,6 +3,8 @@ import { FlatList, Image, Pressable, ScrollView, StyleProp, StyleSheet, Text, Vi
 import { Button, IconButton, Menu, useTheme } from 'react-native-paper';
 import { INoteEntry } from "./INotes";
 import { deleteMangaNote } from "./util";
+import ThemeButton from "./ThemeButton";
+import ThemeText from "./ThemeText";
 
 export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}: { mangaTitle?: string, mangaId: string, note: INoteEntry, style?: StyleProp<ViewStyle>, onDelete?: () => void }) {
 	const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
@@ -33,7 +35,7 @@ export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}:
 					/>
 					:
 					<View style={{flex: 1, justifyContent: "center", alignItems: "center", borderColor: "black", borderWidth: 2, borderRadius: 10, borderStyle:"dashed"}}>
-						<Text style={{fontSize: 28, color: "lightgray"}}>No images</Text>
+						<ThemeText style={{fontSize: 28, color: "lightgray"}}>No images</ThemeText>
 					</View>
 				}
 				<View style={{height: 100, flexDirection: "row"}}>
@@ -62,32 +64,32 @@ export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}:
 				</View>
 			</View>
 			<View style={{ flexDirection: "column", flex: 3}}>
-				<Text style={{fontSize: 20}}>Manhwa/Manga: {mangaTitle || "Unknown"}</Text>
+				<ThemeText style={{fontSize: 20}}>Manhwa/Manga: {mangaTitle || "Unknown"}</ThemeText>
 				<View style={{ flexDirection: "row", alignItems: "center"}}>
-					<Text style={{fontSize: 20}}>Chapter: {note.startChapter?.toString() || ""} - {note.endChapter?.toString() || ""}</Text>
+					<ThemeText style={{fontSize: 20}}>Chapter: {note.startChapter?.toString() || ""} - {note.endChapter?.toString() || ""}</ThemeText>
 				</View>
-				<Text style={{fontSize: 20, fontWeight: "bold"}}>Note:</Text>
+				<ThemeText style={{fontSize: 20, fontWeight: "bold"}}>Note:</ThemeText>
 				<ScrollView>
-					<Text selectable={true} style={{fontSize: 20}}>{note.text}</Text>
+					<ThemeText selectable={true} style={{fontSize: 20}}>{note.text}</ThemeText>
 				</ScrollView>
 				<View style={{ flexDirection: "row", alignItems: "center"}}>
-					<Button icon={'share'} style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", height: 40, flex: 1 }}
+					<ThemeButton icon={'share'} style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", height: 40, flex: 1 }}
 						onPress={() => {}}
 					>
 						Share
-					</Button>
-					<Button icon={"pencil"}
+					</ThemeButton>
+					<ThemeButton icon={"pencil"}
 						style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", height: 40, flex: 1  }}
 						onPress={() => {}}
 					>
 						Edit
-					</Button>
-					<Button icon='heart'
+					</ThemeButton>
+					<ThemeButton icon='heart'
 						style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", height: 40, flex: 1  }}
 						onPress={() => {}}
 					>
 						Favorite
-					</Button>
+					</ThemeButton>
 					<Menu
 						visible={optionsVisible}
 						onDismiss={() => setOptionsVisible(false)}

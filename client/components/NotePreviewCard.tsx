@@ -3,6 +3,7 @@ import Carousel from "react-native-reanimated-carousel";
 import { INoteEntry } from "./INotes";
 
 import { ViewStyle } from "react-native";
+import ThemeText from "./ThemeText";
 
 export default function NotePreviewCard({ note, style, onPress }: { note: INoteEntry, style?: StyleProp<ViewStyle>, onPress?: () => void }) {
 	return (
@@ -52,9 +53,9 @@ export default function NotePreviewCard({ note, style, onPress }: { note: INoteE
 		)
 		}
 			<View style={{ flex: 1, padding: 10 }}>
-				<Text>{note.modifiedAt || "date @ time"}</Text>
-				<Text>{`Chapter ${note.startChapter}${note.endChapter ? " - " + note.endChapter : ""}`}</Text>
-				<Text ellipsizeMode="tail" numberOfLines={5}>{note.text || "No notes"}</Text>
+				<ThemeText>{note.modifiedAt || "date @ time"}</ThemeText>
+				<ThemeText>{`Chapter ${note.startChapter}${note.endChapter ? " - " + note.endChapter : ""}`}</ThemeText>
+				<ThemeText ellipsizeMode="tail" numberOfLines={5}>{note.text || "No notes"}</ThemeText>
 			</View>
 		</Pressable>
 	);

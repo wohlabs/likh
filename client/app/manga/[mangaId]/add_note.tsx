@@ -16,6 +16,8 @@ import
 	} from "react-native";
 import { Button, IconButton } from "react-native-paper";
 import { addMangaNote, getMangaDetails } from '../../../components/util';
+import ThemeButton from "@/components/ThemeButton";
+import ThemeText from "@/components/ThemeText";
 
 
 const KeyboardDismissWrapper = ({ children }: any) => {
@@ -92,7 +94,7 @@ export default function AddNoteScreen() {
 						/>
 						:
 						<View style={{flex: 1, justifyContent: "center", alignItems: "center", borderColor: "black", borderWidth: 2, borderRadius: 10, borderStyle:"dashed"}}>
-							<Text style={{fontSize: 28, color: "lightgray"}}>Add an image using the + icon</Text>
+							<ThemeText style={{fontSize: 28, color: "lightgray"}}>Add an image using the + icon</ThemeText>
 						</View>
 					}
 					<View style={{height: 100, flexDirection: "row", alignItems: "center"}}>
@@ -122,9 +124,9 @@ export default function AddNoteScreen() {
 					</View>
 				</View>
 				<View style={{ flexDirection: "column", flex: 3}}>
-					<Text style={{fontSize: 20}}>Manhwa/Manga: {mangaName}</Text>
+					<ThemeText style={{fontSize: 20}}>Manhwa/Manga: {mangaName}</ThemeText>
 					<View style={{ flexDirection: "row", alignItems: "center"}}>
-						<Text style={{fontSize: 20}}>Chapter: </Text>
+						<ThemeText style={{fontSize: 20}}>Chapter: </ThemeText>
 						<TextInput
 							numberOfLines={1}
 							editable
@@ -142,7 +144,7 @@ export default function AddNoteScreen() {
 								fontSize: 20
 							}}
 						/>
-						<Text>-</Text>
+						<ThemeText>-</ThemeText>
 						<TextInput
 							numberOfLines={1}
 							editable
@@ -161,7 +163,7 @@ export default function AddNoteScreen() {
 							}}
 						/>
 					</View>
-					<Text style={{fontSize: 20}}>Note:</Text>
+					<ThemeText style={{fontSize: 20}}>Note:</ThemeText>
 					<TextInput
 						editable
 						multiline
@@ -181,7 +183,7 @@ export default function AddNoteScreen() {
 						}}
 					/>
 					<View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
-						<Button
+						<ThemeButton
 							style={{
 								justifyContent: "center",
 								alignItems: "center",
@@ -192,8 +194,8 @@ export default function AddNoteScreen() {
 							mode="contained-tonal"
 						>
 							Cancel
-						</Button>
-						<Button
+						</ThemeButton>
+						<ThemeButton
 							style={{
 								justifyContent: "center",
 								alignItems: "center",
@@ -222,7 +224,7 @@ export default function AddNoteScreen() {
 							mode="contained"
 						>
 							Add
-						</Button>
+						</ThemeButton>
 					</View>
 				</View>
 			</View>
