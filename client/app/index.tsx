@@ -4,7 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Stack, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { FlatList, Image, Pressable, StyleSheet, Text, View } from "react-native";
-import { IconButton, Modal, Portal, Searchbar } from "react-native-paper";
+import { IconButton, Modal, Portal, Searchbar, useTheme } from "react-native-paper";
 
 const MANGA_QUERY = `
 	query {
@@ -51,6 +51,7 @@ type MangaProps = {
 
 export default function Index() {
 	const router = useRouter();
+	const theme = useTheme()
 	const [mangaList, setMangaList] = useState<MangaProps[]>([]);
 	const [filteredMangaList, setFilteredMangaList] = useState<MangaProps[]>([]);
 	const [loading, setLoading] = useState(true);
@@ -211,8 +212,9 @@ export default function Index() {
 							<ThemeText style={{textAlign: "left", fontSize: 20, flex: 1}}>{item.title?.userPreferred}</ThemeText>
 							<IconButton
 								icon={"plus"}
-								iconColor="white"
-								containerColor={mangaList.find((elem) => elem.id === item.id) ? "lightgray" : "green"}
+								mode="contained"
+								iconColor={mangaList.find((elem) => elem.id === item.id) ? theme.colors.surfaceVariant : theme.colors.primary}
+								containerColor={mangaList.find((elem) => elem.id === item.id) ? theme.colors.inverseOnSurface : theme.colors.surfaceVariant}
 								onPress={async () => { await addMangaToLibrary(item.id); populateMangaList(); }}
 							/>
 						</Pressable>
