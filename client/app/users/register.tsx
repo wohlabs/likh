@@ -1,40 +1,38 @@
-import ThemeText from "@/components/ThemeText";
-import { useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
-import axios from 'axios'
-import { TextInput } from "react-native-paper";
 import ThemeButton from "@/components/ThemeButton";
+import ThemeText from "@/components/ThemeText";
+import axios from "axios";
 import { router } from "expo-router";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useState } from "react";
+import { View, StyleSheet } from "react-native";
+import { TextInput } from "react-native-paper";
 
-export default function UserLogin() {
+export default function UserRegister()
+{
 	const [username, setUsername] = useState<string>('');
 	const [password, setPassword] = useState<string>('');
 	const [error, setError] = useState('');
 
-	const login = async () => {
+	const register = async () => {
 		try
 		{
-			const res = await axios.post('http://localhost:3000/users/login', { username, password });
-			const token = res.data.token;
-			// Store token in coookie
-			AsyncStorage.setItem("token", token)
-			router.navigate('/');
+			await axios.post('http://localhost:3000/users', { username, password });
+			router.navigate('/users/login');
 		}
 		catch (err: any)
 		{
 			setError(err.response.data.error);
 		}
 	};
+
 	return (
 		<View style={styles.container}>
 			<View style={styles.formContainer}>
-				<ThemeText style={{fontSize: 20}}>Login</ThemeText>
+				<ThemeText style={{fontSize: 20}}>Register</ThemeText>
 				<TextInput label='username' placeholder="username" value={username} onChangeText={setUsername} style={styles.input} />
 				<TextInput label='password' placeholder="password" value={password} onChangeText={setPassword} secureTextEntry style={styles.input} />
 				{error ? <ThemeText style={styles.error}>{error}</ThemeText> : null}
-				<ThemeButton onPress={login} mode="contained" style={{width: '100%'}}>Login</ThemeButton>
-				<ThemeButton onPress={() => router.navigate('/users/register')}>Create new account</ThemeButton>
+				<ThemeButton onPress={register} mode="contained" style={{width: '100%'}}>Register</ThemeButton>
+				<ThemeButton onPress={() => router.navigate('/users/login')}>Already have an account?</ThemeButton>
 			</View>
 		</View>
 	);

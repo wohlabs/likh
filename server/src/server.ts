@@ -3,14 +3,18 @@ import { connectDB } from './config/db.js'
 import * as dotenv from 'dotenv'
 import { Schema, model, Document, Types } from 'mongoose'
 import cors from 'cors'
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
 
 dotenv.config()
 const PORT = process.env.PORT || 5000;
 
 connectDB(process.env.MONGODB_URI || '');
 const app = express()
-app.use(cors())
 app.use(express.json())
+app.use(cors())
+
+const JWT_SECRET = process.env.JWT_SECRET || "jwt_secret123"
 
 export interface IUser extends Document {
 	username: string;
@@ -74,17 +78,38 @@ app.delete(`/notes/:id`, async (req, res) => {
 	}
 })
 
+// user register
 app.post(`/users`, async (req, res) => {
-	let { username, password } = req.body
-	const newUser: IUser = new User(
-		{
+	const { username, password } = req.body;
+	const hashedPassword = await bcrypt.hash(password, 10);
+	
+	try {
+		console.log(username, password);
+		const newUser = new User({
 			username,
-			password // not encrypted for now
-		}
-	);
-	await newUser.save()
-	res.status(200).json({id: newUser.id})
+			password: hashedPassword
+		});
+		await newUser.save();
+		res.status(201).json({ message: 'User registered successfully' });
+	} catch (err) {
+		res.status(400).json({ error: 'User already exists' });
+	}
 })
+
+// Login route
+app.post('/users/login', async (req, res) => {
+	const { username, password } = req.body;
+	console.log(username, password)
+	const user = await User.findOne({ username });
+	if (!user) return res.status(400).json({ error: 'User not found' });
+
+	const isMatch = await bcrypt.compare(password, user.password);
+	if (!isMatch) return res.status(400).json({ error: 'Invalid password' });
+
+	const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1d' });
+	res.json({ token });
+});
+
 
 // create new note
 app.post(`/notes`, async (req, res) => {
