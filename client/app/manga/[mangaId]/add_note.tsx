@@ -201,8 +201,7 @@ export default function AddNoteScreen() {
 								if ((entry.images === undefined || entry.images.length == 0)  && entry.text === undefined) return; // reject empty notes
 								if (await addMangaNote(mangaId.toString(), entry))
 								{
-									console.log("Note added!")
-									router.navigate(`/manga/${mangaId}`);
+									router.push(`/manga/${mangaId}`);
 								}
 							}}
 							mode="contained"

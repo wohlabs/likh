@@ -197,7 +197,7 @@ export default function Index() {
 					numColumns={1}
 					style={{flex: 1}}
 					renderItem={({ item }) => (
-						<Pressable style={{ height: 150, width: "100%", flexDirection: "row", alignItems: "center", padding: 5 }} onPress={() => { router.navigate(`/manga/${item.id}`) }}>
+						<Pressable style={{ height: 150, width: "100%", flexDirection: "row", alignItems: "center", padding: 5 }} onPress={() => { router.push(`/manga/${item.id}`) }}>
 							<Image
 								source={{ uri: item.coverImage?.large }}
 								resizeMode="contain"

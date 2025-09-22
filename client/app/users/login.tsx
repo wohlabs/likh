@@ -1,5 +1,5 @@
 import ThemeText from "@/components/ThemeText";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import axios from 'axios'
 import { TextInput } from "react-native-paper";
@@ -18,8 +18,8 @@ export default function UserLogin() {
 			const res = await axios.post('http://localhost:3000/users/login', { username, password });
 			const token = res.data.token;
 			// Store token in coookie
-			AsyncStorage.setItem("token", token)
-			router.navigate('/');
+			await AsyncStorage.setItem("token", token)
+			router.push('/');
 		}
 		catch (err: any)
 		{
@@ -34,7 +34,7 @@ export default function UserLogin() {
 				<TextInput label='password' placeholder="password" value={password} onChangeText={setPassword} secureTextEntry style={styles.input} />
 				{error ? <ThemeText style={styles.error}>{error}</ThemeText> : null}
 				<ThemeButton onPress={login} mode="contained" style={{width: '100%'}}>Login</ThemeButton>
-				<ThemeButton onPress={() => router.navigate('/users/register')}>Create new account</ThemeButton>
+				<ThemeButton onPress={() => router.push('/users/register')}>Create new account</ThemeButton>
 			</View>
 		</View>
 	);

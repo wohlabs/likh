@@ -16,7 +16,7 @@ export default function UserRegister()
 		try
 		{
 			await axios.post('http://localhost:3000/users', { username, password });
-			router.navigate('/users/login');
+			router.push('/users/login');
 		}
 		catch (err: any)
 		{
@@ -32,7 +32,7 @@ export default function UserRegister()
 				<TextInput label='password' placeholder="password" value={password} onChangeText={setPassword} secureTextEntry style={styles.input} />
 				{error ? <ThemeText style={styles.error}>{error}</ThemeText> : null}
 				<ThemeButton onPress={register} mode="contained" style={{width: '100%'}}>Register</ThemeButton>
-				<ThemeButton onPress={() => router.navigate('/users/login')}>Already have an account?</ThemeButton>
+				<ThemeButton onPress={() => router.push('/users/login')}>Already have an account?</ThemeButton>
 			</View>
 		</View>
 	);
