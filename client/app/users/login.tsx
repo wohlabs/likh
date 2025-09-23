@@ -6,19 +6,21 @@ import { TextInput } from "react-native-paper";
 import ThemeButton from "@/components/ThemeButton";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AuthContext } from "@/context/AuthContext";
 
 export default function UserLogin() {
 	const [username, setUsername] = useState<string>('');
 	const [password, setPassword] = useState<string>('');
 	const [error, setError] = useState('');
+	const {login} = useContext(AuthContext);
 
-	const login = async () => {
+	const userLogin = async () => {
 		try
 		{
 			const res = await axios.post('http://localhost:3000/users/login', { username, password });
 			const token = res.data.token;
-			// Store token in coookie
-			await AsyncStorage.setItem("token", token)
+			login(token)
+			
 			router.push('/');
 		}
 		catch (err: any)
@@ -33,7 +35,7 @@ export default function UserLogin() {
 				<TextInput label='username' placeholder="username" value={username} onChangeText={setUsername} style={styles.input} />
 				<TextInput label='password' placeholder="password" value={password} onChangeText={setPassword} secureTextEntry style={styles.input} />
 				{error ? <ThemeText style={styles.error}>{error}</ThemeText> : null}
-				<ThemeButton onPress={login} mode="contained" style={{width: '100%'}}>Login</ThemeButton>
+				<ThemeButton onPress={userLogin} mode="contained" style={{width: '100%'}}>Login</ThemeButton>
 				<ThemeButton onPress={() => router.push('/users/register')}>Create new account</ThemeButton>
 			</View>
 		</View>
