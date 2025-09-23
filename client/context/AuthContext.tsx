@@ -9,7 +9,7 @@ export const AuthContext = createContext({
 });
 
 export const AuthProvider = ({ children }: any) => {
-	const [token, setToken] = useState(null);
+	const [token, setToken] = useState<string | null>(null);
 	const [loading, setLoading] = useState(true);
 
 	// Load token from storage
@@ -17,17 +17,13 @@ export const AuthProvider = ({ children }: any) => {
 		const loadUser = async () => {
 		try {
 			const storedToken = await AsyncStorage.getItem('token');
-			if (storedToken)
-			{
-				setToken(JSON.parse(storedToken));
-			}
+			setToken(storedToken);
 		} catch (error) {
 			console.error('Failed to load user:', error);
 		} finally {
 			setLoading(false);
 		}
 		};
-
 		loadUser();
 	}, []);
 

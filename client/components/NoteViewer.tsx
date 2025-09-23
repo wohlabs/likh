@@ -100,7 +100,7 @@ export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}:
 						}
 					>
 						<Menu.Item 
-							onPress={async () => await deleteMangaNote(mangaId, note.id) && onDelete && onDelete()} title="Delete" leadingIcon={"delete"}
+							onPress={async () => await deleteMangaNote(mangaId, note.id) && onDelete && onDelete()} title="delete" leadingIcon={"delete"}
 						/>
 					</Menu>
 				</View>

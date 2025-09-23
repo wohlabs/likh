@@ -1,3 +1,4 @@
+import api from "@/api/AxiosInstance";
 import { IMangaNotes, INoteEntry } from "@/components/INotes";
 import NotePreviewCard from "@/components/NotePreviewCard";
 import NoteViewer from "@/components/NoteViewer";
@@ -44,7 +45,8 @@ export default function MangaDetails({ navigation }: any) {
 		}, [])
 	)
 
-	const onDelete = () => {
+	const onDelete = async (noteId: string) => {
+		await api.delete(`/notes/${noteId}`)
 		setIsViewingOverlay(false);
 		fetchData();
 	}
@@ -97,7 +99,7 @@ export default function MangaDetails({ navigation }: any) {
 						onPress={() => setViewerNoteIndex(viewerNoteIndex-1)}
 						pointerEvents={ viewerNoteIndex == 0  ? 'none' : 'auto'}
 					/>
-					<NoteViewer note={viewerNote} mangaId={Array.isArray(mangaId) ? mangaId[0] : mangaId} mangaTitle={manga?.title.userPreferred} style={{height: "100%", backgroundColor: "white", borderRadius: 10, shadowOpacity: 0.3, shadowRadius: 5}} onDelete={onDelete}/>
+					<NoteViewer note={viewerNote} mangaId={Array.isArray(mangaId) ? mangaId[0] : mangaId} mangaTitle={manga?.title.userPreferred} style={{height: "100%", backgroundColor: "white", borderRadius: 10, shadowOpacity: 0.3, shadowRadius: 5}} onDelete={() => onDelete(viewerNote.id)}/>
 					<Ionicons name="arrow-forward" size={50} color={"white"}
 						style={{opacity: viewerNoteIndex != filteredNotes.length - 1 ? 1 : 0 }} 
 						onPress={() => setViewerNoteIndex(viewerNoteIndex+1)}
