@@ -1,6 +1,6 @@
 import ThemeText from "@/components/ThemeText";
 import { useContext, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Dimensions } from "react-native";
 import axios from 'axios'
 import { TextInput } from "react-native-paper";
 import ThemeButton from "@/components/ThemeButton";
@@ -45,7 +45,7 @@ export default function UserLogin() {
 
 const styles = StyleSheet.create({
 	container: { flex: 1, justifyContent: 'center', padding: 20 },
-	formContainer: {width: 500, height: "80%", margin: 'auto', alignItems: 'center', justifyContent: 'center'},
+	formContainer: {maxWidth: 500, width: '90%', height: "80%", margin: 'auto', alignItems: 'center', justifyContent: 'center'},
 	input: { borderWidth: 1, marginBottom: 10, borderRadius: 5, width: '100%' },
 	error: { color: 'red', marginBottom: 10 },
 });
