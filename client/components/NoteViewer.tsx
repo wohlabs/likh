@@ -1,27 +1,43 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FlatList, Image, Pressable, ScrollView, StyleProp, StyleSheet, Text, View, ViewStyle } from "react-native";
 import { Button, IconButton, Menu, useTheme } from 'react-native-paper';
 import { INoteEntry } from "./INotes";
-import { deleteMangaNote } from "./util";
+import { deleteMangaNote, getImageBase64 as getImageBase64 } from "./util";
 import ThemeButton from "./ThemeButton";
 import ThemeText from "./ThemeText";
 
 export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}: { mangaTitle?: string, mangaId: string, note: INoteEntry, style?: StyleProp<ViewStyle>, onDelete?: () => void }) {
 	const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
 	const [optionsVisible, setOptionsVisible] = useState<boolean>(false);
+	const [images, setImages] = useState<string[]>(note.images);
 	const theme = useTheme();
+
+	useEffect(() => {
+		const fetchImages = async () => {
+			images.map(async (imageId, index) => {
+				const image = await getImageBase64(imageId)
+				setImages(prev => {
+					const updated = [...prev];
+					updated[index] = image
+					return updated
+				})
+			})
+		};
+		fetchImages()
+	}, [])
+
 	return (
 		note &&
 		<View style={[{ flex: 1, padding: 10, flexDirection: "row" }, style]} pointerEvents="box-none">
 			<View style={{ flex: 2, margin: 10, flexDirection: "column" }}>
 				{
-					note.images?.length > 0 ? 
+					images?.length > 0 ? 
 					<Image
 						defaultSource={{
 							uri: "https://png.pngtree.com/png-clipart/20190705/original/pngtree-vector-add-icon-png-image_4232053.jpg",
 						}}
 						source={{
-							uri: note.images[currentImageIndex] || "https://static.thenounproject.com/png/187803-200.png"
+							uri: images[currentImageIndex] || "https://static.thenounproject.com/png/187803-200.png"
 						}}
 						resizeMode="contain"
 						style={{
@@ -40,7 +56,7 @@ export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}:
 				}
 				<View style={{height: 100, flexDirection: "row"}}>
 					<FlatList
-						data={note.images}
+						data={images}
 						renderItem={({ item, index }) => (
 							<Pressable onPress={() => {setCurrentImageIndex(index)}}>
 								<Image

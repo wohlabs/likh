@@ -187,7 +187,7 @@ export const blobToBase64 = (blob: Blob) : Promise<string | ArrayBuffer | null> 
 	})
 };
 
-export const getImage = async (imageId: string) : Promise<string> => {
+export const getImageBase64 = async (imageId: string) : Promise<string> => {
 	const blob = (await api.get(`/images/${imageId}`, {
 		responseType: 'blob',
 	})).data

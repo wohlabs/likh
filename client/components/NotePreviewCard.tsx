@@ -4,15 +4,21 @@ import { INoteEntry } from "./INotes";
 
 import { ViewStyle } from "react-native";
 import ThemeText from "./ThemeText";
-import { getImage } from "./util";
+import { getImageBase64 } from "./util";
 import { useEffect, useState } from "react";
 
 export default function NotePreviewCard({ note, style, onPress }: { note: INoteEntry, style?: StyleProp<ViewStyle>, onPress?: () => void }) {
-	const [previews, setPreviews] = useState<string[]>([]);
+	const [previews, setPreviews] = useState<string[]>(note.images);
 	useEffect(() => {
 		const fetchImages = async () => {
-			const noteImageURLs = await Promise.all(note.images.map(async (imageId) => await getImage(imageId)))
-			setPreviews(noteImageURLs)
+			previews.map(async (imageId, index) => {
+				const image = await getImageBase64(imageId)
+				setPreviews(prev => {
+					const updated = [...prev];
+					updated[index] = image
+					return updated
+				})
+			})
 		};
 		fetchImages()
 	}, [])
