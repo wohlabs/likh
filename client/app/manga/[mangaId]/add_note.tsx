@@ -17,6 +17,7 @@ import { Button, IconButton, TextInput } from "react-native-paper";
 import { addMangaNote, getMangaDetails } from '../../../components/util';
 import ThemeButton from "@/components/ThemeButton";
 import ThemeText from "@/components/ThemeText";
+import api from "@/api/AxiosInstance";
 
 
 const KeyboardDismissWrapper = ({ children }: any) => {
@@ -38,7 +39,7 @@ const KeyboardDismissWrapper = ({ children }: any) => {
 export default function AddNoteScreen() {
 	const [text, onChangeText] = useState("");
 	const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
-	const [images, setImages] = useState<string[]>([]);
+	const [images, setImages] = useState<ImagePicker.ImagePickerAsset[]>([]);
 	const [startChapter, setStartChapter] = useState<string>() // -1 = all/general
 	const [endChapter, setEndChapter] = useState<string>() // -1 = all/general
 	const { mangaId } = useLocalSearchParams(); // <-- get from URL
@@ -61,11 +62,41 @@ export default function AddNoteScreen() {
 		});
 
 		if (!result.canceled) {
-			let newImages = [...images, result.assets[0].uri]
+			let newImages = [...images, result.assets[0]]
 			setImages(newImages);
 			setCurrentImageIndex(newImages.length - 1); // set to last image
 		}
 	};
+	const base64ToBlob = (base64: string, type = 'image/jpeg') => {
+		const base64Stripped = base64.replace(/^data:image\/\w+;base64,/, '')
+		const binary = atob(base64Stripped);
+		const array = [];
+		for (let i = 0; i < binary.length; i++) {
+			array.push(binary.charCodeAt(i));
+		}
+		return new Blob([new Uint8Array(array)], { type });
+	};
+
+	const createNote = async () => {
+		if ((images === undefined || images.length == 0)  && text === undefined) return; // reject empty notes
+
+		const formData = new FormData()
+		formData.append('mangaId', mangaId.toString())
+		formData.append('startChapter', startChapter ?? String(-1))
+		if (endChapter) formData.append('endChapter', endChapter)
+		if (text && text.trim().length > 0) formData.append('text', text)
+		for (const image of images)
+		{
+			const blob = base64ToBlob(image.uri, image.mimeType)
+			formData.append('images', blob, image.fileName || Date.now().toString())
+		}
+		await api.post('/notes', formData, {
+				headers: {
+					"Content-Type": 'multipart/form-data'
+				}
+			}
+		).then(() =>router.push(`/manga/${mangaId}`))
+	}
 
 	return (
 		<KeyboardDismissWrapper>
@@ -79,7 +110,7 @@ export default function AddNoteScreen() {
 								uri: "https://png.pngtree.com/png-clipart/20190705/original/pngtree-vector-add-icon-png-image_4232053.jpg",
 							}}
 							source={{
-								uri: images[currentImageIndex] || "https://static.thenounproject.com/png/187803-200.png"
+								uri: images[currentImageIndex].uri || "https://static.thenounproject.com/png/187803-200.png"
 							}}
 							resizeMode="contain"
 							style={{
@@ -102,7 +133,7 @@ export default function AddNoteScreen() {
 							renderItem={({ item, index }) => (
 								<Pressable onPress={() => {setCurrentImageIndex(index)}}>
 									<Image
-										source={{ uri: item }}
+										source={{ uri: item.uri }}
 										resizeMode="cover"
 										style={{
 											height: "100%",
@@ -189,20 +220,7 @@ export default function AddNoteScreen() {
 
 							onPress={async () => {
 								console.log("Adding note...")
-								let entry: INoteEntry = {
-									id: crypto.randomUUID(),
-									startChapter: startChapter ? parseInt(startChapter) : -1,
-									endChapter: endChapter ? parseInt(endChapter) : undefined,
-									createdAt: (new Date()).toISOString(),
-									modifiedAt: (new Date()).toISOString(),
-									images: images,
-									text: text.trim().length > 0 ? text : undefined
-								}
-								if ((entry.images === undefined || entry.images.length == 0)  && entry.text === undefined) return; // reject empty notes
-								if (await addMangaNote(mangaId.toString(), entry))
-								{
-									router.push(`/manga/${mangaId}`);
-								}
+								createNote()
 							}}
 							mode="contained"
 						>

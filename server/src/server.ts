@@ -1,17 +1,22 @@
 import express from 'express'
+import {Request, Response} from 'express'
 import { connectDB } from './config/db.js'
 import * as dotenv from 'dotenv'
-import { Schema, model, Document, Types } from 'mongoose'
+import mongoose, { Schema, model, Document, Types } from 'mongoose'
 import cors from 'cors'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import multer from 'multer'
+import { getGFSBucket } from './config/db.js'
+import { Readable } from 'stream'
 
 dotenv.config()
 const PORT = process.env.PORT || 5000;
 
 connectDB(process.env.MONGODB_URI || '');
+const storage = multer.memoryStorage();
+const upload = multer({storage});
 const app = express()
-app.use(express.json())
 app.use(cors())
 
 const JWT_SECRET = process.env.JWT_SECRET || "jwt_secret123"
@@ -29,7 +34,7 @@ export interface INote extends Document {
 	modifiedAt: Date; // modification timestamp
 	startChapter: number;
 	endChapter?: number;
-	images: string[]; // could be an empty array
+	images: Types.ObjectId[]; // could be an empty array
 	text?: string
 }
 
@@ -40,7 +45,7 @@ const NoteSchema = new Schema<INote>({
 	modifiedAt: {type: Date, required: true, default: Date.now },
 	startChapter: {type: Number, required: true },
 	endChapter: {type: Number, required: false },
-	images: {type: [String], default: []},
+	images: {type: [Schema.ObjectId], default: [], ref: 'uploads.files'},
 	text: {type: String, default: ""}
 });
 
@@ -66,6 +71,71 @@ const authenticationMiddleware = (req: any, res: any, next: any) => {
 		res.status(401).json({ error: 'Invalid token' });
 	}
 };
+
+// create new note
+app.post(`/notes`,upload.array('images', 10), authenticationMiddleware, async (req: any, res) => {
+	const userId = req.user.id;
+	let { mangaId, startChapter, endChapter, text } = req.body
+	// invalid note entry
+	if ((!req.files || req.files.length == 0) && !text) return res.status(400).json('Invalid note')
+
+	const imageIds: Types.ObjectId[] = [];
+	try
+	{
+		const files = req.files as Express.Multer.File[]; // type assertion
+		if (files && files.length > 0)
+		{
+			const uploadedFiles = [];
+			const bucket = getGFSBucket();
+			for (const file of files)
+			{
+				const readableStream = new Readable()
+				readableStream.push(file.buffer)
+				readableStream.push(null)
+				const uploadStream = bucket?.openUploadStream(`${Date.now()}_${file.originalname}`);
+				if (uploadStream)
+				{
+					readableStream.pipe(uploadStream);
+					// Wait for upload to finish before pushing fileId
+					await new Promise((resolve, reject) => {
+						uploadStream.on('finish', () => {
+							uploadedFiles.push({ fileName: file.originalname, fileId: uploadStream.id });
+							imageIds.push(uploadStream.id)
+							resolve(null);
+						});
+						uploadStream.on('error', reject);
+					})
+				}
+			}
+		}
+	}
+	catch (err: any)
+	{
+		return res.status(500).json({error: err.message})
+	}
+
+	const user: IUser | null = await User.findById(userId).exec();
+	if (user?.manga.indexOf(mangaId) === -1)
+	{
+		user.manga.push(mangaId)
+		user.save()
+	}
+
+	const newNote: INote = new Note(
+		{
+			userId,
+			mangaId,
+			startChapter,
+			endChapter,
+			images: imageIds,
+			text
+		}
+	);
+	await newNote.save()
+	res.json(newNote)
+})
+
+app.use(express.json())
 
 // get notes
 app.get(`/notes`, authenticationMiddleware, async (req: any, res) => {
@@ -124,33 +194,6 @@ app.post('/users/login', async (req, res) => {
 });
 
 
-// create new note
-app.post(`/notes`, authenticationMiddleware, async (req: any, res) => {
-	const userId = req.user.id;
-	let { mangaId, startChapter, endChapter, images, text } = req.body
-	// invalid note entry
-	if ((!images || images.length == 0) && !text) return res.sendStatus(400)
-
-	const user: IUser | null = await User.findById(userId).exec();
-	if (user?.manga.indexOf(mangaId) === -1)
-	{
-		user.manga.push(mangaId)
-		user.save()
-	}
-
-	const newNote: INote = new Note(
-		{
-			userId,
-			mangaId,
-			startChapter,
-			endChapter,
-			images,
-			text
-		}
-	);
-	await newNote.save()
-	res.json(newNote)
-})
 
 // get manga from user's collection
 app.get(`/users/me/manga`, authenticationMiddleware, async (req: any, res) => {
