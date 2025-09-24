@@ -57,6 +57,12 @@
         "projectId": "feaf4a33-4f78-4e34-9534-a576e59d4f93"
       }
     },
-    "owner": "jaikog01"
+    "owner": "jaikog01",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/feaf4a33-4f78-4e34-9534-a576e59d4f93"
+    }
   }
 }
