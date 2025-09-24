@@ -4,7 +4,7 @@ import { addMangaToLibrary, formatData, MANGA_SEARCH_QUERY, TEST_USER_ID } from 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Stack, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { FlatList, Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { FlatList, Image, Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import { IconButton, Modal, Portal, Searchbar, useTheme } from "react-native-paper";
 
 const MANGA_QUERY = `
@@ -60,6 +60,8 @@ export default function Index() {
 	const [searchString, setSearchString] = useState("")
 	const [newMangaList, setNewMangaList] = useState<MangaProps[]>([]);
 	const [newSearchString, setNewSearchString] = useState("")
+	const { width, height } = useWindowDimensions();
+	const listColNum = Math.min(Math.max(Math.ceil(width/200), 1), 5)
 
 	const populateMangaList = async () => {
 		let libraryMangaIds: number[] = []
@@ -148,7 +150,7 @@ export default function Index() {
 		/>
 		<View style={{flex: 1}}>
 			<FlatList
-				data={formatData(filteredMangaList, 5)}
+				data={formatData(filteredMangaList, Math.min(5, listColNum))}
 				keyExtractor={(item) => item.id}
 				numColumns={5}
 				style={{flex: 1}}
