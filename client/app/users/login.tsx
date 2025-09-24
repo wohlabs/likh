@@ -7,6 +7,7 @@ import ThemeButton from "@/components/ThemeButton";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContext } from "@/context/AuthContext";
+import api from "@/api/AxiosInstance";
 
 export default function UserLogin() {
 	const [username, setUsername] = useState<string>('');
@@ -17,7 +18,7 @@ export default function UserLogin() {
 	const userLogin = async () => {
 		try
 		{
-			const res = await axios.post('http://localhost:3000/users/login', { username, password });
+			const res = await api.post('/users/login', { username, password });
 			const token = res.data.token;
 			login(token)
 			
