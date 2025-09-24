@@ -73,7 +73,7 @@ export default function AddNoteScreen() {
 
 		const formData = new FormData()
 		formData.append('mangaId', mangaId.toString())
-		formData.append('startChapter', startChapter ?? String(-1))
+		formData.append('startChapter', startChapter ? startChapter : String(-1))
 		if (endChapter) formData.append('endChapter', endChapter)
 		if (text && text.trim().length > 0) formData.append('text', text)
 		for (const image of images)
