@@ -167,7 +167,7 @@ export default function Index() {
 					: <View style={{ flex: 1, backgroundColor: "transparent", margin: 5 }} />
 				)}
 			/>
-			<View style={{height: 60, width: "50%", position: "absolute", bottom: 25, left:"50%", transform: "translateX(-50%)", flexDirection: "row", alignItems: "center"}}>
+			<View style={{height: 60, minWidth: 350, width: "50%", position: "absolute", bottom: 25, left:"50%", transform: "translateX(-50%)", flexDirection: "row", alignItems: "center"}}>
 				<Searchbar
 					placeholder="search library"
 					onChangeText={setSearchString}
@@ -185,7 +185,7 @@ export default function Index() {
 			</View>
 		</View>
 		<Portal>
-			<Modal visible={isSearching} onDismiss={() => setSearching(false)} contentContainerStyle={{padding: 0, margin: 100, height: "80%", backgroundColor: "white", borderRadius: 10 }}>
+			<Modal visible={isSearching} onDismiss={() => setSearching(false)} contentContainerStyle={{padding: 0, margin: 'auto', width: "90%", height: "80%", backgroundColor: "white", borderRadius: 10 }}>
 				<Searchbar
 					placeholder="search manga"
 					onChangeText={setNewSearchString}
