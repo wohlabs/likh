@@ -158,6 +158,8 @@ export default function AddNoteScreen() {
 							placeholderTextColor={"gray"}
 							style={{
 								margin: 2,
+								flex: 1,
+								maxWidth: 200
 							}}
 						/>
 						<ThemeText>-</ThemeText>
@@ -171,6 +173,8 @@ export default function AddNoteScreen() {
 							placeholderTextColor={"gray"}
 							style={{
 								outlineWidth: 1,
+								flex: 1,
+								maxWidth: 200
 							}}
 						/>
 					</View>
