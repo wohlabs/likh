@@ -33,6 +33,7 @@ export default function MangaDetails({ navigation }: any) {
 
 	const fetchData = async () => {
 		const DATA = await getMangaData(mangaId.toString());
+		console.log(DATA)
 		setData(DATA);
 	};
 	useEffect(() => {

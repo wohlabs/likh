@@ -4,8 +4,18 @@ import { INoteEntry } from "./INotes";
 
 import { ViewStyle } from "react-native";
 import ThemeText from "./ThemeText";
+import { getImage } from "./util";
+import { useEffect, useState } from "react";
 
 export default function NotePreviewCard({ note, style, onPress }: { note: INoteEntry, style?: StyleProp<ViewStyle>, onPress?: () => void }) {
+	const [previews, setPreviews] = useState<string[]>([]);
+	useEffect(() => {
+		const fetchImages = async () => {
+			const noteImageURLs = await Promise.all(note.images.map(async (imageId) => await getImage(imageId)))
+			setPreviews(noteImageURLs)
+		};
+		fetchImages()
+	}, [])
 	return (
 		<Pressable
 			style={[
@@ -14,12 +24,12 @@ export default function NotePreviewCard({ note, style, onPress }: { note: INoteE
 			]}
 			onPress={onPress}
 		>
-			{(note.images && note.images.length > 0) && // render carousel if there are images
-				(note.images.length > 1 ? 
+			{(previews && previews.length > 0) && // render carousel if there are images
+				(previews.length > 1 ? 
 				(<Carousel
 					height={200}
 					width={200}
-					data={note.images}
+					data={previews}
 					loop={false}
 					pagingEnabled={true}
 					snapEnabled={true}
@@ -45,7 +55,7 @@ export default function NotePreviewCard({ note, style, onPress }: { note: INoteE
 				:
 				(<View style={{ width: 200, height: 200, justifyContent: "center", alignItems: "center" }} key={0}>
 					<Image
-						source={{ uri: note.images[0] }}
+						source={{ uri: previews[0] }}
 						style={{ height: "80%", aspectRatio: 1, backgroundColor: "white", borderRadius: 10 }}
 						resizeMode="cover"
 					/>

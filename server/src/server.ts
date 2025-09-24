@@ -92,14 +92,19 @@ app.post(`/notes`,upload.array('images', 10), authenticationMiddleware, async (r
 				const readableStream = new Readable()
 				readableStream.push(file.buffer)
 				readableStream.push(null)
-				const uploadStream = bucket?.openUploadStream(`${Date.now()}_${file.originalname}`);
+				const uploadStream = bucket?.openUploadStream(`${Date.now()}_${file.originalname}`, {
+					metadata: {
+						userId,
+						mimeType: file.mimetype
+					}
+				});
 				if (uploadStream)
 				{
 					readableStream.pipe(uploadStream);
 					// Wait for upload to finish before pushing fileId
 					await new Promise((resolve, reject) => {
 						uploadStream.on('finish', () => {
-							uploadedFiles.push({ fileName: file.originalname, fileId: uploadStream.id });
+							uploadedFiles.push({ fileName: file.originalname, fileId: uploadStream.id,  });
 							imageIds.push(uploadStream.id)
 							resolve(null);
 						});
@@ -133,6 +138,25 @@ app.post(`/notes`,upload.array('images', 10), authenticationMiddleware, async (r
 	);
 	await newNote.save()
 	res.json(newNote)
+})
+
+app.get('/images/:id', authenticationMiddleware, async (req: any, res: Response) => {
+	const id = new Types.ObjectId(req.params.id);
+	const userId = req.user.id
+	try
+	{
+		const file = await mongoose.connection.db?.collection('images.files').findOne({_id: id});
+		if (!file) return res.status(404).json('Image not found');
+		if(file.metadata.userId !== userId) return res.status(401).json('Unauthorized')
+		res.set('Content-Type', file.metadata.mimeType)
+		res.set('Content-Disposition', `inline; filename="${file.filename}"`)
+		const downloadStream = getGFSBucket()?.openDownloadStream(file._id)
+		downloadStream?.pipe(res);
+	}
+	catch (err: any)
+	{
+		res.status(500).json(err.message);
+	}
 })
 
 app.use(express.json())

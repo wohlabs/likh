@@ -168,3 +168,32 @@ export const formatData = (data: Array<any>, numColumns: number) => {
 	}
 	return copyData;
 };
+export const base64ToBlob = (base64: string, type = 'image/jpeg') => {
+	const base64Stripped = base64.replace(/^data:image\/\w+;base64,/, '')
+	const binary = atob(base64Stripped);
+	const array = [];
+	for (let i = 0; i < binary.length; i++) {
+		array.push(binary.charCodeAt(i));
+	}
+	return new Blob([new Uint8Array(array)], { type });
+};
+
+export const blobToBase64 = (blob: Blob) : Promise<string | ArrayBuffer | null> => {
+	return new Promise((resolve, reject) => {
+		const reader = new FileReader()
+		reader.onloadend = () => resolve(reader.result)
+		reader.onerror = reject
+		reader.readAsDataURL(blob)
+	})
+};
+
+export const getImage = async (imageId: string) : Promise<string> => {
+	const blob = (await api.get(`/images/${imageId}`, {
+		responseType: 'blob',
+	})).data
+	console.log(blob.type)
+	const imageBase64 = await blobToBase64(blob)
+	if (imageBase64 instanceof ArrayBuffer) return ""
+	if (imageBase64 === null) return ""
+	else return imageBase64
+}

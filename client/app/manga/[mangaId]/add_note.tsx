@@ -14,7 +14,7 @@ import
 		View
 	} from "react-native";
 import { Button, IconButton, TextInput } from "react-native-paper";
-import { addMangaNote, getMangaDetails } from '../../../components/util';
+import { addMangaNote, base64ToBlob, getMangaDetails } from '../../../components/util';
 import ThemeButton from "@/components/ThemeButton";
 import ThemeText from "@/components/ThemeText";
 import api from "@/api/AxiosInstance";
@@ -66,15 +66,6 @@ export default function AddNoteScreen() {
 			setImages(newImages);
 			setCurrentImageIndex(newImages.length - 1); // set to last image
 		}
-	};
-	const base64ToBlob = (base64: string, type = 'image/jpeg') => {
-		const base64Stripped = base64.replace(/^data:image\/\w+;base64,/, '')
-		const binary = atob(base64Stripped);
-		const array = [];
-		for (let i = 0; i < binary.length; i++) {
-			array.push(binary.charCodeAt(i));
-		}
-		return new Blob([new Uint8Array(array)], { type });
 	};
 
 	const createNote = async () => {
