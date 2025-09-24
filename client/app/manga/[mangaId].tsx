@@ -8,7 +8,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { FlatList, Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import { FlatList, Image, ScrollView, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import { IconButton, Modal, Portal, Searchbar } from "react-native-paper";
 
 const Tab = createMaterialTopTabNavigator();
@@ -63,14 +63,14 @@ export default function MangaDetails({ navigation }: any) {
 
 	return (
 		<ScrollView contentContainerStyle={{ minHeight: '100%'}}>
-			<View style={{ alignItems: 'center', height: 300, width: '100%', justifyContent: 'center', flexDirection: 'row' }}>
-				<View style={{height: '100%', width: '70%', flexDirection: 'row'}}>
+			<View style={{ alignItems: 'center', height: '30%', maxHeight: 200, width: '100%', justifyContent: 'center', flexDirection: 'row' }}>
+				<View style={{height: '100%', maxWidth: 700, width: '100%', flexDirection: 'row'}}>
 					<Image
 						source={{ uri: manga?.coverImage?.large }}
 						resizeMode="contain"
-						style={{height: '100%', aspectRatio: '1'}}
+						style={{flex:1, aspectRatio: '1', marginHorizontal: 5}}
 					/>
-					<View style={{ flex: 1}}>
+					<View style={{ flex: 3}}>
 						<View style={{flex: 1, flexDirection: 'row', alignItems: 'flex-end'}}>
 							<ThemeText style={{fontSize: 24, fontWeight: 'bold', alignItems: 'flex-end', textAlignVertical: 'bottom'}}>{manga?.title.userPreferred}</ThemeText>
 						</View>
