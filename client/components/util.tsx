@@ -51,7 +51,7 @@ export type IMangaDetails = {
 
 export const getMangaData = async (mangaId: string) : Promise<IMangaNotes> => {
 	try {
-		const response = await api.get(`http://localhost:3000/notes?mangaId=${mangaId}`);
+		const response = await api.get(`/notes?mangaId=${mangaId}`);
 		const notes: IMangaNotes = response.data.map((item: any) => ({
 			id: item._id,
 			createdAt: item.createdAt,
