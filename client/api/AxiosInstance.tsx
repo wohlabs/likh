@@ -2,7 +2,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const api = axios.create({
-  baseURL: 'https://aninote.loca.lt', // Replace with your backend URL
+  baseURL: 'http://localhost:3000', // Replace with your backend URL
   timeout: 10000,
   headers: {
 	"bypass-tunnel-reminder": true
