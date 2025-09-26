@@ -62,52 +62,54 @@ export default function MangaDetails({ navigation }: any) {
 	}, [filteredNotes, viewerNoteIndex]);
 
 	return (
-		<ScrollView contentContainerStyle={{ minHeight: '100%'}}>
-			<View style={{ alignItems: 'center', height: '30%', maxHeight: 200, width: '100%', justifyContent: 'center', flexDirection: 'row' }}>
-				<View style={{height: '100%', maxWidth: 700, width: '100%', flexDirection: 'row'}}>
-					<Image
-						source={{ uri: manga?.coverImage?.large }}
-						resizeMode="contain"
-						style={{flex:1, aspectRatio: '1', marginHorizontal: 5}}
-					/>
-					<View style={{ flex: 3}}>
-						<View style={{flex: 1, flexDirection: 'row', alignItems: 'flex-end'}}>
-							<ThemeText style={{fontSize: 24, fontWeight: 'bold', alignItems: 'flex-end', textAlignVertical: 'bottom'}}>{manga?.title.userPreferred}</ThemeText>
+		<View style={{flex:1}}>
+			<ScrollView contentContainerStyle={{ minHeight: '100%'}}>
+				<View style={{ alignItems: 'center', height: '30%', maxHeight: 200, width: '100%', justifyContent: 'center', flexDirection: 'row' }}>
+					<View style={{height: '100%', maxWidth: 700, width: '100%', flexDirection: 'row'}}>
+						<Image
+							source={{ uri: manga?.coverImage?.large }}
+							resizeMode="contain"
+							style={{flex:1, aspectRatio: '1', marginHorizontal: 5}}
+						/>
+						<View style={{ flex: 3}}>
+							<View style={{flex: 1, flexDirection: 'row', alignItems: 'flex-end'}}>
+								<ThemeText style={{fontSize: 24, fontWeight: 'bold', alignItems: 'flex-end', textAlignVertical: 'bottom'}}>{manga?.title.userPreferred}</ThemeText>
+							</View>
+							<ThemeText style={{flex: 2}}>{manga?.description}</ThemeText>
 						</View>
-						<ThemeText style={{flex: 2}}>{manga?.description}</ThemeText>
 					</View>
 				</View>
-			</View>
-			<FlatList
-				data={formatData(filteredNotes, 2)}
-				keyExtractor={(_, index) => index.toString()}
-				numColumns={2}
-				contentContainerStyle={{flexGrow: 0}}
-				scrollEnabled={false}
-				columnWrapperStyle={{ marginLeft: 5, marginRight: 5 }}
-				renderItem={({ item, index }: { item: INoteEntry, index: any }) => (
-					item.id ?
-					<NotePreviewCard note={item} style={{ flex: 1, height: 200, margin: 5}} onPress={()=> {setViewerNoteIndex(index); setIsViewingOverlay(true)}}/>
-					:
-					<View style={{ flex: 1, margin: 5}}></View>
-				)}
-			/>
-			<Portal>
-				<Modal visible={isViewingOverlay} onDismiss={() => {setIsViewingOverlay(false)}} contentContainerStyle={{margin: 100, flexDirection: "row", alignItems: "center", height: "80%", shadowOpacity: 0, justifyContent: "center"}}
-					>
-					<Ionicons name="arrow-back" size={50} color={"white"}
-						style={{opacity: viewerNoteIndex != 0 ? 1 : 0 }}
-						onPress={() => setViewerNoteIndex(viewerNoteIndex-1)}
-						pointerEvents={ viewerNoteIndex == 0  ? 'none' : 'auto'}
-					/>
-					<NoteViewer note={viewerNote} mangaId={Array.isArray(mangaId) ? mangaId[0] : mangaId} mangaTitle={manga?.title.userPreferred} style={{height: "100%", backgroundColor: "white", borderRadius: 10, shadowOpacity: 0.3, shadowRadius: 5}} onDelete={() => onDelete(viewerNote.id)}/>
-					<Ionicons name="arrow-forward" size={50} color={"white"}
-						style={{opacity: viewerNoteIndex != filteredNotes.length - 1 ? 1 : 0 }} 
-						onPress={() => setViewerNoteIndex(viewerNoteIndex+1)}
-						pointerEvents={ viewerNoteIndex == filteredNotes.length - 1  ? 'none' : 'auto'}
-					/>
-				</Modal>
-			</Portal>
+				<FlatList
+					data={formatData(filteredNotes, 2)}
+					keyExtractor={(_, index) => index.toString()}
+					numColumns={2}
+					contentContainerStyle={{flexGrow: 0}}
+					scrollEnabled={false}
+					columnWrapperStyle={{ marginLeft: 5, marginRight: 5 }}
+					renderItem={({ item, index }: { item: INoteEntry, index: any }) => (
+						item.id ?
+						<NotePreviewCard note={item} style={{ flex: 1, height: 200, margin: 5}} onPress={()=> {setViewerNoteIndex(index); setIsViewingOverlay(true)}}/>
+						:
+						<View style={{ flex: 1, margin: 5}}></View>
+					)}
+				/>
+				<Portal>
+					<Modal visible={isViewingOverlay} onDismiss={() => {setIsViewingOverlay(false)}} contentContainerStyle={{margin: 100, flexDirection: "row", alignItems: "center", height: "80%", shadowOpacity: 0, justifyContent: "center"}}
+						>
+						<Ionicons name="arrow-back" size={50} color={"white"}
+							style={{opacity: viewerNoteIndex != 0 ? 1 : 0 }}
+							onPress={() => setViewerNoteIndex(viewerNoteIndex-1)}
+							pointerEvents={ viewerNoteIndex == 0  ? 'none' : 'auto'}
+						/>
+						<NoteViewer note={viewerNote} mangaId={Array.isArray(mangaId) ? mangaId[0] : mangaId} mangaTitle={manga?.title.userPreferred} style={{height: "100%", backgroundColor: "white", borderRadius: 10, shadowOpacity: 0.3, shadowRadius: 5}} onDelete={() => onDelete(viewerNote.id)}/>
+						<Ionicons name="arrow-forward" size={50} color={"white"}
+							style={{opacity: viewerNoteIndex != filteredNotes.length - 1 ? 1 : 0 }} 
+							onPress={() => setViewerNoteIndex(viewerNoteIndex+1)}
+							pointerEvents={ viewerNoteIndex == filteredNotes.length - 1  ? 'none' : 'auto'}
+						/>
+					</Modal>
+				</Portal>
+			</ScrollView>
 			<View style={{height: 60, width: "50%", minWidth: 350, position: "sticky", bottom: 25, flexDirection: "row", alignItems: "center", margin: 'auto'}}>
 				<Searchbar
 					placeholder="search note"
@@ -123,7 +125,7 @@ export default function MangaDetails({ navigation }: any) {
 					mode="contained"
 				/>
 			</View>
-		</ScrollView>
+		</View>
 	);
 }
 
