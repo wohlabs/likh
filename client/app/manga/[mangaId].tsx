@@ -61,8 +61,8 @@ export default function MangaDetails({ navigation }: any) {
 	}, [filteredNotes, viewerNoteIndex]);
 
 	return (
-		<View style={{flex:1}}>
-			<ScrollView contentContainerStyle={{ minHeight: '100%'}}>
+		<View style={{flex: 1}}>
+			<ScrollView nestedScrollEnabled={true}>
 				<View style={{ alignItems: 'center', height: 200, maxHeight: 200, width: '100%', justifyContent: 'center', flexDirection: 'row' }}>
 					<View style={{height: '100%', maxWidth: 700, width: '100%', flexDirection: 'row'}}>
 						<Image
@@ -79,12 +79,11 @@ export default function MangaDetails({ navigation }: any) {
 					</View>
 				</View>
 				<FlatList
-					data={formatData(filteredNotes, 2)}
+					data={filteredNotes}
 					keyExtractor={(_, index) => index.toString()}
-					numColumns={2}
+					numColumns={1}
 					contentContainerStyle={{flexGrow: 0}}
 					scrollEnabled={false}
-					columnWrapperStyle={{ marginLeft: 5, marginRight: 5 }}
 					renderItem={({ item, index }: { item: INoteEntry, index: any }) => (
 						item.id ?
 						<NotePreviewCard note={item} style={{ flex: 1, height: 200, margin: 5}} onPress={()=> {setViewerNoteIndex(index); setIsViewingOverlay(true)}}/>
@@ -109,21 +108,24 @@ export default function MangaDetails({ navigation }: any) {
 					</Modal>
 				</Portal>
 			</ScrollView>
-			<View style={{height: 60, width: "50%", minWidth: 350, position: "sticky", bottom: 25, flexDirection: "row", alignItems: "center", margin: 'auto'}}>
-				<Searchbar
-					placeholder="search note"
-					onChangeText={setSearchString}
-					style={{margin: 10, borderRadius: 10, flex: 1, shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
-					value={searchString}
-				/>
-				<IconButton
-					icon={"plus"}
-					size={30}
-					onPress={() => router.navigate(`/manga/${mangaId}/add_note`)}
-					style={{shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
-					mode="contained"
-				/>
+			<View style={{width: "100%", minWidth: 350, height: 60, position: "absolute", bottom: 25, flexDirection: "row", alignItems: "center", margin: 'auto', justifyContent: 'center'}}>
+				<View style={{width: '90%', flexDirection: 'row', maxWidth: 600, alignItems: 'center'}}>
+					<Searchbar
+						placeholder="search note"
+						onChangeText={setSearchString}
+						style={{margin: 10, borderRadius: 10, flex: 1, shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
+						value={searchString}
+					/>
+					<IconButton
+						icon={"plus"}
+						size={30}
+						onPress={() => router.navigate(`/manga/${mangaId}/add_note`)}
+						style={{shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
+						mode="contained"
+					/>
+				</View>
 			</View>
+
 		</View>
 	);
 }

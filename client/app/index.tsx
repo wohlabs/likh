@@ -167,21 +167,23 @@ export default function Index() {
 					: <View style={{ flex: 1, backgroundColor: "transparent", margin: 5 }} />
 				)}
 			/>
-			<View style={{height: 60, width: "50%", minWidth: 350, position: "sticky", bottom: 25, flexDirection: "row", alignItems: "center", margin: 'auto'}}>
-				<Searchbar
-					placeholder="search library"
-					onChangeText={setSearchString}
-					onSubmitEditing={() => { populateNewMangaList(); }}
-					style={{margin: 10, borderRadius: 10, flex: 1, shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
-					value={searchString}
-				/>
-				<IconButton
-					icon={"plus"}
-					size={30}
-					onPress={() => { setSearching(!isSearching); populateNewMangaList(); }}
-					style={{shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
-					mode="contained"
-				/>
+			<View style={{width: "100%", minWidth: 350, height: 60, position: "absolute", bottom: 25, flexDirection: "row", alignItems: "center", margin: 'auto', justifyContent: 'center'}}>
+				<View style={{width: '90%', maxWidth: 600, flexDirection: 'row', alignItems: 'center'}}>
+					<Searchbar
+						placeholder="search library"
+						onChangeText={setSearchString}
+						onSubmitEditing={() => { populateNewMangaList(); }}
+						style={{margin: 10, borderRadius: 10, flex: 1, shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
+						value={searchString}
+					/>
+					<IconButton
+						icon={"plus"}
+						size={30}
+						onPress={() => { setSearching(!isSearching); populateNewMangaList(); }}
+						style={{shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
+						mode="contained"
+					/>
+				</View>
 			</View>
 		</View>
 		<Portal>
