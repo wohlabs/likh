@@ -72,6 +72,8 @@ const authenticationMiddleware = (req: any, res: any, next: any) => {
 	}
 };
 
+app.get(`/`, (req: any, res) => {res.json('hello world')})
+
 // create new note
 app.post(`/notes`,upload.array('images', 10), authenticationMiddleware, async (req: any, res) => {
 	const userId = req.user.id;
