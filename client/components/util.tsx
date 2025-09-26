@@ -191,7 +191,6 @@ export const getImageBase64 = async (imageId: string) : Promise<string> => {
 	const blob = (await api.get(`/images/${imageId}`, {
 		responseType: 'blob',
 	})).data
-	console.log(blob.type)
 	const imageBase64 = await blobToBase64(blob)
 	if (imageBase64 instanceof ArrayBuffer) return ""
 	if (imageBase64 === null) return ""

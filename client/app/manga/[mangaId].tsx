@@ -33,7 +33,6 @@ export default function MangaDetails({ navigation }: any) {
 
 	const fetchData = async () => {
 		const DATA = await getMangaData(mangaId.toString());
-		console.log(DATA)
 		setData(DATA);
 	};
 	useEffect(() => {
@@ -64,14 +63,14 @@ export default function MangaDetails({ navigation }: any) {
 	return (
 		<View style={{flex:1}}>
 			<ScrollView contentContainerStyle={{ minHeight: '100%'}}>
-				<View style={{ alignItems: 'center', height: '30%', maxHeight: 200, width: '100%', justifyContent: 'center', flexDirection: 'row' }}>
+				<View style={{ alignItems: 'center', height: 200, maxHeight: 200, width: '100%', justifyContent: 'center', flexDirection: 'row' }}>
 					<View style={{height: '100%', maxWidth: 700, width: '100%', flexDirection: 'row'}}>
 						<Image
 							source={{ uri: manga?.coverImage?.large }}
 							resizeMode="contain"
-							style={{flex:1, aspectRatio: '1', marginHorizontal: 5}}
+							style={{aspectRatio: 3/4, marginHorizontal: 5}}
 						/>
-						<View style={{ flex: 3}}>
+						<View style={{ flex: 1 }}>
 							<View style={{flex: 1, flexDirection: 'row', alignItems: 'flex-end'}}>
 								<ThemeText style={{fontSize: 24, fontWeight: 'bold', alignItems: 'flex-end', textAlignVertical: 'bottom'}}>{manga?.title.userPreferred}</ThemeText>
 							</View>
