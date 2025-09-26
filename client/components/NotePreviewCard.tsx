@@ -1,5 +1,4 @@
 import { Image, Pressable, StyleProp, Text, View } from "react-native";
-import Carousel from "react-native-reanimated-carousel";
 import { INoteEntry } from "./INotes";
 
 import { ViewStyle } from "react-native";
@@ -30,35 +29,7 @@ export default function NotePreviewCard({ note, style, onPress }: { note: INoteE
 			]}
 			onPress={onPress}
 		>
-			{(previews && previews.length > 0) && // render carousel if there are images
-				(previews.length > 1 ? 
-				(<Carousel
-					height={200}
-					width={200}
-					data={previews}
-					loop={false}
-					pagingEnabled={true}
-					snapEnabled={true}
-					enabled={true}
-					mode={"horizontal-stack"}
-
-					modeConfig={{
-						snapDirection: 'left',
-						rotateZDeg: 50
-					}}
-
-					customConfig={() => ({ type: "positive", viewCount: 1 })}
-					renderItem={({ item, index }) => (
-						<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} key={index}>
-							<Image
-								source={{ uri: item }}
-								style={{ height: "80%", aspectRatio: 1, backgroundColor: "white", borderRadius: 10 }}
-								resizeMode="cover"
-							/>
-						</View>
-					)}
-				/>)
-				:
+			{(previews && previews.length > 0) &&
 				(<View style={{ width: 200, height: 200, justifyContent: "center", alignItems: "center" }} key={0}>
 					<Image
 						source={{ uri: previews[0] }}
@@ -66,7 +37,6 @@ export default function NotePreviewCard({ note, style, onPress }: { note: INoteE
 						resizeMode="cover"
 					/>
 				</View>)
-		)
 		}
 			<View style={{ flex: 1, padding: 10 }}>
 				<ThemeText>{note.modifiedAt || "date @ time"}</ThemeText>
