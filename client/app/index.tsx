@@ -152,7 +152,7 @@ export default function Index() {
 			<FlatList
 				data={formatData(filteredMangaList, Math.min(5, listColNum))}
 				keyExtractor={(item) => item.id}
-				numColumns={5}
+				numColumns={Math.min(5, listColNum)}
 				style={{flex: 1}}
 				renderItem={({ item }) => (
 					item?.id ?
