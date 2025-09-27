@@ -104,6 +104,7 @@ export default function MangaDetails({ navigation }: any) {
 						/>
 					</Modal>
 				</Portal>
+				<View style={{height: 85}}/>
 			</ScrollView>
 			<View style={{width: "100%", minWidth: 350, height: 60, position: "absolute", bottom: 25, flexDirection: "row", alignItems: "center", margin: 'auto', justifyContent: 'center'}}>
 				<View style={{width: '90%', flexDirection: 'row', maxWidth: 600, alignItems: 'center'}}>
