@@ -71,10 +71,10 @@ export default function MangaDetails({ navigation }: any) {
 							style={{aspectRatio: 3/4, marginHorizontal: 5}}
 						/>
 						<View style={{ flex: 1 }}>
-							<View style={{flex: 1, flexDirection: 'row', alignItems: 'flex-end'}}>
+							<View style={{ height: '30%', flexDirection: 'row', alignItems: 'flex-end'}}>
 								<ThemeText style={{fontSize: 24, fontWeight: 'bold', alignItems: 'flex-end', textAlignVertical: 'bottom'}}>{manga?.title.userPreferred}</ThemeText>
 							</View>
-							<ThemeText style={{flex: 2}}>{manga?.description}</ThemeText>
+							<ThemeText lineBreakMode="tail" numberOfLines={6} ellipsizeMode="tail">{manga?.description}</ThemeText>
 						</View>
 					</View>
 				</View>
