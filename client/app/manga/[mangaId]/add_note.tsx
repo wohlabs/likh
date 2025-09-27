@@ -1,7 +1,7 @@
 import { INoteEntry } from "@/components/INotes";
 import * as ImagePicker from "expo-image-picker";
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import
 	{
 		FlatList,
@@ -14,11 +14,13 @@ import
 		View
 	} from "react-native";
 import { Button, IconButton, TextInput } from "react-native-paper";
-import { addMangaNote, base64ToBlob, getMangaDetails } from '../../../components/util';
+import { addMangaNote, getMangaDetails } from '../../../components/util';
 import ThemeButton from "@/components/ThemeButton";
 import ThemeText from "@/components/ThemeText";
-import api from "@/api/AxiosInstance";
-
+import api, { API_URL } from "@/api/AxiosInstance";
+import {File, Paths} from 'expo-file-system'
+import { AuthContext } from "@/context/AuthContext";
+import { fetch } from 'expo/fetch';
 
 const KeyboardDismissWrapper = ({ children }: any) => {
 	if (Platform.OS === 'web') {
@@ -44,6 +46,7 @@ export default function AddNoteScreen() {
 	const [endChapter, setEndChapter] = useState<string>() // -1 = all/general
 	const { mangaId } = useLocalSearchParams(); // <-- get from URL
 	const [mangaName, setMangaName] = useState<string>("Fetching...");
+	const token = useContext(AuthContext).token
 
 	useEffect(() => {
 		const populateMangaData = async () => {
@@ -78,15 +81,33 @@ export default function AddNoteScreen() {
 		if (text && text.trim().length > 0) formData.append('text', text)
 		for (const image of images)
 		{
-			const blob = base64ToBlob(image.uri, image.mimeType)
-			formData.append('images', blob, image.fileName || Date.now().toString())
-		}
-		await api.post('/notes', formData, {
-				headers: {
-					"Content-Type": 'multipart/form-data'
-				}
+			if (Platform.OS == 'web')
+			{
+				const resp = await fetch(image.uri);
+				const blob =  await resp.blob();
+				formData.append('images', blob, image.fileName || Date.now().toString())
+				await api.post('/notes', formData, {
+						headers: {
+							"Content-Type": 'multipart/form-data'
+						}
+					}
+				).then(() =>router.push(`/manga/${mangaId}`))
 			}
-		).then(() =>router.push(`/manga/${mangaId}`))
+			else
+			{
+				const file: File = new File(image.uri);
+				formData.append('images', file, image.fileName || Date.now().toString())
+				await fetch(`${API_URL}/notes`, {
+					method: 'POST',
+					body: formData,
+					headers: {
+						authorization: `Bearer ${token}`
+					}
+				}).then(() =>router.push(`/manga/${mangaId}`))
+
+			}
+		}
+
 	}
 
 	return (

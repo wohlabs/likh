@@ -1,8 +1,10 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+export const API_URL = 'http://localhost:3000'
+
 const api = axios.create({
-  baseURL: 'http://localhost:3000', // Replace with your backend URL
+  baseURL: API_URL, // Replace with your backend URL
   timeout: 10000,
   headers: {
 	"bypass-tunnel-reminder": true

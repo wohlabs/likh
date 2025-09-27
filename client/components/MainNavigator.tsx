@@ -11,7 +11,7 @@ export default function MainNavigator()
 	return (
 		<Stack
 			screenOptions={{
-				headerTitle: () => <Pressable onPress={() => router.push("/")}><ThemeText style={{fontWeight: 'bold'}}>aninote</ThemeText></Pressable>,
+				headerTitle: () => <Pressable onPress={() => router.navigate("/")}><ThemeText style={{fontWeight: 'bold'}}>aninote</ThemeText></Pressable>,
 				headerTitleAlign: "center",
 				headerLeft: () => null, // disable back button
 				headerRight: () => token
