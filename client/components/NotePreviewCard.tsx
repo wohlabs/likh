@@ -24,25 +24,19 @@ export default function NotePreviewCard({ note, style, onPress }: { note: INoteE
 	return (
 		<Pressable
 			style={[
-				{ flexDirection: "row", borderRadius: 10, borderColor: "black", borderWidth: 2 },
+				{ flexDirection: "row", borderRadius: 10, borderColor: "black", borderWidth: 2, justifyContent: 'space-between', alignItems: 'center' },
 				style
 			]}
 			onPress={onPress}
 		>
-			{(previews && previews.length > 0) &&
-				(<View style={{ width: 200, height: 200, justifyContent: "center", alignItems: "center" }} key={0}>
-					<Image
-						source={{ uri: previews[0] }}
-						style={{ height: "80%", aspectRatio: 1, backgroundColor: "white", borderRadius: 10 }}
-						resizeMode="cover"
-					/>
-				</View>)
-		}
-			<View style={{ flex: 1, padding: 10 }}>
-				<ThemeText>{note.modifiedAt || "date @ time"}</ThemeText>
-				<ThemeText>{`Chapter ${note.startChapter}${note.endChapter ? " - " + note.endChapter : ""}`}</ThemeText>
-				<ThemeText ellipsizeMode="tail" numberOfLines={5}>{note.text || "No notes"}</ThemeText>
-			</View>
+			<Image
+				source={{ uri: previews[0] }}
+				style={{ width: 50, aspectRatio: 1, backgroundColor: "white", borderRadius: 10, alignSelf: 'center', opacity: previews.length > 0 ? 1 : 0 }}
+				resizeMode="cover"
+			/>
+			<ThemeText style={{flex: 1, textAlign: 'center'}}>{new Date(note.modifiedAt).toDateString() || "date @ time"}</ThemeText>
+			<ThemeText style={{flex: 1, textAlign: 'center'}}>{`Chapter ${note.startChapter}${note.endChapter ? " - " + note.endChapter : ""}`}</ThemeText>
+			<ThemeText style={{flex: 1, textAlign: 'right', paddingLeft: 20}} ellipsizeMode="tail" numberOfLines={1}>{note.text || "No notes"}</ThemeText>
 		</Pressable>
 	);
 }
