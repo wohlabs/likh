@@ -86,27 +86,21 @@ export default function AddNoteScreen() {
 				const resp = await fetch(image.uri);
 				const blob =  await resp.blob();
 				formData.append('images', blob, image.fileName || Date.now().toString())
-				await api.post('/notes', formData, {
-						headers: {
-							"Content-Type": 'multipart/form-data'
-						}
-					}
-				).then(() =>router.push(`/manga/${mangaId}`))
 			}
 			else
 			{
 				const file: File = new File(image.uri);
 				formData.append('images', file, image.fileName || Date.now().toString())
-				await fetch(`${API_URL}/notes`, {
-					method: 'POST',
-					body: formData,
-					headers: {
-						authorization: `Bearer ${token}`
-					}
-				}).then(() =>router.push(`/manga/${mangaId}`))
 
 			}
 		}
+		await fetch(`${API_URL}/notes`, {
+			method: 'POST',
+			body: formData,
+			headers: {
+				authorization: `Bearer ${token}`
+			}
+		}).then(() =>router.push(`/manga/${mangaId}`))
 
 	}
 
