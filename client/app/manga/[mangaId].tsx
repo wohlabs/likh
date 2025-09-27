@@ -7,7 +7,7 @@ import { formatData, getMangaData, getMangaDetails, IMangaDetails } from "@/comp
 import { Ionicons } from "@expo/vector-icons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import { FlatList, Image, ScrollView, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import { IconButton, Modal, Portal, Searchbar } from "react-native-paper";
 
@@ -52,8 +52,8 @@ export default function MangaDetails({ navigation }: any) {
 	}
 
 	useEffect(() => {
-		setFilteredNotes(
-			searchString.trim().length == 0 ? data : data.filter((note: INoteEntry) => (note.text && note.text.toLowerCase().includes(searchString.toLowerCase()))));
+
+		setFilteredNotes(searchString.trim().length == 0 ? data : data.filter((note: INoteEntry) => (note.text && note.text.toLowerCase().includes(searchString.toLowerCase()))));
 	}, [searchString, data]);
 
 	useEffect(() => {
@@ -85,7 +85,30 @@ export default function MangaDetails({ navigation }: any) {
 					contentContainerStyle={{flexGrow: 0}}
 					scrollEnabled={false}
 					renderItem={({ item, index }: { item: INoteEntry, index: any }) => (
-						<NotePreviewCard note={item} style={{ flex: 1, margin: 5, padding: 5}} onPress={()=> {setViewerNoteIndex(index); setIsViewingOverlay(true)}}/>
+						<View style={{flex:1, flexDirection: 'row', alignItems: 'center'}} key={`Note_${index}_${Date.now()}`}>
+							<NotePreviewCard note={item} style={{ flex: 1, margin: 5, padding: 5}} onPress={()=> {setViewerNoteIndex(index); setIsViewingOverlay(true)}}/>
+							<IconButton
+								icon={"pencil-outline"}
+								size={20}
+								onPress={() => {}}
+								style={{shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
+								mode="contained"
+							/>
+							<IconButton
+								icon={"share-outline"}
+								size={20}
+								onPress={() => {}}
+								style={{shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
+								mode="contained"
+							/>
+							<IconButton
+								icon={"trash-can-outline"}
+								size={20}
+								onPress={() => onDelete(item.id)}
+								style={{shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
+								mode="contained"
+							/>
+						</View>
 					)}
 				/>
 				<Portal>
