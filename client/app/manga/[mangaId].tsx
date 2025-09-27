@@ -7,9 +7,47 @@ import { formatData, getMangaData, getMangaDetails, IMangaDetails } from "@/comp
 import { Ionicons } from "@expo/vector-icons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
-import { Fragment, useCallback, useEffect, useState } from "react";
-import { FlatList, Image, ScrollView, StyleSheet, Text, useWindowDimensions, View } from "react-native";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
+import { Dimensions, FlatList, Image, Platform, ScrollView, StyleProp, StyleSheet, Text, useWindowDimensions, View, ViewStyle } from "react-native";
 import { IconButton, Modal, Portal, Searchbar } from "react-native-paper";
+import ReanimatedSwipeable, { SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
+import Reanimated, { SharedValue, useAnimatedStyle, useSharedValue } from "react-native-reanimated";
+
+function NoteButtons({style, progress, translation, swipeableMethods, onDeletePress}: { note: INoteEntry, style?: StyleProp<ViewStyle>, progress: SharedValue<number>, translation: SharedValue<number>, swipeableMethods: SwipeableMethods, onDeletePress?: () => void})
+{
+	const swipeLeftAnimation = useAnimatedStyle(() => {
+		return {
+			transform: [{ translateX: translation.value + 140 }],
+		};
+	});
+
+
+	return (
+		<Reanimated.View style={[style, swipeLeftAnimation]}>
+			<IconButton
+				icon={"pencil-outline"}
+				size={20}
+				onPress={() => {}}
+				style={{shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
+				mode="contained"
+			/>
+			<IconButton
+				icon={"share-outline"}
+				size={20}
+				onPress={() => {}}
+				style={{shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
+				mode="contained"
+			/>
+			<IconButton
+				icon={"trash-can-outline"}
+				size={20}
+				onPress={onDeletePress}
+				style={{shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
+				mode="contained"
+			/>
+		</Reanimated.View>
+	)
+}
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -85,30 +123,53 @@ export default function MangaDetails({ navigation }: any) {
 					contentContainerStyle={{flexGrow: 0}}
 					scrollEnabled={false}
 					renderItem={({ item, index }: { item: INoteEntry, index: any }) => (
-						<View style={{flex:1, flexDirection: 'row', alignItems: 'center'}} key={`Note_${index}_${Date.now()}`}>
-							<NotePreviewCard note={item} style={{ flex: 1, margin: 5, padding: 5}} onPress={()=> {setViewerNoteIndex(index); setIsViewingOverlay(true)}}/>
-							<IconButton
-								icon={"pencil-outline"}
-								size={20}
-								onPress={() => {}}
-								style={{shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
-								mode="contained"
-							/>
-							<IconButton
-								icon={"share-outline"}
-								size={20}
-								onPress={() => {}}
-								style={{shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
-								mode="contained"
-							/>
-							<IconButton
-								icon={"trash-can-outline"}
-								size={20}
-								onPress={() => onDelete(item.id)}
-								style={{shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
-								mode="contained"
-							/>
-						</View>
+							Platform.OS == 'web'
+							?
+							<View style={{flex:1, flexDirection: 'row', alignItems: 'center'}} key={`Note_${index}_${Date.now()}`}>
+								<NotePreviewCard note={item} style={{ flex: 1, margin: 5, padding: 5}} onPress={()=> {setViewerNoteIndex(index); setIsViewingOverlay(true)}}/>
+								<IconButton
+									icon={"pencil-outline"}
+									size={20}
+									onPress={() => {}}
+									style={{shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
+									mode="contained"
+								/>
+								<IconButton
+									icon={"share-outline"}
+									size={20}
+									onPress={() => {}}
+									style={{shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
+									mode="contained"
+								/>
+								<IconButton
+									icon={"trash-can-outline"}
+									size={20}
+									onPress={() => onDelete(item.id)}
+									style={{shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
+									mode="contained"
+								/>
+							</View>
+							:
+							<ReanimatedSwipeable
+								containerStyle={{ marginHorizontal: 5, flexDirection: 'row', alignItems: 'center', overflow: 'hidden'}}
+								childrenContainerStyle={{flex: 1}}
+								friction={2}
+								key={`Note_${index}_${Date.now()}`}
+								renderRightActions={(progress: SharedValue<number>, translation: SharedValue<number>, swipeableMethods: SwipeableMethods) => (
+									<NoteButtons
+										note={item}
+										progress={progress}
+										translation={translation}
+										swipeableMethods={swipeableMethods}
+										style= {{flexDirection: 'row', alignItems: 'center'}}
+										onDeletePress={() => onDelete(item.id)}
+									/>
+								)}
+							>
+								<NotePreviewCard
+									note={item} style={{flex: 1,margin: 5, padding: 5, flexDirection: 'row', right: 0}} onPress={()=> {setViewerNoteIndex(index); setIsViewingOverlay(true)}}
+								/>
+							</ReanimatedSwipeable>
 					)}
 				/>
 				<Portal>
