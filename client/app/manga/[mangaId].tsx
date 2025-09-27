@@ -126,7 +126,7 @@ export default function MangaDetails({ navigation }: any) {
 							Platform.OS == 'web'
 							?
 							<View style={{flex:1, flexDirection: 'row', alignItems: 'center'}}>
-								<NotePreviewCard note={item} style={{ flex: 1, margin: 5, padding: 5}} onPress={()=> {setViewerNoteIndex(index); setIsViewingOverlay(true)}}/>
+								<NotePreviewCard note={item} style={{ flex: 1, margin: 5}} onPress={()=> {setViewerNoteIndex(index); setIsViewingOverlay(true)}}/>
 								<IconButton
 									icon={"pencil-outline"}
 									size={20}
@@ -168,7 +168,7 @@ export default function MangaDetails({ navigation }: any) {
 							>
 								<NotePreviewCard
 									key={`NotePreview_${item.id}`}
-									note={item} style={{flex: 1,margin: 5, padding: 5, flexDirection: 'row', right: 0}} onPress={()=> {setViewerNoteIndex(index); setIsViewingOverlay(true)}}
+									note={item} style={{flex: 1,margin: 5, flexDirection: 'row', right: 0}} onPress={()=> {setViewerNoteIndex(index); setIsViewingOverlay(true)}}
 								/>
 							</ReanimatedSwipeable>
 					)}
