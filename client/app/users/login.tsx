@@ -22,7 +22,7 @@ export default function UserLogin() {
 			const token = res.data.token;
 			login(token)
 			
-			router.push('/');
+			router.navigate('/');
 		}
 		catch (err: any)
 		{
@@ -37,7 +37,7 @@ export default function UserLogin() {
 				<TextInput label='password' placeholder="password" value={password} onChangeText={setPassword} secureTextEntry style={styles.input} />
 				{error ? <ThemeText style={styles.error}>{error}</ThemeText> : null}
 				<ThemeButton onPress={userLogin} mode="contained" style={{width: '100%'}}>Login</ThemeButton>
-				<ThemeButton onPress={() => router.push('/users/register')}>Create new account</ThemeButton>
+				<ThemeButton onPress={() => router.navigate('/users/register')}>Create new account</ThemeButton>
 			</View>
 		</View>
 	);

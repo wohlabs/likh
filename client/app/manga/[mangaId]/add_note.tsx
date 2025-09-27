@@ -100,7 +100,7 @@ export default function AddNoteScreen() {
 			headers: {
 				authorization: `Bearer ${token}`
 			}
-		}).then(() =>router.push(`/manga/${mangaId}`))
+		}).then(() =>router.navigate(`/manga/${mangaId}`))
 
 	}
 

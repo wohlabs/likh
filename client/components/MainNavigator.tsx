@@ -17,9 +17,9 @@ export default function MainNavigator()
 				headerRight: () => token
 				? <ThemeButton onPress={() => {
 					logout();
-					router.push('/') // may not be ideal to refresh
+					router.navigate('/') // may not be ideal to refresh
 				}}>Logout</ThemeButton>
-				: <ThemeButton onPress={() => router.push("/users/login")}>Login</ThemeButton>
+				: <ThemeButton onPress={() => router.navigate("/users/login")}>Login</ThemeButton>
 			}}
 		>
 			<Stack.Screen name="index" />
