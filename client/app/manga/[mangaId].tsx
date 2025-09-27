@@ -118,14 +118,14 @@ export default function MangaDetails({ navigation }: any) {
 				</View>
 				<FlatList
 					data={filteredNotes}
-					keyExtractor={(_, index) => index.toString()}
+					keyExtractor={(item) => `NotePreview_${item.id}`}
 					numColumns={1}
 					contentContainerStyle={{flexGrow: 0}}
 					scrollEnabled={false}
 					renderItem={({ item, index }: { item: INoteEntry, index: any }) => (
 							Platform.OS == 'web'
 							?
-							<View style={{flex:1, flexDirection: 'row', alignItems: 'center'}} key={`Note_${index}_${Date.now()}`}>
+							<View style={{flex:1, flexDirection: 'row', alignItems: 'center'}}>
 								<NotePreviewCard note={item} style={{ flex: 1, margin: 5, padding: 5}} onPress={()=> {setViewerNoteIndex(index); setIsViewingOverlay(true)}}/>
 								<IconButton
 									icon={"pencil-outline"}
@@ -154,7 +154,6 @@ export default function MangaDetails({ navigation }: any) {
 								containerStyle={{ marginHorizontal: 5, flexDirection: 'row', alignItems: 'center', overflow: 'hidden'}}
 								childrenContainerStyle={{flex: 1}}
 								friction={2}
-								key={`Note_${index}_${Date.now()}`}
 								renderRightActions={(progress: SharedValue<number>, translation: SharedValue<number>, swipeableMethods: SwipeableMethods) => (
 									<NoteButtons
 										note={item}
@@ -165,8 +164,10 @@ export default function MangaDetails({ navigation }: any) {
 										onDeletePress={() => onDelete(item.id)}
 									/>
 								)}
+								key={`NotePreview_Swipeable_${item.id}`}
 							>
 								<NotePreviewCard
+									key={`NotePreview_${item.id}`}
 									note={item} style={{flex: 1,margin: 5, padding: 5, flexDirection: 'row', right: 0}} onPress={()=> {setViewerNoteIndex(index); setIsViewingOverlay(true)}}
 								/>
 							</ReanimatedSwipeable>
