@@ -174,14 +174,14 @@ export default function MangaDetails({ navigation }: any) {
 					)}
 				/>
 				<Portal>
-					<Modal visible={isViewingOverlay} onDismiss={() => {setIsViewingOverlay(false)}} contentContainerStyle={{margin: 100, flexDirection: "row", alignItems: "center", height: "80%", shadowOpacity: 0, justifyContent: "center"}}
+					<Modal visible={isViewingOverlay} onDismiss={() => {setIsViewingOverlay(false)}} contentContainerStyle={{ margin: 'auto', flexDirection: "row", alignItems: "center", height: "80%", shadowOpacity: 0, justifyContent: "center", width: '90%'}}
 						>
 						<Ionicons name="arrow-back" size={50} color={"white"}
 							style={{opacity: viewerNoteIndex != 0 ? 1 : 0 }}
 							onPress={() => setViewerNoteIndex(viewerNoteIndex-1)}
 							pointerEvents={ viewerNoteIndex == 0  ? 'none' : 'auto'}
 						/>
-						<NoteViewer note={viewerNote} mangaId={Array.isArray(mangaId) ? mangaId[0] : mangaId} mangaTitle={manga?.title.userPreferred} style={{height: "100%", backgroundColor: "white", borderRadius: 10, shadowOpacity: 0.3, shadowRadius: 5}} onDelete={() => onDelete(viewerNote.id)}/>
+						<NoteViewer note={viewerNote} mangaId={Array.isArray(mangaId) ? mangaId[0] : mangaId} mangaTitle={manga?.title.userPreferred} style={{height: "100%", backgroundColor: "white", borderRadius: 10, shadowOpacity: 0.3, shadowRadius: 5}} onDelete={() => onDelete(viewerNote.id)} key={`NoteViewer_${viewerNote.id}`}/>
 						<Ionicons name="arrow-forward" size={50} color={"white"}
 							style={{opacity: viewerNoteIndex != filteredNotes.length - 1 ? 1 : 0 }} 
 							onPress={() => setViewerNoteIndex(viewerNoteIndex+1)}
