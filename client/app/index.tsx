@@ -164,7 +164,7 @@ export default function Index() {
 						/>
 						<ThemeText style={styles.mangaTitle}>{item.title?.userPreferred}</ThemeText>
 					</Pressable>
-					: <View style={{ flex: 1, backgroundColor: "transparent", margin: 5 }} />
+					: <View style={{ flex: 1, margin: 5 }} />
 				)}
 			/>
 			<View style={{width: "100%", minWidth: 350, height: 60, position: "absolute", bottom: 25, flexDirection: "row", alignItems: "center", margin: 'auto', justifyContent: 'center'}}>
@@ -187,7 +187,11 @@ export default function Index() {
 			</View>
 		</View>
 		<Portal>
-			<Modal visible={isSearching} onDismiss={() => setSearching(false)} contentContainerStyle={{padding: 0, margin: 'auto', width: "90%", height: "80%", backgroundColor: "white", borderRadius: 10 }}>
+			<Modal visible={isSearching} onDismiss={() => setSearching(false)}
+				contentContainerStyle={{
+					padding: 0, margin: 'auto', width: "90%", height: "80%", borderRadius: 10,
+					backgroundColor: theme.colors.background
+				}}>
 				<Searchbar
 					placeholder="search manga"
 					onChangeText={setNewSearchString}

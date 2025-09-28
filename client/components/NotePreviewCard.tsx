@@ -30,7 +30,7 @@ export default function NotePreviewCard({ note, style, onPress }: { note: INoteE
 			<Card.Content style={{ justifyContent: 'space-between', alignItems: 'center', width: '100%', flexDirection: 'row', padding: 10 }}>
 				<Image
 					source={{ uri: previews[0] }}
-					style={{ width: 50, aspectRatio: 1, backgroundColor: "white", borderRadius: 7, alignSelf: 'center', opacity: previews.length > 0 ? 1 : 0 }}
+					style={{ width: 50, aspectRatio: 1, borderRadius: 7, alignSelf: 'center', opacity: previews.length > 0 ? 1 : 0 }}
 					resizeMode="cover"
 				/>
 				<ThemeText style={{flex: 1, textAlign: 'center'}}>{new Date(note.modifiedAt).toDateString() || "date @ time"}</ThemeText>

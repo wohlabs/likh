@@ -4,6 +4,7 @@ import ThemeText from "./ThemeText";
 import ThemeButton from "./ThemeButton";
 import { useContext } from "react";
 import { AuthContext } from "@/context/AuthContext";
+import { useTheme } from "react-native-paper";
 
 export default function MainNavigator()
 {
@@ -11,7 +12,10 @@ export default function MainNavigator()
 	return (
 		<Stack
 			screenOptions={{
-				headerTitle: () => <Pressable onPress={() => router.navigate("/")}><ThemeText style={{fontWeight: 'bold'}}>aninote</ThemeText></Pressable>,
+				contentStyle: {backgroundColor: useTheme().colors.background},
+				headerStyle: {backgroundColor: useTheme().colors.surfaceVariant},
+				headerTintColor: useTheme().colors.onSurface,
+				headerTitle: () => <Pressable onPress={() => router.navigate("/")}><ThemeText variant="titleMedium">aninote</ThemeText></Pressable>,
 				headerTitleAlign: "center",
 				headerLeft: () => null, // disable back button
 				headerRight: () => token

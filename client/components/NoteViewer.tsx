@@ -44,13 +44,11 @@ export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}:
 							flex: 1,
 							width: "100%",
 							borderRadius: 10,
-							borderColor: "black",
 							borderWidth: 2,
-							backgroundColor: "white"
 						}}
 					/>
 					:
-					<View style={{flex: 1, justifyContent: "center", alignItems: "center", borderColor: "black", borderWidth: 2, borderRadius: 10, borderStyle:"dashed"}}>
+					<View style={{flex: 1, justifyContent: "center", alignItems: "center", borderWidth: 2, borderRadius: 10, borderStyle:"dashed"}}>
 						<ThemeText style={{fontSize: 28, color: "lightgray"}}>No images</ThemeText>
 					</View>
 				}
@@ -111,7 +109,6 @@ export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}:
 						onDismiss={() => setOptionsVisible(false)}
 						anchor={
 							<IconButton icon='dots-horizontal' onPress={() => setOptionsVisible(true)}
-								iconColor={theme.colors.primary}
 							/>
 						}
 					>
@@ -128,12 +125,10 @@ export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}:
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.3)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   menu: {
-    backgroundColor: '#fff',
     borderRadius: 10,
     padding: 10,
     minWidth: 150,

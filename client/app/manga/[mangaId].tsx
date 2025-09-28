@@ -9,7 +9,7 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { Dimensions, FlatList, Image, Platform, ScrollView, StyleProp, StyleSheet, Text, useWindowDimensions, View, ViewStyle } from "react-native";
-import { IconButton, Modal, Portal, Searchbar } from "react-native-paper";
+import { IconButton, Modal, Portal, Searchbar, useTheme } from "react-native-paper";
 import ReanimatedSwipeable, { SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
 import Reanimated, { SharedValue, useAnimatedStyle, useSharedValue } from "react-native-reanimated";
 
@@ -52,6 +52,7 @@ function NoteButtons({style, progress, translation, swipeableMethods, onDeletePr
 const Tab = createMaterialTopTabNavigator();
 
 export default function MangaDetails({ navigation }: any) {
+	const theme = useTheme();
 	const { mangaId } = useLocalSearchParams(); // <-- get from URL
 	const [manga, setManga] = useState<IMangaDetails>();
 	const [data, setData] = useState<IMangaNotes>([]);
@@ -173,16 +174,31 @@ export default function MangaDetails({ navigation }: any) {
 							</ReanimatedSwipeable>
 					)}
 				/>
-				<Portal>
-					<Modal visible={isViewingOverlay} onDismiss={() => {setIsViewingOverlay(false)}} contentContainerStyle={{ margin: 'auto', flexDirection: "row", alignItems: "center", height: "80%", shadowOpacity: 0, justifyContent: "center", width: '90%'}}
-						>
-						<Ionicons name="arrow-back" size={50} color={"white"}
+				<Portal
+					theme={theme}
+				>
+					<Modal visible={isViewingOverlay}
+						theme={theme}
+						onDismiss={() => {setIsViewingOverlay(false)}}
+						contentContainerStyle={{
+							margin: 'auto', flexDirection: "row", alignItems: "center", height: "80%", shadowOpacity: 0, justifyContent: "center", width: '90%',
+						}}
+					>
+						<IconButton icon="arrow-left" size={50}
 							style={{opacity: viewerNoteIndex != 0 ? 1 : 0 }}
 							onPress={() => setViewerNoteIndex(viewerNoteIndex-1)}
 							pointerEvents={ viewerNoteIndex == 0  ? 'none' : 'auto'}
 						/>
-						<NoteViewer note={viewerNote} mangaId={Array.isArray(mangaId) ? mangaId[0] : mangaId} mangaTitle={manga?.title.userPreferred} style={{height: "100%", backgroundColor: "white", borderRadius: 10, shadowOpacity: 0.3, shadowRadius: 5}} onDelete={() => onDelete(viewerNote.id)} key={`NoteViewer_${viewerNote.id}`}/>
-						<Ionicons name="arrow-forward" size={50} color={"white"}
+						<NoteViewer
+							note={viewerNote} mangaId={Array.isArray(mangaId) ? mangaId[0] : mangaId} mangaTitle={manga?.title.userPreferred}
+							style={{
+								height: "100%", borderRadius: 10, shadowOpacity: 0.3, shadowRadius: 5,
+								backgroundColor: theme.colors.background
+							}}
+							onDelete={() => onDelete(viewerNote.id)}
+							key={`NoteViewer_${viewerNote?.id}`}
+						/>
+						<IconButton icon="arrow-right" size={50}
 							style={{opacity: viewerNoteIndex != filteredNotes.length - 1 ? 1 : 0 }} 
 							onPress={() => setViewerNoteIndex(viewerNoteIndex+1)}
 							pointerEvents={ viewerNoteIndex == filteredNotes.length - 1  ? 'none' : 'auto'}

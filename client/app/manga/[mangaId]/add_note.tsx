@@ -125,7 +125,6 @@ export default function AddNoteScreen() {
 								borderRadius: 10,
 								borderColor: "black",
 								borderWidth: 2,
-								backgroundColor: "white"
 							}}
 						/>
 						:

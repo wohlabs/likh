@@ -6,13 +6,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import { KeyboardAvoidingView, Platform, Pressable, Text } from "react-native";
-import { Button, DefaultTheme, PaperProvider } from "react-native-paper";
+import { Button, MD3DarkTheme, MD3LightTheme, PaperProvider } from "react-native-paper";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export default function RootLayout() {
 	return (
 		<GestureHandlerRootView>
-			<PaperProvider theme={DefaultTheme}>
+			<PaperProvider theme={MD3LightTheme}>
 
 				<AuthProvider>
 					<KeyboardAvoidingView
