@@ -27,7 +27,7 @@ export default function NotePreviewCard({ note, style, onPress }: { note: INoteE
 			style={style}
 			onPress={onPress}
 		>
-			<Card.Content style={{ justifyContent: 'space-between', alignItems: 'center', width: '100%', flexDirection: 'row' }}>
+			<Card.Content style={{ justifyContent: 'space-between', alignItems: 'center', width: '100%', flexDirection: 'row', padding: 10 }}>
 				<Image
 					source={{ uri: previews[0] }}
 					style={{ width: 50, aspectRatio: 1, backgroundColor: "white", borderRadius: 7, alignSelf: 'center', opacity: previews.length > 0 ? 1 : 0 }}
