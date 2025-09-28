@@ -11,7 +11,7 @@ export default function NotePreviewCard({ note, style, onPress }: { note: INoteE
 	const [previews, setPreviews] = useState<string[]>(note.images);
 	useEffect(() => {
 		const fetchImages = async () => {
-			previews.map(async (imageId, index) => {
+			note.images.map(async (imageId, index) => {
 				const image = await getImageBase64(imageId)
 				setPreviews(prev => {
 					const updated = [...prev];
