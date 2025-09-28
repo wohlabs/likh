@@ -14,7 +14,7 @@ export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}:
 
 	useEffect(() => {
 		const fetchImages = async () => {
-			images.map(async (imageId, index) => {
+			note.images.map(async (imageId, index) => {
 				const image = await getImageBase64(imageId)
 				setImages(prev => {
 					const updated = [...prev];
