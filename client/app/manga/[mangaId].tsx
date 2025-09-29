@@ -12,6 +12,7 @@ import { Dimensions, FlatList, Image, Platform, ScrollView, StyleProp, StyleShee
 import { IconButton, Modal, Portal, Searchbar, useTheme } from "react-native-paper";
 import ReanimatedSwipeable, { SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
 import Reanimated, { SharedValue, useAnimatedStyle, useSharedValue } from "react-native-reanimated";
+import Carousel, { ICarouselInstance, Pagination } from "react-native-reanimated-carousel";
 
 function NoteButtons({style, progress, translation, swipeableMethods, onDeletePress}: { note: INoteEntry, style?: StyleProp<ViewStyle>, progress: SharedValue<number>, translation: SharedValue<number>, swipeableMethods: SwipeableMethods, onDeletePress?: () => void})
 {
@@ -53,6 +54,7 @@ const Tab = createMaterialTopTabNavigator();
 
 export default function MangaDetails({ navigation }: any) {
 	const theme = useTheme();
+	const {width, height} = useWindowDimensions()
 	const { mangaId } = useLocalSearchParams(); // <-- get from URL
 	const [manga, setManga] = useState<IMangaDetails>();
 	const [data, setData] = useState<IMangaNotes>([]);
@@ -61,6 +63,8 @@ export default function MangaDetails({ navigation }: any) {
 	const [isViewingOverlay, setIsViewingOverlay] = useState<boolean>(false);
 	const [viewerNote, setViewerNote] = useState<INoteEntry>({id: "", text: "", images: [], startChapter: -1, endChapter: -1, createdAt: "", modifiedAt: ""});
 	const [viewerNoteIndex, setViewerNoteIndex] = useState<number>(0);
+	const progress = useSharedValue<number>(0);
+	const carouselRef = useRef<ICarouselInstance>(null)
 
 	useEffect(() => {
 		const populateMangaData = async () => {
@@ -89,6 +93,17 @@ export default function MangaDetails({ navigation }: any) {
 		setIsViewingOverlay(false);
 		fetchData();
 	}
+
+	const onPressPagination = (index: number) => {
+		carouselRef.current?.scrollTo({
+			/**
+			 * Calculate the difference between the current index and the target index
+			 * to ensure that the carousel scrolls to the nearest index
+			 */
+			count: index - progress.value,
+			animated: true,
+		});
+	};
 
 	useEffect(() => {
 
@@ -179,29 +194,55 @@ export default function MangaDetails({ navigation }: any) {
 				>
 					<Modal visible={isViewingOverlay}
 						theme={theme}
+						contentContainerStyle={{ borderRadius: 10, width: '100%', height: '85%', maxHeight: 700, shadowOpacity: 0, padding: 0}}
 						onDismiss={() => {setIsViewingOverlay(false)}}
-						contentContainerStyle={{
-							margin: 'auto', flexDirection: "row", alignItems: "center", height: "80%", shadowOpacity: 0, justifyContent: "center", width: '90%',
-						}}
 					>
-						<IconButton icon="arrow-left" size={50}
-							style={{opacity: viewerNoteIndex != 0 ? 1 : 0 }}
-							onPress={() => setViewerNoteIndex(viewerNoteIndex-1)}
-							pointerEvents={ viewerNoteIndex == 0  ? 'none' : 'auto'}
-						/>
-						<NoteViewer
-							note={viewerNote} mangaId={Array.isArray(mangaId) ? mangaId[0] : mangaId} mangaTitle={manga?.title.userPreferred}
+						<Carousel
+							ref={carouselRef}
+							autoPlayInterval={2000}
+							data={filteredNotes}
+							pagingEnabled={true}
+							snapEnabled={true}
+							width={width}
+							loop={false}
 							style={{
-								height: "100%", borderRadius: 10, shadowOpacity: 0.3, shadowRadius: 5,
-								backgroundColor: theme.colors.background
+								flex:1,
+								margin: 0,
+								padding: 0
 							}}
-							onDelete={() => onDelete(viewerNote.id)}
-							key={`NoteViewer_${viewerNote?.id}`}
+							containerStyle={{
+								flex:1,
+								margin: 0,
+								padding: 0
+							}}
+							mode="parallax"
+							modeConfig={{
+								parallaxScrollingScale: 1,
+								parallaxScrollingOffset: 40,
+							}}
+							onProgressChange={progress}
+							defaultIndex={viewerNoteIndex}
+							renderItem={(item) =>
+								(
+									<NoteViewer
+										note={item.item} mangaId={Array.isArray(mangaId) ? mangaId[0] : mangaId} mangaTitle={manga?.title.userPreferred}
+										style={{
+											shadowOpacity: 0.3, shadowRadius: 5, borderRadius: 10,
+											backgroundColor: theme.colors.background,
+											flex: 1, marginHorizontal: 30,
+										}}
+										onDelete={() => onDelete(viewerNote.id)}
+										key={`NoteViewer_${viewerNote?.id}`}
+									/>
+								)
+							}
 						/>
-						<IconButton icon="arrow-right" size={50}
-							style={{opacity: viewerNoteIndex != filteredNotes.length - 1 ? 1 : 0 }} 
-							onPress={() => setViewerNoteIndex(viewerNoteIndex+1)}
-							pointerEvents={ viewerNoteIndex == filteredNotes.length - 1  ? 'none' : 'auto'}
+						<Pagination.Basic
+							progress={progress}
+							data={data}
+							dotStyle={{ backgroundColor: "rgba(0,0,0,0.2)", borderRadius: 50 }}
+							containerStyle={{ gap: 5, marginTop: 10 }}
+							onPress={onPressPagination}
 						/>
 					</Modal>
 				</Portal>
