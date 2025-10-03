@@ -1,3 +1,4 @@
+import api from "@/api/AxiosInstance";
 import ThemeButton from "@/components/ThemeButton";
 import ThemeText from "@/components/ThemeText";
 import axios from "axios";
@@ -15,7 +16,7 @@ export default function UserRegister()
 	const register = async () => {
 		try
 		{
-			await axios.post('http://localhost:3000/users', { username, password });
+			await api.post('/users', { username, password });
 			router.navigate('/users/login');
 		}
 		catch (err: any)
