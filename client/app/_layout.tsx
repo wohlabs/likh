@@ -11,19 +11,26 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export default function RootLayout() {
 	const colorScheme = useColorScheme();
-	return (
-		<GestureHandlerRootView>
-			<PaperProvider theme={colorScheme == 'dark' ? MD3DarkTheme : MD3LightTheme}>
+	const [theme, setTheme] = useState(MD3LightTheme);
 
-				<AuthProvider>
-					<KeyboardAvoidingView
-						style={{ flex: 1 }}
-						behavior={Platform.OS === "ios" ? "padding" : "height"}
-					>
-						<MainNavigator />
-					</KeyboardAvoidingView>
-				</AuthProvider>
-			</PaperProvider>
-		</GestureHandlerRootView>
+	useEffect(() => {
+		// necessary to avoid mixing themes on initial load
+		if (colorScheme === 'dark') setTheme(MD3DarkTheme);
+		else setTheme(MD3LightTheme);
+	}, [colorScheme]);
+
+	return (
+		<PaperProvider theme={theme}>
+			<GestureHandlerRootView>
+					<AuthProvider>
+						<KeyboardAvoidingView
+							style={{ flex: 1 }}
+							behavior={Platform.OS === "ios" ? "padding" : "height"}
+						>
+							<MainNavigator />
+						</KeyboardAvoidingView>
+					</AuthProvider>
+			</GestureHandlerRootView>
+		</PaperProvider>
 	);
 }
