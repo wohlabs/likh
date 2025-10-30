@@ -2,15 +2,16 @@ import { router, Stack } from "expo-router";
 import { Platform, Pressable, useColorScheme, View } from "react-native";
 import ThemeText from "./ThemeText";
 import ThemeButton from "./ThemeButton";
-import { useContext } from "react";
+import { useContext, useRef, useState } from "react";
 import { AuthContext } from "@/context/AuthContext";
-import { IconButton, useTheme } from "react-native-paper";
+import { Button, IconButton, Menu, useTheme } from "react-native-paper";
 
 export default function MainNavigator()
 {
 	const colorScheme = useColorScheme();
 	const theme = useTheme()
-	const {token, logout} = useContext(AuthContext);
+	const {token, username, logout} = useContext(AuthContext);
+	const [optionsVisible, setOptionsVisible] = useState<boolean>(false);
 	return (
 		<Stack
 			screenOptions={{
@@ -21,11 +22,23 @@ export default function MainNavigator()
 				headerTitleAlign: "center",
 				headerLeft: () => <IconButton size={20} icon={colorScheme == 'dark' ? 'white-balance-sunny' : 'moon-waning-crescent'} style={[Platform.OS=='ios' && {margin: 'auto'}]} iconColor={theme.colors.primary} />, // disable back button
 				headerRight: () => token
-				? <ThemeButton onPress={() => {
-					logout();
-					router.navigate('/') // may not be ideal to refresh
-				}}>Logout</ThemeButton>
-				: <ThemeButton onPress={() => router.navigate("/users/login")}>Login</ThemeButton>
+				?
+				<Menu
+					visible={optionsVisible}
+					onDismiss={() => setOptionsVisible(false)}
+					anchor={
+						<ThemeButton icon={'account'} onPress={() => setOptionsVisible(true)} mode="text" textColor={theme.colors.primary}>{username}</ThemeButton>
+					}
+				>
+					<Menu.Item 
+						onPress={() => {
+							setOptionsVisible(false);
+							logout();
+							router.navigate('/users/login') // may not be ideal to refresh
+						}} title="Logout" leadingIcon={"logout"}
+					/>
+				</Menu>
+				: <ThemeButton icon={'login'} onPress={() => router.navigate("/users/login")}>Login</ThemeButton>
 			}}
 		>
 			<Stack.Screen name="index" />

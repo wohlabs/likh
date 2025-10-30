@@ -25,6 +25,7 @@ export interface IUser extends Document {
 	username: string;
 	password: string;
 	manga: string[];
+	anilist_token?: string; // optional Anilist OAuth token - lasted forever
 }
 
 export interface INote extends Document {
@@ -215,8 +216,11 @@ app.post('/users/login', async (req, res) => {
 	const isMatch = await bcrypt.compare(password, user.password);
 	if (!isMatch) return res.status(400).json({ error: 'Invalid password' });
 
-	const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1d' });
-	res.json({ token });
+	const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1y' });
+	res.json({
+		token,
+		username
+	});
 });
 
 

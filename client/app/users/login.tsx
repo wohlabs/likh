@@ -1,6 +1,6 @@
 import ThemeText from "@/components/ThemeText";
 import { useContext, useState } from "react";
-import { View, Text, StyleSheet, Dimensions } from "react-native";
+import { View, Text, StyleSheet, Dimensions, Linking } from "react-native";
 import axios from 'axios'
 import { TextInput } from "react-native-paper";
 import ThemeButton from "@/components/ThemeButton";
@@ -19,14 +19,18 @@ export default function UserLogin() {
 		try
 		{
 			const res = await api.post('/users/login', { username, password });
-			const token = res.data.token;
-			login(token)
+			login(res.data)
 			
 			router.navigate('/');
 		}
 		catch (err: any)
 		{
 			setError(err.response.data.error);
+		}
+		function handleResponse(response: any) {
+			if (response.statusCode == 200) {
+				console.log(response.body.access_token);
+			}
 		}
 	};
 	return (
@@ -38,6 +42,7 @@ export default function UserLogin() {
 				{error ? <ThemeText style={styles.error}>{error}</ThemeText> : null}
 				<ThemeButton onPress={userLogin} mode="contained" style={{width: '100%'}}>Login</ThemeButton>
 				<ThemeButton onPress={() => router.navigate('/users/register')}>Create new account</ThemeButton>
+				<ThemeButton onPress={() => Linking.openURL('https://anilist.co/api/v2/oauth/authorize?client_id=30897&response_type=token')}>Login with Anilist</ThemeButton>
 			</View>
 		</View>
 	);
