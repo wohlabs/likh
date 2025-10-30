@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export const AuthContext = createContext({
 	token: null,
 	username: null,
+	anilistToken: null,
 	loading: true,
 	login: async (_userData: any) => {},
 	logout: async () => {},
@@ -12,6 +13,7 @@ export const AuthContext = createContext({
 export const AuthProvider = ({ children }: any) => {
 	const [token, setToken] = useState<string | null>(null);
 	const [username, setUsername] = useState<string | null>(null);
+	const [anilistToken, setAnilistToken] = useState<string | null>(null);
 	const [loading, setLoading] = useState(true);
 
 	// Load token from storage
@@ -20,8 +22,10 @@ export const AuthProvider = ({ children }: any) => {
 		try {
 			const storedToken = await AsyncStorage.getItem('token');
 			const storedUsername = await AsyncStorage.getItem('username');
+			const storedAnilistToken = await AsyncStorage.getItem('anilist_token');
 			setToken(storedToken);
 			setUsername(storedUsername);
+			setAnilistToken(storedAnilistToken);
 		} catch (error) {
 			console.error('Failed to load user:', error);
 		} finally {
@@ -36,9 +40,10 @@ export const AuthProvider = ({ children }: any) => {
 			console.log(userData)
 			await AsyncStorage.setItem('token', userData.token);
 			await AsyncStorage.setItem('username', userData.username);
+			await AsyncStorage.setItem('anilist_token', userData.anilist_token);
 			setToken(userData.token);
 			setUsername(userData.username);
-			console.log("userdata", userData)
+			setAnilistToken(userData.anilist_token);
 		} catch (error) {
 			console.error('Failed to login:', error);
 		}
@@ -48,6 +53,7 @@ export const AuthProvider = ({ children }: any) => {
 		try {
 			await AsyncStorage.removeItem('token');
 			await AsyncStorage.removeItem('username');
+			await AsyncStorage.removeItem('anilist_token');
 			setToken(null);
 			setUsername(null);
 		} catch (error) {
@@ -56,7 +62,7 @@ export const AuthProvider = ({ children }: any) => {
 	};
 
 	return (
-		<AuthContext.Provider value={{ token, username, loading, login, logout }}>
+		<AuthContext.Provider value={{ token, username, anilistToken, loading, login, logout }}>
 			{children}
 		</AuthContext.Provider>
 	);

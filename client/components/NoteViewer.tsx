@@ -55,6 +55,7 @@ export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}:
 				<View style={{height: 100, flexDirection: "row"}}>
 					<FlatList
 						data={images}
+						key={`images_${Date.now()}`}
 						renderItem={({ item, index }) => (
 							<Pressable onPress={() => {setCurrentImageIndex(index)}}>
 								<Image

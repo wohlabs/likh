@@ -53,7 +53,8 @@ const NoteSchema = new Schema<INote>({
 const UserSchema = new Schema<IUser>({
 	username: { type: String, required: true, unique: true },
 	password: { type: String, required: true },
-	manga: { type: [String], default: [] }
+	manga: { type: [String], default: [] },
+	anilist_token: { type: String, required: false, unique: true }
 });
 
 const Note = model<INote>('Note', NoteSchema);
@@ -223,7 +224,30 @@ app.post('/users/login', async (req, res) => {
 	});
 });
 
-
+// link Anilist token
+app.post('/users/me/anilist/link', authenticationMiddleware, async (req: any, res) => {
+	const userId = req.user.id
+	const { anilist_token } = req.body
+	try
+	{
+		console.log(`Linking Anilist token for user ${userId}`)
+		const user: IUser | null = await User.findById(userId).exec();
+		if (user && user.anilist_token === undefined)
+		{
+			user.anilist_token = anilist_token
+			user.save()
+			res.sendStatus(200)
+		}
+		else
+		{
+			res.sendStatus(404) // TODO: send proper error for already linked
+		}
+	}
+	catch(error)
+	{
+		res.sendStatus(404)
+	}
+})
 
 // get manga from user's collection
 app.get(`/users/me/manga`, authenticationMiddleware, async (req: any, res) => {

@@ -135,6 +135,7 @@ export default function MangaDetails({ navigation }: any) {
 				<FlatList
 					data={filteredNotes}
 					keyExtractor={(item) => `NotePreview_${item.id}`}
+					key={`filteredNotes_${Date.now()}`}
 					numColumns={1}
 					contentContainerStyle={{flexGrow: 0}}
 					scrollEnabled={false}

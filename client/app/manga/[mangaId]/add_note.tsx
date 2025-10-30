@@ -135,6 +135,7 @@ export default function AddNoteScreen() {
 					<View style={{height: 100, flexDirection: "row", alignItems: "center"}}>
 						<FlatList
 							data={images}
+							key={`images_${Date.now()}`}
 							renderItem={({ item, index }) => (
 								<Pressable onPress={() => {setCurrentImageIndex(index)}}>
 									<Image

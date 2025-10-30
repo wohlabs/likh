@@ -152,6 +152,7 @@ export default function Index() {
 			<FlatList
 				data={formatData(filteredMangaList, Math.min(5, listColNum))}
 				keyExtractor={(item) => item.id}
+				key={`filteredMangaList_${Date.now()}`}
 				numColumns={Math.min(5, listColNum)}
 				style={{flex: 1}}
 				renderItem={({ item }) => (
@@ -202,6 +203,7 @@ export default function Index() {
 				<FlatList
 					data={newMangaList}
 					keyExtractor={(item) => item.id}
+					key={`newMangaList_${Date.now()}`}
 					numColumns={1}
 					style={{flex: 1}}
 					renderItem={({ item }) => (
