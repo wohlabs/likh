@@ -39,6 +39,18 @@ query ($search: String, $page: Int, $perPage: Int) {
 }
 `
 
+export const MANGA_NOTE_QUERY = `
+query ($userId: Int, $mediaId: Int) {
+	MediaList (userId: $userId, mediaId: $mediaId) {
+		id
+		userId
+		notes
+		createdAt
+		updatedAt
+	}
+}
+`
+
 export type IMangaDetails = {
 	id: string;
 	title: { userPreferred?: string };
@@ -50,18 +62,58 @@ export type IMangaDetails = {
 	status?: string;
 };
 
-export const getMangaData = async (mangaId: string) : Promise<IMangaNotes> => {
+export const getAnilistNote = async (mangaId: string, access_token: string) : Promise<INoteEntry | null> =>
+{
+	const anilistNote = await fetch("https://graphql.anilist.co", {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			'Accept': 'application/json',
+		},
+		body: JSON.stringify({ query: MANGA_NOTE_QUERY, variables: {userId : getUserIdFromToken(access_token), mediaId: mangaId} })
+	})
+	.then((response) => response.json())
+	.then((response) => response.data)
+	.then((data) => {
+		return data.MediaList
+	})
+	.then((item) => {
+		return {
+			id: item.id,
+			createdAt: new Date(item.createdAt * 1000).toString(),
+			modifiedAt: new Date(item.updatedAt * 1000).toString(),
+			startChapter: -1,
+			endChapter: undefined,
+			images: [],
+			text: item.notes,
+			fromAnilist: true
+		} as INoteEntry;
+	})
+	.catch((error) => {
+		console.error(error);
+		return null
+	});
+	return anilistNote
+}
+
+export const getMangaData = async (mangaId: string, access_token: string = "") : Promise<IMangaNotes> => {
 	try {
 		const response = await api.get(`/notes?mangaId=${mangaId}`);
-		const notes: IMangaNotes = response.data.map((item: any) => ({
+		const notes: IMangaNotes = response.data.map((item: any): INoteEntry => ({
 			id: item._id,
 			createdAt: item.createdAt,
 			modifiedAt: item.modifiedAt,
 			startChapter: item.startChapter,
 			endChapter: item.endChapter,
 			images: item.images,
-			text: item.text
+			text: item.text,
+			fromAnilist: false
 		}))
+		const anilistNote: INoteEntry | null = await getAnilistNote(mangaId, access_token)
+		if (anilistNote !== null)
+		{
+			notes.push(anilistNote)
+		}
 		return notes || JSON.parse("[]");
 	} catch (err: any) {
 		console.error(err.response?.data || err.message);
@@ -134,11 +186,17 @@ export const getMangaDetails = async (mangaId: string) : Promise<IMangaDetails |
 	return data;
 }
 
-export const getMangaIdsWithNotes = async (accessToken: string) : Promise<string[]> =>
-{
-	if (accessToken.length == 0) return []
+const getUserIdFromToken = (accessToken: string) : number | null => {
+	if (accessToken.length == 0) return null
 	const decodedToken: any = jwtDecode(accessToken);
 	const userId: number = decodedToken.sub;
+	return userId;
+}
+
+export const getMangaIdsWithNotes = async (accessToken: string) : Promise<string[]> =>
+{
+	if (accessToken == null || accessToken.length == 0) return []
+	const userId = getUserIdFromToken(accessToken);
 	const mangaIds = await fetch("https://graphql.anilist.co", {
 		method: 'POST',
 		headers: {

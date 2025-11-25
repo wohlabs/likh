@@ -7,12 +7,13 @@ import { formatData, getMangaData, getMangaDetails, IMangaDetails } from "@/comp
 import { Ionicons } from "@expo/vector-icons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
-import { Fragment, useCallback, useEffect, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState, useContext } from "react";
 import { Dimensions, FlatList, Image, Platform, ScrollView, StyleProp, StyleSheet, Text, useWindowDimensions, View, ViewStyle } from "react-native";
 import { IconButton, Modal, Portal, Searchbar, useTheme } from "react-native-paper";
 import ReanimatedSwipeable, { SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
 import Reanimated, { SharedValue, useAnimatedStyle, useSharedValue } from "react-native-reanimated";
 import Carousel, { ICarouselInstance, Pagination } from "react-native-reanimated-carousel";
+import { AuthContext } from "@/context/AuthContext";
 
 function NoteButtons({style, progress, translation, swipeableMethods, onDeletePress}: { note: INoteEntry, style?: StyleProp<ViewStyle>, progress: SharedValue<number>, translation: SharedValue<number>, swipeableMethods: SwipeableMethods, onDeletePress?: () => void})
 {
@@ -61,10 +62,11 @@ export default function MangaDetails({ navigation }: any) {
 	const [filteredNotes, setFilteredNotes] = useState<IMangaNotes>([]);
 	const [searchString, setSearchString] = useState<string>("");
 	const [isViewingOverlay, setIsViewingOverlay] = useState<boolean>(false);
-	const [viewerNote, setViewerNote] = useState<INoteEntry>({id: "", text: "", images: [], startChapter: -1, endChapter: -1, createdAt: "", modifiedAt: ""});
+	const [viewerNote, setViewerNote] = useState<INoteEntry>({id: "", text: "", images: [], startChapter: -1, endChapter: -1, createdAt: "", modifiedAt: "", fromAnilist: false});
 	const [viewerNoteIndex, setViewerNoteIndex] = useState<number>(0);
 	const progress = useSharedValue<number>(0);
 	const carouselRef = useRef<ICarouselInstance>(null)
+	const anilist_token: string = useContext(AuthContext).anilistToken
 
 	useEffect(() => {
 		const populateMangaData = async () => {
@@ -75,7 +77,7 @@ export default function MangaDetails({ navigation }: any) {
 	}, []);
 
 	const fetchData = async () => {
-		const DATA = await getMangaData(mangaId.toString());
+		const DATA = await getMangaData(mangaId.toString(), anilist_token);
 		setData(DATA);
 	};
 	useEffect(() => {

@@ -6,6 +6,7 @@ export type INoteEntry = {
 	endChapter?: number;
 	images: string[]; // could be an empty array
 	text?: string
+	fromAnilist: boolean;
 };
 
 export type IMangaNotes = INoteEntry[]
