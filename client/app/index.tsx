@@ -1,11 +1,12 @@
 import api from "@/api/AxiosInstance";
 import ThemeText from "@/components/ThemeText";
-import { addMangaToLibrary, formatData, MANGA_SEARCH_QUERY, TEST_USER_ID } from "@/components/util";
+import { addMangaToLibrary, formatData, getMangaIdsWithNotes, MANGA_SEARCH_QUERY, TEST_USER_ID } from "@/components/util";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Stack, useRouter } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { FlatList, Image, Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import { IconButton, Modal, Portal, Searchbar, useTheme } from "react-native-paper";
+import { AuthContext } from "@/context/AuthContext";
 
 const MANGA_QUERY = `
 	query {
@@ -61,10 +62,12 @@ export default function Index() {
 	const [newMangaList, setNewMangaList] = useState<MangaProps[]>([]);
 	const [newSearchString, setNewSearchString] = useState("")
 	const { width, height } = useWindowDimensions();
+	const anilist_token: string = useContext(AuthContext).anilistToken
 	const listColNum = Math.min(Math.max(Math.ceil(width/200), 1), 5)
 
 	const populateMangaList = async () => {
-		let libraryMangaIds: number[] = []
+		const anilistMangaIds: string[] = await getMangaIdsWithNotes(anilist_token)
+		let libraryMangaIds: string[] = []
 		try {
 			const response = await api.get(`/users/me/manga`)
 			libraryMangaIds = response.data
@@ -73,7 +76,7 @@ export default function Index() {
 		}
 		let query = {
 			query: LIBRARY_MANGA_QUERY,
-			variables: {ids: libraryMangaIds}
+			variables: {ids: Array.from(new Set<string>([...libraryMangaIds, ...anilistMangaIds]))}
 		}
 		fetch("https://graphql.anilist.co", {
 			method: 'POST',

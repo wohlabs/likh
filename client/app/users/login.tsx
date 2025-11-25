@@ -27,11 +27,6 @@ export default function UserLogin() {
 		{
 			setError(err.response.data.error);
 		}
-		function handleResponse(response: any) {
-			if (response.statusCode == 200) {
-				console.log(response.body.access_token);
-			}
-		}
 	};
 	return (
 		<View style={styles.container}>

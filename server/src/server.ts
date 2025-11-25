@@ -232,7 +232,7 @@ app.post('/users/me/anilist/link', authenticationMiddleware, async (req: any, re
 	{
 		console.log(`Linking Anilist token for user ${userId}`)
 		const user: IUser | null = await User.findById(userId).exec();
-		if (user && user.anilist_token === undefined)
+		if (user)
 		{
 			user.anilist_token = anilist_token
 			user.save()

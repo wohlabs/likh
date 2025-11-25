@@ -6,6 +6,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "@/context/AuthContext";
 import { Button, IconButton, Menu, useTheme } from "react-native-paper";
 import { makeRedirectUri } from 'expo-auth-session';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from "@/api/AxiosInstance";
 
 export default function MainNavigator()
@@ -33,9 +34,9 @@ export default function MainNavigator()
 				const token = params.get('access_token');
 				if (token) {
 					api.post('/users/me/anilist/link', { anilist_token: token })
-					.then(response => {
+					.then(async response => {
+						await AsyncStorage.setItem('anilist_token', token);
 						console.log('Anilist linked successfully:', response.data);
-						
 					})
 					.catch(error => {
 						console.error('Error linking Anilist:', error);

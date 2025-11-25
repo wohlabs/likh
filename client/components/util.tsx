@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { IMangaNotes, INoteEntry } from './INotes';
 import api from '@/api/AxiosInstance';
+import { jwtDecode } from "jwt-decode";
 
 export const TEST_USER_ID: string = "68c8cf1de67a0c9e19ce6ee5"
 
@@ -131,6 +132,47 @@ export const getMangaDetails = async (mangaId: string) : Promise<IMangaDetails |
 		return undefined
 	});
 	return data;
+}
+
+export const getMangaIdsWithNotes = async (accessToken: string) : Promise<string[]> =>
+{
+	if (accessToken.length == 0) return []
+	const decodedToken: any = jwtDecode(accessToken);
+	const userId: number = decodedToken.sub;
+	const mangaIds = await fetch("https://graphql.anilist.co", {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			'Accept': 'application/json',
+		},
+		body: JSON.stringify({ query: `
+		query ($userId: Int){
+			MediaListCollection(userId: $userId, type: MANGA) {
+				lists {
+					entries {
+						notes
+						id
+						mediaId
+					}
+				}
+			}
+		}`, variables: {userId : userId}})
+	})
+	.then((response) => response.json())
+	.then((response) => response.data)
+	.then((data) => {
+		const  result = data.MediaListCollection.lists.flatMap((list: any) =>
+			list.entries
+				.filter((entry: any) => entry.notes && entry.notes.length > 0)
+				.map((entry: any) => entry.mediaId.toString())
+		);
+		return result
+	})
+	.catch((error) => {
+		console.error(error);
+		return undefined
+	});
+	return mangaIds;
 }
 
 export const searchMangaByString = async (searchString: string, page: number = 1, perPage: number = 10) =>
