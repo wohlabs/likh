@@ -1,5 +1,4 @@
-import express from 'express'
-import {Request, Response} from 'express'
+import express, { Request, Response, NextFunction } from 'express'
 import { connectDB } from './config/db.js'
 import * as dotenv from 'dotenv'
 import mongoose, { Schema, model, Document, Types } from 'mongoose'
@@ -9,26 +8,39 @@ import jwt from 'jsonwebtoken'
 import multer from 'multer'
 import { getGFSBucket } from './config/db.js'
 import { Readable } from 'stream'
+import { getErrorMessage } from './Utility'
 
 dotenv.config()
-const PORT = process.env.PORT || 5000;
 
+interface JwtPayload {
+	id: string;
+}
+
+declare module 'express' {
+	export interface Request {
+		user?: JwtPayload;
+	}
+}
+
+const PORT = process.env.PORT || 5000;
 connectDB(process.env.MONGODB_URI || '');
 const storage = multer.memoryStorage();
-const upload = multer({storage});
+const upload = multer({ storage });
 const app = express()
 app.use(cors())
 
 const JWT_SECRET = process.env.JWT_SECRET || "jwt_secret123"
 
-export interface IUser extends Document {
+export interface IUser extends Document
+{
 	username: string;
 	password: string;
 	manga: string[];
 	anilist_token?: string; // optional Anilist OAuth token - lasted forever
 }
 
-export interface INote extends Document {
+export interface INote extends Document
+{
 	userId: Types.ObjectId
 	mangaId: number;
 	createdAt: Date; // creation timestamp
@@ -40,14 +52,14 @@ export interface INote extends Document {
 }
 
 const NoteSchema = new Schema<INote>({
-	userId: {type: Schema.ObjectId, ref: 'User'},
-	mangaId: {type: Number, required: true },
-	createdAt: {type: Date, required: true, default: Date.now },
-	modifiedAt: {type: Date, required: true, default: Date.now },
-	startChapter: {type: Number, required: true },
-	endChapter: {type: Number, required: false },
-	images: {type: [Schema.ObjectId], default: [], ref: 'uploads.files'},
-	text: {type: String, default: ""}
+	userId: { type: Schema.ObjectId, ref: 'User' },
+	mangaId: { type: Number, required: true },
+	createdAt: { type: Date, required: true, default: Date.now },
+	modifiedAt: { type: Date, required: true, default: Date.now },
+	startChapter: { type: Number, required: true },
+	endChapter: { type: Number, required: false },
+	images: { type: [Schema.ObjectId], default: [], ref: 'uploads.files' },
+	text: { type: String, default: "" }
 });
 
 const UserSchema = new Schema<IUser>({
@@ -60,26 +72,31 @@ const UserSchema = new Schema<IUser>({
 const Note = model<INote>('Note', NoteSchema);
 const User = model<IUser>('User', UserSchema);
 
-const authenticationMiddleware = (req: any, res: any, next: any) => {
-	const authHeader = req.headers.authorization;
+const authenticationMiddleware = (req: Request, res: Response, next: NextFunction) =>
+{
+	const authHeader = req.headers['authorization'];
 	if (!authHeader) return res.status(401).json({ error: 'Unauthorized' });
 
 	const token = authHeader.split(' ')[1];
-	try {
-		const decoded = jwt.verify(token, JWT_SECRET);
+	try
+	{
+		const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
 		req.user = decoded;
 		next();
-	} catch (err) {
+	}
+	catch
+	{
 		res.status(401).json({ error: 'Invalid token' });
 	}
 };
 
-app.get(`/`, (req: any, res) => {res.json('hello world')})
+app.get(`/`, (req: Request, res: Response) => { res.json('hello world') })
 
 // create new note
-app.post(`/notes`,upload.array('images', 10), authenticationMiddleware, async (req: any, res) => {
-	const userId = req.user.id;
-	let { mangaId, startChapter, endChapter, text } = req.body
+app.post(`/notes`, upload.array('images', 10), authenticationMiddleware, async (req: Request, res: Response) =>
+{
+	const userId = req.user?.id;
+	const { mangaId, startChapter, endChapter, text } = req.body
 	// invalid note entry
 	if ((!req.files || req.files.length == 0) && !text) return res.status(400).json('Invalid note')
 
@@ -106,9 +123,11 @@ app.post(`/notes`,upload.array('images', 10), authenticationMiddleware, async (r
 				{
 					readableStream.pipe(uploadStream);
 					// Wait for upload to finish before pushing fileId
-					await new Promise((resolve, reject) => {
-						uploadStream.on('finish', () => {
-							uploadedFiles.push({ fileName: file.originalname, fileId: uploadStream.id,  });
+					await new Promise((resolve, reject) =>
+					{
+						uploadStream.on('finish', () =>
+						{
+							uploadedFiles.push({ fileName: file.originalname, fileId: uploadStream.id, });
 							imageIds.push(uploadStream.id)
 							resolve(null);
 						});
@@ -118,9 +137,9 @@ app.post(`/notes`,upload.array('images', 10), authenticationMiddleware, async (r
 			}
 		}
 	}
-	catch (err: any)
+	catch (err: unknown)
 	{
-		return res.status(500).json({error: err.message})
+		return res.status(500).json({ error: getErrorMessage(err) })
 	}
 
 	const user: IUser | null = await User.findById(userId).exec();
@@ -144,72 +163,84 @@ app.post(`/notes`,upload.array('images', 10), authenticationMiddleware, async (r
 	res.json(newNote)
 })
 
-app.get('/images/:id', authenticationMiddleware, async (req: any, res: Response) => {
+app.get('/images/:id', authenticationMiddleware, async (req: Request, res: Response) =>
+{
 	const id = new Types.ObjectId(req.params.id);
-	const userId = req.user.id
+	const userId = req.user?.id
 	try
 	{
-		const file = await mongoose.connection.db?.collection('images.files').findOne({_id: id});
+		const file = await mongoose.connection.db?.collection('images.files').findOne({ _id: id });
 		if (!file) return res.status(404).json('Image not found');
-		if(file.metadata.userId !== userId) return res.status(401).json('Unauthorized')
+		if (file.metadata.userId !== userId) return res.status(401).json('Unauthorized')
 		res.set('Content-Type', file.metadata.mimeType)
 		res.set('Content-Disposition', `inline; filename="${file.filename}"`)
 		const downloadStream = getGFSBucket()?.openDownloadStream(file._id)
 		downloadStream?.pipe(res);
 	}
-	catch (err: any)
+	catch (err: unknown)
 	{
-		res.status(500).json(err.message);
+		res.status(500).json(getErrorMessage(err));
 	}
 })
 
 app.use(express.json())
 
 // get notes
-app.get(`/notes`, authenticationMiddleware, async (req: any, res) => {
-	const userId = req.user.id
+app.get(`/notes`, authenticationMiddleware, async (req: Request, res: Response) =>
+{
+	const userId = req.user?.id
 	const { mangaId } = req.query // temporary. userId shall be determined by session cookie
-	res.json(await Note.find({userId, mangaId}).exec())
+	res.json(await Note.find({ userId, mangaId }).exec())
 })
 
 // get note of id
-app.get(`/notes/:id`, async (req, res) => {
-	try {
+app.get(`/notes/:id`, async (req, res) =>
+{
+	try
+	{
 		const note = await Note.findById(req.params.id).exec()
 		res.json(note)
-	} catch (error) {
+	} catch
+	{
 		res.sendStatus(404)
 	}
 })
 
-app.delete(`/notes/:id`, async (req, res) => {
-	try {
-		const note = await Note.findByIdAndDelete(req.params.id)
+app.delete(`/notes/:id`, async (req: Request, res: Response) =>
+{
+	try
+	{
+		await Note.findByIdAndDelete(req.params.id)
 		res.sendStatus(204)
-	} catch (error) {
+	} catch
+	{
 		res.sendStatus(404)
 	}
 })
 
 // user register
-app.post(`/users`, async (req, res) => {
+app.post(`/users`, async (req, res) =>
+{
 	const { username, password } = req.body;
 	const hashedPassword = await bcrypt.hash(password, 10);
-	
-	try {
+
+	try
+	{
 		const newUser = new User({
 			username,
 			password: hashedPassword
 		});
 		await newUser.save();
 		res.status(201).json({ message: 'User registered successfully' });
-	} catch (err) {
+	} catch
+	{
 		res.status(400).json({ error: 'User already exists' });
 	}
 })
 
 // Login route
-app.post('/users/login', async (req, res) => {
+app.post('/users/login', async (req, res) =>
+{
 	const { username, password } = req.body;
 	const user = await User.findOne({ username });
 	if (!user) return res.status(400).json({ error: 'User not found' });
@@ -225,8 +256,9 @@ app.post('/users/login', async (req, res) => {
 });
 
 // link Anilist token
-app.post('/users/me/anilist/link', authenticationMiddleware, async (req: any, res) => {
-	const userId = req.user.id
+app.post('/users/me/anilist/link', authenticationMiddleware, async (req: Request, res: Response) =>
+{
+	const userId = req.user?.id
 	const { anilist_token } = req.body
 	try
 	{
@@ -243,29 +275,31 @@ app.post('/users/me/anilist/link', authenticationMiddleware, async (req: any, re
 			res.sendStatus(404) // TODO: send proper error for already linked
 		}
 	}
-	catch(error)
+	catch
 	{
 		res.sendStatus(404)
 	}
 })
 
 // get manga from user's collection
-app.get(`/users/me/manga`, authenticationMiddleware, async (req: any, res) => {
-	const userId = req.user.id
+app.get(`/users/me/manga`, authenticationMiddleware, async (req: Request, res: Response) =>
+{
+	const userId = req.user?.id
 	try
 	{
 		const user: IUser | null = await User.findById(userId).exec();
 		res.json(user?.manga)
 	}
-	catch(error)
+	catch
 	{
 		res.sendStatus(404)
 	}
 })
 
 // add a manga to collection
-app.post(`/users/me/manga`, authenticationMiddleware, async (req: any, res) => {
-	const userId = req.user.id
+app.post(`/users/me/manga`, authenticationMiddleware, async (req: Request, res: Response) =>
+{
+	const userId = req.user?.id
 	const { mangaId } = req.body
 	try
 	{
@@ -285,7 +319,7 @@ app.post(`/users/me/manga`, authenticationMiddleware, async (req: any, res) => {
 			res.status(200).json(user)
 		}
 	}
-	catch(error)
+	catch
 	{
 		res.sendStatus(404)
 	}
