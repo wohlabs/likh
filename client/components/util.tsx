@@ -127,7 +127,9 @@ export const addMangaToLibrary = async (mangaId: string) : Promise<boolean> => {
 		await api.post('/users/me/manga', {
 			mangaId: parseInt(mangaId)
 		});
-	} catch (e) {
+	}
+	catch
+	{
 		// saving error
 		return false
 	}
@@ -149,7 +151,6 @@ export const addMangaNote = async (mangaId: string, entry: INoteEntry) : Promise
 };
 
 export const deleteMangaNote = async (mangaId: string, entryId: string) : Promise<boolean> => {
-	const storageKey = "manga_" + mangaId;
 	try {
 		let notes: IMangaNotes = await getMangaData(mangaId);
 		notes = notes.filter((note) => note.id !== entryId)
@@ -187,7 +188,7 @@ export const getMangaDetails = async (mangaId: string) : Promise<IMangaDetails |
 }
 
 const getUserIdFromToken = (accessToken: string) : number | null => {
-	if (accessToken.length == 0) return null
+	if (accessToken.length === 0) return null
 	const decodedToken: any = jwtDecode(accessToken);
 	const userId: number = decodedToken.sub;
 	return userId;
@@ -195,7 +196,7 @@ const getUserIdFromToken = (accessToken: string) : number | null => {
 
 export const getMangaIdsWithNotes = async (accessToken: string) : Promise<string[]> =>
 {
-	if (accessToken == null || accessToken.length == 0) return []
+	if (accessToken === null || accessToken.length === 0) return []
 	const userId = getUserIdFromToken(accessToken);
 	const mangaIds = await fetch("https://graphql.anilist.co", {
 		method: 'POST',
@@ -254,7 +255,7 @@ export const searchMangaByString = async (searchString: string, page: number = 1
 	return data;
 }
 
-export const formatData = (data: Array<any>, numColumns: number) => {
+export const formatData = (data: any[], numColumns: number) => {
 	// source: https://www.youtube.com/watch?v=8wv0kjsirso
 	const copyData = [...data];
 	const numberOfFullRows = Math.floor(copyData.length / numColumns);

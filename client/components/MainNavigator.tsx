@@ -1,11 +1,10 @@
 import { router, Stack } from "expo-router";
-import { Linking, Platform, Pressable, useColorScheme, View, Image } from "react-native";
+import { Linking, Platform, Pressable, useColorScheme, Image } from "react-native";
 import ThemeText from "./ThemeText";
 import ThemeButton from "./ThemeButton";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "@/context/AuthContext";
-import { Button, IconButton, Menu, useTheme } from "react-native-paper";
-import { makeRedirectUri } from 'expo-auth-session';
+import { IconButton, Menu, useTheme } from "react-native-paper";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from "@/api/AxiosInstance";
 
@@ -63,7 +62,7 @@ export default function MainNavigator()
 				headerTintColor: useTheme().colors.onSurface,
 				headerTitle: () => <Pressable onPress={() => router.navigate("/")}><ThemeText variant="titleMedium">aninote</ThemeText></Pressable>,
 				headerTitleAlign: "center",
-				headerLeft: () => <IconButton size={20} icon={colorScheme == 'dark' ? 'white-balance-sunny' : 'moon-waning-crescent'} style={[Platform.OS=='ios' && {margin: 'auto'}]} iconColor={theme.colors.primary} />, // disable back button
+				headerLeft: () => <IconButton size={20} icon={colorScheme === 'dark' ? 'white-balance-sunny' : 'moon-waning-crescent'} style={[Platform.OS === 'ios' && {margin: 'auto'}]} iconColor={theme.colors.primary} />, // disable back button
 				headerRight: () => token
 				?
 				<Menu

@@ -1,4 +1,3 @@
-import { INoteEntry } from "@/components/INotes";
 import * as ImagePicker from "expo-image-picker";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useContext, useEffect, useState } from "react";
@@ -9,16 +8,15 @@ import
 		Keyboard,
 		Platform,
 		Pressable,
-		Text,
 		TouchableWithoutFeedback,
 		View
 	} from "react-native";
-import { Button, IconButton, TextInput } from "react-native-paper";
-import { addMangaNote, getMangaDetails } from '../../../components/util';
+import { IconButton, TextInput } from "react-native-paper";
+import { getMangaDetails } from '../../../components/util';
 import ThemeButton from "@/components/ThemeButton";
 import ThemeText from "@/components/ThemeText";
-import api, { API_URL } from "@/api/AxiosInstance";
-import {File, Paths} from 'expo-file-system'
+import { API_URL } from "@/api/AxiosInstance";
+import { File } from 'expo-file-system'
 import { AuthContext } from "@/context/AuthContext";
 import { fetch } from 'expo/fetch';
 
@@ -72,7 +70,7 @@ export default function AddNoteScreen() {
 	};
 
 	const createNote = async () => {
-		if ((images === undefined || images.length == 0)  && text === undefined) return; // reject empty notes
+		if ((images === undefined || images.length === 0)  && text === undefined) return; // reject empty notes
 
 		const formData = new FormData()
 		formData.append('mangaId', mangaId.toString())
@@ -81,7 +79,7 @@ export default function AddNoteScreen() {
 		if (text && text.trim().length > 0) formData.append('text', text)
 		for (const image of images)
 		{
-			if (Platform.OS == 'web')
+			if (Platform.OS === 'web')
 			{
 				const resp = await fetch(image.uri);
 				const blob =  await resp.blob();

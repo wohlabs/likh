@@ -1,11 +1,9 @@
 import ThemeText from "@/components/ThemeText";
 import { useContext, useState } from "react";
-import { View, Text, StyleSheet, Dimensions, Linking } from "react-native";
-import axios from 'axios'
+import { View, StyleSheet, Linking } from "react-native";
 import { TextInput } from "react-native-paper";
 import ThemeButton from "@/components/ThemeButton";
 import { router } from "expo-router";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContext } from "@/context/AuthContext";
 import api from "@/api/AxiosInstance";
 

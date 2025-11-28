@@ -1,11 +1,9 @@
-import { Image, Pressable, StyleProp, Text, View } from "react-native";
+import { Image, StyleProp, ViewStyle } from "react-native";
 import { INoteEntry } from "./INotes";
-
-import { ViewStyle } from "react-native";
 import ThemeText from "./ThemeText";
 import { getImageBase64 } from "./util";
 import { useEffect, useState } from "react";
-import { Button, Card } from "react-native-paper";
+import { Card } from "react-native-paper";
 
 export default function NotePreviewCard({ note, style, onPress }: { note: INoteEntry, style?: StyleProp<ViewStyle>, onPress?: () => void }) {
 	const [previews, setPreviews] = useState<string[]>(note.images);
@@ -36,7 +34,7 @@ export default function NotePreviewCard({ note, style, onPress }: { note: INoteE
 				<ThemeText style={{flex: 1, textAlign: 'center'}}>{new Date(note.modifiedAt).toDateString() || "date @ time"}</ThemeText>
 				<ThemeText style={{flex: 1, textAlign: 'center'}}>
 					{
-						note.startChapter == -1
+						note.startChapter === -1
 						? `All`
 						: `Chapter ${note.startChapter}${note.endChapter ? " - " + note.endChapter : ""}`
 					}

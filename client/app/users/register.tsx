@@ -1,7 +1,6 @@
 import api from "@/api/AxiosInstance";
 import ThemeButton from "@/components/ThemeButton";
 import ThemeText from "@/components/ThemeText";
-import axios from "axios";
 import { router } from "expo-router";
 import { useState } from "react";
 import { View, StyleSheet } from "react-native";

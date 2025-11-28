@@ -1,14 +1,9 @@
 import MainNavigator from "@/components/MainNavigator";
-import ThemeButton from "@/components/ThemeButton";
-import ThemeText from "@/components/ThemeText";
 import { AuthProvider, AuthContext } from "@/context/AuthContext";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { router, Stack } from "expo-router";
 import { useEffect, useState, useContext } from "react";
-import { KeyboardAvoidingView, Platform, Pressable, Text, useColorScheme } from "react-native";
-import { Button, MD3DarkTheme, MD3LightTheme, PaperProvider } from "react-native-paper";
+import { KeyboardAvoidingView, Platform, useColorScheme , ActivityIndicator, View } from "react-native";
+import { MD3DarkTheme, MD3LightTheme, PaperProvider } from "react-native-paper";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { ActivityIndicator, View } from "react-native";
 
 export default function RootLayout() {
 	const colorScheme = useColorScheme();

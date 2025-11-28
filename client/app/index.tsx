@@ -1,10 +1,9 @@
 import api from "@/api/AxiosInstance";
 import ThemeText from "@/components/ThemeText";
-import { addMangaToLibrary, formatData, getMangaIdsWithNotes, MANGA_SEARCH_QUERY, TEST_USER_ID } from "@/components/util";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { addMangaToLibrary, formatData, getMangaIdsWithNotes, MANGA_SEARCH_QUERY } from "@/components/util";
 import { Stack, useRouter } from "expo-router";
 import React, { useEffect, useState, useContext } from "react";
-import { FlatList, Image, Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
+import { FlatList, Image, Pressable, StyleSheet, useWindowDimensions, View } from "react-native";
 import { IconButton, Modal, Portal, Searchbar, useTheme } from "react-native-paper";
 import { AuthContext } from "@/context/AuthContext";
 
@@ -71,7 +70,7 @@ export default function Index() {
 		try {
 			const response = await api.get(`/users/me/manga`)
 			libraryMangaIds = response.data
-		} catch (error) {
+		} catch {
 			console.error("Could not fetch mangaIds")
 		}
 		let query = {

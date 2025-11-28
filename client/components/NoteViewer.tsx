@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { FlatList, Image, Pressable, ScrollView, StyleProp, StyleSheet, Text, View, ViewStyle } from "react-native";
-import { Button, IconButton, Menu, useTheme } from 'react-native-paper';
+import { FlatList, Image, Pressable, ScrollView, StyleProp, View, ViewStyle } from "react-native";
+import { IconButton, Menu } from 'react-native-paper';
 import { INoteEntry } from "./INotes";
 import { deleteMangaNote, getImageBase64 as getImageBase64 } from "./util";
 import ThemeButton from "./ThemeButton";
@@ -10,7 +10,6 @@ export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}:
 	const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
 	const [optionsVisible, setOptionsVisible] = useState<boolean>(false);
 	const [images, setImages] = useState<string[]>(note.images);
-	const theme = useTheme();
 
 	useEffect(() => {
 		const fetchImages = async () => {
@@ -122,20 +121,3 @@ export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}:
 		</View>
 	)
 }
-
-const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  menu: {
-    borderRadius: 10,
-    padding: 10,
-    minWidth: 150,
-  },
-  menuItem: {
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-  },
-});

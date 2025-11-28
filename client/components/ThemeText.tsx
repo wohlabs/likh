@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, TextProps, useTheme } from 'react-native-paper';
+import { Text, TextProps } from 'react-native-paper';
 
 export default function ThemeText({ children, style, ...props }: TextProps<Text>)
 {

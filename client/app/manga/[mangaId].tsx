@@ -3,19 +3,17 @@ import { IMangaNotes, INoteEntry } from "@/components/INotes";
 import NotePreviewCard from "@/components/NotePreviewCard";
 import NoteViewer from "@/components/NoteViewer";
 import ThemeText from "@/components/ThemeText";
-import { formatData, getMangaData, getMangaDetails, IMangaDetails } from "@/components/util";
-import { Ionicons } from "@expo/vector-icons";
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import { getMangaData, getMangaDetails, IMangaDetails } from "@/components/util";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
-import { Fragment, useCallback, useEffect, useRef, useState, useContext } from "react";
-import { Dimensions, FlatList, Image, Platform, ScrollView, StyleProp, StyleSheet, Text, useWindowDimensions, View, ViewStyle } from "react-native";
+import { useCallback, useEffect, useRef, useState, useContext } from "react";
+import { FlatList, Image, Platform, ScrollView, StyleProp, useWindowDimensions, View, ViewStyle } from "react-native";
 import { IconButton, Modal, Portal, Searchbar, useTheme } from "react-native-paper";
 import ReanimatedSwipeable, { SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
 import Reanimated, { SharedValue, useAnimatedStyle, useSharedValue } from "react-native-reanimated";
 import Carousel, { ICarouselInstance, Pagination } from "react-native-reanimated-carousel";
 import { AuthContext } from "@/context/AuthContext";
 
-function NoteButtons({style, progress, translation, swipeableMethods, onDeletePress}: { note: INoteEntry, style?: StyleProp<ViewStyle>, progress: SharedValue<number>, translation: SharedValue<number>, swipeableMethods: SwipeableMethods, onDeletePress?: () => void})
+function NoteButtons({style, translation, onDeletePress}: { note: INoteEntry, style?: StyleProp<ViewStyle>, progress: SharedValue<number>, translation: SharedValue<number>, swipeableMethods: SwipeableMethods, onDeletePress?: () => void})
 {
 	const swipeLeftAnimation = useAnimatedStyle(() => {
 		return {
@@ -51,9 +49,7 @@ function NoteButtons({style, progress, translation, swipeableMethods, onDeletePr
 	)
 }
 
-const Tab = createMaterialTopTabNavigator();
-
-export default function MangaDetails({ navigation }: any) {
+export default function MangaDetails() {
 	const theme = useTheme();
 	const {width, height} = useWindowDimensions()
 	const { mangaId } = useLocalSearchParams(); // <-- get from URL
@@ -109,7 +105,7 @@ export default function MangaDetails({ navigation }: any) {
 
 	useEffect(() => {
 
-		setFilteredNotes(searchString.trim().length == 0 ? data : data.filter((note: INoteEntry) => (note.text && note.text.toLowerCase().includes(searchString.toLowerCase()))));
+		setFilteredNotes(searchString.trim().length === 0 ? data : data.filter((note: INoteEntry) => (note.text && note.text.toLowerCase().includes(searchString.toLowerCase()))));
 	}, [searchString, data]);
 
 	useEffect(() => {
@@ -142,7 +138,7 @@ export default function MangaDetails({ navigation }: any) {
 					contentContainerStyle={{flexGrow: 0}}
 					scrollEnabled={false}
 					renderItem={({ item, index }: { item: INoteEntry, index: any }) => (
-							Platform.OS == 'web'
+							Platform.OS === 'web'
 							?
 							<View style={{flex:1, flexDirection: 'row', alignItems: 'center'}}>
 								<NotePreviewCard note={item} style={{ flex: 1, margin: 5}} onPress={()=> {setViewerNoteIndex(index); setIsViewingOverlay(true)}}/>
@@ -268,12 +264,6 @@ export default function MangaDetails({ navigation }: any) {
 					/>
 				</View>
 			</View>
-
 		</View>
 	);
 }
-
-const styles = StyleSheet.create({
-	tabTitle: { fontSize: 14, fontWeight: "bold" },
-	mangaCoverImage: { width: '100%', aspectRatio: '0.8'}
-});
