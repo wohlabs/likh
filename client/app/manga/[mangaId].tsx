@@ -51,7 +51,7 @@ function NoteButtons({style, translation, onDeletePress}: { note: INoteEntry, st
 
 export default function MangaDetails() {
 	const theme = useTheme();
-	const {width, height} = useWindowDimensions()
+	const {width} = useWindowDimensions()
 	const { mangaId } = useLocalSearchParams(); // <-- get from URL
 	const [manga, setManga] = useState<IMangaDetails>();
 	const [data, setData] = useState<IMangaNotes>([]);

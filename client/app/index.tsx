@@ -55,12 +55,12 @@ export default function Index() {
 	const theme = useTheme()
 	const [mangaList, setMangaList] = useState<MangaProps[]>([]);
 	const [filteredMangaList, setFilteredMangaList] = useState<MangaProps[]>([]);
-	const [loading, setLoading] = useState(true);
+	const [, setLoading] = useState(true);
 	const [isSearching, setSearching] = useState(false)
 	const [searchString, setSearchString] = useState("")
 	const [newMangaList, setNewMangaList] = useState<MangaProps[]>([]);
 	const [newSearchString, setNewSearchString] = useState("")
-	const { width, height } = useWindowDimensions();
+	const { width } = useWindowDimensions();
 	const anilist_token: string = useContext(AuthContext).anilistToken
 	const listColNum = Math.min(Math.max(Math.ceil(width/200), 1), 5)
 
