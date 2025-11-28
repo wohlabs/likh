@@ -2,24 +2,27 @@ import { Image, StyleProp, ViewStyle } from "react-native";
 import { INoteEntry } from "./INotes";
 import ThemeText from "./ThemeText";
 import { getImageBase64 } from "./util";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Card } from "react-native-paper";
 
 export default function NotePreviewCard({ note, style, onPress }: { note: INoteEntry, style?: StyleProp<ViewStyle>, onPress?: () => void }) {
 	const [previews, setPreviews] = useState<string[]>(note.images);
-	useEffect(() => {
-		const fetchImages = async () => {
-			note.images.map(async (imageId, index) => {
-				const image = await getImageBase64(imageId)
-				setPreviews(prev => {
-					const updated = [...prev];
-					updated[index] = image
-					return updated
-				})
+
+	const fetchImages = useCallback(async () => {
+		note.images.map(async (imageId, index) => {
+			const image = await getImageBase64(imageId)
+			setPreviews(prev => {
+				const updated = [...prev];
+				updated[index] = image
+				return updated
 			})
-		};
-		fetchImages()
-	}, [])
+		})
+	}, [note]);
+
+	useEffect(() => {
+		fetchImages();
+	}, [fetchImages])
+
 	return (
 		<Card
 			style={style}

@@ -64,26 +64,29 @@ export default function MangaDetails() {
 	const carouselRef = useRef<ICarouselInstance>(null)
 	const anilist_token: string = useContext(AuthContext).anilistToken
 
-	useEffect(() => {
-		const populateMangaData = async () => {
-			const manga = await getMangaDetails(mangaId.toString());
-			setManga(manga);
-		};
-		populateMangaData();
-	}, []);
+	const populateMangaData = useCallback(async () => {
+		const manga = await getMangaDetails(mangaId.toString());
+		setManga(manga);
+	}, [mangaId]);
 
-	const fetchData = async () => {
+	useEffect(() => {
+		populateMangaData();
+	}, [populateMangaData]);
+
+	const fetchData = useCallback(async () => {
 		const DATA = await getMangaData(mangaId.toString(), anilist_token);
 		setData(DATA);
-	};
+	}, [mangaId, anilist_token]);
+
 	useEffect(() => {
 		fetchData();
-	}, []);
+	}, [fetchData]);
 
 	useFocusEffect(
 		useCallback(() => {
 			fetchData()
-		}, [])
+			return () => {};
+		}, [fetchData])
 	)
 
 	const onDelete = async (noteId: string) => {

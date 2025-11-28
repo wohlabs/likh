@@ -1,6 +1,6 @@
 import * as ImagePicker from "expo-image-picker";
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import
 	{
 		FlatList,
@@ -46,13 +46,14 @@ export default function AddNoteScreen() {
 	const [mangaName, setMangaName] = useState<string>("Fetching...");
 	const token = useContext(AuthContext).token
 
+	const populateMangaData = useCallback(async () => {
+		const manga = await getMangaDetails(mangaId.toString());
+		setMangaName(manga?.title.userPreferred || "Unknown");
+	}, [mangaId]);
+
 	useEffect(() => {
-		const populateMangaData = async () => {
-			const manga = await getMangaDetails(mangaId.toString());
-			setMangaName(manga?.title.userPreferred || "Unknown");
-		};
 		populateMangaData();
-	}, []);
+	}, [populateMangaData]);
 
 	const pickImage = async () => {
 		// No permissions request is necessary for launching the image library

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FlatList, Image, Pressable, ScrollView, StyleProp, View, ViewStyle } from "react-native";
 import { IconButton, Menu } from 'react-native-paper';
 import { INoteEntry } from "./INotes";
@@ -11,19 +11,21 @@ export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}:
 	const [optionsVisible, setOptionsVisible] = useState<boolean>(false);
 	const [images, setImages] = useState<string[]>(note.images);
 
-	useEffect(() => {
-		const fetchImages = async () => {
-			note.images.map(async (imageId, index) => {
-				const image = await getImageBase64(imageId)
-				setImages(prev => {
-					const updated = [...prev];
-					updated[index] = image
-					return updated
-				})
+
+	const fetchImages = useCallback(async () => {
+		note.images.map(async (imageId, index) => {
+			const image = await getImageBase64(imageId)
+			setImages(prev => {
+				const updated = [...prev];
+				updated[index] = image
+				return updated
 			})
-		};
+		})
+	}, [note]);
+
+	useEffect(() => {
 		fetchImages()
-	}, [])
+	}, [fetchImages])
 
 	return (
 		note &&

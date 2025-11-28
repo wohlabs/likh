@@ -2,7 +2,7 @@ import api from "@/api/AxiosInstance";
 import ThemeText from "@/components/ThemeText";
 import { addMangaToLibrary, formatData, getMangaIdsWithNotes, MANGA_SEARCH_QUERY } from "@/components/util";
 import { Stack, useRouter } from "expo-router";
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useCallback } from "react";
 import { FlatList, Image, Pressable, StyleSheet, useWindowDimensions, View } from "react-native";
 import { IconButton, Modal, Portal, Searchbar, useTheme } from "react-native-paper";
 import { AuthContext } from "@/context/AuthContext";
@@ -64,7 +64,7 @@ export default function Index() {
 	const anilist_token: string = useContext(AuthContext).anilistToken
 	const listColNum = Math.min(Math.max(Math.ceil(width/200), 1), 5)
 
-	const populateMangaList = async () => {
+	const populateMangaList = useCallback(async () => {
 		const anilistMangaIds: string[] = await getMangaIdsWithNotes(anilist_token)
 		let libraryMangaIds: string[] = []
 		try {
@@ -102,9 +102,9 @@ export default function Index() {
 			console.error(error);
 			setLoading(false);
 		});
-	}
+	}, [anilist_token]);
 
-	const populateNewMangaList = async () => {
+	const populateNewMangaList = useCallback(async () => {
 		let query = {
 			query: newSearchString.length > 0 ? MANGA_SEARCH_QUERY : MANGA_QUERY,
 			variables: {search: newSearchString}
@@ -132,11 +132,11 @@ export default function Index() {
 		.catch((error) => {
 			console.error(error);
 		});
-	}
+	}, [newSearchString]);
 
 	useEffect(() => {
 		populateMangaList()
-	}, [isSearching]);
+	}, [isSearching, populateMangaList]);
 
 	useEffect(() => {
 		setFilteredMangaList(mangaList.filter((manga) => manga.title?.userPreferred?.toLowerCase().includes(searchString.toLowerCase())))
