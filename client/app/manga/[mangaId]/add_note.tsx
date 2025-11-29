@@ -2,15 +2,15 @@ import * as ImagePicker from "expo-image-picker";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useCallback, useContext, useEffect, useState } from "react";
 import
-	{
-		FlatList,
-		Image,
-		Keyboard,
-		Platform,
-		Pressable,
-		TouchableWithoutFeedback,
-		View
-	} from "react-native";
+{
+	FlatList,
+	Image,
+	Keyboard,
+	Platform,
+	Pressable,
+	TouchableWithoutFeedback,
+	View
+} from "react-native";
 import { IconButton, TextInput } from "react-native-paper";
 import ThemeButton from "@/components/ThemeButton";
 import ThemeText from "@/components/ThemeText";
@@ -29,11 +29,11 @@ const KeyboardDismissWrapper = ({ children }: any) =>
 
 	return (
 		<TouchableWithoutFeedback
-		onPress={Keyboard.dismiss}
-		accessible={false}
-		style={{ flex: 1 }}
+			onPress={Keyboard.dismiss}
+			accessible={false}
+			style={{ flex: 1 }}
 		>
-		<View style={{ flex: 1 }}>{children}</View>
+			<View style={{ flex: 1 }}>{children}</View>
 		</TouchableWithoutFeedback>
 	);
 };
@@ -118,26 +118,26 @@ export default function AddNoteScreen()
 				<View style={{ flex: 2, margin: 10, flexDirection: "column" }}>
 					{
 						images.length > 0 ? 
-						<Image
-							defaultSource={{
-								uri: "https://png.pngtree.com/png-clipart/20190705/original/pngtree-vector-add-icon-png-image_4232053.jpg",
-							}}
-							source={{
-								uri: images[currentImageIndex].uri || "https://static.thenounproject.com/png/187803-200.png"
-							}}
-							resizeMode="contain"
-							style={{
-								flex: 1,
-								width: "100%",
-								borderRadius: 10,
-								borderColor: "black",
-								borderWidth: 2,
-							}}
-						/>
-						:
-						<View style={{flex: 1, justifyContent: "center", alignItems: "center", borderColor: "black", borderWidth: 2, borderRadius: 10, borderStyle:"dashed"}}>
-							<ThemeText style={{fontSize: 28, color: "lightgray"}}>Add an image using the + icon</ThemeText>
-						</View>
+							<Image
+								defaultSource={{
+									uri: "https://png.pngtree.com/png-clipart/20190705/original/pngtree-vector-add-icon-png-image_4232053.jpg",
+								}}
+								source={{
+									uri: images[currentImageIndex].uri || "https://static.thenounproject.com/png/187803-200.png"
+								}}
+								resizeMode="contain"
+								style={{
+									flex: 1,
+									width: "100%",
+									borderRadius: 10,
+									borderColor: "black",
+									borderWidth: 2,
+								}}
+							/>
+							:
+							<View style={{flex: 1, justifyContent: "center", alignItems: "center", borderColor: "black", borderWidth: 2, borderRadius: 10, borderStyle:"dashed"}}>
+								<ThemeText style={{fontSize: 28, color: "lightgray"}}>Add an image using the + icon</ThemeText>
+							</View>
 					}
 					<View style={{height: 100, flexDirection: "row", alignItems: "center"}}>
 						<FlatList

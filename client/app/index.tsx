@@ -97,25 +97,25 @@ export default function Index()
 			},
 			body: JSON.stringify(query)
 		})
-		.then((response) => response.json())
-		.then((response) => response.data)
-		.then((data) =>
-		{
-			if (data && data.Page && data.Page.media)
+			.then((response) => response.json())
+			.then((response) => response.data)
+			.then((data) =>
 			{
-				setMangaList(data.Page.media);
-			}
-			else
+				if (data && data.Page && data.Page.media)
+				{
+					setMangaList(data.Page.media);
+				}
+				else
+				{
+					setMangaList([]);
+				}
+				setLoading(false);
+			})
+			.catch((error) => 
 			{
-				setMangaList([]);
-			}
-			setLoading(false);
-		})
-		.catch((error) => 
-		{
-			console.error(error);
-			setLoading(false);
-		});
+				console.error(error);
+				setLoading(false);
+			});
 	}, [anilist_token]);
 
 	const populateNewMangaList = useCallback(async () => 
@@ -132,23 +132,23 @@ export default function Index()
 			},
 			body: JSON.stringify(query)
 		})
-		.then((response) => response.json())
-		.then((response) => response.data)
-		.then((data) => 
-		{
-			if (data && data.Page && data.Page.media)
+			.then((response) => response.json())
+			.then((response) => response.data)
+			.then((data) => 
 			{
-				setNewMangaList(data.Page.media);
-			}
-			else
+				if (data && data.Page && data.Page.media)
+				{
+					setNewMangaList(data.Page.media);
+				}
+				else
+				{
+					setNewMangaList([]);
+				}
+			})
+			.catch((error) => 
 			{
-				setNewMangaList([]);
-			}
-		})
-		.catch((error) => 
-		{
-			console.error(error);
-		});
+				console.error(error);
+			});
 	}, [newSearchString]);
 
 	useEffect(() => 
@@ -163,90 +163,90 @@ export default function Index()
 
 	return (
 		<>
-		<Stack.Screen
-			options={{
-				title: "Library",
-				headerTitleAlign: "center"
-			}}
-		/>
-		<View style={{flex: 1}}>
-			<FlatList
-				data={formatData(filteredMangaList, Math.min(5, listColNum))}
-				keyExtractor={(item) => item.id}
-				key={`filteredMangaList_${Date.now()}`}
-				numColumns={Math.min(5, listColNum)}
-				style={{flex: 1}}
-				renderItem={({ item }) => (
-					item?.id ?
-					<Pressable style={{ flex:1 }} onPress={() => { router.navigate(`/manga/${item.id}`) }}>
-						<Image
-							source={{ uri: item.coverImage?.large }}
-							resizeMode="contain"
-							style={styles.mangaCoverImage}
-						/>
-						<ThemeText style={styles.mangaTitle}>{item.title?.userPreferred}</ThemeText>
-					</Pressable>
-					: <View style={{ flex: 1, margin: 5 }} />
-				)}
+			<Stack.Screen
+				options={{
+					title: "Library",
+					headerTitleAlign: "center"
+				}}
 			/>
-			<View style={{width: "100%", minWidth: 350, height: 60, position: "absolute", bottom: 25, flexDirection: "row", alignItems: "center", margin: 'auto', justifyContent: 'center'}}>
-				<View style={{width: '90%', maxWidth: 600, flexDirection: 'row', alignItems: 'center'}}>
-					<Searchbar
-						placeholder="search library"
-						onChangeText={setSearchString}
-						onSubmitEditing={() => { populateNewMangaList(); }}
-						style={{margin: 10, borderRadius: 10, flex: 1, shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
-						value={searchString}
-					/>
-					<IconButton
-						icon={"plus"}
-						size={30}
-						onPress={() => { setSearching(!isSearching); populateNewMangaList(); }}
-						style={{shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
-						mode="contained"
-					/>
-				</View>
-			</View>
-		</View>
-		<Portal>
-			<Modal visible={isSearching} onDismiss={() => setSearching(false)}
-				contentContainerStyle={{
-					padding: 0, margin: 'auto', width: "90%", height: "80%", borderRadius: 10,
-					backgroundColor: theme.colors.background
-				}}>
-				<Searchbar
-					placeholder="search manga"
-					onChangeText={setNewSearchString}
-					onSubmitEditing={() => { populateNewMangaList(); }}
-					style={{margin: 10, borderRadius: 10}}
-					value={newSearchString}
-				/>
+			<View style={{flex: 1}}>
 				<FlatList
-					data={newMangaList}
+					data={formatData(filteredMangaList, Math.min(5, listColNum))}
 					keyExtractor={(item) => item.id}
-					key={`newMangaList_${Date.now()}`}
-					numColumns={1}
+					key={`filteredMangaList_${Date.now()}`}
+					numColumns={Math.min(5, listColNum)}
 					style={{flex: 1}}
 					renderItem={({ item }) => (
-						<Pressable style={{ height: 150, width: "100%", flexDirection: "row", alignItems: "center", padding: 5 }} onPress={() => { router.navigate(`/manga/${item.id}`) }}>
-							<Image
-								source={{ uri: item.coverImage?.large }}
-								resizeMode="contain"
-								style={{height: "100%", aspectRatio: 0.8}}
-							/>
-							<ThemeText style={{textAlign: "left", fontSize: 20, flex: 1}}>{item.title?.userPreferred}</ThemeText>
-							<IconButton
-								icon={"plus"}
-								mode="contained"
-								iconColor={mangaList.find((elem) => elem.id === item.id) ? theme.colors.surfaceVariant : theme.colors.primary}
-								containerColor={mangaList.find((elem) => elem.id === item.id) ? theme.colors.inverseOnSurface : theme.colors.surfaceVariant}
-								onPress={async () => { await addMangaToLibrary(item.id); populateMangaList(); }}
-							/>
-						</Pressable>
+						item?.id ?
+							<Pressable style={{ flex:1 }} onPress={() => { router.navigate(`/manga/${item.id}`) }}>
+								<Image
+									source={{ uri: item.coverImage?.large }}
+									resizeMode="contain"
+									style={styles.mangaCoverImage}
+								/>
+								<ThemeText style={styles.mangaTitle}>{item.title?.userPreferred}</ThemeText>
+							</Pressable>
+							: <View style={{ flex: 1, margin: 5 }} />
 					)}
 				/>
-			</Modal>
-		</Portal>
+				<View style={{width: "100%", minWidth: 350, height: 60, position: "absolute", bottom: 25, flexDirection: "row", alignItems: "center", margin: 'auto', justifyContent: 'center'}}>
+					<View style={{width: '90%', maxWidth: 600, flexDirection: 'row', alignItems: 'center'}}>
+						<Searchbar
+							placeholder="search library"
+							onChangeText={setSearchString}
+							onSubmitEditing={() => { populateNewMangaList(); }}
+							style={{margin: 10, borderRadius: 10, flex: 1, shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
+							value={searchString}
+						/>
+						<IconButton
+							icon={"plus"}
+							size={30}
+							onPress={() => { setSearching(!isSearching); populateNewMangaList(); }}
+							style={{shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
+							mode="contained"
+						/>
+					</View>
+				</View>
+			</View>
+			<Portal>
+				<Modal visible={isSearching} onDismiss={() => setSearching(false)}
+					contentContainerStyle={{
+						padding: 0, margin: 'auto', width: "90%", height: "80%", borderRadius: 10,
+						backgroundColor: theme.colors.background
+					}}>
+					<Searchbar
+						placeholder="search manga"
+						onChangeText={setNewSearchString}
+						onSubmitEditing={() => { populateNewMangaList(); }}
+						style={{margin: 10, borderRadius: 10}}
+						value={newSearchString}
+					/>
+					<FlatList
+						data={newMangaList}
+						keyExtractor={(item) => item.id}
+						key={`newMangaList_${Date.now()}`}
+						numColumns={1}
+						style={{flex: 1}}
+						renderItem={({ item }) => (
+							<Pressable style={{ height: 150, width: "100%", flexDirection: "row", alignItems: "center", padding: 5 }} onPress={() => { router.navigate(`/manga/${item.id}`) }}>
+								<Image
+									source={{ uri: item.coverImage?.large }}
+									resizeMode="contain"
+									style={{height: "100%", aspectRatio: 0.8}}
+								/>
+								<ThemeText style={{textAlign: "left", fontSize: 20, flex: 1}}>{item.title?.userPreferred}</ThemeText>
+								<IconButton
+									icon={"plus"}
+									mode="contained"
+									iconColor={mangaList.find((elem) => elem.id === item.id) ? theme.colors.surfaceVariant : theme.colors.primary}
+									containerColor={mangaList.find((elem) => elem.id === item.id) ? theme.colors.inverseOnSurface : theme.colors.surfaceVariant}
+									onPress={async () => { await addMangaToLibrary(item.id); populateMangaList(); }}
+								/>
+							</Pressable>
+						)}
+					/>
+				</Modal>
+			</Portal>
 		</>
 	);
 }

@@ -39,25 +39,25 @@ export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}:
 			<View style={{ flex: 2, margin: 10, flexDirection: "column" }}>
 				{
 					images?.length > 0 ? 
-					<Image
-						defaultSource={{
-							uri: "https://png.pngtree.com/png-clipart/20190705/original/pngtree-vector-add-icon-png-image_4232053.jpg",
-						}}
-						source={{
-							uri: images[currentImageIndex] || "https://static.thenounproject.com/png/187803-200.png"
-						}}
-						resizeMode="contain"
-						style={{
-							flex: 1,
-							width: "100%",
-							borderRadius: 10,
-							borderWidth: 2,
-						}}
-					/>
-					:
-					<View style={{flex: 1, justifyContent: "center", alignItems: "center", borderWidth: 2, borderRadius: 10, borderStyle:"dashed"}}>
-						<ThemeText style={{fontSize: 28, color: "lightgray"}}>No images</ThemeText>
-					</View>
+						<Image
+							defaultSource={{
+								uri: "https://png.pngtree.com/png-clipart/20190705/original/pngtree-vector-add-icon-png-image_4232053.jpg",
+							}}
+							source={{
+								uri: images[currentImageIndex] || "https://static.thenounproject.com/png/187803-200.png"
+							}}
+							resizeMode="contain"
+							style={{
+								flex: 1,
+								width: "100%",
+								borderRadius: 10,
+								borderWidth: 2,
+							}}
+						/>
+						:
+						<View style={{flex: 1, justifyContent: "center", alignItems: "center", borderWidth: 2, borderRadius: 10, borderStyle:"dashed"}}>
+							<ThemeText style={{fontSize: 28, color: "lightgray"}}>No images</ThemeText>
+						</View>
 				}
 				<View style={{height: 100, flexDirection: "row"}}>
 					<FlatList

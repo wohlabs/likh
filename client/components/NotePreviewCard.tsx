@@ -43,8 +43,8 @@ export default function NotePreviewCard({ note, style, onPress }: { note: INoteE
 				<ThemeText style={{flex: 1, textAlign: 'center'}}>
 					{
 						note.startChapter === -1
-						? `All`
-						: `Chapter ${note.startChapter}${note.endChapter ? " - " + note.endChapter : ""}`
+							? `All`
+							: `Chapter ${note.startChapter}${note.endChapter ? " - " + note.endChapter : ""}`
 					}
 				</ThemeText>
 				<ThemeText style={{flex: 1, textAlign: 'right', paddingLeft: 20}} ellipsizeMode="tail" numberOfLines={1}>{note.text || "No notes"}</ThemeText>

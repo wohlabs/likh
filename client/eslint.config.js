@@ -8,6 +8,7 @@ module.exports = defineConfig([
 		ignores: ['dist/*'],
 		rules: {
 			'brace-style': ['error', 'allman', { allowSingleLine: true }],
+			'indent': ['error', 'tab']
 		},
 	},
 ]);

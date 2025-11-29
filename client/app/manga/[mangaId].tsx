@@ -153,7 +153,7 @@ export default function MangaDetails()
 					contentContainerStyle={{flexGrow: 0}}
 					scrollEnabled={false}
 					renderItem={({ item, index }: { item: INoteEntry, index: any }) => (
-							Platform.OS === 'web'
+						Platform.OS === 'web'
 							?
 							<View style={{flex:1, flexDirection: 'row', alignItems: 'center'}}>
 								<NotePreviewCard note={item} style={{ flex: 1, margin: 5}} onPress={()=> {setViewerNoteIndex(index); setIsViewingOverlay(true)}}/>

@@ -20,9 +20,9 @@ export default function RootLayout()
 	return (
 		<PaperProvider theme={theme}>
 			<GestureHandlerRootView>
-					<AuthProvider>
-						<AppGate />
-					</AuthProvider>
+				<AuthProvider>
+					<AppGate />
+				</AuthProvider>
 			</GestureHandlerRootView>
 		</PaperProvider>
 	);
@@ -37,7 +37,7 @@ const AppGate = () =>
 		return <LoadingScreen />;  // splash or spinner
 	}
 
-  return (
+	return (
 		<KeyboardAvoidingView
 			style={{ flex: 1 }}
 			behavior={Platform.OS === "ios" ? "padding" : "height"}
