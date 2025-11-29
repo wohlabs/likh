@@ -41,7 +41,8 @@ router.post('/login', async (req, res) =>
 	const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1y' });
 	res.json({
 		token,
-		username
+		username,
+		anilist_token: user.anilist_token
 	});
 });
 
