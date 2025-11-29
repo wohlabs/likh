@@ -26,37 +26,44 @@ export const getAnilistNote = async (mangaId: string, access_token: string) : Pr
 		},
 		body: JSON.stringify({ query: MANGA_NOTE_QUERY, variables: {userId : getUserIdFromToken(access_token), mediaId: mangaId} })
 	})
-	.then((response) => response.json())
-	.then((response) => response.data)
-	.then((data) => {
-		return data.MediaList
-	})
-	.then((item) => {
-		return {
-			id: item.id,
-			createdAt: new Date(item.createdAt * 1000).toString(),
-			modifiedAt: new Date(item.updatedAt * 1000).toString(),
-			startChapter: -1,
-			endChapter: undefined,
-			images: [],
-			text: item.notes,
-			fromAnilist: true
-		} as INoteEntry;
-	})
-	.catch((error) => {
-		console.error(error);
-		return null
-	});
+		.then((response) => response.json())
+		.then((response) => response.data)
+		.then((data) => 
+		{
+			return data.MediaList
+		})
+		.then((item) => 
+		{
+			return {
+				id: item.id,
+				createdAt: new Date(item.createdAt * 1000).toString(),
+				modifiedAt: new Date(item.updatedAt * 1000).toString(),
+				startChapter: -1,
+				endChapter: undefined,
+				images: [],
+				text: item.notes,
+				fromAnilist: true
+			} as INoteEntry;
+		})
+		.catch((error) => 
+		{
+			console.error(error);
+			return null
+		});
 	return anilistNote
 }
 
-export const addMangaNote = async (mangaId: string, entry: INoteEntry) : Promise<boolean> => {
-	try {
+export const addMangaNote = async (mangaId: string, entry: INoteEntry) : Promise<boolean> => 
+{
+	try 
+	{
 		await api.post('/notes', {
 			mangaId,
 			...entry
 		})
-	} catch (e) {
+	}
+	catch (e) 
+	{
 		// saving error
 		console.log("save error", e)
 		return false
@@ -64,12 +71,16 @@ export const addMangaNote = async (mangaId: string, entry: INoteEntry) : Promise
 	return true
 };
 
-export const deleteMangaNote = async (mangaId: string, entryId: string) : Promise<boolean> => {
-	try {
+export const deleteMangaNote = async (mangaId: string, entryId: string) : Promise<boolean> => 
+{
+	try 
+	{
 		let notes: IMangaNotes = await getMangaData(mangaId);
 		notes = notes.filter((note) => note.id !== entryId)
 		await AsyncStorage.setItem('manga_' + mangaId.toString(), JSON.stringify(notes));
-	} catch (e) {
+	}
+	catch (e) 
+	{
 		console.log("delete note error", e)
 		return false
 	}

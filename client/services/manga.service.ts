@@ -38,8 +38,10 @@ query ($search: String, $page: Int, $perPage: Int) {
 }
 `
 
-export const getMangaData = async (mangaId: string, access_token: string = "") : Promise<IMangaNotes> => {
-	try {
+export const getMangaData = async (mangaId: string, access_token: string = "") : Promise<IMangaNotes> => 
+{
+	try 
+	{
 		const response = await api.get(`/notes?mangaId=${mangaId}`);
 		const notes: IMangaNotes = response.data.map((item: any): INoteEntry => ({
 			id: item._id,
@@ -57,15 +59,19 @@ export const getMangaData = async (mangaId: string, access_token: string = "") :
 			notes.push(anilistNote)
 		}
 		return notes || JSON.parse("[]");
-	} catch (err: any) {
+	}
+	catch (err: any) 
+	{
 		console.error(err.response?.data || err.message);
 		// error reading value
 		return [];
 	}
 };
 
-export const addMangaToLibrary = async (mangaId: string) : Promise<boolean> => {
-	try {
+export const addMangaToLibrary = async (mangaId: string) : Promise<boolean> => 
+{
+	try 
+	{
 		await api.post('/users/me/manga', {
 			mangaId: parseInt(mangaId)
 		});
@@ -88,18 +94,21 @@ export const getMangaDetails = async (mangaId: string) : Promise<IMangaDetails |
 		},
 		body: JSON.stringify({ query: MANGA_QUERY, variables: {id : mangaId} })
 	})
-	.then((response) => response.json())
-	.then((response) => response.data)
-	.then((data) => {
-		return data
-	})
-	.then((media) => {
-		return media.Media as IMangaDetails;
-	})
-	.catch((error) => {
-		console.error(error);
-		return undefined
-	});
+		.then((response) => response.json())
+		.then((response) => response.data)
+		.then((data) => 
+		{
+			return data
+		})
+		.then((media) => 
+		{
+			return media.Media as IMangaDetails;
+		})
+		.catch((error) => 
+		{
+			console.error(error);
+			return undefined
+		});
 	return data;
 }
 
@@ -126,20 +135,22 @@ export const getMangaIdsWithNotes = async (accessToken: string) : Promise<string
 			}
 		}`, variables: {userId : userId}})
 	})
-	.then((response) => response.json())
-	.then((response) => response.data)
-	.then((data) => {
-		const  result = data.MediaListCollection.lists.flatMap((list: any) =>
-			list.entries
-				.filter((entry: any) => entry.notes && entry.notes.length > 0)
-				.map((entry: any) => entry.mediaId.toString())
-		);
-		return result
-	})
-	.catch((error) => {
-		console.error(error);
-		return undefined
-	});
+		.then((response) => response.json())
+		.then((response) => response.data)
+		.then((data) => 
+		{
+			const  result = data.MediaListCollection.lists.flatMap((list: any) =>
+				list.entries
+					.filter((entry: any) => entry.notes && entry.notes.length > 0)
+					.map((entry: any) => entry.mediaId.toString())
+			);
+			return result
+		})
+		.catch((error) => 
+		{
+			console.error(error);
+			return undefined
+		});
 	return mangaIds;
 }
 
@@ -153,13 +164,15 @@ export const searchMangaByString = async (searchString: string, page: number = 1
 		},
 		body: JSON.stringify({ query: MANGA_SEARCH_QUERY, variables: {search : searchString, page, perPage} })
 	})
-	.then((response) => response.json())
-	.then((response) => response.data)
-	.then((data) => {
-		return data.Page.media
-	})
-	.catch((error) => {
-		console.error(error);
-	});
+		.then((response) => response.json())
+		.then((response) => response.data)
+		.then((data) => 
+		{
+			return data.Page.media
+		})
+		.catch((error) => 
+		{
+			console.error(error);
+		});
 	return data;
 }
