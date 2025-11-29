@@ -74,9 +74,12 @@ export default function MainNavigator()
 				>
 					<Menu.Item 
 						onPress={() => {
-							setOptionsVisible(false);
-							linkAnilist();
-							router.replace('/') // may not be ideal to refresh
+							if (!anilistToken)
+							{
+								setOptionsVisible(false);
+								linkAnilist();
+								router.replace('/') // may not be ideal to refresh
+							}
 						}}
 						leadingIcon={() => (
 							<Image
