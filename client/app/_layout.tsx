@@ -5,11 +5,13 @@ import { KeyboardAvoidingView, Platform, useColorScheme , ActivityIndicator, Vie
 import { MD3DarkTheme, MD3LightTheme, PaperProvider } from "react-native-paper";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-export default function RootLayout() {
+export default function RootLayout() 
+{
 	const colorScheme = useColorScheme();
 	const [theme, setTheme] = useState(MD3LightTheme);
 
-	useEffect(() => {
+	useEffect(() => 
+	{
 		// necessary to avoid mixing themes on initial load
 		if (colorScheme === 'dark') setTheme(MD3DarkTheme);
 		else setTheme(MD3LightTheme);
@@ -26,10 +28,12 @@ export default function RootLayout() {
 	);
 }
 
-const AppGate = () => {
+const AppGate = () => 
+{
 	const { loading } = useContext(AuthContext);
 
-	if (loading) {
+	if (loading) 
+	{
 		return <LoadingScreen />;  // splash or spinner
 	}
 
@@ -43,7 +47,8 @@ const AppGate = () => {
 	);
 };
 
-function LoadingScreen() {
+function LoadingScreen() 
+{
 	return (
 		<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
 			<ActivityIndicator size="large" />

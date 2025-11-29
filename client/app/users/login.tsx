@@ -7,13 +7,15 @@ import { router } from "expo-router";
 import { AuthContext } from "@/context/AuthContext";
 import api from "@/api/AxiosInstance";
 
-export default function UserLogin() {
+export default function UserLogin() 
+{
 	const [username, setUsername] = useState<string>('');
 	const [password, setPassword] = useState<string>('');
 	const [error, setError] = useState('');
 	const {login} = useContext(AuthContext);
 
-	const userLogin = async () => {
+	const userLogin = async () => 
+	{
 		try
 		{
 			const res = await api.post('/users/login', { username, password });

@@ -16,7 +16,8 @@ import { getMangaData, getMangaDetails } from "@/services/manga.service";
 
 function NoteButtons({style, translation, onDeletePress}: { note: INoteEntry, style?: StyleProp<ViewStyle>, progress: SharedValue<number>, translation: SharedValue<number>, swipeableMethods: SwipeableMethods, onDeletePress?: () => void})
 {
-	const swipeLeftAnimation = useAnimatedStyle(() => {
+	const swipeLeftAnimation = useAnimatedStyle(() => 
+	{
 		return {
 			transform: [{ translateX: translation.value + 140 }],
 		};
@@ -50,7 +51,8 @@ function NoteButtons({style, translation, onDeletePress}: { note: INoteEntry, st
 	)
 }
 
-export default function MangaDetails() {
+export default function MangaDetails() 
+{
 	const theme = useTheme();
 	const {width} = useWindowDimensions()
 	const { mangaId } = useLocalSearchParams(); // <-- get from URL
@@ -65,38 +67,45 @@ export default function MangaDetails() {
 	const carouselRef = useRef<ICarouselInstance>(null)
 	const anilist_token: string = useContext(AuthContext).anilistToken
 
-	const populateMangaData = useCallback(async () => {
+	const populateMangaData = useCallback(async () => 
+	{
 		const manga = await getMangaDetails(mangaId.toString());
 		setManga(manga);
 	}, [mangaId]);
 
-	useEffect(() => {
+	useEffect(() => 
+	{
 		populateMangaData();
 	}, [populateMangaData]);
 
-	const fetchData = useCallback(async () => {
+	const fetchData = useCallback(async () => 
+	{
 		const DATA = await getMangaData(mangaId.toString(), anilist_token);
 		setData(DATA);
 	}, [mangaId, anilist_token]);
 
-	useEffect(() => {
+	useEffect(() => 
+	{
 		fetchData();
 	}, [fetchData]);
 
 	useFocusEffect(
-		useCallback(() => {
+		useCallback(() => 
+		{
 			fetchData()
 			return () => {};
 		}, [fetchData])
 	)
 
-	const onDelete = async (noteId: string) => {
+	const onDelete = async (noteId: string) => 
+	{
 		await api.delete(`/notes/${noteId}`)
 		setIsViewingOverlay(false);
 		fetchData();
 	}
 
-	const onPressPagination = (index: number) => {
+	const onPressPagination = (index: number) => 
+	{
 		carouselRef.current?.scrollTo({
 			/**
 			 * Calculate the difference between the current index and the target index
@@ -107,12 +116,14 @@ export default function MangaDetails() {
 		});
 	};
 
-	useEffect(() => {
+	useEffect(() => 
+	{
 
 		setFilteredNotes(searchString.trim().length === 0 ? data : data.filter((note: INoteEntry) => (note.text && note.text.toLowerCase().includes(searchString.toLowerCase()))));
 	}, [searchString, data]);
 
-	useEffect(() => {
+	useEffect(() => 
+	{
 		setViewerNote(filteredNotes[viewerNoteIndex]);
 	}, [filteredNotes, viewerNoteIndex]);
 

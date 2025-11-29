@@ -5,13 +5,17 @@ import { getImageBase64 } from "./util";
 import { useCallback, useEffect, useState } from "react";
 import { Card } from "react-native-paper";
 
-export default function NotePreviewCard({ note, style, onPress }: { note: INoteEntry, style?: StyleProp<ViewStyle>, onPress?: () => void }) {
+export default function NotePreviewCard({ note, style, onPress }: { note: INoteEntry, style?: StyleProp<ViewStyle>, onPress?: () => void }) 
+{
 	const [previews, setPreviews] = useState<string[]>(note.images);
 
-	const fetchImages = useCallback(async () => {
-		note.images.map(async (imageId, index) => {
+	const fetchImages = useCallback(async () => 
+	{
+		note.images.map(async (imageId, index) => 
+		{
 			const image = await getImageBase64(imageId)
-			setPreviews(prev => {
+			setPreviews(prev => 
+			{
 				const updated = [...prev];
 				updated[index] = image
 				return updated
@@ -19,7 +23,8 @@ export default function NotePreviewCard({ note, style, onPress }: { note: INoteE
 		})
 	}, [note]);
 
-	useEffect(() => {
+	useEffect(() => 
+	{
 		fetchImages();
 	}, [fetchImages])
 

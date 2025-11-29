@@ -14,30 +14,37 @@ export default function MainNavigator()
 	const theme = useTheme()
 	const {token, username, anilistToken, logout} = useContext(AuthContext);
 	const [optionsVisible, setOptionsVisible] = useState<boolean>(false);
-	const linkAnilist = () => {
+	const linkAnilist = () => 
+	{
 		const clientId = 30897;
 		const authUrl = `https://anilist.co/api/v2/oauth/authorize?client_id=${clientId}&response_type=token`;
 		// Open the URL in the device's browser
 		Linking.openURL(authUrl);
 	};
 
-	useEffect(() => {
-		const handleRedirect = (event:any) => {
+	useEffect(() => 
+	{
+		const handleRedirect = (event:any) => 
+		{
 			const url = event.url;
 			console.log('Redirected URL:', url);
 			
 			// AniList sends token in URL fragment (#)
 			const [, fragment] = url.split('#');
-			if (fragment) {
+			if (fragment) 
+			{
 				const params = new URLSearchParams(fragment);
 				const token = params.get('access_token');
-				if (token) {
+				if (token) 
+				{
 					api.post('/users/me/anilist/link', { anilist_token: token })
-					.then(async response => {
+					.then(async response => 
+					{
 						await AsyncStorage.setItem('anilist_token', token);
 						console.log('Anilist linked successfully:', response.data);
 					})
-					.catch(error => {
+					.catch(error => 
+					{
 						console.error('Error linking Anilist:', error);
 					});
 				}
@@ -45,11 +52,13 @@ export default function MainNavigator()
 		};
 
 		const subscription = Linking.addEventListener('url', handleRedirect);
-		Linking.getInitialURL().then((url) => {
+		Linking.getInitialURL().then((url) => 
+		{
 			if (url) handleRedirect({ url });
 		});
 
-		return () => {
+		return () => 
+		{
 			subscription.remove();
 		};
 	}, []);
@@ -73,7 +82,8 @@ export default function MainNavigator()
 					}
 				>
 					<Menu.Item 
-						onPress={() => {
+						onPress={() => 
+						{
 							if (anilistToken === undefined || anilistToken === "undefined" || anilistToken === '')
 							{
 								setOptionsVisible(false);
@@ -90,7 +100,8 @@ export default function MainNavigator()
 						title={anilistToken === undefined || anilistToken === "undefined" || anilistToken === '' ? "Link your Anilist account" : "Anilist linked"}
 					/>
 					<Menu.Item 
-						onPress={() => {
+						onPress={() => 
+						{
 							setOptionsVisible(false);
 							logout();
 							router.navigate('/users/login') // may not be ideal to refresh

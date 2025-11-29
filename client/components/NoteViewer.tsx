@@ -7,16 +7,20 @@ import ThemeButton from "./ThemeButton";
 import ThemeText from "./ThemeText";
 import { deleteMangaNote } from "@/services/notes.service";
 
-export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}: { mangaTitle?: string, mangaId: string, note: INoteEntry, style?: StyleProp<ViewStyle>, onDelete?: () => void }) {
+export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}: { mangaTitle?: string, mangaId: string, note: INoteEntry, style?: StyleProp<ViewStyle>, onDelete?: () => void }) 
+{
 	const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
 	const [optionsVisible, setOptionsVisible] = useState<boolean>(false);
 	const [images, setImages] = useState<string[]>(note.images);
 
 
-	const fetchImages = useCallback(async () => {
-		note.images.map(async (imageId, index) => {
+	const fetchImages = useCallback(async () => 
+	{
+		note.images.map(async (imageId, index) => 
+		{
 			const image = await getImageBase64(imageId)
-			setImages(prev => {
+			setImages(prev => 
+			{
 				const updated = [...prev];
 				updated[index] = image
 				return updated
@@ -24,7 +28,8 @@ export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}:
 		})
 	}, [note]);
 
-	useEffect(() => {
+	useEffect(() => 
+	{
 		fetchImages()
 	}, [fetchImages])
 

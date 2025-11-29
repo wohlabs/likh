@@ -12,7 +12,8 @@ export default function UserRegister()
 	const [password, setPassword] = useState<string>('');
 	const [error, setError] = useState('');
 
-	const register = async () => {
+	const register = async () => 
+	{
 		try
 		{
 			await api.post('/users', { username, password });

@@ -51,7 +51,8 @@ type MangaProps = {
 	}
 };
 
-export default function Index() {
+export default function Index() 
+{
 	const router = useRouter();
 	const theme = useTheme()
 	const [mangaList, setMangaList] = useState<MangaProps[]>([]);
@@ -65,18 +66,23 @@ export default function Index() {
 	const anilist_token: string = useContext(AuthContext).anilistToken
 	const listColNum = Math.min(Math.max(Math.ceil(width/200), 1), 5)
 
-	const populateMangaList = useCallback(async () => {
-		if (anilist_token === undefined || anilist_token === "undefined" || anilist_token === '') {
+	const populateMangaList = useCallback(async () => 
+	{
+		if (anilist_token === undefined || anilist_token === "undefined" || anilist_token === '') 
+		{
 			setMangaList([]);
 			setLoading(false);
 			return;
 		}
 		const anilistMangaIds: string[] = await getMangaIdsWithNotes(anilist_token)
 		let libraryMangaIds: string[] = []
-		try {
+		try 
+		{
 			const response = await api.get(`/users/me/manga`)
 			libraryMangaIds = response.data
-		} catch {
+		}
+		catch 
+		{
 			console.error("Could not fetch mangaIds")
 		}
 		let query = {
@@ -93,7 +99,8 @@ export default function Index() {
 		})
 		.then((response) => response.json())
 		.then((response) => response.data)
-		.then((data) => {
+		.then((data) =>
+		{
 			if (data && data.Page && data.Page.media)
 			{
 				setMangaList(data.Page.media);
@@ -104,13 +111,15 @@ export default function Index() {
 			}
 			setLoading(false);
 		})
-		.catch((error) => {
+		.catch((error) => 
+		{
 			console.error(error);
 			setLoading(false);
 		});
 	}, [anilist_token]);
 
-	const populateNewMangaList = useCallback(async () => {
+	const populateNewMangaList = useCallback(async () => 
+	{
 		let query = {
 			query: newSearchString.length > 0 ? MANGA_SEARCH_QUERY : MANGA_QUERY,
 			variables: {search: newSearchString}
@@ -125,7 +134,8 @@ export default function Index() {
 		})
 		.then((response) => response.json())
 		.then((response) => response.data)
-		.then((data) => {
+		.then((data) => 
+		{
 			if (data && data.Page && data.Page.media)
 			{
 				setNewMangaList(data.Page.media);
@@ -135,16 +145,19 @@ export default function Index() {
 				setNewMangaList([]);
 			}
 		})
-		.catch((error) => {
+		.catch((error) => 
+		{
 			console.error(error);
 		});
 	}, [newSearchString]);
 
-	useEffect(() => {
+	useEffect(() => 
+	{
 		populateMangaList()
 	}, [isSearching, populateMangaList]);
 
-	useEffect(() => {
+	useEffect(() => 
+	{
 		setFilteredMangaList(mangaList.filter((manga) => manga.title?.userPreferred?.toLowerCase().includes(searchString.toLowerCase())))
 	}, [mangaList, searchString]);
 

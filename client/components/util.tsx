@@ -1,30 +1,32 @@
 import api from '@/api/AxiosInstance';
 import { jwtDecode } from "jwt-decode";
 
-export const getUserIdFromToken = (accessToken: string) : number | null => {
+export const getUserIdFromToken = (accessToken: string) : number | null => 
+{
 	if (accessToken.length === 0) return null
 	const decodedToken: any = jwtDecode(accessToken);
 	const userId: number = decodedToken.sub;
 	return userId;
 }
 
-export const formatData = (data: any[], numColumns: number) => {
+export const formatData = (data: any[], numColumns: number) => 
+{
 	// source: https://www.youtube.com/watch?v=8wv0kjsirso
 	const copyData = [...data];
 	const numberOfFullRows = Math.floor(copyData.length / numColumns);
 	let numberOfElementsLastRow = copyData.length - numberOfFullRows * numColumns;
-	while (
-		numberOfElementsLastRow !== numColumns &&
-		numberOfElementsLastRow !== 0
-	) {
+	while (numberOfElementsLastRow !== numColumns && numberOfElementsLastRow !== 0) 
+	{
 		copyData.push({});
 		numberOfElementsLastRow++;
 	}
 	return copyData;
 };
 
-export const blobToBase64 = (blob: Blob) : Promise<string | ArrayBuffer | null> => {
-	return new Promise((resolve, reject) => {
+export const blobToBase64 = (blob: Blob) : Promise<string | ArrayBuffer | null> => 
+{
+	return new Promise((resolve, reject) => 
+	{
 		const reader = new FileReader()
 		reader.onloadend = () => resolve(reader.result)
 		reader.onerror = reject
@@ -32,7 +34,8 @@ export const blobToBase64 = (blob: Blob) : Promise<string | ArrayBuffer | null> 
 	})
 };
 
-export const getImageBase64 = async (imageId: string) : Promise<string> => {
+export const getImageBase64 = async (imageId: string) : Promise<string> => 
+{
 	const blob = (await api.get(`/images/${imageId}`, {
 		responseType: 'blob',
 	})).data

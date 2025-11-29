@@ -20,8 +20,10 @@ import { AuthContext } from "@/context/AuthContext";
 import { fetch } from 'expo/fetch';
 import { getMangaDetails } from "@/services/manga.service";
 
-const KeyboardDismissWrapper = ({ children }: any) => {
-	if (Platform.OS === 'web') {
+const KeyboardDismissWrapper = ({ children }: any) => 
+{
+	if (Platform.OS === 'web') 
+	{
 		return <View style={{ flex: 1 }}>{children}</View>; // Don't block clicks
 	}
 
@@ -36,7 +38,8 @@ const KeyboardDismissWrapper = ({ children }: any) => {
 	);
 };
 
-export default function AddNoteScreen() {
+export default function AddNoteScreen() 
+{
 	const [text, onChangeText] = useState("");
 	const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
 	const [images, setImages] = useState<ImagePicker.ImagePickerAsset[]>([]);
@@ -46,16 +49,19 @@ export default function AddNoteScreen() {
 	const [mangaName, setMangaName] = useState<string>("Fetching...");
 	const token = useContext(AuthContext).token
 
-	const populateMangaData = useCallback(async () => {
+	const populateMangaData = useCallback(async () => 
+	{
 		const manga = await getMangaDetails(mangaId.toString());
 		setMangaName(manga?.title.userPreferred || "Unknown");
 	}, [mangaId]);
 
-	useEffect(() => {
+	useEffect(() => 
+	{
 		populateMangaData();
 	}, [populateMangaData]);
 
-	const pickImage = async () => {
+	const pickImage = async () => 
+	{
 		// No permissions request is necessary for launching the image library
 		let result = await ImagePicker.launchImageLibraryAsync({
 			mediaTypes: ["images"],
@@ -63,14 +69,16 @@ export default function AddNoteScreen() {
 			quality: 1,
 		});
 
-		if (!result.canceled) {
+		if (!result.canceled) 
+		{
 			let newImages = [...images, result.assets[0]]
 			setImages(newImages);
 			setCurrentImageIndex(newImages.length - 1); // set to last image
 		}
 	};
 
-	const createNote = async () => {
+	const createNote = async () => 
+	{
 		if ((images === undefined || images.length === 0)  && text === undefined) return; // reject empty notes
 
 		const formData = new FormData()
@@ -227,7 +235,8 @@ export default function AddNoteScreen() {
 								margin: 2
 							}}
 
-							onPress={async () => {
+							onPress={async () => 
+							{
 								console.log("Adding note...")
 								createNote()
 							}}
