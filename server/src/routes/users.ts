@@ -9,7 +9,7 @@ const router: Router = Router();
 router.use(express.json())
 
 // user register
-router.post(`/`, async (req, res) =>
+router.post(`/`, async (req: Request, res: Response) =>
 {
 	const { username, password } = req.body;
 	const hashedPassword = await bcrypt.hash(password, 10);
@@ -29,7 +29,7 @@ router.post(`/`, async (req, res) =>
 })
 
 // Login route
-router.post('/login', async (req, res) =>
+router.post('/login', async (req: Request, res: Response) =>
 {
 	const { username, password } = req.body;
 	const user = await User.findOne({ username });

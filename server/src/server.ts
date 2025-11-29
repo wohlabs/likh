@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction } from 'express'
+import express, { Request, Response } from 'express'
 import { connectDB } from './config/db.js'
 import * as dotenv from 'dotenv'
 import mongoose, { Types } from 'mongoose'
