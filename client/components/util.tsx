@@ -1,10 +1,5 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { IMangaNotes, INoteEntry } from '../types/INotes';
 import api from '@/api/AxiosInstance';
 import { jwtDecode } from "jwt-decode";
-import { getAnilistNote } from '@/services/notes.service';
-
-export const TEST_USER_ID: string = "68c8cf1de67a0c9e19ce6ee5"
 
 export const getUserIdFromToken = (accessToken: string) : number | null => {
 	if (accessToken.length === 0) return null
