@@ -65,6 +65,11 @@ export default function Index() {
 	const listColNum = Math.min(Math.max(Math.ceil(width/200), 1), 5)
 
 	const populateMangaList = useCallback(async () => {
+		if (anilist_token === 'undefined' || anilist_token === '') {
+			setMangaList([]);
+			setLoading(false);
+			return;
+		}
 		const anilistMangaIds: string[] = await getMangaIdsWithNotes(anilist_token)
 		let libraryMangaIds: string[] = []
 		try {

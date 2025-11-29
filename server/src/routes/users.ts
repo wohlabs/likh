@@ -1,10 +1,12 @@
-import { Router, Request, Response } from 'express';
+import express, { Router, Request, Response } from 'express';
 import AuthenticateMiddleware, { JWT_SECRET } from '../middleware/Authentication';
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { IUser, User } from '../models/user.model';
 
 const router: Router = Router();
+
+router.use(express.json())
 
 // user register
 router.post(`/`, async (req, res) =>
