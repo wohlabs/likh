@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express'
 import { connectDB } from './config/db.js'
 import * as dotenv from 'dotenv'
-import mongoose, { Schema, model, Document, Types } from 'mongoose'
+import mongoose, { Types } from 'mongoose'
 import cors from 'cors'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
@@ -10,6 +10,8 @@ import { getGFSBucket } from './config/db.js'
 import { Readable } from 'stream'
 import { getErrorMessage } from './Utility'
 import AuthenticateMiddleware, { JWT_SECRET, JwtPayload } from './middleware/Authentication'
+import { IUser, User } from './models/user.model'
+import { INote, Note } from './models/note.model'
 
 dotenv.config()
 
@@ -25,47 +27,6 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage });
 const app = express()
 app.use(cors())
-
-export interface IUser extends Document
-{
-	username: string;
-	password: string;
-	manga: string[];
-	anilist_token?: string; // optional Anilist OAuth token - lasted forever
-}
-
-export interface INote extends Document
-{
-	userId: Types.ObjectId
-	mangaId: number;
-	createdAt: Date; // creation timestamp
-	modifiedAt: Date; // modification timestamp
-	startChapter: number;
-	endChapter?: number;
-	images: Types.ObjectId[]; // could be an empty array
-	text?: string
-}
-
-const NoteSchema = new Schema<INote>({
-	userId: { type: Schema.ObjectId, ref: 'User' },
-	mangaId: { type: Number, required: true },
-	createdAt: { type: Date, required: true, default: Date.now },
-	modifiedAt: { type: Date, required: true, default: Date.now },
-	startChapter: { type: Number, required: true },
-	endChapter: { type: Number, required: false },
-	images: { type: [Schema.ObjectId], default: [], ref: 'uploads.files' },
-	text: { type: String, default: "" }
-});
-
-const UserSchema = new Schema<IUser>({
-	username: { type: String, required: true, unique: true },
-	password: { type: String, required: true },
-	manga: { type: [String], default: [] },
-	anilist_token: { type: String, required: false, unique: true }
-});
-
-const Note = model<INote>('Note', NoteSchema);
-const User = model<IUser>('User', UserSchema);
 
 app.get(`/`, (req: Request, res: Response) => { res.json('hello world') })
 
