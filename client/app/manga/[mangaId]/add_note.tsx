@@ -12,13 +12,13 @@ import
 		View
 	} from "react-native";
 import { IconButton, TextInput } from "react-native-paper";
-import { getMangaDetails } from '../../../components/util';
 import ThemeButton from "@/components/ThemeButton";
 import ThemeText from "@/components/ThemeText";
 import { API_URL } from "@/api/AxiosInstance";
 import { File } from 'expo-file-system'
 import { AuthContext } from "@/context/AuthContext";
 import { fetch } from 'expo/fetch';
+import { getMangaDetails } from "@/services/manga.service";
 
 const KeyboardDismissWrapper = ({ children }: any) => {
 	if (Platform.OS === 'web') {

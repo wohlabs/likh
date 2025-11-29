@@ -1,11 +1,12 @@
 import api from "@/api/AxiosInstance";
 import ThemeText from "@/components/ThemeText";
-import { addMangaToLibrary, formatData, getMangaIdsWithNotes, MANGA_SEARCH_QUERY } from "@/components/util";
+import { formatData } from "@/components/util";
 import { Stack, useRouter } from "expo-router";
 import React, { useEffect, useState, useContext, useCallback } from "react";
 import { FlatList, Image, Pressable, StyleSheet, useWindowDimensions, View } from "react-native";
 import { IconButton, Modal, Portal, Searchbar, useTheme } from "react-native-paper";
 import { AuthContext } from "@/context/AuthContext";
+import { addMangaToLibrary, getMangaIdsWithNotes, MANGA_SEARCH_QUERY } from "@/services/manga.service";
 
 const MANGA_QUERY = `
 	query {

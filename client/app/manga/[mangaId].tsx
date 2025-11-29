@@ -1,9 +1,8 @@
 import api from "@/api/AxiosInstance";
-import { IMangaNotes, INoteEntry } from "@/components/INotes";
+import { IMangaNotes, INoteEntry } from "@/types/INotes";
 import NotePreviewCard from "@/components/NotePreviewCard";
 import NoteViewer from "@/components/NoteViewer";
 import ThemeText from "@/components/ThemeText";
-import { getMangaData, getMangaDetails, IMangaDetails } from "@/components/util";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useRef, useState, useContext } from "react";
 import { FlatList, Image, Platform, ScrollView, StyleProp, useWindowDimensions, View, ViewStyle } from "react-native";
@@ -12,6 +11,8 @@ import ReanimatedSwipeable, { SwipeableMethods } from 'react-native-gesture-hand
 import Reanimated, { SharedValue, useAnimatedStyle, useSharedValue } from "react-native-reanimated";
 import Carousel, { ICarouselInstance, Pagination } from "react-native-reanimated-carousel";
 import { AuthContext } from "@/context/AuthContext";
+import { IMangaDetails } from "@/types/IManga";
+import { getMangaData, getMangaDetails } from "@/services/manga.service";
 
 function NoteButtons({style, translation, onDeletePress}: { note: INoteEntry, style?: StyleProp<ViewStyle>, progress: SharedValue<number>, translation: SharedValue<number>, swipeableMethods: SwipeableMethods, onDeletePress?: () => void})
 {

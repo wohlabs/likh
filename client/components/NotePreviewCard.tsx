@@ -1,5 +1,5 @@
 import { Image, StyleProp, ViewStyle } from "react-native";
-import { INoteEntry } from "./INotes";
+import { INoteEntry } from "../types/INotes";
 import ThemeText from "./ThemeText";
 import { getImageBase64 } from "./util";
 import { useCallback, useEffect, useState } from "react";

@@ -1,7 +1,8 @@
 import api from "@/api/AxiosInstance";
-import { IMangaNotes, INoteEntry } from "@/components/INotes";
-import { getMangaData, getUserIdFromToken } from "@/components/util";
+import { IMangaNotes, INoteEntry } from "@/types/INotes";
+import { getUserIdFromToken } from "@/components/util";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getMangaData } from "./manga.service";
 
 export const MANGA_NOTE_QUERY = `
 query ($userId: Int, $mediaId: Int) {
