@@ -42,7 +42,7 @@ router.post('/login', async (req: Request, res: Response) =>
 	res.json({
 		token,
 		username,
-		anilist_token: user.anilist_token
+		...(user.anilist_token && { anilist_token: user.anilist_token})
 	});
 });
 
