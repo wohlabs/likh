@@ -74,7 +74,7 @@ export default function MainNavigator()
 				>
 					<Menu.Item 
 						onPress={() => {
-							if (!anilistToken)
+							if (anilistToken === undefined || anilistToken === "undefined" || anilistToken === '')
 							{
 								setOptionsVisible(false);
 								linkAnilist();
@@ -87,7 +87,7 @@ export default function MainNavigator()
 								style={{ width: 24, height: 24, borderRadius: 4 }}
 							/>
 						)}
-						title={anilistToken ? "Anilist connected" : "Link your Anilist account"}
+						title={anilistToken === undefined || anilistToken === "undefined" || anilistToken === '' ? "Link your Anilist account" : "Anilist linked"}
 					/>
 					<Menu.Item 
 						onPress={() => {

@@ -43,7 +43,10 @@ export const AuthProvider = ({ children }: any) => {
 			await AsyncStorage.setItem('anilist_token', userData.anilist_token);
 			setToken(userData.token);
 			setUsername(userData.username);
-			setAnilistToken(userData.anilist_token);
+			if (userData.anilist_token !== undefined)
+			{
+				setAnilistToken(userData.anilist_token);
+			}
 		} catch (error) {
 			console.error('Failed to login:', error);
 		}
