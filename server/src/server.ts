@@ -9,12 +9,9 @@ import multer from 'multer'
 import { getGFSBucket } from './config/db.js'
 import { Readable } from 'stream'
 import { getErrorMessage } from './Utility'
+import AuthenticateMiddleware, { JWT_SECRET, JwtPayload } from './middleware/Authentication'
 
 dotenv.config()
-
-interface JwtPayload {
-	id: string;
-}
 
 declare module 'express' {
 	export interface Request {
@@ -28,8 +25,6 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage });
 const app = express()
 app.use(cors())
-
-const JWT_SECRET = process.env.JWT_SECRET || "jwt_secret123"
 
 export interface IUser extends Document
 {
@@ -72,28 +67,10 @@ const UserSchema = new Schema<IUser>({
 const Note = model<INote>('Note', NoteSchema);
 const User = model<IUser>('User', UserSchema);
 
-const authenticationMiddleware = (req: Request, res: Response, next: NextFunction) =>
-{
-	const authHeader = req.headers['authorization'];
-	if (!authHeader) return res.status(401).json({ error: 'Unauthorized' });
-
-	const token = authHeader.split(' ')[1];
-	try
-	{
-		const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
-		req.user = decoded;
-		next();
-	}
-	catch
-	{
-		res.status(401).json({ error: 'Invalid token' });
-	}
-};
-
 app.get(`/`, (req: Request, res: Response) => { res.json('hello world') })
 
 // create new note
-app.post(`/notes`, upload.array('images', 10), authenticationMiddleware, async (req: Request, res: Response) =>
+app.post(`/notes`, upload.array('images', 10), AuthenticateMiddleware, async (req: Request, res: Response) =>
 {
 	const userId = req.user?.id;
 	const { mangaId, startChapter, endChapter, text } = req.body
@@ -163,7 +140,7 @@ app.post(`/notes`, upload.array('images', 10), authenticationMiddleware, async (
 	res.json(newNote)
 })
 
-app.get('/images/:id', authenticationMiddleware, async (req: Request, res: Response) =>
+app.get('/images/:id', AuthenticateMiddleware, async (req: Request, res: Response) =>
 {
 	const id = new Types.ObjectId(req.params.id);
 	const userId = req.user?.id
@@ -186,7 +163,7 @@ app.get('/images/:id', authenticationMiddleware, async (req: Request, res: Respo
 app.use(express.json())
 
 // get notes
-app.get(`/notes`, authenticationMiddleware, async (req: Request, res: Response) =>
+app.get(`/notes`, AuthenticateMiddleware, async (req: Request, res: Response) =>
 {
 	const userId = req.user?.id
 	const { mangaId } = req.query // temporary. userId shall be determined by session cookie
@@ -256,7 +233,7 @@ app.post('/users/login', async (req, res) =>
 });
 
 // link Anilist token
-app.post('/users/me/anilist/link', authenticationMiddleware, async (req: Request, res: Response) =>
+app.post('/users/me/anilist/link', AuthenticateMiddleware, async (req: Request, res: Response) =>
 {
 	const userId = req.user?.id
 	const { anilist_token } = req.body
@@ -282,7 +259,7 @@ app.post('/users/me/anilist/link', authenticationMiddleware, async (req: Request
 })
 
 // get manga from user's collection
-app.get(`/users/me/manga`, authenticationMiddleware, async (req: Request, res: Response) =>
+app.get(`/users/me/manga`, AuthenticateMiddleware, async (req: Request, res: Response) =>
 {
 	const userId = req.user?.id
 	try
@@ -297,7 +274,7 @@ app.get(`/users/me/manga`, authenticationMiddleware, async (req: Request, res: R
 })
 
 // add a manga to collection
-app.post(`/users/me/manga`, authenticationMiddleware, async (req: Request, res: Response) =>
+app.post(`/users/me/manga`, AuthenticateMiddleware, async (req: Request, res: Response) =>
 {
 	const userId = req.user?.id
 	const { mangaId } = req.body
