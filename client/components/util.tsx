@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { IMangaNotes, INoteEntry } from './INotes';
 import api from '@/api/AxiosInstance';
 import { jwtDecode } from "jwt-decode";
+import { getAnilistNote } from '@/services/notes.service';
 
 export const TEST_USER_ID: string = "68c8cf1de67a0c9e19ce6ee5"
 
@@ -39,18 +40,6 @@ query ($search: String, $page: Int, $perPage: Int) {
 }
 `
 
-export const MANGA_NOTE_QUERY = `
-query ($userId: Int, $mediaId: Int) {
-	MediaList (userId: $userId, mediaId: $mediaId) {
-		id
-		userId
-		notes
-		createdAt
-		updatedAt
-	}
-}
-`
-
 export type IMangaDetails = {
 	id: string;
 	title: { userPreferred?: string };
@@ -61,40 +50,6 @@ export type IMangaDetails = {
 	// volumes?: number;
 	status?: string;
 };
-
-export const getAnilistNote = async (mangaId: string, access_token: string) : Promise<INoteEntry | null> =>
-{
-	const anilistNote = await fetch("https://graphql.anilist.co", {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			'Accept': 'application/json',
-		},
-		body: JSON.stringify({ query: MANGA_NOTE_QUERY, variables: {userId : getUserIdFromToken(access_token), mediaId: mangaId} })
-	})
-	.then((response) => response.json())
-	.then((response) => response.data)
-	.then((data) => {
-		return data.MediaList
-	})
-	.then((item) => {
-		return {
-			id: item.id,
-			createdAt: new Date(item.createdAt * 1000).toString(),
-			modifiedAt: new Date(item.updatedAt * 1000).toString(),
-			startChapter: -1,
-			endChapter: undefined,
-			images: [],
-			text: item.notes,
-			fromAnilist: true
-		} as INoteEntry;
-	})
-	.catch((error) => {
-		console.error(error);
-		return null
-	});
-	return anilistNote
-}
 
 export const getMangaData = async (mangaId: string, access_token: string = "") : Promise<IMangaNotes> => {
 	try {
@@ -136,32 +91,6 @@ export const addMangaToLibrary = async (mangaId: string) : Promise<boolean> => {
 	return true
 };
 
-export const addMangaNote = async (mangaId: string, entry: INoteEntry) : Promise<boolean> => {
-	try {
-		await api.post('/notes', {
-			mangaId,
-			...entry
-		})
-	} catch (e) {
-		// saving error
-		console.log("save error", e)
-		return false
-	}
-	return true
-};
-
-export const deleteMangaNote = async (mangaId: string, entryId: string) : Promise<boolean> => {
-	try {
-		let notes: IMangaNotes = await getMangaData(mangaId);
-		notes = notes.filter((note) => note.id !== entryId)
-		await AsyncStorage.setItem('manga_' + mangaId.toString(), JSON.stringify(notes));
-	} catch (e) {
-		console.log("delete note error", e)
-		return false
-	}
-	return true
-};
-
 export const getMangaDetails = async (mangaId: string) : Promise<IMangaDetails | undefined> =>
 {
 	const data = await fetch("https://graphql.anilist.co", {
@@ -187,7 +116,7 @@ export const getMangaDetails = async (mangaId: string) : Promise<IMangaDetails |
 	return data;
 }
 
-const getUserIdFromToken = (accessToken: string) : number | null => {
+export const getUserIdFromToken = (accessToken: string) : number | null => {
 	if (accessToken.length === 0) return null
 	const decodedToken: any = jwtDecode(accessToken);
 	const userId: number = decodedToken.sub;

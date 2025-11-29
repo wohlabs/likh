@@ -2,9 +2,10 @@ import { useCallback, useEffect, useState } from "react";
 import { FlatList, Image, Pressable, ScrollView, StyleProp, View, ViewStyle } from "react-native";
 import { IconButton, Menu } from 'react-native-paper';
 import { INoteEntry } from "./INotes";
-import { deleteMangaNote, getImageBase64 as getImageBase64 } from "./util";
+import { getImageBase64 as getImageBase64 } from "./util";
 import ThemeButton from "./ThemeButton";
 import ThemeText from "./ThemeText";
+import { deleteMangaNote } from "@/services/notes.service";
 
 export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}: { mangaTitle?: string, mangaId: string, note: INoteEntry, style?: StyleProp<ViewStyle>, onDelete?: () => void }) {
 	const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
