@@ -4,12 +4,11 @@
   "version": "1.0.0",
   "scripts": {
     "start": "expo start",
-    "reset-project": "node ./scripts/reset-project.js",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "expo lint .",
-    "lint-fix": "expo lint --fix .",
+    "lint": "expo lint app components context services types",
+    "lint:fix": "expo lint app components context services types --fix",
     "deploy-web": "npx expo export --platform web && eas deploy"
   },
   "dependencies": {
