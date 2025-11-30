@@ -12,7 +12,7 @@ const UserSchema = new Schema<IUser>({
 	username: { type: String, required: true, unique: true },
 	password: { type: String, required: true },
 	manga: { type: [String], default: [] },
-	anilist_token: { type: String, required: false, unique: true }
+	anilist_token: { type: String, required: false, unique: false }
 });
 
 export const User = model<IUser>('User', UserSchema);
