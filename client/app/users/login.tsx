@@ -5,7 +5,7 @@ import { TextInput } from "react-native-paper";
 import ThemeButton from "@/components/ThemeButton";
 import { router } from "expo-router";
 import { AuthContext } from "@/context/AuthContext";
-import api from "@/api/AxiosInstance";
+import api from "@/services/AxiosInstance";
 
 export default function UserLogin() 
 {

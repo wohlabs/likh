@@ -1,4 +1,4 @@
-import api from "@/api/AxiosInstance";
+import api from "@/services/AxiosInstance";
 import ThemeText from "@/components/ThemeText";
 import { formatData } from "@/components/util";
 import { Stack, useRouter } from "expo-router";

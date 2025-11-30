@@ -14,7 +14,7 @@ import
 import { IconButton, TextInput } from "react-native-paper";
 import ThemeButton from "@/components/ThemeButton";
 import ThemeText from "@/components/ThemeText";
-import { API_URL } from "@/api/AxiosInstance";
+import { API_URL } from "@/services/AxiosInstance";
 import { File } from 'expo-file-system'
 import { AuthContext } from "@/context/AuthContext";
 import { fetch } from 'expo/fetch';

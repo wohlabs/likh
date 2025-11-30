@@ -1,4 +1,4 @@
-import api from "@/api/AxiosInstance";
+import api from "@/services/AxiosInstance";
 import ThemeButton from "@/components/ThemeButton";
 import ThemeText from "@/components/ThemeText";
 import { router } from "expo-router";

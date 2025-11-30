@@ -1,4 +1,4 @@
-import api from "@/api/AxiosInstance";
+import api from "@/services/AxiosInstance";
 import { IMangaNotes, INoteEntry } from "@/types/INotes";
 import { getAnilistNote } from "./notes.service";
 import { IMangaDetails } from "@/types/IManga";

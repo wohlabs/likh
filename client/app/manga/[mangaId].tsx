@@ -1,4 +1,4 @@
-import api from "@/api/AxiosInstance";
+import api from "@/services/AxiosInstance";
 import { IMangaNotes, INoteEntry } from "@/types/INotes";
 import NotePreviewCard from "@/components/NotePreviewCard";
 import NoteViewer from "@/components/NoteViewer";

@@ -1,4 +1,4 @@
-import api from '@/api/AxiosInstance';
+import api from '@/services/AxiosInstance';
 import { jwtDecode } from "jwt-decode";
 
 export const getUserIdFromToken = (accessToken: string) : number | null => 

@@ -6,7 +6,7 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "@/context/AuthContext";
 import { IconButton, Menu, useTheme } from "react-native-paper";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import api from "@/api/AxiosInstance";
+import api from "@/services/AxiosInstance";
 
 export default function MainNavigator()
 {
