@@ -1,5 +1,5 @@
 import { router, Stack } from "expo-router";
-import { Linking, Platform, Pressable, useColorScheme, Image } from "react-native";
+import { Linking, Platform, Pressable, useColorScheme, Image, StyleSheet } from "react-native";
 import ThemeText from "./ThemeText";
 import ThemeButton from "./ThemeButton";
 import { useContext, useEffect, useState } from "react";
@@ -95,7 +95,7 @@ export default function MainNavigator()
 								leadingIcon={() => (
 									<Image
 										source={{ uri: 'https://docs.anilist.co/anilist.png' }}
-										style={{ width: 24, height: 24, borderRadius: 4 }}
+										style={styles.anilistIcon}
 									/>
 								)}
 								title={anilistToken === undefined || anilistToken === "undefined" || anilistToken === '' ? "Link your Anilist account" : "Anilist linked"}
@@ -117,3 +117,9 @@ export default function MainNavigator()
 		</Stack>
 	)
 }
+
+const styles = StyleSheet.create({
+	anilistIcon: {
+		width: 24, height: 24, borderRadius: 4
+	}
+});

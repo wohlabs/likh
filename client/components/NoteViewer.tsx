@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { FlatList, Image, Pressable, ScrollView, StyleProp, View, ViewStyle } from "react-native";
+import { FlatList, Image, Pressable, ScrollView, StyleProp, View, ViewStyle, StyleSheet } from "react-native";
 import { IconButton, Menu } from 'react-native-paper';
 import { INoteEntry } from "../types/INotes";
 import { getImageBase64 as getImageBase64 } from "./util";
@@ -34,8 +34,8 @@ export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}:
 
 	return (
 		note &&
-		<View style={[{ flex: 1, padding: 10, flexDirection: "row" }, style]} pointerEvents="box-none">
-			<View style={{ flex: 2, margin: 10, flexDirection: "column" }}>
+		<View style={[styles.viewerContainer, style]} pointerEvents="box-none">
+			<View style={styles.imagesViewer}>
 				{
 					images?.length > 0 ? 
 						<Image
@@ -46,16 +46,11 @@ export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}:
 								uri: images[currentImageIndex] || "https://static.thenounproject.com/png/187803-200.png"
 							}}
 							resizeMode="contain"
-							style={{
-								flex: 1,
-								width: "100%",
-								borderRadius: 10,
-								borderWidth: 2,
-							}}
+							style={styles.imageContainer}
 						/>
 						:
-						<View style={{flex: 1, justifyContent: "center", alignItems: "center", borderWidth: 2, borderRadius: 10, borderStyle:"dashed"}}>
-							<ThemeText style={{fontSize: 28, color: "lightgray"}}>No images</ThemeText>
+						<View style={styles.noImagesContainer}>
+							<ThemeText style={styles.noImagesText}>No images</ThemeText>
 						</View>
 				}
 				<View style={{height: 100, flexDirection: "row"}}>
@@ -67,14 +62,7 @@ export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}:
 								<Image
 									source={{ uri: item }}
 									resizeMode="cover"
-									style={{
-										height: "100%",
-										aspectRatio: 1,
-										borderRadius: 10,
-										borderColor: "black",
-										borderWidth: 2,
-										marginRight: 5
-									}}
+									style={styles.thumbnailImage}
 								/>
 							</Pressable>
 						)}
@@ -85,28 +73,28 @@ export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}:
 				</View>
 			</View>
 			<View style={{ flexDirection: "column", flex: 3}}>
-				<ThemeText style={{fontSize: 20}}>Manhwa/Manga: {mangaTitle || "Unknown"}</ThemeText>
-				<View style={{ flexDirection: "row", alignItems: "center"}}>
-					<ThemeText style={{fontSize: 20}}>Chapter: {note.startChapter?.toString() || ""} - {note.endChapter?.toString() || ""}</ThemeText>
+				<ThemeText style={styles.info}>Manhwa/Manga: {mangaTitle || "Unknown"}</ThemeText>
+				<View style={{ flexDirection: "row"}}>
+					<ThemeText style={styles.info}>Chapter: {note.startChapter?.toString() || ""} - {note.endChapter?.toString() || ""}</ThemeText>
 				</View>
-				<ThemeText style={{fontSize: 20, fontWeight: "bold"}}>Note:</ThemeText>
+				<ThemeText style={[ styles.info, {fontWeight: "bold"}]}>Note:</ThemeText>
 				<ScrollView>
-					<ThemeText selectable={true} style={{fontSize: 20}}>{note.text}</ThemeText>
+					<ThemeText selectable={true} style={styles.info}>{note.text}</ThemeText>
 				</ScrollView>
-				<View style={{ flexDirection: "row", alignItems: "center"}}>
-					<ThemeButton icon={'share'} style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", height: 40, flex: 1 }}
+				<View style={styles. viewerButtonsContainer}>
+					<ThemeButton icon={'share'} style={styles.viewerButton}
 						onPress={() => {}}
 					>
 						Share
 					</ThemeButton>
 					<ThemeButton icon={"pencil"}
-						style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", height: 40, flex: 1  }}
+						style={styles.viewerButton}
 						onPress={() => {}}
 					>
 						Edit
 					</ThemeButton>
 					<ThemeButton icon='heart'
-						style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", height: 40, flex: 1  }}
+						style={styles.viewerButton}
 						onPress={() => {}}
 					>
 						Favorite
@@ -128,3 +116,41 @@ export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}:
 		</View>
 	)
 }
+
+const styles = StyleSheet.create({
+	viewerContainer: {
+		flex: 1, padding: 10, flexDirection: "row"
+	},
+	imagesViewer: {
+		flex: 2, margin: 10, flexDirection: "column" 
+	},
+	noImagesText: {
+		fontSize: 28, color: "lightgray"
+	},
+	noImagesContainer: {
+		flex: 1, justifyContent: "center", alignItems: "center", borderWidth: 2, borderRadius: 10, borderStyle:"dashed"
+	},
+	imageContainer: {
+		flex: 1,
+		width: "100%",
+		borderRadius: 10,
+		borderWidth: 2,
+	},
+	thumbnailImage: {
+		height: "100%",
+		aspectRatio: 1,
+		borderRadius: 10,
+		borderColor: "black",
+		borderWidth: 2,
+		marginRight: 5
+	},
+	viewerButton: {
+		flexDirection: "row", justifyContent: "center", alignItems: "center", height: 40, flex: 1  
+	},
+	viewerButtonsContainer: {
+		flexDirection: "row", alignItems: "center"
+	},
+	info: {
+		fontSize: 20
+	}
+});
