@@ -5,7 +5,6 @@ import { INoteEntry } from "../types/INotes";
 import { getImageBase64 as getImageBase64 } from "./util";
 import ThemeButton from "./ThemeButton";
 import ThemeText from "./ThemeText";
-import { deleteMangaNote } from "@/services/notes.service";
 
 export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}: { mangaTitle?: string, mangaId: string, note: INoteEntry, style?: StyleProp<ViewStyle>, onDelete?: (noteId: string) => void }) 
 {
