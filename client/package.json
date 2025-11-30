@@ -9,7 +9,14 @@
     "web": "expo start --web",
     "lint": "expo lint app components context services types",
     "lint:fix": "expo lint app components context services types --fix",
-    "deploy-web": "npx expo export --platform web && eas deploy"
+    "deploy-web": "npx expo export --platform web && eas deploy",
+    "test": "jest --watchAll"
+  },
+  "jest": {
+    "preset": "jest-expo",
+    "transformIgnorePatterns": [
+      "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg)"
+    ]
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",
@@ -55,9 +62,12 @@
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
+    "@types/jest": "29.5.14",
     "@types/react": "~19.1.10",
     "eslint": "^9.39.1",
     "eslint-config-expo": "~10.0.0",
+    "jest": "~29.7.0",
+    "jest-expo": "~54.0.13",
     "typescript": "~5.9.2"
   },
   "private": true
