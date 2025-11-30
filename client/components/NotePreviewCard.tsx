@@ -1,4 +1,4 @@
-import { Image, StyleProp, ViewStyle } from "react-native";
+import { Image, StyleProp, ViewStyle, StyleSheet } from "react-native";
 import { INoteEntry } from "../types/INotes";
 import ThemeText from "./ThemeText";
 import { getImageBase64 } from "./util";
@@ -33,22 +33,37 @@ export default function NotePreviewCard({ note, style, onPress }: { note: INoteE
 			style={style}
 			onPress={onPress}
 		>
-			<Card.Content style={{ justifyContent: 'space-between', alignItems: 'center', width: '100%', flexDirection: 'row', padding: 10 }}>
+			<Card.Content style={styles.cardContent}>
 				<Image
 					source={{ uri: previews[0] }}
-					style={{ width: 50, aspectRatio: 1, borderRadius: 7, alignSelf: 'center', opacity: previews.length > 0 ? 1 : 0 }}
+					style={[styles.imagePreview, { opacity: previews.length > 0 ? 1 : 0 }]}
 					resizeMode="cover"
 				/>
-				<ThemeText style={{flex: 1, textAlign: 'center'}}>{new Date(note.modifiedAt).toDateString() || "date @ time"}</ThemeText>
-				<ThemeText style={{flex: 1, textAlign: 'center'}}>
+				<ThemeText style={styles.middleInfo}>{new Date(note.modifiedAt).toDateString() || "date @ time"}</ThemeText>
+				<ThemeText style={styles.middleInfo}>
 					{
 						note.startChapter === -1
 							? `All`
 							: `Chapter ${note.startChapter}${note.endChapter ? " - " + note.endChapter : ""}`
 					}
 				</ThemeText>
-				<ThemeText style={{flex: 1, textAlign: 'right', paddingLeft: 20}} ellipsizeMode="tail" numberOfLines={1}>{note.text || "No notes"}</ThemeText>
+				<ThemeText style={styles.noteSnippet} ellipsizeMode="tail" numberOfLines={1}>{note.text || "No notes"}</ThemeText>
 			</Card.Content>
 		</Card>
 	);
 }
+
+const styles = StyleSheet.create({
+	noteSnippet: {
+		flex: 1, textAlign: 'right', paddingLeft: 20
+	},
+	imagePreview: {
+		width: 50, aspectRatio: 1, borderRadius: 7, alignSelf: 'center'
+	},
+	cardContent: {
+		justifyContent: 'space-between', alignItems: 'center', width: '100%', flexDirection: 'row', padding: 10 
+	},
+	middleInfo: {
+		flex: 1, textAlign: 'center'
+	}
+});
