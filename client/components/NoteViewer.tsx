@@ -7,7 +7,7 @@ import ThemeButton from "./ThemeButton";
 import ThemeText from "./ThemeText";
 import { deleteMangaNote } from "@/services/notes.service";
 
-export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}: { mangaTitle?: string, mangaId: string, note: INoteEntry, style?: StyleProp<ViewStyle>, onDelete?: () => void }) 
+export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}: { mangaTitle?: string, mangaId: string, note: INoteEntry, style?: StyleProp<ViewStyle>, onDelete?: (noteId: string) => void }) 
 {
 	const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
 	const [optionsVisible, setOptionsVisible] = useState<boolean>(false);
@@ -121,7 +121,7 @@ export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}:
 						}
 					>
 						<Menu.Item 
-							onPress={async () => await deleteMangaNote(mangaId, note.id) && onDelete && onDelete()} title="delete" leadingIcon={"delete"}
+							onPress={async () => onDelete && onDelete(note.id)} title="delete" leadingIcon={"delete"}
 						/>
 					</Menu>
 				</View>

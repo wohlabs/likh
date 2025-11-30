@@ -3,6 +3,7 @@ import { IMangaNotes, INoteEntry } from "@/types/INotes";
 import { getAnilistNote } from "./notes.service";
 import { IMangaDetails } from "@/types/IManga";
 import { getUserIdFromToken } from "@/components/util";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const MANGA_QUERY = `
 	query GetManga($id: Int) {
@@ -58,6 +59,7 @@ export const getMangaData = async (mangaId: string, access_token: string = "") :
 		{
 			notes.push(anilistNote)
 		}
+		await AsyncStorage.setItem('manga_' + mangaId.toString(), JSON.stringify(notes));
 		return notes || JSON.parse("[]");
 	}
 	catch (err: any) 

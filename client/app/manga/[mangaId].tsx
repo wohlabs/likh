@@ -13,6 +13,7 @@ import Carousel, { ICarouselInstance, Pagination } from "react-native-reanimated
 import { AuthContext } from "@/context/AuthContext";
 import { IMangaDetails } from "@/types/IManga";
 import { getMangaData, getMangaDetails } from "@/services/manga.service";
+import { deleteMangaNote } from "@/services/notes.service";
 
 function NoteButtons({style, translation, onDeletePress}: { note: INoteEntry, style?: StyleProp<ViewStyle>, progress: SharedValue<number>, translation: SharedValue<number>, swipeableMethods: SwipeableMethods, onDeletePress?: () => void})
 {
@@ -99,9 +100,16 @@ export default function MangaDetails()
 
 	const onDelete = async (noteId: string) => 
 	{
-		await api.delete(`/notes/${noteId}`)
-		setIsViewingOverlay(false);
-		fetchData();
+		try
+		{
+			const notes = await deleteMangaNote(mangaId.toString(), noteId);
+			setIsViewingOverlay(false);
+			setData(notes);
+		}
+		catch
+		{
+			console.error("Could not delete note");
+		}
 	}
 
 	const onPressPagination = (index: number) => 
