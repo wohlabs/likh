@@ -7,6 +7,7 @@ import { AuthContext } from "@/context/AuthContext";
 import { IconButton, Menu, useTheme } from "react-native-paper";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from "@/services/AxiosInstance";
+import * as WebBrowser from 'expo-web-browser';
 
 export default function MainNavigator()
 {
@@ -19,7 +20,7 @@ export default function MainNavigator()
 		const clientId = 30897;
 		const authUrl = `https://anilist.co/api/v2/oauth/authorize?client_id=${clientId}&response_type=token`;
 		// Open the URL in the device's browser
-		Linking.openURL(authUrl);
+		WebBrowser.openAuthSessionAsync(authUrl);
 	};
 
 	useEffect(() => 
@@ -85,7 +86,7 @@ export default function MainNavigator()
 							<Menu.Item 
 								onPress={() => 
 								{
-									if (anilistToken === undefined || anilistToken === "undefined" || anilistToken === '')
+									if (anilistToken == null || anilistToken === undefined || anilistToken === "undefined" || anilistToken === '')
 									{
 										setOptionsVisible(false);
 										linkAnilist();
@@ -98,7 +99,7 @@ export default function MainNavigator()
 										style={styles.anilistIcon}
 									/>
 								)}
-								title={anilistToken === undefined || anilistToken === "undefined" || anilistToken === '' ? "Link your Anilist account" : "Anilist linked"}
+								title={anilistToken == null || anilistToken === undefined || anilistToken === "undefined" || anilistToken === '' ? "Link your Anilist account" : "Anilist linked"}
 							/>
 							<Menu.Item 
 								onPress={() => 
