@@ -189,20 +189,20 @@ export default function Index()
 							: <View style={{ flex: 1, margin: 5 }} />
 					)}
 				/>
-				<View style={{width: "100%", minWidth: 350, height: 60, position: "absolute", bottom: 25, flexDirection: "row", alignItems: "center", margin: 'auto', justifyContent: 'center'}}>
-					<View style={{width: '90%', maxWidth: 600, flexDirection: 'row', alignItems: 'center'}}>
+				<View style={styles.searchBarFloating}>
+					<View style={styles.searchBarContainer}>
 						<Searchbar
 							placeholder="search library"
 							onChangeText={setSearchString}
 							onSubmitEditing={() => { populateNewMangaList(); }}
-							style={{margin: 10, borderRadius: 10, flex: 1, shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
+							style={styles.searchBar}
 							value={searchString}
 						/>
 						<IconButton
 							icon={"plus"}
 							size={30}
 							onPress={() => { setSearching(!isSearching); populateNewMangaList(); }}
-							style={{shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
+							style={styles.addNoteIconButton}
 							mode="contained"
 						/>
 					</View>
@@ -210,15 +210,12 @@ export default function Index()
 			</View>
 			<Portal>
 				<Modal visible={isSearching} onDismiss={() => setSearching(false)}
-					contentContainerStyle={{
-						padding: 0, margin: 'auto', width: "90%", height: "80%", borderRadius: 10,
-						backgroundColor: theme.colors.background
-					}}>
+					contentContainerStyle={[styles.addMangaModalContainer, { backgroundColor: theme.colors.background }]}>
 					<Searchbar
 						placeholder="search manga"
 						onChangeText={setNewSearchString}
 						onSubmitEditing={() => { populateNewMangaList(); }}
-						style={{margin: 10, borderRadius: 10}}
+						style={styles.addMangaModalSearchBar}
 						value={newSearchString}
 					/>
 					<FlatList
@@ -228,13 +225,13 @@ export default function Index()
 						numColumns={1}
 						style={{flex: 1}}
 						renderItem={({ item }) => (
-							<Pressable style={{ height: 150, width: "100%", flexDirection: "row", alignItems: "center", padding: 5 }} onPress={() => { router.navigate(`/manga/${item.id}`) }}>
+							<Pressable style={styles.addMangaContainer} onPress={() => { router.navigate(`/manga/${item.id}`) }}>
 								<Image
 									source={{ uri: item.coverImage?.large }}
 									resizeMode="contain"
 									style={{height: "100%", aspectRatio: 0.8}}
 								/>
-								<ThemeText style={{textAlign: "left", fontSize: 20, flex: 1}}>{item.title?.userPreferred}</ThemeText>
+								<ThemeText style={styles.addMangaTitle}>{item.title?.userPreferred}</ThemeText>
 								<IconButton
 									icon={"plus"}
 									mode="contained"
@@ -253,5 +250,17 @@ export default function Index()
 
 const styles = StyleSheet.create({
 	mangaTitle: {textAlign: 'center'},
-	mangaCoverImage: { width: '100%', aspectRatio: '0.8'}
+	mangaCoverImage: { width: '100%', aspectRatio: '0.8'},
+	searchBarFloating: {
+		width: "100%", minWidth: 350, height: 60, position: "absolute", bottom: 25, flexDirection: "row", alignItems: "center", margin: 'auto', justifyContent: 'center'
+	},
+	searchBarContainer: { width: '90%', maxWidth: 600, flexDirection: 'row', alignItems: 'center' },
+	searchBar: {margin: 10, borderRadius: 10, flex: 1, shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} },
+	addNoteIconButton: {shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} },
+	addMangaModalContainer: {
+		padding: 0, margin: 'auto', width: "90%", height: "80%", borderRadius: 10
+	},
+	addMangaModalSearchBar: {margin: 10, borderRadius: 10},
+	addMangaContainer: { height: 150, width: "100%", flexDirection: "row", alignItems: "center", padding: 5 },
+	addMangaTitle: {textAlign: "left", fontSize: 20, flex: 1}
 });
