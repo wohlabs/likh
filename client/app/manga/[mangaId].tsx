@@ -4,7 +4,7 @@ import NoteViewer from "@/components/NoteViewer";
 import ThemeText from "@/components/ThemeText";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useRef, useState, useContext } from "react";
-import { FlatList, Image, Platform, ScrollView, StyleProp, useWindowDimensions, View, ViewStyle } from "react-native";
+import { FlatList, Image, Platform, ScrollView, StyleProp, useWindowDimensions, View, ViewStyle, StyleSheet } from "react-native";
 import { IconButton, Modal, Portal, Searchbar, useTheme } from "react-native-paper";
 import ReanimatedSwipeable, { SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
 import Reanimated, { SharedValue, useAnimatedStyle, useSharedValue } from "react-native-reanimated";
@@ -30,21 +30,21 @@ function NoteButtons({style, translation, onDeletePress}: { note: INoteEntry, st
 				icon={"pencil-outline"}
 				size={20}
 				onPress={() => {}}
-				style={{shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
+				style={styles.actionButton}
 				mode="contained"
 			/>
 			<IconButton
 				icon={"share-outline"}
 				size={20}
 				onPress={() => {}}
-				style={{shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
+				style={styles.actionButton}
 				mode="contained"
 			/>
 			<IconButton
 				icon={"trash-can-outline"}
 				size={20}
 				onPress={onDeletePress}
-				style={{shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
+				style={styles.actionButton}
 				mode="contained"
 			/>
 		</Reanimated.View>
@@ -137,16 +137,16 @@ export default function MangaDetails()
 	return (
 		<View style={{flex: 1}}>
 			<ScrollView nestedScrollEnabled={true}>
-				<View style={{ alignItems: 'center', height: 200, maxHeight: 200, width: '100%', justifyContent: 'center', flexDirection: 'row' }}>
-					<View style={{height: '100%', maxWidth: 700, width: '100%', flexDirection: 'row'}}>
+				<View style={styles.mangaHeader}>
+					<View style={styles.mangaOverviewContainer}>
 						<Image
 							source={{ uri: manga?.coverImage?.large }}
 							resizeMode="contain"
-							style={{aspectRatio: 3/4, marginHorizontal: 5}}
+							style={styles.mangaCoverImage}
 						/>
 						<View style={{ flex: 1 }}>
-							<View style={{ height: '30%', flexDirection: 'row', alignItems: 'flex-end'}}>
-								<ThemeText style={{fontSize: 24, fontWeight: 'bold', alignItems: 'flex-end', textAlignVertical: 'bottom'}}>{manga?.title.userPreferred}</ThemeText>
+							<View style={styles.titleDetailsContainer}>
+								<ThemeText style={styles.title}>{manga?.title.userPreferred}</ThemeText>
 							</View>
 							<ThemeText lineBreakMode="tail" numberOfLines={6} ellipsizeMode="tail">{manga?.description}</ThemeText>
 						</View>
@@ -168,27 +168,27 @@ export default function MangaDetails()
 									icon={"pencil-outline"}
 									size={20}
 									onPress={() => {}}
-									style={{shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
+									style={styles.actionButton}
 									mode="contained"
 								/>
 								<IconButton
 									icon={"share-outline"}
 									size={20}
 									onPress={() => {}}
-									style={{shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
+									style={styles.actionButton}
 									mode="contained"
 								/>
 								<IconButton
 									icon={"trash-can-outline"}
 									size={20}
 									onPress={() => onDelete(item.id)}
-									style={{shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
+									style={styles.actionButton}
 									mode="contained"
 								/>
 							</View>
 							:
 							<ReanimatedSwipeable
-								containerStyle={{ marginHorizontal: 5, flexDirection: 'row', alignItems: 'center', overflow: 'hidden'}}
+								containerStyle={styles.noteContainer}
 								childrenContainerStyle={{flex: 1}}
 								friction={2}
 								renderRightActions={(progress: SharedValue<number>, translation: SharedValue<number>, swipeableMethods: SwipeableMethods) => (
@@ -215,7 +215,7 @@ export default function MangaDetails()
 				>
 					<Modal visible={isViewingOverlay}
 						theme={theme}
-						contentContainerStyle={{ borderRadius: 10, width: '100%', height: '85%', maxHeight: 700, shadowOpacity: 0, padding: 0}}
+						contentContainerStyle={styles.noteModalContainer}
 						onDismiss={() => {setIsViewingOverlay(false)}}
 					>
 						<Carousel
@@ -226,16 +226,8 @@ export default function MangaDetails()
 							snapEnabled={true}
 							width={width}
 							loop={false}
-							style={{
-								flex:1,
-								margin: 0,
-								padding: 0
-							}}
-							containerStyle={{
-								flex:1,
-								margin: 0,
-								padding: 0
-							}}
+							style={styles.carousel}
+							containerStyle={styles.carousel}
 							mode="parallax"
 							modeConfig={{
 								parallaxScrollingScale: 1,
@@ -247,11 +239,7 @@ export default function MangaDetails()
 								(
 									<NoteViewer
 										note={item.item} mangaId={Array.isArray(mangaId) ? mangaId[0] : mangaId} mangaTitle={manga?.title.userPreferred}
-										style={{
-											shadowOpacity: 0.3, shadowRadius: 5, borderRadius: 10,
-											backgroundColor: theme.colors.background,
-											flex: 1, marginHorizontal: 30,
-										}}
+										style={[styles.noteViewer, {backgroundColor: theme.colors.background}]}
 										onDelete={() => onDelete(viewerNote.id)}
 										key={`NoteViewer_${viewerNote?.id}`}
 									/>
@@ -269,19 +257,19 @@ export default function MangaDetails()
 				</Portal>
 				<View style={{height: 85}}/>
 			</ScrollView>
-			<View style={{width: "100%", minWidth: 350, height: 60, position: "absolute", bottom: 25, flexDirection: "row", alignItems: "center", margin: 'auto', justifyContent: 'center'}}>
-				<View style={{width: '90%', flexDirection: 'row', maxWidth: 600, alignItems: 'center'}}>
+			<View style={styles.floatingContainer}>
+				<View style={styles.searchBarContainer}>
 					<Searchbar
 						placeholder="search note"
 						onChangeText={setSearchString}
-						style={{margin: 10, borderRadius: 10, flex: 1, shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
+						style={styles.searchBar}
 						value={searchString}
 					/>
 					<IconButton
 						icon={"plus"}
 						size={30}
 						onPress={() => router.navigate(`/manga/${mangaId}/add_note`)}
-						style={{shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }}
+						style={styles.addButton}
 						mode="contained"
 					/>
 				</View>
@@ -289,3 +277,27 @@ export default function MangaDetails()
 		</View>
 	);
 }
+
+const styles = StyleSheet.create({
+	mangaHeader: { alignItems: 'center', height: 200, maxHeight: 200, width: '100%', justifyContent: 'center', flexDirection: 'row' },
+	mangaOverviewContainer: {height: '100%', maxWidth: 700, width: '100%', flexDirection: 'row'},
+	mangaCoverImage: {aspectRatio: 3/4, marginHorizontal: 5},
+	titleDetailsContainer: { height: '30%', flexDirection: 'row', alignItems: 'flex-end'},
+	title: {fontSize: 24, fontWeight: 'bold', alignItems: 'flex-end', textAlignVertical: 'bottom'},
+	actionButton: {shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} },
+	noteContainer: { marginHorizontal: 5, flexDirection: 'row', alignItems: 'center', overflow: 'hidden'},
+	noteModalContainer: { borderRadius: 10, width: '100%', height: '85%', maxHeight: 700, shadowOpacity: 0, padding: 0},
+	carousel: {
+		flex:1,
+		margin: 0,
+		padding: 0
+	},
+	noteViewer: {
+		shadowOpacity: 0.3, shadowRadius: 5, borderRadius: 10,
+		flex: 1, marginHorizontal: 30,
+	},
+	floatingContainer: {width: "100%", minWidth: 350, height: 60, position: "absolute", bottom: 25, flexDirection: "row", alignItems: "center", margin: 'auto', justifyContent: 'center'},
+	searchBarContainer: {width: '90%', flexDirection: 'row', maxWidth: 600, alignItems: 'center'},
+	searchBar: {margin: 10, borderRadius: 10, flex: 1, shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} },
+	addButton: {shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }
+});
