@@ -63,7 +63,7 @@ export default function Index()
 	const [newMangaList, setNewMangaList] = useState<MangaProps[]>([]);
 	const [newSearchString, setNewSearchString] = useState("")
 	const { width } = useWindowDimensions();
-	const anilist_token: string = useContext(AuthContext).anilistToken
+	const anilist_token: string = useContext(AuthContext).anilistToken || ""
 	const listColNum = Math.min(Math.max(Math.ceil(width/200), 1), 5)
 
 	const populateMangaList = useCallback(async () => 

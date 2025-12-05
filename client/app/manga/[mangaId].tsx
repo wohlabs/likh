@@ -65,7 +65,7 @@ export default function MangaDetails()
 	const [viewerNoteIndex, setViewerNoteIndex] = useState<number>(0);
 	const progress = useSharedValue<number>(0);
 	const carouselRef = useRef<ICarouselInstance>(null)
-	const anilist_token: string = useContext(AuthContext).anilistToken
+	const anilist_token: string = useContext(AuthContext).anilistToken || ""
 
 	const populateMangaData = useCallback(async () => 
 	{
