@@ -9,7 +9,8 @@ import
 	Platform,
 	Pressable,
 	TouchableWithoutFeedback,
-	View
+	View,
+	StyleSheet
 } from "react-native";
 import { IconButton, TextInput } from "react-native-paper";
 import ThemeButton from "@/components/ThemeButton";
@@ -113,9 +114,9 @@ export default function AddNoteScreen()
 
 	return (
 		<KeyboardDismissWrapper>
-			<View style={{ flex: 1, padding: 10, flexDirection: "row" }} pointerEvents="box-none">
+			<View style={styles.mainLayout} pointerEvents="box-none">
 				<Stack.Screen options={{ title: "Add note" }} />
-				<View style={{ flex: 2, margin: 10, flexDirection: "column" }}>
+				<View style={styles.imageViewerContainer}>
 					{
 						images.length > 0 ? 
 							<Image
@@ -126,20 +127,14 @@ export default function AddNoteScreen()
 									uri: images[currentImageIndex].uri || "https://static.thenounproject.com/png/187803-200.png"
 								}}
 								resizeMode="contain"
-								style={{
-									flex: 1,
-									width: "100%",
-									borderRadius: 10,
-									borderColor: "black",
-									borderWidth: 2,
-								}}
+								style={styles.imageViewer}
 							/>
 							:
-							<View style={{flex: 1, justifyContent: "center", alignItems: "center", borderColor: "black", borderWidth: 2, borderRadius: 10, borderStyle:"dashed"}}>
-								<ThemeText style={{fontSize: 28, color: "lightgray"}}>Add an image using the + icon</ThemeText>
+							<View style={styles.noImageContainer}>
+								<ThemeText style={styles.addImageText}>Add an image using the + icon</ThemeText>
 							</View>
 					}
-					<View style={{height: 100, flexDirection: "row", alignItems: "center"}}>
+					<View style={styles.thumbnailsContainer}>
 						<FlatList
 							data={images}
 							key={`images_${Date.now()}`}
@@ -148,28 +143,21 @@ export default function AddNoteScreen()
 									<Image
 										source={{ uri: item.uri }}
 										resizeMode="cover"
-										style={{
-											height: "100%",
-											aspectRatio: 1,
-											borderRadius: 10,
-											borderColor: "black",
-											borderWidth: 2,
-											marginRight: 5
-										}}
+										style={styles.thumbnail}
 									/>
 								</Pressable>
 							)}
 							horizontal
-							style={{ flex: 1, alignSelf: "stretch", margin: 10 }}
+							style={styles.thumbnailList}
 							keyExtractor={(_, index) => index.toString()}
 						/>
 						<IconButton icon={"plus"} size={30} onPress={pickImage} style={{justifyContent: "center"}} mode="contained"/>
 					</View>
 				</View>
 				<View style={{ flexDirection: "column", flex: 3}}>
-					<ThemeText style={{fontSize: 20}}>Manhwa/Manga: {mangaName}</ThemeText>
+					<ThemeText style={styles.formText}>Manhwa/Manga: {mangaName}</ThemeText>
 					<View style={{ flexDirection: "row", alignItems: "center"}}>
-						<ThemeText style={{fontSize: 20}}>Chapter: </ThemeText>
+						<ThemeText style={styles.formText}>Chapter: </ThemeText>
 						<TextInput
 							numberOfLines={1}
 							editable
@@ -178,11 +166,7 @@ export default function AddNoteScreen()
 							onChangeText={(text) => setStartChapter(text)}
 							placeholder={"start"}
 							placeholderTextColor={"gray"}
-							style={{
-								margin: 2,
-								flex: 1,
-								maxWidth: 200
-							}}
+							style={styles.formInput}
 						/>
 						<ThemeText>-</ThemeText>
 						<TextInput
@@ -193,14 +177,10 @@ export default function AddNoteScreen()
 							onChangeText={(text) => setEndChapter(text)}
 							placeholder={"end (optional)"}
 							placeholderTextColor={"gray"}
-							style={{
-								outlineWidth: 1,
-								flex: 1,
-								maxWidth: 200
-							}}
+							style={styles.formInput}
 						/>
 					</View>
-					<ThemeText style={{fontSize: 20}}>Note:</ThemeText>
+					<ThemeText style={styles.formText}>Note:</ThemeText>
 					<TextInput
 						editable
 						multiline
@@ -209,31 +189,18 @@ export default function AddNoteScreen()
 						placeholderTextColor={"gray"}
 						value={text}
 						onChangeText={onChangeText}
-						style={{
-							margin: 5,
-							flex: 1
-						}}
+						style={[styles.noteInput, styles.formText]}
 					/>
-					<View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
+					<View style={styles.buttonsContainer}>
 						<ThemeButton
-							style={{
-								justifyContent: "center",
-								alignItems: "center",
-								flex: 1,
-								margin: 2
-							}}
+							style={styles.button}
 							onPress={() => router.navigate(`/manga/${mangaId}`) }
 							mode="contained-tonal"
 						>
 							Cancel
 						</ThemeButton>
 						<ThemeButton
-							style={{
-								justifyContent: "center",
-								alignItems: "center",
-								flex: 1,
-								margin: 2
-							}}
+							style={styles.button}
 
 							onPress={async () => 
 							{
@@ -250,3 +217,43 @@ export default function AddNoteScreen()
 		</KeyboardDismissWrapper>
 	);
 }
+
+const styles = StyleSheet.create({
+	mainLayout: { flex: 1, padding: 10, flexDirection: "row" },
+	imageViewerContainer: { flex: 2, margin: 10, flexDirection: "column" },
+	imageViewer: {
+		flex: 1,
+		width: "100%",
+		borderRadius: 10,
+		borderColor: "black",
+		borderWidth: 2,
+	},
+	noImageContainer: {flex: 1, justifyContent: "center", alignItems: "center", borderColor: "black", borderWidth: 2, borderRadius: 10, borderStyle:"dashed"},
+	addImageText: {fontSize: 28, color: "lightgray"},
+	thumbnailsContainer: {height: 100, flexDirection: "row", alignItems: "center"},
+	thumbnail: {
+		height: "100%",
+		aspectRatio: 1,
+		borderRadius: 10,
+		borderColor: "black",
+		borderWidth: 2,
+		marginRight: 5
+	},
+	thumbnailList: { flex: 1, alignSelf: "stretch", margin: 10 },
+	formText: {fontSize: 20},
+	formInput: {
+		flex: 1,
+		maxWidth: 200
+	},
+	noteInput: {
+		margin: 5,
+		flex: 1
+	},
+	buttonsContainer: { flexDirection: "row", justifyContent: "space-evenly" },
+	button: {
+		justifyContent: "center",
+		alignItems: "center",
+		flex: 1,
+		margin: 2
+	}
+});
