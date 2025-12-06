@@ -5,7 +5,7 @@ import { TextInput } from "react-native-paper";
 import ThemeButton from "@/components/ThemeButton";
 import { router } from "expo-router";
 import { AuthContext } from "@/context/AuthContext";
-import api from "@/services/AxiosInstance";
+import { loginUser } from "@/services/users.service";
 
 export default function UserLogin() 
 {
@@ -16,17 +16,15 @@ export default function UserLogin()
 
 	const userLogin = async () => 
 	{
-		try
+		const result = await loginUser(username, password);
+		if (!result.success)
 		{
-			const res = await api.post('/users/login', { username, password });
-			login(res.data)
-			
-			router.navigate('/');
+			setError(result.error);
+			return;
 		}
-		catch (err: any)
-		{
-			setError(err.response.data.error);
-		}
+
+		login(result.data)
+		router.navigate('/');
 	};
 	return (
 		<View style={styles.container}>

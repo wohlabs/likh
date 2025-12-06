@@ -20,3 +20,22 @@ export const registerUser = async (username: string, password: string) : Promise
 		data: null
 	};
 }
+
+export const loginUser = async (username: string, password: string) : Promise<ServiceResult<{token: string, username: string, anilist_token?: string}>> =>
+{
+	try
+	{
+		const res = await api.post('/users/login', { username, password });
+		return {
+			success: true,
+			data: res.data
+		};
+	}
+	catch (err: any)
+	{
+		return {
+			success: false,
+			error: err.response?.data?.error || "Login failed"
+		};
+	}
+}
