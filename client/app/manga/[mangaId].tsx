@@ -1,18 +1,18 @@
 import { IMangaNotes, INoteEntry } from "@/types/INotes";
 import NotePreviewCard from "@/components/NotePreviewCard";
 import NoteViewer from "@/components/NoteViewer";
-import ThemeText from "@/components/ThemeText";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useRef, useState, useContext } from "react";
-import { FlatList, Image, Platform, ScrollView, StyleProp, useWindowDimensions, View, ViewStyle, StyleSheet } from "react-native";
+import { FlatList, Platform, ScrollView, StyleProp, useWindowDimensions, View, ViewStyle, StyleSheet } from "react-native";
 import { IconButton, Modal, Portal, Searchbar, useTheme } from "react-native-paper";
 import ReanimatedSwipeable, { SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
 import Reanimated, { SharedValue, useAnimatedStyle, useSharedValue } from "react-native-reanimated";
 import Carousel, { ICarouselInstance, Pagination } from "react-native-reanimated-carousel";
 import { AuthContext } from "@/context/AuthContext";
-import { IMangaDetails } from "@/types/IManga";
 import { getMangaData, getMangaDetails } from "@/services/manga.service";
 import { deleteMangaNote } from "@/services/notes.service";
+import MangaOverViewHeader from "@/components/MangaOverViewHeader";
+import { IMangaDetails } from "@/types/IManga";
 
 function NoteButtons({style, translation, onDeletePress}: { note: INoteEntry, style?: StyleProp<ViewStyle>, progress: SharedValue<number>, translation: SharedValue<number>, swipeableMethods: SwipeableMethods, onDeletePress?: () => void})
 {
@@ -137,21 +137,7 @@ export default function MangaDetails()
 	return (
 		<View style={{flex: 1}}>
 			<ScrollView nestedScrollEnabled={true}>
-				<View style={styles.mangaHeader}>
-					<View style={styles.mangaOverviewContainer}>
-						<Image
-							source={{ uri: manga?.coverImage?.large }}
-							resizeMode="contain"
-							style={styles.mangaCoverImage}
-						/>
-						<View style={{ flex: 1 }}>
-							<View style={styles.titleDetailsContainer}>
-								<ThemeText style={styles.title}>{manga?.title.userPreferred}</ThemeText>
-							</View>
-							<ThemeText lineBreakMode="tail" numberOfLines={6} ellipsizeMode="tail">{manga?.description}</ThemeText>
-						</View>
-					</View>
-				</View>
+				<MangaOverViewHeader manga={manga} style={styles.mangaHeader} />
 				<FlatList
 					data={filteredNotes}
 					keyExtractor={(item) => `NotePreview_${item.id}`}
@@ -280,10 +266,6 @@ export default function MangaDetails()
 
 const styles = StyleSheet.create({
 	mangaHeader: { alignItems: 'center', height: 200, maxHeight: 200, width: '100%', justifyContent: 'center', flexDirection: 'row' },
-	mangaOverviewContainer: {height: '100%', maxWidth: 700, width: '100%', flexDirection: 'row'},
-	mangaCoverImage: {aspectRatio: 3/4, marginHorizontal: 5},
-	titleDetailsContainer: { height: '30%', flexDirection: 'row', alignItems: 'flex-end'},
-	title: {fontSize: 24, fontWeight: 'bold', alignItems: 'flex-end', textAlignVertical: 'bottom'},
 	actionButton: {shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} },
 	noteContainer: { marginHorizontal: 5, flexDirection: 'row', alignItems: 'center', overflow: 'hidden'},
 	noteModalContainer: { borderRadius: 10, width: '100%', height: '85%', maxHeight: 700, shadowOpacity: 0, padding: 0},
