@@ -14,18 +14,10 @@ import { deleteMangaNote } from "@/services/notes.service";
 import MangaOverViewHeader from "@/components/MangaOverViewHeader";
 import { IMangaDetails } from "@/types/IManga";
 
-function NoteButtons({style, translation, onDeletePress}: { note: INoteEntry, style?: StyleProp<ViewStyle>, progress: SharedValue<number>, translation: SharedValue<number>, swipeableMethods: SwipeableMethods, onDeletePress?: () => void})
+function NoteButtons({ onDeletePress }: { onDeletePress?: () => void })
 {
-	const swipeLeftAnimation = useAnimatedStyle(() => 
-	{
-		return {
-			transform: [{ translateX: translation.value + 140 }],
-		};
-	});
-
-
 	return (
-		<Reanimated.View style={[style, swipeLeftAnimation]}>
+		<>
 			<IconButton
 				icon={"pencil-outline"}
 				size={20}
@@ -47,6 +39,23 @@ function NoteButtons({style, translation, onDeletePress}: { note: INoteEntry, st
 				style={styles.actionButton}
 				mode="contained"
 			/>
+		</>
+	)
+}
+
+function TranslatableButtonContainer({ style, translation, children }: { note: INoteEntry, style?: StyleProp<ViewStyle>, progress: SharedValue<number>, translation: SharedValue<number>, swipeableMethods: SwipeableMethods, children: React.ReactNode })
+{
+	const swipeLeftAnimation = useAnimatedStyle(() => 
+	{
+		return {
+			transform: [{ translateX: translation.value + 140 }],
+		};
+	});
+
+
+	return (
+		<Reanimated.View style={[style, swipeLeftAnimation]}>
+			{children}
 		</Reanimated.View>
 	)
 }
@@ -149,28 +158,8 @@ export default function MangaDetails()
 						Platform.OS === 'web'
 							?
 							<View style={{flex:1, flexDirection: 'row', alignItems: 'center'}}>
-								<NotePreviewCard note={item} style={{ flex: 1, margin: 5}} onPress={()=> {setViewerNoteIndex(index); setIsViewingOverlay(true)}}/>
-								<IconButton
-									icon={"pencil-outline"}
-									size={20}
-									onPress={() => {}}
-									style={styles.actionButton}
-									mode="contained"
-								/>
-								<IconButton
-									icon={"share-outline"}
-									size={20}
-									onPress={() => {}}
-									style={styles.actionButton}
-									mode="contained"
-								/>
-								<IconButton
-									icon={"trash-can-outline"}
-									size={20}
-									onPress={() => onDelete(item.id)}
-									style={styles.actionButton}
-									mode="contained"
-								/>
+								<NotePreviewCard note={item} style={{ flex: 1, margin: 5}} onPress={()=> {setViewerNoteIndex(index); setIsViewingOverlay(true)}} />
+								<NoteButtons onDeletePress={() => onDelete(item.id)} />
 							</View>
 							:
 							<ReanimatedSwipeable
@@ -178,14 +167,15 @@ export default function MangaDetails()
 								childrenContainerStyle={{flex: 1}}
 								friction={2}
 								renderRightActions={(progress: SharedValue<number>, translation: SharedValue<number>, swipeableMethods: SwipeableMethods) => (
-									<NoteButtons
+									<TranslatableButtonContainer
 										note={item}
 										progress={progress}
 										translation={translation}
 										swipeableMethods={swipeableMethods}
 										style= {{flexDirection: 'row', alignItems: 'center'}}
-										onDeletePress={() => onDelete(item.id)}
-									/>
+									>
+										<NoteButtons onDeletePress={() => onDelete(item.id)} />
+									</TranslatableButtonContainer>
 								)}
 								key={`NotePreview_Swipeable_${item.id}`}
 							>
