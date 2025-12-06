@@ -5,6 +5,7 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { TextInput } from "react-native-paper";
+import { registerUser } from "@/services/users.service";
 
 export default function UserRegister()
 {
@@ -14,14 +15,12 @@ export default function UserRegister()
 
 	const register = async () => 
 	{
-		try
+		const result = await registerUser(username, password);
+
+		if (!result.success)
 		{
-			await api.post('/users', { username, password });
-			router.navigate('/users/login');
-		}
-		catch (err: any)
-		{
-			setError(err.response.data.error);
+			setError(result.error);
+			return;
 		}
 	};
 
