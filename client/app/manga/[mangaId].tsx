@@ -13,6 +13,8 @@ import { getMangaData, getMangaDetails } from "@/services/manga.service";
 import { deleteMangaNote } from "@/services/notes.service";
 import MangaOverViewHeader from "@/components/MangaOverViewHeader";
 import { IMangaDetails } from "@/types/IManga";
+import ThemeCarousel from "@/components/ThemeCarousel";
+import ThemeText from "@/components/ThemeText";
 
 function NoteButtons({ onDeletePress }: { onDeletePress?: () => void })
 {
@@ -72,8 +74,6 @@ export default function MangaDetails()
 	const [isViewingOverlay, setIsViewingOverlay] = useState<boolean>(false);
 	const [viewerNote, setViewerNote] = useState<INoteEntry>({id: "", text: "", images: [], startChapter: -1, endChapter: -1, createdAt: "", modifiedAt: "", fromAnilist: false});
 	const [viewerNoteIndex, setViewerNoteIndex] = useState<number>(0);
-	const progress = useSharedValue<number>(0);
-	const carouselRef = useRef<ICarouselInstance>(null)
 	const anilist_token: string = useContext(AuthContext).anilistToken || ""
 
 	const populateMangaData = useCallback(async () => 
@@ -119,18 +119,6 @@ export default function MangaDetails()
 			console.error("Could not delete note");
 		}
 	}
-
-	const onPressPagination = (index: number) => 
-	{
-		carouselRef.current?.scrollTo({
-			/**
-			 * Calculate the difference between the current index and the target index
-			 * to ensure that the carousel scrolls to the nearest index
-			 */
-			count: index - progress.value,
-			animated: true,
-		});
-	};
 
 	useEffect(() => 
 	{
@@ -194,24 +182,11 @@ export default function MangaDetails()
 						contentContainerStyle={styles.noteModalContainer}
 						onDismiss={() => {setIsViewingOverlay(false)}}
 					>
-						<Carousel
-							ref={carouselRef}
-							autoPlayInterval={2000}
+						<ThemeCarousel
 							data={filteredNotes}
-							pagingEnabled={true}
-							snapEnabled={true}
 							width={width}
-							loop={false}
-							style={styles.carousel}
-							containerStyle={styles.carousel}
-							mode="parallax"
-							modeConfig={{
-								parallaxScrollingScale: 1,
-								parallaxScrollingOffset: 40,
-							}}
-							onProgressChange={progress}
 							defaultIndex={viewerNoteIndex}
-							renderItem={(item) =>
+							carouselRenderItem={(item) =>
 								(
 									<NoteViewer
 										note={item.item} mangaId={Array.isArray(mangaId) ? mangaId[0] : mangaId} mangaTitle={manga?.title.userPreferred}
@@ -221,14 +196,7 @@ export default function MangaDetails()
 									/>
 								)
 							}
-						/>
-						<Pagination.Basic
-							progress={progress}
-							data={data}
-							dotStyle={{ backgroundColor: "rgba(0,0,0,0.2)", borderRadius: 50 }}
-							containerStyle={{ gap: 5, marginTop: 10 }}
-							onPress={onPressPagination}
-						/>
+						 />
 					</Modal>
 				</Portal>
 				<View style={{height: 85}}/>
@@ -259,11 +227,6 @@ const styles = StyleSheet.create({
 	actionButton: {shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} },
 	noteContainer: { marginHorizontal: 5, flexDirection: 'row', alignItems: 'center', overflow: 'hidden'},
 	noteModalContainer: { borderRadius: 10, width: '100%', height: '85%', maxHeight: 700, shadowOpacity: 0, padding: 0},
-	carousel: {
-		flex:1,
-		margin: 0,
-		padding: 0
-	},
 	noteViewer: {
 		shadowOpacity: 0.3, shadowRadius: 5, borderRadius: 10,
 		flex: 1, marginHorizontal: 30,
