@@ -138,7 +138,7 @@ export default function MangaDetails()
 				<FlatList
 					data={filteredNotes}
 					keyExtractor={(item) => `NotePreview_${item.id}`}
-					key={`filteredNotes_${Date.now()}`}
+					key={`filteredNotes`}
 					numColumns={1}
 					contentContainerStyle={{flexGrow: 0}}
 					scrollEnabled={false}
@@ -147,7 +147,7 @@ export default function MangaDetails()
 							?
 							<View style={{flex:1, flexDirection: 'row', alignItems: 'center'}}>
 								<NotePreviewCard note={item} style={{ flex: 1, margin: 5}} onPress={()=> {setViewerNoteIndex(index); setIsViewingOverlay(true)}} />
-								<NoteButtons onDeletePress={() => onDelete(item.id)} />
+								<NoteButtons onDeletePress={() => onDelete(item.id)} key={`NotePreviewCard_${item.id}`} />
 							</View>
 							:
 							<ReanimatedSwipeable

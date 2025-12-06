@@ -73,6 +73,7 @@ export const AuthProvider = ({ children }: any) =>
 			await AsyncStorage.removeItem('anilist_token');
 			setToken(null);
 			setUsername(null);
+			setAnilistToken(null);
 		}
 		catch (error) 
 		{
