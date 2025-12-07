@@ -129,7 +129,11 @@ export default function Index()
 									mode="contained"
 									iconColor={mangaList.find((elem) => elem.id === item.id) ? theme.colors.surfaceVariant : theme.colors.primary}
 									containerColor={mangaList.find((elem) => elem.id === item.id) ? theme.colors.inverseOnSurface : theme.colors.surfaceVariant}
-									onPress={async () => { await addMangaToLibrary(item.id); populateMangaList(); }}
+									onPress={async () => {
+										await addMangaToLibrary(item.id);
+										populateMangaList();
+										setSearching(false);
+									}}
 								/>
 							</Pressable>
 						)}
