@@ -6,7 +6,8 @@ import React, { useEffect, useState, useContext, useCallback } from "react";
 import { FlatList, Image, Pressable, StyleSheet, useWindowDimensions, View } from "react-native";
 import { IconButton, Modal, Portal, Searchbar, useTheme } from "react-native-paper";
 import { AuthContext } from "@/context/AuthContext";
-import { addMangaToLibrary, getMangaIdsWithNotes, MANGA_SEARCH_QUERY } from "@/services/manga.service";
+import { addMangaToLibrary, getMangaIdsWithNotes, getMyListMangaIds, MANGA_SEARCH_QUERY } from "@/services/manga.service";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 const MANGA_QUERY = `
 	query {
@@ -75,16 +76,10 @@ export default function Index()
 			return;
 		}
 		const anilistMangaIds: string[] = await getMangaIdsWithNotes(anilist_token)
-		let libraryMangaIds: string[] = []
-		try 
-		{
-			const response = await api.get(`/users/me/manga`)
-			libraryMangaIds = response.data
-		}
-		catch 
-		{
-			console.error("Could not fetch mangaIds")
-		}
+
+		const mangaIdsResult = await getMyListMangaIds(anilist_token)
+		let libraryMangaIds: string[] = mangaIdsResult.success ? mangaIdsResult.data : []
+
 		let query = {
 			query: LIBRARY_MANGA_QUERY,
 			variables: {ids: Array.from(new Set<string>([...libraryMangaIds, ...anilistMangaIds]))}

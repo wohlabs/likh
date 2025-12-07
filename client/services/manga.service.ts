@@ -4,6 +4,7 @@ import { getAnilistNote } from "./notes.service";
 import { IMangaDetails } from "@/types/IManga";
 import { getUserIdFromToken } from "@/components/util";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ServiceResult } from "./IServiceResult";
 
 const MANGA_QUERY = `
 	query GetManga($id: Int) {
@@ -177,4 +178,23 @@ export const searchMangaByString = async (searchString: string, page: number = 1
 			console.error(error);
 		});
 	return data;
+}
+
+export const getMyListMangaIds = async (accessToken: string) : Promise<ServiceResult<string[]>> =>
+{
+	try 
+	{
+		const response = await api.get(`/users/me/manga`)
+		return {
+			success: true,
+			data: response.data
+		}
+	}
+	catch (err: any)
+	{
+		return {
+			success: false,
+			error: err.response?.data?.error || "Could not fetch mangaIds"
+		};
+	}
 }
