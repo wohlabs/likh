@@ -40,6 +40,22 @@ query ($search: String, $page: Int, $perPage: Int) {
 }
 `
 
+const MANGA_SEARCH_TREND_QUERY = `
+	query {
+		Page(page: 1, perPage: 10) {
+			media(type: MANGA, sort: TRENDING_DESC) {
+				id
+				title {
+					userPreferred
+				}
+				coverImage {
+					large
+				}
+			}
+		}
+	}
+`;
+
 const LIBRARY_MANGA_QUERY = `
 	query ($ids: [Int]){
 		Page(page: 1, perPage: 50) {
@@ -185,26 +201,38 @@ export const getMangaIdsWithNotes = async (accessToken: string) : Promise<string
 	return mangaIds;
 }
 
-export const searchMangaByString = async (searchString: string, page: number = 1, perPage: number = 10) =>
+export const searchMangaByString = async (searchString: string, page: number = 1, perPage: number = 10): Promise<ServiceResult<MangaProps[]>> =>
 {
-	const data = await fetch("https://graphql.anilist.co", {
+	let query = {
+		query: searchString.length > 0 ? MANGA_SEARCH_QUERY : MANGA_SEARCH_TREND_QUERY,
+		variables: {search: searchString, page, perPage}
+	}
+
+	const data = await (fetch("https://graphql.anilist.co", {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
 			'Accept': 'application/json',
 		},
-		body: JSON.stringify({ query: MANGA_SEARCH_QUERY, variables: {search : searchString, page, perPage} })
+		body: JSON.stringify(query)
 	})
 		.then((response) => response.json())
 		.then((response) => response.data)
 		.then((data) => 
 		{
-			return data.Page.media
+			if (data && data.Page && data.Page.media)
+			{
+				return {success: true as const, data: data.Page.media};
+			}
+			else
+			{
+				throw new Error("Could not search manga");
+			}
 		})
 		.catch((error) => 
 		{
-			console.error(error);
-		});
+			return {success: false as const, error: error.response?.data?.error || "Could not search manga"};
+		}));
 	return data;
 }
 
@@ -254,7 +282,7 @@ export const getLibraryMangaThumbnails = async (mangaIds: string[]) : Promise<Se
 			}
 			else
 			{
-				return {success: true as const, data: []};
+				throw new Error("Could not fetch mangaIds");
 			}
 		})
 		.catch((error) => 

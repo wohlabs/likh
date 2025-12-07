@@ -5,24 +5,7 @@ import React, { useEffect, useState, useContext, useCallback } from "react";
 import { FlatList, Image, Pressable, StyleSheet, useWindowDimensions, View } from "react-native";
 import { IconButton, Modal, Portal, Searchbar, useTheme } from "react-native-paper";
 import { AuthContext } from "@/context/AuthContext";
-import { addMangaToLibrary, getLibraryMangaThumbnails, getMangaIdsWithNotes, getMyListMangaIds, MANGA_SEARCH_QUERY, MangaProps } from "@/services/manga.service";
-
-const MANGA_QUERY = `
-	query {
-		Page(page: 1, perPage: 10) {
-			media(type: MANGA, sort: TRENDING_DESC) {
-				id
-				title {
-					userPreferred
-				}
-				coverImage {
-					large
-				}
-			}
-		}
-	}
-`;
-
+import { addMangaToLibrary, getLibraryMangaThumbnails, getMangaIdsWithNotes, getMyListMangaIds, MangaProps, searchMangaByString } from "@/services/manga.service";
 
 export default function Index() 
 {
@@ -55,36 +38,14 @@ export default function Index()
 
 	const populateNewMangaList = useCallback(async () => 
 	{
-		let query = {
-			query: newSearchString.length > 0 ? MANGA_SEARCH_QUERY : MANGA_QUERY,
-			variables: {search: newSearchString}
-		}
-		fetch("https://graphql.anilist.co", {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'Accept': 'application/json',
-			},
-			body: JSON.stringify(query)
-		})
-			.then((response) => response.json())
-			.then((response) => response.data)
-			.then((data) => 
-			{
-				if (data && data.Page && data.Page.media)
-				{
-					setNewMangaList(data.Page.media);
-				}
-				else
-				{
-					setNewMangaList([]);
-				}
-			})
-			.catch((error) => 
-			{
-				console.error(error);
-			});
+		const searchListResult = await searchMangaByString(newSearchString);
+		setNewMangaList(searchListResult.success ? searchListResult.data : []);
 	}, [newSearchString]);
+
+	useEffect(() => 
+	{
+		populateNewMangaList();
+	}, [populateNewMangaList]);
 
 	useEffect(() => 
 	{
