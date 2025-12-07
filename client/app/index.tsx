@@ -45,11 +45,6 @@ export default function Index()
 
 	useEffect(() => 
 	{
-		populateNewMangaList();
-	}, [populateNewMangaList]);
-
-	useEffect(() => 
-	{
 		populateMangaList()
 	}, [isSearching, populateMangaList]);
 
