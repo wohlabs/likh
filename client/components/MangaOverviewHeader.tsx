@@ -1,6 +1,4 @@
-import { getMangaDetails } from "@/services/manga.service";
 import { getMangaTitle, IMangaDetails } from "@/types/IManga";
-import { useCallback, useEffect, useState } from "react";
 import { StyleProp, ViewStyle, StyleSheet, View, Image } from "react-native";
 import ThemeText from "./ThemeText";
 
