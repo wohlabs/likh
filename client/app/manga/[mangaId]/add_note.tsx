@@ -20,6 +20,7 @@ import { File } from 'expo-file-system'
 import { AuthContext } from "@/context/AuthContext";
 import { fetch } from 'expo/fetch';
 import { getMangaDetails } from "@/services/manga.service";
+import { getMangaTitle } from "@/types/IManga";
 
 const KeyboardDismissWrapper = ({ children }: any) => 
 {
@@ -53,7 +54,7 @@ export default function AddNoteScreen()
 	const populateMangaData = useCallback(async () => 
 	{
 		const manga = await getMangaDetails(mangaId.toString());
-		setMangaName(manga?.title.english || "Unknown");
+		setMangaName(getMangaTitle(manga));
 	}, [mangaId]);
 
 	useEffect(() => 

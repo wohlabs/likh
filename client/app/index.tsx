@@ -6,6 +6,7 @@ import { FlatList, Image, Pressable, StyleSheet, useWindowDimensions, View } fro
 import { IconButton, Modal, Portal, Searchbar, useTheme } from "react-native-paper";
 import { AuthContext } from "@/context/AuthContext";
 import { addMangaToLibrary, getLibraryMangaThumbnails, getMangaIdsWithNotes, getMyListMangaIds, MangaProps, searchMangaByString } from "@/services/manga.service";
+import { getMangaTitle } from "@/types/IManga";
 
 export default function Index() 
 {
@@ -54,7 +55,7 @@ export default function Index()
 
 	useEffect(() => 
 	{
-		setFilteredMangaList(mangaList.filter((manga) => manga.title?.english?.toLowerCase().includes(searchString.toLowerCase())))
+		setFilteredMangaList(mangaList.filter((manga) => getMangaTitle(manga).toLowerCase().includes(searchString.toLowerCase())))
 	}, [mangaList, searchString]);
 
 	return (
@@ -80,7 +81,7 @@ export default function Index()
 									resizeMode="contain"
 									style={styles.mangaCoverImage}
 								/>
-								<ThemeText style={styles.mangaTitle}>{item.title?.english}</ThemeText>
+								<ThemeText style={styles.mangaTitle}>{getMangaTitle(item)}</ThemeText>
 							</Pressable>
 							: <View style={{ flex: 1, margin: 5 }} />
 					)}
@@ -127,7 +128,7 @@ export default function Index()
 									resizeMode="contain"
 									style={{height: "100%", aspectRatio: 0.8}}
 								/>
-								<ThemeText style={styles.addMangaTitle}>{item.title?.english}</ThemeText>
+								<ThemeText style={styles.addMangaTitle}>{getMangaTitle(item)}</ThemeText>
 								<IconButton
 									icon={"plus"}
 									mode="contained"

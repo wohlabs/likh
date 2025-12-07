@@ -1,5 +1,5 @@
 import { getMangaDetails } from "@/services/manga.service";
-import { IMangaDetails } from "@/types/IManga";
+import { getMangaTitle, IMangaDetails } from "@/types/IManga";
 import { useCallback, useEffect, useState } from "react";
 import { StyleProp, ViewStyle, StyleSheet, View, Image } from "react-native";
 import ThemeText from "./ThemeText";
@@ -17,7 +17,7 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 				/>
 				<View style={{ flex: 1 }}>
 					<View style={styles.titleDetailsContainer}>
-						<ThemeText style={styles.title}>{manga?.title.english}</ThemeText>
+						<ThemeText style={styles.title}>{getMangaTitle(manga)}</ThemeText>
 					</View>
 					<ThemeText lineBreakMode="tail" numberOfLines={6} ellipsizeMode="tail">{manga?.description}</ThemeText>
 				</View>

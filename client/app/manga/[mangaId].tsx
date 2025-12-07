@@ -12,7 +12,7 @@ import { AuthContext } from "@/context/AuthContext";
 import { getMangaData, getMangaDetails } from "@/services/manga.service";
 import { deleteMangaNote } from "@/services/notes.service";
 import MangaOverViewHeader from "@/components/MangaOverViewHeader";
-import { IMangaDetails } from "@/types/IManga";
+import { getMangaTitle, IMangaDetails } from "@/types/IManga";
 import ThemeCarousel from "@/components/ThemeCarousel";
 import ThemeText from "@/components/ThemeText";
 
@@ -189,7 +189,7 @@ export default function MangaDetails()
 							carouselRenderItem={(item) =>
 								(
 									<NoteViewer
-										note={item.item} mangaId={Array.isArray(mangaId) ? mangaId[0] : mangaId} mangaTitle={manga?.title.english}
+										note={item.item} mangaId={Array.isArray(mangaId) ? mangaId[0] : mangaId} mangaTitle={getMangaTitle(manga)}
 										style={[styles.noteViewer, {backgroundColor: theme.colors.background}]}
 										onDelete={() => onDelete(viewerNote.id)}
 										key={`NoteViewer_${viewerNote?.id}`}

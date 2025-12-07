@@ -8,3 +8,7 @@ export type IMangaDetails = {
 	// volumes?: number;
 	status?: string;
 };
+
+export const getMangaTitle = (manga: IMangaDetails | undefined) : string => {
+	return manga?.title.english || manga?.title.userPreferred || "Unknown Title";
+}
