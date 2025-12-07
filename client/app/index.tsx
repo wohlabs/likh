@@ -1,4 +1,3 @@
-import api from "@/services/AxiosInstance";
 import ThemeText from "@/components/ThemeText";
 import { formatData } from "@/components/util";
 import { Stack, useRouter } from "expo-router";
@@ -6,8 +5,7 @@ import React, { useEffect, useState, useContext, useCallback } from "react";
 import { FlatList, Image, Pressable, StyleSheet, useWindowDimensions, View } from "react-native";
 import { IconButton, Modal, Portal, Searchbar, useTheme } from "react-native-paper";
 import { AuthContext } from "@/context/AuthContext";
-import { addMangaToLibrary, getMangaIdsWithNotes, getMyListMangaIds, MANGA_SEARCH_QUERY } from "@/services/manga.service";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+import { addMangaToLibrary, getLibraryMangaThumbnails, getMangaIdsWithNotes, getMyListMangaIds, MANGA_SEARCH_QUERY, MangaProps } from "@/services/manga.service";
 
 const MANGA_QUERY = `
 	query {
@@ -25,32 +23,6 @@ const MANGA_QUERY = `
 	}
 `;
 
-const LIBRARY_MANGA_QUERY = `
-	query ($ids: [Int]){
-		Page(page: 1, perPage: 50) {
-			media(id_in: $ids, type: MANGA, sort: TRENDING_DESC) {
-				id
-				title {
-					userPreferred
-				}
-				coverImage {
-					large
-				}
-			}
-		}
-	}
-`
-
-type MangaProps = {
-	id: string;
-	title: {
-		userPreferred: string;
-	}
-	coverImage: {
-		large: string;
-		medium: string
-	}
-};
 
 export default function Index() 
 {
@@ -58,7 +30,6 @@ export default function Index()
 	const theme = useTheme()
 	const [mangaList, setMangaList] = useState<MangaProps[]>([]);
 	const [filteredMangaList, setFilteredMangaList] = useState<MangaProps[]>([]);
-	const [, setLoading] = useState(true);
 	const [isSearching, setSearching] = useState(false)
 	const [searchString, setSearchString] = useState("")
 	const [newMangaList, setNewMangaList] = useState<MangaProps[]>([]);
@@ -72,45 +43,14 @@ export default function Index()
 		if (anilist_token === undefined || anilist_token === "undefined" || anilist_token === '') 
 		{
 			setMangaList([]);
-			setLoading(false);
 			return;
 		}
 		const anilistMangaIds: string[] = await getMangaIdsWithNotes(anilist_token)
 
 		const mangaIdsResult = await getMyListMangaIds(anilist_token)
 		let libraryMangaIds: string[] = mangaIdsResult.success ? mangaIdsResult.data : []
-
-		let query = {
-			query: LIBRARY_MANGA_QUERY,
-			variables: {ids: Array.from(new Set<string>([...libraryMangaIds, ...anilistMangaIds]))}
-		}
-		fetch("https://graphql.anilist.co", {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'Accept': 'application/json',
-			},
-			body: JSON.stringify(query)
-		})
-			.then((response) => response.json())
-			.then((response) => response.data)
-			.then((data) =>
-			{
-				if (data && data.Page && data.Page.media)
-				{
-					setMangaList(data.Page.media);
-				}
-				else
-				{
-					setMangaList([]);
-				}
-				setLoading(false);
-			})
-			.catch((error) => 
-			{
-				console.error(error);
-				setLoading(false);
-			});
+		const mangaListResult = await getLibraryMangaThumbnails(Array.from(new Set<string>([...libraryMangaIds, ...anilistMangaIds])));
+		setMangaList(mangaListResult.success ? mangaListResult.data : []);
 	}, [anilist_token]);
 
 	const populateNewMangaList = useCallback(async () => 
