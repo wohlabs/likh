@@ -252,9 +252,7 @@ const styles = StyleSheet.create({
 	},
 	buttonsContainer: { flexDirection: "row", justifyContent: "space-evenly" },
 	button: {
-		justifyContent: "center",
-		alignItems: "center",
 		flex: 1,
-		margin: 2
+		margin: 2,
 	}
 });
