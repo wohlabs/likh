@@ -1,6 +1,6 @@
 export type IMangaDetails = {
 	id: string;
-	title: { userPreferred?: string };
+	title: { userPreferred?: string, english?: string };
 	coverImage?: { large?: string };
 	description?: string;
 	genres?: string[];

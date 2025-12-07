@@ -12,6 +12,7 @@ const MANGA_QUERY = `
 			id
 			title {
 				userPreferred
+				english
 			}
 			coverImage {
 				large
@@ -31,6 +32,7 @@ query ($search: String, $page: Int, $perPage: Int) {
 			id
 			title {
 				userPreferred
+				english
 			}
 			coverImage {
 				large
@@ -47,6 +49,7 @@ const MANGA_SEARCH_TREND_QUERY = `
 				id
 				title {
 					userPreferred
+					english
 				}
 				coverImage {
 					large
@@ -63,6 +66,7 @@ const LIBRARY_MANGA_QUERY = `
 				id
 				title {
 					userPreferred
+					english
 				}
 				coverImage {
 					large
@@ -76,6 +80,7 @@ export type MangaProps = {
 	id: string;
 	title: {
 		userPreferred: string;
+		english: string;
 	}
 	coverImage: {
 		large: string;

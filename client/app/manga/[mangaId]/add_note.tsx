@@ -53,7 +53,7 @@ export default function AddNoteScreen()
 	const populateMangaData = useCallback(async () => 
 	{
 		const manga = await getMangaDetails(mangaId.toString());
-		setMangaName(manga?.title.userPreferred || "Unknown");
+		setMangaName(manga?.title.english || "Unknown");
 	}, [mangaId]);
 
 	useEffect(() => 

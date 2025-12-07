@@ -17,7 +17,7 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 				/>
 				<View style={{ flex: 1 }}>
 					<View style={styles.titleDetailsContainer}>
-						<ThemeText style={styles.title}>{manga?.title.userPreferred}</ThemeText>
+						<ThemeText style={styles.title}>{manga?.title.english}</ThemeText>
 					</View>
 					<ThemeText lineBreakMode="tail" numberOfLines={6} ellipsizeMode="tail">{manga?.description}</ThemeText>
 				</View>

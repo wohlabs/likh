@@ -54,7 +54,7 @@ export default function Index()
 
 	useEffect(() => 
 	{
-		setFilteredMangaList(mangaList.filter((manga) => manga.title?.userPreferred?.toLowerCase().includes(searchString.toLowerCase())))
+		setFilteredMangaList(mangaList.filter((manga) => manga.title?.english?.toLowerCase().includes(searchString.toLowerCase())))
 	}, [mangaList, searchString]);
 
 	return (
@@ -80,7 +80,7 @@ export default function Index()
 									resizeMode="contain"
 									style={styles.mangaCoverImage}
 								/>
-								<ThemeText style={styles.mangaTitle}>{item.title?.userPreferred}</ThemeText>
+								<ThemeText style={styles.mangaTitle}>{item.title?.english}</ThemeText>
 							</Pressable>
 							: <View style={{ flex: 1, margin: 5 }} />
 					)}
@@ -127,7 +127,7 @@ export default function Index()
 									resizeMode="contain"
 									style={{height: "100%", aspectRatio: 0.8}}
 								/>
-								<ThemeText style={styles.addMangaTitle}>{item.title?.userPreferred}</ThemeText>
+								<ThemeText style={styles.addMangaTitle}>{item.title?.english}</ThemeText>
 								<IconButton
 									icon={"plus"}
 									mode="contained"

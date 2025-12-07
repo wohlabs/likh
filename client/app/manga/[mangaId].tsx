@@ -189,7 +189,7 @@ export default function MangaDetails()
 							carouselRenderItem={(item) =>
 								(
 									<NoteViewer
-										note={item.item} mangaId={Array.isArray(mangaId) ? mangaId[0] : mangaId} mangaTitle={manga?.title.userPreferred}
+										note={item.item} mangaId={Array.isArray(mangaId) ? mangaId[0] : mangaId} mangaTitle={manga?.title.english}
 										style={[styles.noteViewer, {backgroundColor: theme.colors.background}]}
 										onDelete={() => onDelete(viewerNote.id)}
 										key={`NoteViewer_${viewerNote?.id}`}
