@@ -115,7 +115,7 @@ export default function AddNoteScreen()
 
 	return (
 		<KeyboardDismissWrapper>
-			<View style={styles.mainLayout} pointerEvents="box-none">
+			<View style={styles.mainLayout}>
 				<Stack.Screen options={{ title: "Add note" }} />
 				<View style={styles.imageViewerContainer}>
 					{

@@ -34,7 +34,7 @@ export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}:
 
 	return (
 		note &&
-		<View style={[styles.viewerContainer, style]} pointerEvents="box-none">
+		<View style={[styles.viewerContainer, style]}>
 			<View style={styles.imagesViewer}>
 				{
 					images?.length > 0 ? 
