@@ -11,7 +11,7 @@ import Carousel, { ICarouselInstance, Pagination } from "react-native-reanimated
 import { AuthContext } from "@/context/AuthContext";
 import { getMangaData, getMangaDetails } from "@/services/manga.service";
 import { deleteMangaNote } from "@/services/notes.service";
-import MangaOverViewHeader from "@/components/MangaOverViewHeader";
+import MangaOverviewHeader from "@/components/MangaOverviewHeader";
 import { getMangaTitle, IMangaDetails } from "@/types/IManga";
 import ThemeCarousel from "@/components/ThemeCarousel";
 import ThemeText from "@/components/ThemeText";
@@ -134,7 +134,7 @@ export default function MangaDetails()
 	return (
 		<View style={{flex: 1}}>
 			<ScrollView nestedScrollEnabled={true}>
-				<MangaOverViewHeader manga={manga} style={styles.mangaHeader} />
+				<MangaOverviewHeader manga={manga} style={styles.mangaHeader} />
 				<FlatList
 					data={filteredNotes}
 					keyExtractor={(item) => `NotePreview_${item.id}`}
