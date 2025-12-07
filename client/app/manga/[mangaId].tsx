@@ -223,15 +223,16 @@ export default function MangaDetails()
 
 const styles = StyleSheet.create({
 	mangaHeader: { alignItems: 'center', height: 200, maxHeight: 200, width: '100%', justifyContent: 'center', flexDirection: 'row' },
-	actionButton: {shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} },
+	actionButton: {boxShadow: "0px 4px 5px rgba(0,0,0,0.3)"},
 	noteContainer: { marginHorizontal: 5, flexDirection: 'row', alignItems: 'center', overflow: 'hidden'},
-	noteModalContainer: { borderRadius: 10, width: '100%', height: '85%', maxHeight: 700, shadowOpacity: 0, padding: 0},
+	noteModalContainer: { borderRadius: 10, width: '100%', height: '85%', maxHeight: 700, padding: 0},
 	noteViewer: {
-		shadowOpacity: 0.3, shadowRadius: 5, borderRadius: 10,
+		borderRadius: 10,
 		flex: 1, marginHorizontal: 30,
+		boxShadow: "0px 4px 5px rgba(0,0,0,0.3)"
 	},
 	floatingContainer: {width: "100%", minWidth: 350, height: 60, position: "absolute", bottom: 25, flexDirection: "row", alignItems: "center", margin: 'auto', justifyContent: 'center'},
 	searchBarContainer: {width: '90%', flexDirection: 'row', maxWidth: 600, alignItems: 'center'},
-	searchBar: {margin: 10, borderRadius: 10, flex: 1, shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} },
-	addButton: {shadowOpacity: 0.3, shadowRadius: 5, shadowColor: "black", shadowOffset: {width: 0, height: 4} }
+	searchBar: {margin: 10, borderRadius: 10, flex: 1, boxShadow: "0px 4px 5px rgba(0,0,0,0.3)" },
+	addButton: {boxShadow: "0px 4px 5px rgba(0,0,0,0.3)" }
 });
