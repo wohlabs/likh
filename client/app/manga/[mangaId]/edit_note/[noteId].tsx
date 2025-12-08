@@ -244,7 +244,6 @@ export default function EditNoteScreen()
 
 							onPress={async () => 
 							{
-								console.log("editing note...")
 								editNote()
 							}}
 							mode="contained"

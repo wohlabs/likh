@@ -89,7 +89,6 @@ router.post(`/`, upload.array('images', 10), AuthenticateMiddleware, async (req:
 // edit note
 router.patch(`/:id`, upload.array('images', 10), AuthenticateMiddleware, async (req: Request, res: Response) =>
 {
-	console.log("Editing note...", req.params.id)
 	const userId = req.user?.id;
 	const noteId = req.params?.id;
 	const { mangaId, startChapter, endChapter, text, deletedImageIds } = req.body
