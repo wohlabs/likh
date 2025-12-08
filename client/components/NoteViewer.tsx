@@ -5,6 +5,7 @@ import { INoteEntry } from "../types/INotes";
 import { getImageBase64 as getImageBase64 } from "./util";
 import ThemeButton from "./ThemeButton";
 import ThemeText from "./ThemeText";
+import { router } from "expo-router";
 
 export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}: { mangaTitle?: string, mangaId: string, note: INoteEntry, style?: StyleProp<ViewStyle>, onDelete?: (noteId: string) => void }) 
 {
@@ -89,7 +90,7 @@ export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}:
 					</ThemeButton>
 					<ThemeButton icon={"pencil"}
 						style={styles.viewerButton}
-						onPress={() => {}}
+						onPress={() => {router.navigate(`/manga/${mangaId}/edit_note/${note.id}`)}}
 					>
 						Edit
 					</ThemeButton>

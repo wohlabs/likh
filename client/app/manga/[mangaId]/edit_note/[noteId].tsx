@@ -22,6 +22,7 @@ import { fetch } from 'expo/fetch';
 import { getMangaDetails } from "@/services/manga.service";
 import { getMangaTitle } from "@/types/IManga";
 import { getNote } from "@/services/notes.service";
+import { getImageBase64 } from "@/components/util";
 
 const KeyboardDismissWrapper = ({ children }: any) => 
 {
@@ -50,6 +51,8 @@ export default function EditNoteScreen()
 	const [endChapter, setEndChapter] = useState<string>() // -1 = all/general
 	const { mangaId, noteId } = useLocalSearchParams(); // <-- get from URL
 	const [mangaName, setMangaName] = useState<string>("Fetching...");
+	const [addedImages, setAddedImages] = useState<ImagePicker.ImagePickerAsset[]>([]);
+	const [deletedImages, setDeletedImages] = useState<string[]>([]);
 	const token = useContext(AuthContext).token
 
 	const populateMangaData = useCallback(async () => 
@@ -73,6 +76,17 @@ export default function EditNoteScreen()
 			setStartChapter(note.startChapter != -1 ? note.startChapter.toString() : "");
 			setEndChapter(note.endChapter?.toString());
 			onChangeText(note.text?? "");
+
+			const imageAssets: ImagePicker.ImagePickerAsset[] = []
+			for (const imageId of note.images)
+			{
+				imageAssets.push({
+					uri: await getImageBase64(imageId),
+					assetId: imageId,
+					fileName: imageId
+				} as ImagePicker.ImagePickerAsset)
+			}
+			setImages(imageAssets)
 		}
 	}, []);
 
@@ -89,12 +103,13 @@ export default function EditNoteScreen()
 			allowsEditing: false,
 			quality: 1,
 		});
-
 		if (!result.canceled) 
 		{
 			let newImages = [...images, result.assets[0]]
 			setImages(newImages);
 			setCurrentImageIndex(newImages.length - 1); // set to last image
+			let newAddedImages = [...addedImages, result.assets[0]]
+			setAddedImages(newAddedImages);
 		}
 	};
 
@@ -104,10 +119,12 @@ export default function EditNoteScreen()
 
 		const formData = new FormData()
 		formData.append('mangaId', mangaId.toString())
+		formData.append('deletedImageIds', "[]")
 		formData.append('startChapter', startChapter ? startChapter : String(-1))
 		if (endChapter) formData.append('endChapter', endChapter)
 		if (text && text.trim().length > 0) formData.append('text', text)
-		for (const image of images)
+
+		for (const image of addedImages)
 		{
 			if (Platform.OS === 'web')
 			{
@@ -122,7 +139,9 @@ export default function EditNoteScreen()
 
 			}
 		}
-		await fetch(`${API_URL}/notes`, {
+
+		console.log("Submitting edit note form data:", formData);
+		await fetch(`${API_URL}/notes/${noteId}`, {
 			method: 'PATCH',
 			body: formData,
 			headers: {

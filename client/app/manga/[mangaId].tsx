@@ -15,14 +15,14 @@ import { getMangaTitle, IMangaDetails } from "@/types/IManga";
 import ThemeCarousel from "@/components/ThemeCarousel";
 import ThemeText from "@/components/ThemeText";
 
-function NoteButtons({ onDeletePress }: { onDeletePress?: () => void })
+function NoteButtons({ onEditPress, onDeletePress }: { onEditPress?: () => void, onDeletePress?: () => void })
 {
 	return (
 		<>
 			<IconButton
 				icon={"pencil-outline"}
 				size={20}
-				onPress={() => {}}
+				onPress={onEditPress}
 				style={styles.actionButton}
 				mode="contained"
 			/>
@@ -146,7 +146,7 @@ export default function MangaDetails()
 							?
 							<View style={{flex:1, flexDirection: 'row', alignItems: 'center'}}>
 								<NotePreviewCard note={item} style={{ flex: 1, margin: 5}} onPress={()=> {setViewerNoteIndex(index); setIsViewingOverlay(true)}} />
-								<NoteButtons onDeletePress={() => onDelete(item.id)} key={`NotePreviewCard_${item.id}`} />
+								<NoteButtons onEditPress={() => router.navigate(`/manga/${mangaId}/edit_note/${item.id}`)} onDeletePress={() => onDelete(item.id)} key={`NotePreviewCard_${item.id}`} />
 							</View>
 							:
 							<ReanimatedSwipeable
@@ -161,7 +161,7 @@ export default function MangaDetails()
 										swipeableMethods={swipeableMethods}
 										style= {{flexDirection: 'row', alignItems: 'center'}}
 									>
-										<NoteButtons onDeletePress={() => onDelete(item.id)} />
+										<NoteButtons onEditPress={() => router.navigate(`/manga/${mangaId}/edit_note/${item.id}`)} onDeletePress={() => onDelete(item.id)} />
 									</TranslatableButtonContainer>
 								)}
 								key={`NotePreview_Swipeable_${item.id}`}
