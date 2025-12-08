@@ -92,6 +92,7 @@ router.patch(`/:id`, upload.array('images', 10), AuthenticateMiddleware, async (
 	const userId = req.user?.id;
 	const noteId = req.params?.id;
 	const { mangaId, startChapter, endChapter, text, deletedImageIds } = req.body
+	const deletedImageObjectIds = (JSON.parse(deletedImageIds) as string[]).map(id => new Types.ObjectId(id));
 	// invalid note entry
 	if ((!req.files || req.files.length == 0) && !text) return res.status(400).json('Invalid note')
 
@@ -141,6 +142,11 @@ router.patch(`/:id`, upload.array('images', 10), AuthenticateMiddleware, async (
 	if (note)
 	{
 		note.images = note.images.filter(imageId => !deletedImageIds.includes(imageId.toString()))
+
+		for (const objId of deletedImageObjectIds)
+		{
+			getGFSBucket()?.delete(objId);
+		}
 		note.images.push(...newImageIds);
 		note.startChapter = startChapter;
 		note.endChapter = endChapter;

@@ -129,7 +129,6 @@ export default function AddNoteScreen()
 										uri: images[currentImageIndex].uri || "https://static.thenounproject.com/png/187803-200.png"
 									}}
 									resizeMode="contain"
-									// style={styles.imageViewer}
 									style={{flex: 1}}
 								/>
 								<IconButton

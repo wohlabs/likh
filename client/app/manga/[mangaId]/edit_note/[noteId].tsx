@@ -119,7 +119,7 @@ export default function EditNoteScreen()
 
 		const formData = new FormData()
 		formData.append('mangaId', mangaId.toString())
-		formData.append('deletedImageIds', "[]")
+		formData.append('deletedImageIds', JSON.stringify(deletedImages))
 		formData.append('startChapter', startChapter ? startChapter : String(-1))
 		if (endChapter) formData.append('endChapter', endChapter)
 		if (text && text.trim().length > 0) formData.append('text', text)
@@ -158,16 +158,33 @@ export default function EditNoteScreen()
 				<View style={styles.imageViewerContainer}>
 					{
 						images.length > 0 ? 
-							<Image
-								defaultSource={{
-									uri: "https://png.pngtree.com/png-clipart/20190705/original/pngtree-vector-add-icon-png-image_4232053.jpg",
-								}}
-								source={{
-									uri: images[currentImageIndex].uri || "https://static.thenounproject.com/png/187803-200.png"
-								}}
-								resizeMode="contain"
-								style={styles.imageViewer}
-							/>
+							<View style={styles.imageViewer}>
+								<Image
+									defaultSource={{
+										uri: "https://png.pngtree.com/png-clipart/20190705/original/pngtree-vector-add-icon-png-image_4232053.jpg",
+									}}
+									source={{
+										uri: images[currentImageIndex].uri || "https://static.thenounproject.com/png/187803-200.png"
+									}}
+									resizeMode="contain"
+									style={{flex: 1}}
+								/>
+								<IconButton
+									icon={"trash-can-outline"}
+									size={20}
+									onPress={() => {
+										const newImages = images.filter((_, index) => index !== currentImageIndex);
+										setImages(newImages);
+										setCurrentImageIndex(Math.max(0, currentImageIndex - 1));
+										if (images[currentImageIndex].assetId) // assetId exists only for pre-existing images
+										{
+											setDeletedImages([...deletedImages, images[currentImageIndex].assetId]);
+										}
+									}}
+									style={{position: 'absolute', right: 0}}
+									mode="contained"
+								/>
+							</View>
 							:
 							<View style={styles.noImageContainer}>
 								<ThemeText style={styles.addImageText}>Add an image using the + icon</ThemeText>
