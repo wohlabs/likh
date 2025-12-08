@@ -184,11 +184,35 @@ router.delete(`/:id`, async (req: Request, res: Response) =>
 {
 	try
 	{
+		const itemId = req.params.id;
+
+		// 1️⃣ Find the item first
+		const item = await Note.findById(itemId);
+		if (!item) return res.status(404).json({ error: "Item not found" });
+
+		// 2️⃣ Delete files from GridFS
+		const bucket = getGFSBucket();
+		if (!bucket) return res.status(500).json({ error: "Something went wrong" });
+
+		if (item.images && item.images.length > 0)
+		{
+			for (const imgId of item.images)
+			{
+				try
+				{
+					await bucket.delete(new Types.ObjectId(imgId));
+				}
+				catch (err)
+				{
+					console.error(`Failed to delete image ${imgId}`, err);
+				}
+			}
+		}
 		await Note.findByIdAndDelete(req.params.id)
-		res.sendStatus(204)
+		return res.sendStatus(204)
 	} catch
 	{
-		res.sendStatus(404)
+		return res.sendStatus(404)
 	}
 })
 
