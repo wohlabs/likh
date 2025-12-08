@@ -2,6 +2,7 @@ import api from "@/services/AxiosInstance";
 import { IMangaNotes, INoteEntry } from "@/types/INotes";
 import { getUserIdFromToken } from "@/components/util";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ServiceResult } from "./IServiceResult";
 
 export const MANGA_NOTE_QUERY = `
 query ($userId: Int, $mediaId: Int) {
@@ -64,7 +65,7 @@ export const addMangaNote = async (mangaId: string, entry: INoteEntry) : Promise
 	catch (e) 
 	{
 		// saving error
-		console.log("save error", e)
+		console.error("save error", e)
 		return false
 	}
 	return true
@@ -83,7 +84,21 @@ export const deleteMangaNote = async (mangaId: string, entryId: string) : Promis
 	}
 	catch (e) 
 	{
-		console.log("delete note error", e)
+		console.error("delete note error", e)
 		return notes;
+	}
+};
+
+export const getNote = async (noteId: string) : Promise<ServiceResult<INoteEntry>> => 
+{
+	try 
+	{
+		const response = await api.get(`/notes/${noteId}`);
+		return { success: true, data: response.data };
+	}
+	catch (e) 
+	{
+		console.error("get note error", e)
+		return { success: false, error: "Could not fetch note" };
 	}
 };
