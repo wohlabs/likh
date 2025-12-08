@@ -120,16 +120,30 @@ export default function AddNoteScreen()
 				<View style={styles.imageViewerContainer}>
 					{
 						images.length > 0 ? 
-							<Image
-								defaultSource={{
-									uri: "https://png.pngtree.com/png-clipart/20190705/original/pngtree-vector-add-icon-png-image_4232053.jpg",
-								}}
-								source={{
-									uri: images[currentImageIndex].uri || "https://static.thenounproject.com/png/187803-200.png"
-								}}
-								resizeMode="contain"
-								style={styles.imageViewer}
-							/>
+							<View style={styles.imageViewer}>
+								<Image
+									defaultSource={{
+										uri: "https://png.pngtree.com/png-clipart/20190705/original/pngtree-vector-add-icon-png-image_4232053.jpg",
+									}}
+									source={{
+										uri: images[currentImageIndex].uri || "https://static.thenounproject.com/png/187803-200.png"
+									}}
+									resizeMode="contain"
+									// style={styles.imageViewer}
+									style={{flex: 1}}
+								/>
+								<IconButton
+									icon={"trash-can-outline"}
+									size={20}
+									onPress={() => {
+										const newImages = images.filter((_, index) => index !== currentImageIndex);
+										setImages(newImages);
+										setCurrentImageIndex(Math.max(0, currentImageIndex - 1));
+									}}
+									style={{position: 'absolute', right: 0}}
+									mode="contained"
+								/>
+							</View>
 							:
 							<View style={styles.noImageContainer}>
 								<ThemeText style={styles.addImageText}>Add an image using the + icon</ThemeText>
