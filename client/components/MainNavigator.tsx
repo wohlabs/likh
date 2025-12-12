@@ -70,7 +70,7 @@ export default function MainNavigator()
 				contentStyle: {backgroundColor: theme.colors.background},
 				headerStyle: {backgroundColor: theme.colors.surfaceVariant},
 				headerTintColor: useTheme().colors.onSurface,
-				headerTitle: () => <Pressable onPress={() => router.navigate("/")}><ThemeText variant="titleMedium">aninote</ThemeText></Pressable>,
+				headerTitle: () => <Pressable onPress={() => router.navigate("/")}><ThemeText variant="titleMedium">likh</ThemeText></Pressable>,
 				headerTitleAlign: "center",
 				headerLeft: () => <IconButton size={20} icon={colorScheme === 'dark' ? 'white-balance-sunny' : 'moon-waning-crescent'} style={[Platform.OS === 'ios' && {margin: 'auto'}]} iconColor={theme.colors.primary} />, // disable back button
 				headerRight: () =>

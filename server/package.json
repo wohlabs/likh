@@ -1,5 +1,5 @@
 {
-  "name": "aninote_server",
+  "name": "likh_server",
   "version": "1.0.0",
   "main": "server.ts",
   "scripts": {

@@ -1,16 +1,16 @@
 {
   "expo": {
-    "name": "AniNote",
-    "slug": "aninote",
+    "name": "likh",
+    "slug": "likh",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "aninote",
+    "scheme": "likh",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.jaikog01.aninote",
+      "bundleIdentifier": "com.jaikog01.likh",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
@@ -56,7 +56,7 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "feaf4a33-4f78-4e34-9534-a576e59d4f93"
+        "projectId": "aa5a3a23-79b3-49b6-92d2-9e2f999eab25"
       }
     },
     "owner": "jaikog01",
