@@ -9,7 +9,8 @@
     "web": "expo start --web",
     "lint": "expo lint app components context services types",
     "lint:fix": "expo lint app components context services types --fix",
-    "deploy-web": "npx expo export --platform web && eas deploy",
+    "deploy:dev": "npx expo export --platform web && eas deploy",
+    "deploy:prod": "npx expo export --platform web && eas deploy --prod",
     "test": "jest --watchAll"
   },
   "jest": {
