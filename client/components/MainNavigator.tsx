@@ -113,8 +113,7 @@ export default function MainNavigator()
 						: <ThemeButton icon={'login'} onPress={() => router.navigate("/users/login")}>Login</ThemeButton>
 			}}
 		>
-			<Stack.Screen name="index" />
-			<Stack.Screen name="manga/[mangaId]" />
+			<Stack.Screen name="(protected)" />
 		</Stack>
 	)
 }

@@ -4,6 +4,7 @@ import { useEffect, useState, useContext } from "react";
 import { KeyboardAvoidingView, Platform, useColorScheme , ActivityIndicator, View } from "react-native";
 import { MD3DarkTheme, MD3LightTheme, PaperProvider } from "react-native-paper";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { Redirect } from "expo-router";
 
 export default function RootLayout() 
 {

@@ -23,8 +23,9 @@ export default function UserLogin()
 			return;
 		}
 
-		login(result.data)
-		router.navigate('/');
+		await login(result.data)
+		console.log("Login successful, navigating to protected area");
+		router.navigate('/(protected)');
 	};
 	return (
 		<View style={styles.container}>

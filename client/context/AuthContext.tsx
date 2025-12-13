@@ -45,9 +45,11 @@ export const AuthProvider = ({ children }: any) =>
 
 	const login = async (userData: any) => 
 	{
+		console.log("AuthContext login called with:", userData);
 		try 
 		{
 			console.log(userData)
+			// console.log("Storing token:", userData.token);
 			await AsyncStorage.setItem('token', userData.token);
 			await AsyncStorage.setItem('username', userData.username);
 			await AsyncStorage.setItem('anilist_token', userData.anilist_token);
