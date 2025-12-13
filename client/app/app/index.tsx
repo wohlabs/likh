@@ -70,7 +70,7 @@ export default function Index()
 					style={{flex: 1}}
 					renderItem={({ item }) => (
 						item?.id ?
-							<Pressable style={{ flex:1 }} onPress={() => { router.navigate(`/manga/${item.id}`) }}>
+							<Pressable style={{ flex:1 }} onPress={() => { router.navigate(`/app/manga/${item.id}`) }}>
 								<Image
 									source={{ uri: item.coverImage?.large }}
 									resizeMode="contain"
@@ -117,7 +117,7 @@ export default function Index()
 						numColumns={1}
 						style={{flex: 1}}
 						renderItem={({ item }) => (
-							<Pressable style={styles.addMangaContainer} onPress={() => { setSearching(false); router.navigate(`/manga/${item.id}`) }}>
+							<Pressable style={styles.addMangaContainer} onPress={() => { setSearching(false); router.navigate(`/app/manga/${item.id}`) }}>
 								<Image
 									source={{ uri: item.coverImage?.large }}
 									resizeMode="contain"

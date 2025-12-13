@@ -147,7 +147,7 @@ export default function EditNoteScreen()
 			headers: {
 				authorization: `Bearer ${token}`
 			}
-		}).then(() =>router.navigate(`/manga/${mangaId}`))
+		}).then(() =>router.navigate(`/app/manga/${mangaId}`))
 
 	}
 
@@ -251,7 +251,7 @@ export default function EditNoteScreen()
 					<View style={styles.buttonsContainer}>
 						<ThemeButton
 							style={styles.button}
-							onPress={() => router.navigate(`/manga/${mangaId}`) }
+							onPress={() => router.navigate(`/app/manga/${mangaId}`) }
 							mode="contained-tonal"
 						>
 							Cancel

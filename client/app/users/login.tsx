@@ -25,7 +25,7 @@ export default function UserLogin()
 
 		await login(result.data)
 		console.log("Login successful, navigating to protected area");
-		router.navigate('/(protected)');
+		router.navigate('/app');
 	};
 	return (
 		<View style={styles.container}>

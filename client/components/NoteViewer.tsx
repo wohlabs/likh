@@ -90,7 +90,7 @@ export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}:
 					</ThemeButton>
 					<ThemeButton icon={"pencil"}
 						style={styles.viewerButton}
-						onPress={() => {router.navigate(`/manga/${mangaId}/edit_note/${note.id}`)}}
+						onPress={() => {router.navigate(`/app/manga/${mangaId}/edit_note/${note.id}`)}}
 					>
 						Edit
 					</ThemeButton>

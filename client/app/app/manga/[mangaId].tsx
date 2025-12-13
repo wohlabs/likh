@@ -146,7 +146,7 @@ export default function MangaDetails()
 							?
 							<View style={{flex:1, flexDirection: 'row', alignItems: 'center'}}>
 								<NotePreviewCard note={item} style={{ flex: 1, margin: 5}} onPress={()=> {setViewerNoteIndex(index); setIsViewingOverlay(true)}} />
-								<NoteButtons onEditPress={() => router.navigate(`/manga/${mangaId}/edit_note/${item.id}`)} onDeletePress={() => onDelete(item.id)} key={`NotePreviewCard_${item.id}`} />
+								<NoteButtons onEditPress={() => router.navigate(`/app/manga/${mangaId}/edit_note/${item.id}`)} onDeletePress={() => onDelete(item.id)} key={`NotePreviewCard_${item.id}`} />
 							</View>
 							:
 							<ReanimatedSwipeable
@@ -161,7 +161,7 @@ export default function MangaDetails()
 										swipeableMethods={swipeableMethods}
 										style= {{flexDirection: 'row', alignItems: 'center'}}
 									>
-										<NoteButtons onEditPress={() => router.navigate(`/manga/${mangaId}/edit_note/${item.id}`)} onDeletePress={() => onDelete(item.id)} />
+										<NoteButtons onEditPress={() => router.navigate(`/app/manga/${mangaId}/edit_note/${item.id}`)} onDeletePress={() => onDelete(item.id)} />
 									</TranslatableButtonContainer>
 								)}
 								key={`NotePreview_Swipeable_${item.id}`}
@@ -211,7 +211,7 @@ export default function MangaDetails()
 					<IconButton
 						icon={"plus"}
 						size={30}
-						onPress={() => router.navigate(`/manga/${mangaId}/add_note`)}
+						onPress={() => router.navigate(`/app/manga/${mangaId}/add_note`)}
 						style={styles.addButton}
 						mode="contained"
 					/>
