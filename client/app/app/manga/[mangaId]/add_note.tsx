@@ -12,7 +12,7 @@ import
 	View,
 	StyleSheet
 } from "react-native";
-import { IconButton, TextInput } from "react-native-paper";
+import { IconButton, TextInput, useTheme } from "react-native-paper";
 import ThemeButton from "@/components/ThemeButton";
 import ThemeText from "@/components/ThemeText";
 import { API_URL } from "@/services/AxiosInstance";
@@ -50,6 +50,7 @@ export default function AddNoteScreen()
 	const { mangaId } = useLocalSearchParams(); // <-- get from URL
 	const [mangaName, setMangaName] = useState<string>("Fetching...");
 	const token = useContext(AuthContext).token
+	const theme = useTheme()
 
 	const populateMangaData = useCallback(async () => 
 	{
@@ -145,7 +146,7 @@ export default function AddNoteScreen()
 							</View>
 							:
 							<View style={styles.noImageContainer}>
-								<ThemeText style={styles.addImageText}>Add an image using the + icon</ThemeText>
+								<ThemeText variant="headlineSmall" style={{color: theme.colors.onSurfaceDisabled}}>Add an image using the + icon</ThemeText>
 							</View>
 					}
 					<View style={styles.thumbnailsContainer}>
@@ -169,11 +170,21 @@ export default function AddNoteScreen()
 					</View>
 				</View>
 				<View style={{ flexDirection: "column", flex: 3}}>
-					<ThemeText style={styles.formText}>Manhwa/Manga: {mangaName}</ThemeText>
+					<TextInput
+						numberOfLines={1}
+						label={"Manhwa/Manga Name"}
+						editable
+						keyboardType="number-pad"
+						value={mangaName}
+						placeholder={"start"}
+						placeholderTextColor={"gray"}
+						mode="outlined"
+						readOnly
+					/>
 					<View style={{ flexDirection: "row", alignItems: "center"}}>
-						<ThemeText style={styles.formText}>Chapter: </ThemeText>
 						<TextInput
 							numberOfLines={1}
+							label={"start chapter"}
 							editable
 							keyboardType="number-pad"
 							value={startChapter}
@@ -181,10 +192,12 @@ export default function AddNoteScreen()
 							placeholder={"start"}
 							placeholderTextColor={"gray"}
 							style={styles.formInput}
+							mode="outlined"
 						/>
-						<ThemeText>-</ThemeText>
+						<ThemeText variant="labelLarge">&nbsp;-&nbsp;</ThemeText>
 						<TextInput
 							numberOfLines={1}
+							label={"end chapter (optional)"}
 							editable
 							keyboardType="number-pad"
 							value={endChapter}
@@ -192,18 +205,19 @@ export default function AddNoteScreen()
 							placeholder={"end (optional)"}
 							placeholderTextColor={"gray"}
 							style={styles.formInput}
+							mode="outlined"
 						/>
 					</View>
-					<ThemeText style={styles.formText}>Note:</ThemeText>
 					<TextInput
 						editable
 						multiline
 						numberOfLines={4}
+						label={"note"}
 						placeholder="your note here..."
-						placeholderTextColor={"gray"}
 						value={text}
 						onChangeText={onChangeText}
-						style={[styles.noteInput, styles.formText]}
+						mode="outlined"
+						style={[styles.noteInput]}
 					/>
 					<View style={styles.buttonsContainer}>
 						<ThemeButton
@@ -243,7 +257,6 @@ const styles = StyleSheet.create({
 		borderWidth: 2,
 	},
 	noImageContainer: {flex: 1, justifyContent: "center", alignItems: "center", borderColor: "black", borderWidth: 2, borderRadius: 10, borderStyle:"dashed"},
-	addImageText: {fontSize: 28, color: "lightgray"},
 	thumbnailsContainer: {height: 100, flexDirection: "row", alignItems: "center"},
 	thumbnail: {
 		height: "100%",
@@ -260,7 +273,6 @@ const styles = StyleSheet.create({
 		maxWidth: 200
 	},
 	noteInput: {
-		margin: 5,
 		flex: 1
 	},
 	buttonsContainer: { flexDirection: "row", justifyContent: "space-evenly" },

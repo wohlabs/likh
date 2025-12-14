@@ -13,7 +13,6 @@ import { deleteMangaNote } from "@/services/notes.service";
 import MangaOverviewHeader from "@/components/MangaOverviewHeader";
 import { getMangaTitle, IMangaDetails } from "@/types/IManga";
 import ThemeCarousel from "@/components/ThemeCarousel";
-import ThemeText from "@/components/ThemeText";
 
 function NoteButtons({ onEditPress, onDeletePress }: { onEditPress?: () => void, onDeletePress?: () => void })
 {

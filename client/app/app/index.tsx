@@ -76,7 +76,7 @@ export default function Index()
 									resizeMode="contain"
 									style={styles.mangaCoverImage}
 								/>
-								<ThemeText style={styles.mangaTitle}>{getMangaTitle(item)}</ThemeText>
+								<ThemeText variant="titleMedium" style={styles.mangaTitle}>{getMangaTitle(item)}</ThemeText>
 							</Pressable>
 							: <View style={{ flex: 1, margin: 5 }} />
 					)}
@@ -123,7 +123,7 @@ export default function Index()
 									resizeMode="contain"
 									style={{height: "100%", aspectRatio: 0.8}}
 								/>
-								<ThemeText style={styles.addMangaTitle}>{getMangaTitle(item)}</ThemeText>
+								<ThemeText variant="titleMedium" style={styles.addMangaTitle}>{getMangaTitle(item)}</ThemeText>
 								<IconButton
 									icon={"plus"}
 									mode="contained"
@@ -158,5 +158,5 @@ const styles = StyleSheet.create({
 	},
 	addMangaModalSearchBar: {margin: 10, borderRadius: 10},
 	addMangaContainer: { height: 150, width: "100%", flexDirection: "row", alignItems: "center", padding: 5 },
-	addMangaTitle: {textAlign: "left", fontSize: 20, flex: 1}
+	addMangaTitle: {flex: 1}
 });
