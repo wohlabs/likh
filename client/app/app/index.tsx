@@ -20,7 +20,7 @@ export default function Index()
 	const [newSearchString, setNewSearchString] = useState("")
 	const { width } = useWindowDimensions();
 	const anilist_token: string = useContext(AuthContext).anilistToken || ""
-	const listColNum = Math.min(Math.max(Math.ceil(width/200), 1), 5)
+	const listColNum = Math.max(Math.ceil(width/250), 1)
 
 	const populateMangaList = useCallback(async () => 
 	{
@@ -63,17 +63,17 @@ export default function Index()
 			/>
 			<View style={{flex: 1}}>
 				<FlatList
-					data={formatData(filteredMangaList, Math.min(5, listColNum))}
+					data={formatData(filteredMangaList, listColNum)}
 					keyExtractor={(item) => item.id}
 					key={`filteredMangaList_${Date.now()}`}
-					numColumns={Math.min(5, listColNum)}
+					numColumns={listColNum}
 					style={{flex: 1}}
 					renderItem={({ item }) => (
 						item?.id ?
-							<Pressable style={{ flex:1 }} onPress={() => { router.navigate(`/app/manga/${item.id}`) }}>
+							<Pressable style={{ flex:1, padding: 10 }} onPress={() => { router.navigate(`/app/manga/${item.id}`) }}>
 								<Image
 									source={{ uri: item.coverImage?.large }}
-									resizeMode="contain"
+									resizeMode="cover"
 									style={styles.mangaCoverImage}
 								/>
 								<ThemeText variant="titleMedium" style={styles.mangaTitle}>{getMangaTitle(item)}</ThemeText>
@@ -146,7 +146,7 @@ export default function Index()
 
 const styles = StyleSheet.create({
 	mangaTitle: {textAlign: 'center'},
-	mangaCoverImage: { width: '100%', aspectRatio: '0.8'},
+	mangaCoverImage: { width: '100%', aspectRatio: '0.8', overflow: 'hidden', borderRadius: 20 },
 	searchBarFloating: {
 		width: "100%", minWidth: 350, height: 60, position: "absolute", bottom: 25, flexDirection: "row", alignItems: "center", margin: 'auto', justifyContent: 'center'
 	},
