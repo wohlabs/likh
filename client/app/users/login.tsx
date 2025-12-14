@@ -36,13 +36,12 @@ export default function UserLogin()
 	return (
 		<View style={styles.container}>
 			<View style={styles.formContainer}>
-				<ThemeText style={{fontSize: 20}}>Login</ThemeText>
-				<TextInput label='username' placeholder="username" value={username} onChangeText={setUsername} style={styles.input} />
-				<TextInput label='password' placeholder="password" value={password} onChangeText={setPassword} secureTextEntry style={styles.input} />
+				<ThemeText variant="headlineSmall">Login</ThemeText>
+				<TextInput label='username' placeholder="username" value={username} onChangeText={setUsername} style={styles.input} mode="outlined" />
+				<TextInput label='password' placeholder="password" value={password} onChangeText={setPassword} secureTextEntry style={styles.input} mode="outlined" />
 				{error ? <ThemeText style={styles.error}>{error}</ThemeText> : null}
 				<ThemeButton onPress={userLogin} mode="contained" style={{width: '100%'}}>Login</ThemeButton>
 				<ThemeButton onPress={() => router.navigate('/users/register')}>Create new account</ThemeButton>
-				<ThemeButton onPress={() => Linking.openURL('https://anilist.co/api/v2/oauth/authorize?client_id=30897&response_type=token')}>Login with Anilist</ThemeButton>
 			</View>
 		</View>
 	);
@@ -51,6 +50,6 @@ export default function UserLogin()
 const styles = StyleSheet.create({
 	container: { flex: 1, justifyContent: 'center', padding: 20 },
 	formContainer: {maxWidth: 500, width: '90%', height: "80%", margin: 'auto', alignItems: 'center', justifyContent: 'center'},
-	input: { borderWidth: 1, marginBottom: 10, borderRadius: 5, width: '100%' },
+	input: { marginBottom: 10, borderRadius: 5, width: '100%' },
 	error: { color: 'red', marginBottom: 10 },
 });
