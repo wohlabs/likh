@@ -201,7 +201,7 @@ export const getMangaIdsWithNotes = async (accessToken: string) : Promise<string
 		.catch((error) => 
 		{
 			console.error(error);
-			return undefined
+			return []
 		});
 	return mangaIds;
 }
