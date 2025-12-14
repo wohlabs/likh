@@ -5,17 +5,18 @@ import { KeyboardAvoidingView, Platform, useColorScheme , ActivityIndicator, Vie
 import { MD3DarkTheme, MD3LightTheme, PaperProvider } from "react-native-paper";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Redirect } from "expo-router";
+import { modernDarkTheme, modernLightTheme } from "@/theme/modernTheme";
 
 export default function RootLayout() 
 {
 	const colorScheme = useColorScheme();
-	const [theme, setTheme] = useState(MD3LightTheme);
+	const [theme, setTheme] = useState(modernLightTheme);
 
 	useEffect(() => 
 	{
 		// necessary to avoid mixing themes on initial load
-		if (colorScheme === 'dark') setTheme(MD3DarkTheme);
-		else setTheme(MD3LightTheme);
+		if (colorScheme === 'dark') setTheme(modernDarkTheme);
+		else setTheme(modernLightTheme);
 	}, [colorScheme]);
 
 	return (

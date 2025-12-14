@@ -4,31 +4,75 @@ import { MD3DarkTheme, MD3LightTheme } from 'react-native-paper';
 const lightColors = {
   primary: '#6366F1', // Indigo
   primaryContainer: '#E0E7FF',
+  onPrimary: '#FFFFFF',
+  onPrimaryContainer: '#3730A3',
   secondary: '#EC4899', // Pink
   secondaryContainer: '#FCE7F3',
+  onSecondary: '#FFFFFF',
+  onSecondaryContainer: '#9D174D',
   tertiary: '#8B5CF6', // Violet
   tertiaryContainer: '#F3E8FF',
+  onTertiary: '#FFFFFF',
+  onTertiaryContainer: '#5B21B6',
   error: '#DC2626',
+  onError: '#FFFFFF',
+  errorContainer: '#FEE2E2',
+  onErrorContainer: '#991B1B',
   background: '#FAFAFA',
+  onBackground: '#1F2937',
   surface: '#FFFFFF',
+  onSurface: '#1F2937',
   surfaceVariant: '#F3F4F6',
+  onSurfaceVariant: '#6B7280',
   outline: '#D1D5DB',
   outlineVariant: '#E5E7EB',
+  elevation: {
+    level0: 'transparent',
+    level1: '#F3F4F6',
+    level2: '#E5E7EB',
+    level3: '#D1D5DB',
+    level4: '#CDCED4',
+    level5: '#C4C7D0',
+  },
+  inverseOnSurface: '#F3F4F6',
+  inverseSurface: '#1F2937',
 };
 
 const darkColors = {
   primary: '#A5B4FC', // Light indigo
   primaryContainer: '#312E81',
+  onPrimary: '#1F1B4D',
+  onPrimaryContainer: '#E0E7FF',
   secondary: '#F472B6', // Light pink
   secondaryContainer: '#831843',
+  onSecondary: '#FFFFFF',
+  onSecondaryContainer: '#FCE7F3',
   tertiary: '#D8B4FE', // Light violet
   tertiaryContainer: '#5B21B6',
+  onTertiary: '#FFFFFF',
+  onTertiaryContainer: '#F3E8FF',
   error: '#EF4444',
+  onError: '#7F1D1D',
+  errorContainer: '#7F1D1D',
+  onErrorContainer: '#FFEBEE',
   background: '#0F172A',
+  onBackground: '#E2E8F0',
   surface: '#1E293B',
+  onSurface: '#E2E8F0',
   surfaceVariant: '#334155',
+  onSurfaceVariant: '#CBD5E1',
   outline: '#64748B',
   outlineVariant: '#475569',
+  elevation: {
+    level0: 'transparent',
+    level1: '#1E293B',
+    level2: '#334155',
+    level3: '#475569',
+    level4: '#64748B',
+    level5: '#94A3B8',
+  },
+  inverseOnSurface: '#334155',
+  inverseSurface: '#E2E8F0',
 };
 
 export const modernLightTheme = {
