@@ -1,16 +1,20 @@
-import { View, ScrollView, StyleSheet, Pressable } from "react-native";
+import { View, ScrollView, StyleSheet, Pressable, useColorScheme } from "react-native";
 import { Stack, router } from "expo-router";
 import ThemeText from "@/components/ThemeText";
 import ThemeButton from "@/components/ThemeButton";
+import { useTheme } from "react-native-paper";
 
 export default function LandingPage() {
+	const theme = useTheme();
+	const colorScheme = useColorScheme();
+
 	return (
 		<>
 			<Stack.Screen options={{headerShown: false}} />
-			<ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+			<ScrollView style={[styles.container, {backgroundColor: theme.colors.background}]} showsVerticalScrollIndicator={false}>
 				{/* Header */}
 				<View style={styles.header}>
-					<ThemeText style={styles.logo}>likh</ThemeText>
+					<ThemeText style={[styles.logo, {color: theme.colors.primary}]}>likh</ThemeText>
 					<ThemeButton 
 						mode="text" 
 						onPress={() => router.push('/users/login')}
@@ -38,73 +42,73 @@ export default function LandingPage() {
 				</View>
 
 				{/* Value Propositions */}
-				<View style={styles.valueSection}>
-					<View style={styles.valueItem}>
+				<View style={[styles.valueSection, {borderTopColor: theme.colors.surfaceVariant}]}>
+					<View style={[styles.valueItem, {borderLeftColor: theme.colors.primary, borderLeftWidth: 3, paddingLeft: 16}]}>
 						<ThemeText style={styles.valueNumber}>✍️</ThemeText>
-						<ThemeText style={styles.valueTitle}>effortless note taking</ThemeText>
-						<ThemeText style={styles.valueText}>
-							capture thoughts and reactions instantly while reading
+						<ThemeText style={[styles.valueTitle, {color: theme.colors.onBackground}]}>Effortless Note Taking</ThemeText>
+						<ThemeText style={[styles.valueText, {color: theme.colors.onSurface}]}>
+							Capture your thoughts and reactions instantly while reading
 						</ThemeText>
 					</View>
 
-					<View style={styles.divider} />
+					<View style={[styles.divider, {backgroundColor: theme.colors.surfaceVariant}]} />
 
-					<View style={styles.valueItem}>
+					<View style={[styles.valueItem, {borderLeftColor: theme.colors.secondary, borderLeftWidth: 3, paddingLeft: 16}]}>
 						<ThemeText style={styles.valueNumber}>📸</ThemeText>
-						<ThemeText style={styles.valueTitle}>attach images</ThemeText>
-						<ThemeText style={styles.valueText}>
-							save memorable panels and artwork you want to remember
+						<ThemeText style={[styles.valueTitle, {color: theme.colors.onBackground}]}>Attach Images</ThemeText>
+						<ThemeText style={[styles.valueText, {color: theme.colors.onSurface}]}>
+							Save memorable panels and artwork you want to remember forever
 						</ThemeText>
 					</View>
 
-					<View style={styles.divider} />
+					<View style={[styles.divider, {backgroundColor: theme.colors.surfaceVariant}]} />
 
-					<View style={styles.valueItem}>
+					<View style={[styles.valueItem, {borderLeftColor: theme.colors.tertiary, borderLeftWidth: 3, paddingLeft: 16}]}>
 						<ThemeText style={styles.valueNumber}>📚</ThemeText>
-						<ThemeText style={styles.valueTitle}>organize everything</ThemeText>
-						<ThemeText style={styles.valueText}>
-							track chapter ranges and access all your notes in one place
+						<ThemeText style={[styles.valueTitle, {color: theme.colors.onBackground}]}>Organize Everything</ThemeText>
+						<ThemeText style={[styles.valueText, {color: theme.colors.onSurface}]}>
+							Track chapter ranges and access all your notes in one beautiful place
 						</ThemeText>
 					</View>
 				</View>
 
 				{/* Features Grid */}
 				<View style={styles.featuresSection}>
-					<ThemeText style={styles.sectionTitle}>
-						everything you need
+					<ThemeText style={[styles.sectionTitle, {color: theme.colors.onBackground}]}>
+						Everything you need
 					</ThemeText>
 
 					<View style={styles.featureGrid}>
-						<View style={styles.featureBox}>
+						<View style={[styles.featureBox, {backgroundColor: theme.colors.surface, borderColor: theme.colors.surfaceVariant}]}>
 							<ThemeText style={styles.featureEmoji}>🔖</ThemeText>
-							<ThemeText style={styles.featureName}>chapter tracking</ThemeText>
-							<ThemeText style={styles.featureDesc}>mark your reading progress</ThemeText>
+							<ThemeText style={[styles.featureName, {color: theme.colors.onBackground}]}>Chapter Tracking</ThemeText>
+							<ThemeText style={[styles.featureDesc, {color: theme.colors.onSurface}]}>Mark your reading progress</ThemeText>
 						</View>
 
-						<View style={styles.featureBox}>
+						<View style={[styles.featureBox, {backgroundColor: theme.colors.surface, borderColor: theme.colors.surfaceVariant}]}>
 							<ThemeText style={styles.featureEmoji}>🎨</ThemeText>
-							<ThemeText style={styles.featureName}>beautiful interface</ThemeText>
-							<ThemeText style={styles.featureDesc}>designed for reading lovers</ThemeText>
+							<ThemeText style={[styles.featureName, {color: theme.colors.onBackground}]}>Beautiful Interface</ThemeText>
+							<ThemeText style={[styles.featureDesc, {color: theme.colors.onSurface}]}>Designed for reading lovers</ThemeText>
 						</View>
 
-						<View style={styles.featureBox}>
+						<View style={[styles.featureBox, {backgroundColor: theme.colors.surface, borderColor: theme.colors.surfaceVariant}]}>
 							<ThemeText style={styles.featureEmoji}>⚡</ThemeText>
-							<ThemeText style={styles.featureName}>lightning fast</ThemeText>
-							<ThemeText style={styles.featureDesc}>no delays, just notes</ThemeText>
+							<ThemeText style={[styles.featureName, {color: theme.colors.onBackground}]}>Lightning Fast</ThemeText>
+							<ThemeText style={[styles.featureDesc, {color: theme.colors.onSurface}]}>No delays, just notes</ThemeText>
 						</View>
 
-						<View style={styles.featureBox}>
+						<View style={[styles.featureBox, {backgroundColor: theme.colors.surface, borderColor: theme.colors.surfaceVariant}]}>
 							<ThemeText style={styles.featureEmoji}>🌙</ThemeText>
-							<ThemeText style={styles.featureName}>dark mode</ThemeText>
-							<ThemeText style={styles.featureDesc}>easy on your eyes</ThemeText>
+							<ThemeText style={[styles.featureName, {color: theme.colors.onBackground}]}>Dark Mode</ThemeText>
+							<ThemeText style={[styles.featureDesc, {color: theme.colors.onSurface}]}>Easy on your eyes</ThemeText>
 						</View>
 					</View>
 				</View>
 
 				{/* CTA Section */}
 				<View style={styles.bottomCTA}>
-					<ThemeText style={styles.bottomTitle}>
-						ready to take control of your reading?
+					<ThemeText style={[styles.bottomTitle, {color: theme.colors.onBackground}]}>
+						Ready to start tracking?
 					</ThemeText>
 					<ThemeButton 
 						mode="contained" 
@@ -113,15 +117,15 @@ export default function LandingPage() {
 					>
 						start taking notes
 					</ThemeButton>
-					<ThemeText style={styles.bottomText}>
-						no credit card required
+					<ThemeText style={[styles.bottomText, {color: theme.colors.onSurface}]}>
+						No credit card required
 					</ThemeText>
 				</View>
 
 				{/* Footer */}
-				<View style={styles.footer}>
-					<ThemeText style={styles.footerText}>
-						© 2025 likh. built with love for manga readers.
+				<View style={[styles.footer, {borderTopColor: theme.colors.surfaceVariant}]}>
+					<ThemeText style={[styles.footerText, {color: theme.colors.onSurface}]}>
+						© 2025 likh. crafted for manga readers.
 					</ThemeText>
 				</View>
 			</ScrollView>
@@ -165,7 +169,6 @@ const styles = StyleSheet.create({
 		fontSize: 17,
 		lineHeight: 26,
 		marginBottom: 40,
-		opacity: 0.7,
 		maxWidth: "95%",
 	},
 	ctaButton: {
@@ -174,6 +177,7 @@ const styles = StyleSheet.create({
 	valueSection: {
 		paddingHorizontal: 20,
 		paddingVertical: 50,
+		borderTopWidth: 1,
 	},
 	valueItem: {
 		marginBottom: 40,
@@ -190,11 +194,9 @@ const styles = StyleSheet.create({
 	valueText: {
 		fontSize: 15,
 		lineHeight: 22,
-		opacity: 0.7,
 	},
 	divider: {
 		height: 1,
-		backgroundColor: "#f0f0f0",
 		marginBottom: 40,
 	},
 	featuresSection: {
@@ -214,7 +216,6 @@ const styles = StyleSheet.create({
 		paddingVertical: 20,
 		borderRadius: 12,
 		borderWidth: 1,
-		borderColor: "#f0f0f0",
 	},
 	featureEmoji: {
 		fontSize: 28,
@@ -227,7 +228,6 @@ const styles = StyleSheet.create({
 	},
 	featureDesc: {
 		fontSize: 13,
-		opacity: 0.6,
 		lineHeight: 18,
 	},
 	bottomCTA: {
@@ -248,7 +248,6 @@ const styles = StyleSheet.create({
 	},
 	bottomText: {
 		fontSize: 13,
-		opacity: 0.6,
 		fontWeight: "500",
 	},
 	footer: {
@@ -256,12 +255,10 @@ const styles = StyleSheet.create({
 		paddingVertical: 30,
 		alignItems: "center",
 		borderTopWidth: 1,
-		borderTopColor: "#f0f0f0",
 		marginBottom: 20,
 	},
 	footerText: {
 		fontSize: 12,
-		opacity: 0.5,
 		fontWeight: "500",
 	},
 });
