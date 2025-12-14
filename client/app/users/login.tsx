@@ -12,7 +12,7 @@ export default function UserLogin()
 	const [username, setUsername] = useState<string>('');
 	const [password, setPassword] = useState<string>('');
 	const [error, setError] = useState('');
-	const {login} = useContext(AuthContext);
+	const {login, token} = useContext(AuthContext);
 
 	const userLogin = async () => 
 	{
@@ -27,6 +27,12 @@ export default function UserLogin()
 		console.log("Login successful, navigating to protected area");
 		router.navigate('/app');
 	};
+
+	if (token)
+	{
+		console.log("Already logged in, navigating to protected area");
+		router.navigate('/app');
+	}
 	return (
 		<View style={styles.container}>
 			<View style={styles.formContainer}>

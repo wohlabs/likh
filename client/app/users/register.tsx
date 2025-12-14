@@ -2,16 +2,18 @@ import api from "@/services/AxiosInstance";
 import ThemeButton from "@/components/ThemeButton";
 import ThemeText from "@/components/ThemeText";
 import { router } from "expo-router";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { TextInput } from "react-native-paper";
 import { registerUser } from "@/services/users.service";
+import { AuthContext } from "@/context/AuthContext";
 
 export default function UserRegister()
 {
 	const [username, setUsername] = useState<string>('');
 	const [password, setPassword] = useState<string>('');
 	const [error, setError] = useState('');
+	const {token} = useContext(AuthContext);
 
 	const register = async () => 
 	{
@@ -24,6 +26,11 @@ export default function UserRegister()
 		}
 	};
 
+	if (token)
+	{
+		console.log("Already logged in, navigating to protected area");
+		router.navigate('/app');
+	}
 	return (
 		<View style={styles.container}>
 			<View style={styles.formContainer}>
