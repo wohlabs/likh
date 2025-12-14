@@ -39,15 +39,15 @@ export default function NotePreviewCard({ note, style, onPress }: { note: INoteE
 					style={[styles.imagePreview, { opacity: previews.length > 0 ? 1 : 0 }]}
 					resizeMode="cover"
 				/>
-				<ThemeText style={styles.middleInfo}>{new Date(note.modifiedAt).toDateString() || "date @ time"}</ThemeText>
-				<ThemeText style={styles.middleInfo}>
+				<ThemeText variant="bodyMedium" style={styles.middleInfo}>{new Date(note.modifiedAt).toDateString() || "date @ time"}</ThemeText>
+				<ThemeText variant="bodyMedium" style={styles.middleInfo}>
 					{
 						note.startChapter === -1
 							? `All`
 							: `Chapter ${note.startChapter}${note.endChapter ? " - " + note.endChapter : ""}`
 					}
 				</ThemeText>
-				<ThemeText style={styles.noteSnippet} ellipsizeMode="tail" numberOfLines={1}>{note.text || "No notes"}</ThemeText>
+				<ThemeText variant="bodyMedium" style={styles.noteSnippet} ellipsizeMode="tail" numberOfLines={1}>{note.text || "No notes"}</ThemeText>
 			</Card.Content>
 		</Card>
 	);

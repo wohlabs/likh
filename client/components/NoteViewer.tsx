@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { FlatList, Image, Pressable, ScrollView, StyleProp, View, ViewStyle, StyleSheet } from "react-native";
-import { IconButton, Menu } from 'react-native-paper';
+import { IconButton, Menu, useTheme } from 'react-native-paper';
 import { INoteEntry } from "../types/INotes";
 import { getImageBase64 as getImageBase64 } from "./util";
 import ThemeButton from "./ThemeButton";
@@ -12,6 +12,7 @@ export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}:
 	const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
 	const [optionsVisible, setOptionsVisible] = useState<boolean>(false);
 	const [images, setImages] = useState<string[]>(note.images);
+	const theme = useTheme();
 
 
 	const fetchImages = useCallback(async () => 
@@ -51,7 +52,7 @@ export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}:
 						/>
 						:
 						<View style={styles.noImagesContainer}>
-							<ThemeText style={styles.noImagesText}>No images</ThemeText>
+							<ThemeText variant="headlineSmall" style={{color: theme.colors.onSurfaceDisabled}}>No images</ThemeText>
 						</View>
 				}
 				<View style={{height: 100, flexDirection: "row"}}>
@@ -74,15 +75,15 @@ export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}:
 				</View>
 			</View>
 			<View style={{ flexDirection: "column", flex: 3}}>
-				<ThemeText style={styles.info}>Manhwa/Manga: {mangaTitle || "Unknown"}</ThemeText>
+				<ThemeText variant="bodyLarge">Manhwa/Manga: {mangaTitle || "Unknown"}</ThemeText>
 				<View style={{ flexDirection: "row"}}>
-					<ThemeText style={styles.info}>Chapter: {note.startChapter?.toString() || ""} - {note.endChapter?.toString() || ""}</ThemeText>
+					<ThemeText variant="bodyLarge">Chapter: {note.startChapter?.toString() || ""} - {note.endChapter?.toString() || ""}</ThemeText>
 				</View>
-				<ThemeText style={[ styles.info, {fontWeight: "bold"}]}>Note:</ThemeText>
+				<ThemeText variant="bodyLarge" style={[{fontWeight: "bold"}]}>Note:</ThemeText>
 				<ScrollView>
-					<ThemeText selectable={true} style={styles.info}>{note.text}</ThemeText>
+					<ThemeText variant="bodyLarge" selectable={true}>{note.text}</ThemeText>
 				</ScrollView>
-				<View style={styles. viewerButtonsContainer}>
+				<View style={styles.viewerButtonsContainer}>
 					<ThemeButton icon={'share'} style={styles.viewerButton}
 						onPress={() => {}}
 					>
@@ -125,9 +126,6 @@ const styles = StyleSheet.create({
 	imagesViewer: {
 		flex: 2, margin: 10, flexDirection: "column" 
 	},
-	noImagesText: {
-		fontSize: 28, color: "lightgray"
-	},
 	noImagesContainer: {
 		flex: 1, justifyContent: "center", alignItems: "center", borderWidth: 2, borderRadius: 10, borderStyle:"dashed"
 	},
@@ -146,12 +144,9 @@ const styles = StyleSheet.create({
 		marginRight: 5
 	},
 	viewerButton: {
-		flexDirection: "row", justifyContent: "center", alignItems: "center", height: 40, flex: 1  
+		flexDirection: "row", justifyContent: "center", alignItems: "center", flex: 1  
 	},
 	viewerButtonsContainer: {
 		flexDirection: "row", alignItems: "center"
-	},
-	info: {
-		fontSize: 20
 	}
 });

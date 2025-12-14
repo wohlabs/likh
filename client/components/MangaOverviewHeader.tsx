@@ -15,9 +15,9 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 				/>
 				<View style={{ flex: 1 }}>
 					<View style={styles.titleDetailsContainer}>
-						<ThemeText style={styles.title}>{getMangaTitle(manga)}</ThemeText>
+						<ThemeText style={styles.title} variant="titleLarge">{getMangaTitle(manga)}</ThemeText>
 					</View>
-					<ThemeText lineBreakMode="tail" numberOfLines={6} ellipsizeMode="tail">{manga?.description}</ThemeText>
+					<ThemeText lineBreakMode="tail" numberOfLines={6} ellipsizeMode="tail" variant="bodySmall">{manga?.description}</ThemeText>
 				</View>
 			</View>
 		</View>
@@ -28,5 +28,5 @@ const styles = StyleSheet.create({
 	mangaOverviewContainer: {height: '100%', maxWidth: 700, width: '100%', flexDirection: 'row'},
 	mangaCoverImage: {aspectRatio: 3/4, marginHorizontal: 5},
 	titleDetailsContainer: { height: '30%', flexDirection: 'row', alignItems: 'flex-end'},
-	title: {fontSize: 24, fontWeight: 'bold', alignItems: 'flex-end', textAlignVertical: 'bottom'},
+	title: {fontWeight: 'bold', alignItems: 'flex-end', textAlignVertical: 'bottom'},
 });
