@@ -42,6 +42,7 @@ export async function anilistRequest(
 
 	const data = await res.json();
 
+	await ApiCache.deleteMany({ key });
 	// Save to cache
 	await ApiCache.create({
 		key,
