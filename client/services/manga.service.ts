@@ -186,7 +186,7 @@ export const getMangaIdsWithNotes = async (accessToken: string) : Promise<string
 	}
 }
 
-export const searchMangaByString = async (searchString: string, page: number = 1, perPage: number = 10): Promise<ServiceResult<MangaProps[]>> =>
+export const searchMangaByString = async (searchString: string, page: number = 1, perPage: number = 25): Promise<ServiceResult<MangaProps[]>> =>
 {
 	try
 	{
