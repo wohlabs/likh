@@ -23,7 +23,6 @@ export const getAnilistNote = async (mangaId: string, access_token: string) : Pr
 		const result = await api.post('/anilist', { query: MANGA_NOTE_QUERY, variables: {userId : getUserIdFromToken(access_token), mediaId: mangaId} });
 		const item = result.data.data.MediaList
 		if (!item || !item.notes) return null
-		console.log("Anilist note fetched:", item)
 		return {
 			id: item.id,
 			createdAt: new Date(item.createdAt * 1000).toString(),
