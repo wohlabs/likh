@@ -21,6 +21,7 @@ import { AuthContext } from "@/context/AuthContext";
 import { fetch } from 'expo/fetch';
 import { getMangaDetails } from "@/services/manga.service";
 import { getMangaTitle } from "@/types/IManga";
+import { DropEvent, useDropzone } from "react-dropzone";
 
 const KeyboardDismissWrapper = ({ children }: any) => 
 {
@@ -51,6 +52,35 @@ export default function AddNoteScreen()
 	const [mangaName, setMangaName] = useState<string>("Fetching...");
 	const token = useContext(AuthContext).token
 	const theme = useTheme()
+	let dropZoneRootProps: any = null;
+	let dropZoneInputProps: any = null;
+
+	// 🌐 Web drag-drop
+	if (Platform.OS === "web") {
+		const { getRootProps, getInputProps } = useDropzone({
+			accept: { "image/*": [] },
+			multiple: true,
+			noClick: true,
+			useFsAccessApi: true,
+			noKeyboard: true,
+			onDropAccepted: (acceptedFiles: any, event: DropEvent) => {
+				if (acceptedFiles[0])
+				{
+					const imageArray: ImagePicker.ImagePickerAsset[] = acceptedFiles.map((file: any) => ({
+						uri: URL.createObjectURL(file),
+						type: file.type,
+						fileName: file.name,
+						fileSize: file.size,
+					}));
+					const newImages = [...images, ...imageArray];
+					setImages(newImages);
+					setCurrentImageIndex(newImages.length - 1); // set to last image
+				}
+			}
+		});
+		dropZoneInputProps = getInputProps;
+		dropZoneRootProps = getRootProps;
+	}
 
 	const populateMangaData = useCallback(async () => 
 	{
@@ -120,9 +150,10 @@ export default function AddNoteScreen()
 			<View style={styles.mainLayout}>
 				<Stack.Screen options={{ title: "Add note" }} />
 				<View style={styles.imageViewerContainer}>
-					{
-						images.length > 0 ? 
-							<View style={styles.imageViewer}>
+					<View style={images.length > 0 ? styles.imageViewer : styles.noImageContainer}>
+						{
+							images.length > 0 ? 
+							<>
 								<Image
 									defaultSource={{
 										uri: "https://png.pngtree.com/png-clipart/20190705/original/pngtree-vector-add-icon-png-image_4232053.jpg",
@@ -141,15 +172,17 @@ export default function AddNoteScreen()
 										setImages(newImages);
 										setCurrentImageIndex(Math.max(0, currentImageIndex - 1));
 									}}
-									style={{position: 'absolute', right: 0}}
+									style={{position: 'absolute', right: 0, zIndex: 10}}
 									mode="contained"
 								/>
-							</View>
+							</>
 							:
-							<View style={styles.noImageContainer}>
-								<ThemeText variant="headlineSmall" style={{color: theme.colors.onSurfaceDisabled}}>Add an image using the + icon</ThemeText>
-							</View>
-					}
+							<ThemeText variant="headlineSmall" style={{color: theme.colors.onSurfaceDisabled}}>Add an image using the + icon</ThemeText>
+						}
+						{
+							Platform.OS === 'web' && <div {...dropZoneRootProps()} style={{position: "absolute", width: "100%", height: "100%" }}/>
+						}
+					</View>
 					<View style={styles.thumbnailsContainer}>
 						<FlatList
 							data={images}
