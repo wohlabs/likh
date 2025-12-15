@@ -138,44 +138,26 @@ export const addMangaToLibrary = async (mangaId: string) : Promise<boolean> =>
 
 export const getMangaDetails = async (mangaId: string) : Promise<IMangaDetails | undefined> =>
 {
-	const data = await fetch("https://graphql.anilist.co", {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			'Accept': 'application/json',
-		},
-		body: JSON.stringify({ query: MANGA_QUERY, variables: {id : mangaId} })
-	})
-		.then((response) => response.json())
-		.then((response) => response.data)
-		.then((data) => 
-		{
-			return data
+	try 
+	{
+		const respone = await api.post("/anilist", {
+			query: MANGA_QUERY,
+			variables: {id : mangaId} 
 		})
-		.then((media) => 
-		{
-			return media.Media as IMangaDetails;
-		})
-		.catch((error) => 
-		{
-			console.error(error);
-			return undefined
-		});
-	return data;
+		const data = respone.data.data.Media as IMangaDetails;
+		return data;
+	}
+	catch (err: any)
+	{
+		return undefined;
+	}
 }
 
 export const getMangaIdsWithNotes = async (accessToken: string) : Promise<string[]> =>
 {
 	if (accessToken === null || accessToken.length === 0) return []
 	const userId = getUserIdFromToken(accessToken);
-	const mangaIds = await fetch("https://graphql.anilist.co", {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			'Accept': 'application/json',
-		},
-		body: JSON.stringify({ query: `
-		query ($userId: Int){
+	const query = `query ($userId: Int){
 			MediaListCollection(userId: $userId, type: MANGA) {
 				lists {
 					entries {
@@ -185,60 +167,38 @@ export const getMangaIdsWithNotes = async (accessToken: string) : Promise<string
 					}
 				}
 			}
-		}`, variables: {userId : userId}})
-	})
-		.then((response) => response.json())
-		.then((response) => response.data)
-		.then((data) => 
-		{
-			const  result = data.MediaListCollection.lists.flatMap((list: any) =>
-				list.entries
-					.filter((entry: any) => entry.notes && entry.notes.length > 0)
-					.map((entry: any) => entry.mediaId.toString())
-			);
-			return result
-		})
-		.catch((error) => 
-		{
-			console.error(error);
-			return []
-		});
-	return mangaIds;
+		}`;
+	const variables = {userId : userId};
+	try
+	{
+
+		const result = await api.post('/anilist', { query, variables });
+		const mangaIds = result.data.data.MediaListCollection.lists.flatMap((list: any) =>
+			list.entries
+				.filter((entry: any) => entry.notes && entry.notes.length > 0)
+				.map((entry: any) => entry.mediaId.toString())
+		);
+		return mangaIds;
+	}
+	catch (err: any)
+	{
+		return [];
+	}
 }
 
 export const searchMangaByString = async (searchString: string, page: number = 1, perPage: number = 10): Promise<ServiceResult<MangaProps[]>> =>
 {
-	let query = {
-		query: searchString.length > 0 ? MANGA_SEARCH_QUERY : MANGA_SEARCH_TREND_QUERY,
-		variables: {search: searchString, page, perPage}
+	try
+	{
+		const result = await api.post('/anilist', {
+			query: searchString.length > 0 ? MANGA_SEARCH_QUERY : MANGA_SEARCH_TREND_QUERY,
+			variables: {search: searchString, page, perPage} });
+		return {success: true as const, data: result.data.data.Page.media};
 	}
-
-	const data = await (fetch("https://graphql.anilist.co", {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			'Accept': 'application/json',
-		},
-		body: JSON.stringify(query)
-	})
-		.then((response) => response.json())
-		.then((response) => response.data)
-		.then((data) => 
-		{
-			if (data && data.Page && data.Page.media)
-			{
-				return {success: true as const, data: data.Page.media};
-			}
-			else
-			{
-				throw new Error("Could not search manga");
-			}
-		})
-		.catch((error) => 
-		{
-			return {success: false as const, error: error.response?.data?.error || "Could not search manga"};
-		}));
-	return data;
+	catch (err: any)
+	{
+		return {success: false as const, error: err.response?.data?.error || "Could not search manga"};
+	}
 }
 
 export const getMyListMangaIds = async (accessToken: string) : Promise<ServiceResult<string[]>> =>
@@ -251,11 +211,11 @@ export const getMyListMangaIds = async (accessToken: string) : Promise<ServiceRe
 			data: response.data
 		}
 	}
-	catch (err: any)
+	catch (error: any)
 	{
 		return {
 			success: false,
-			error: err.response?.data?.error || "Could not fetch mangaIds"
+			error: error.response?.data?.error || "Could not fetch mangaIds"
 		};
 	}
 }
@@ -269,33 +229,16 @@ export const getLibraryMangaThumbnails = async (mangaIds: string[]) : Promise<Se
 		variables: {ids: mangaIds}
 	}
 
-	const result = await (fetch("https://graphql.anilist.co", {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			'Accept': 'application/json',
-		},
-		body: JSON.stringify(query)
-	})
-		.then((response) => response.json())
-		.then((response) => response.data)
-		.then((data) =>
-		{
-			if (data && data.Page && data.Page.media)
-			{
-				return {success: true as const, data: data.Page.media};
-			}
-			else
-			{
-				throw new Error("Could not fetch mangaIds");
-			}
-		})
-		.catch((error) => 
-		{
-			return {
-				success: false as const,
-				error: error.response?.data?.error || "Could not fetch mangaIds"
-			};
-		}));
-	return result;
+	try
+	{
+		const result = await api.post('/anilist', query);
+		return {success: true as const, data: result.data.data.Page.media};
+	}
+	catch (error: any)
+	{
+		return {
+			success: false as const,
+			error: error.response?.data?.error || "Could not fetch mangaIds"
+		};
+	}
 }

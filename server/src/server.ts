@@ -8,6 +8,7 @@ import { getErrorMessage } from './Utility'
 import AuthenticateMiddleware, { JwtPayload } from './middleware/Authentication'
 import UserRoutes from './routes/users'
 import NoteRoutes from './routes/notes'
+import AnilistRoutes from './routes/anilist'
 
 dotenv.config()
 
@@ -25,6 +26,7 @@ app.use(cors())
 // Mount routes
 app.use('/users', UserRoutes);
 app.use('/notes', NoteRoutes);
+app.use('/anilist', AnilistRoutes);
 
 // test route
 app.get(`/`, (req: Request, res: Response) => { res.json('hello world') })

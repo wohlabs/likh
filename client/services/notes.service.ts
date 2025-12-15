@@ -18,39 +18,27 @@ query ($userId: Int, $mediaId: Int) {
 
 export const getAnilistNote = async (mangaId: string, access_token: string) : Promise<INoteEntry | null> =>
 {
-	const anilistNote = await fetch("https://graphql.anilist.co", {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			'Accept': 'application/json',
-		},
-		body: JSON.stringify({ query: MANGA_NOTE_QUERY, variables: {userId : getUserIdFromToken(access_token), mediaId: mangaId} })
-	})
-		.then((response) => response.json())
-		.then((response) => response.data)
-		.then((data) => 
-		{
-			return data.MediaList
-		})
-		.then((item) => 
-		{
-			if (!item || !item.notes) return null
-			return {
-				id: item.id,
-				createdAt: new Date(item.createdAt * 1000).toString(),
-				modifiedAt: new Date(item.updatedAt * 1000).toString(),
-				startChapter: -1,
-				endChapter: undefined,
-				images: [],
-				text: item.notes,
-				fromAnilist: true
-			} as INoteEntry;
-		})
-		.catch((error) => 
-		{
-			return null
-		});
-	return anilistNote
+	try
+	{
+		const result = await api.post('/anilist', { query: MANGA_NOTE_QUERY, variables: {userId : getUserIdFromToken(access_token), mediaId: mangaId} });
+		const item = result.data.data.MediaList
+		if (!item || !item.notes) return null
+		console.log("Anilist note fetched:", item)
+		return {
+			id: item.id,
+			createdAt: new Date(item.createdAt * 1000).toString(),
+			modifiedAt: new Date(item.updatedAt * 1000).toString(),
+			startChapter: -1,
+			endChapter: undefined,
+			images: [],
+			text: item.notes,
+			fromAnilist: true
+		} as INoteEntry;
+	}
+	catch (err: any)
+	{
+		return null
+	}
 }
 
 export const addMangaNote = async (mangaId: string, entry: INoteEntry) : Promise<boolean> => 
