@@ -96,14 +96,6 @@ export default function MangaDetails()
 		fetchData();
 	}, [fetchData]);
 
-	useFocusEffect(
-		useCallback(() => 
-		{
-			fetchData()
-			return () => {};
-		}, [fetchData])
-	)
-
 	const onDelete = async (noteId: string) => 
 	{
 		try
