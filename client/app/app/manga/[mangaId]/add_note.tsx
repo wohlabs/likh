@@ -70,11 +70,12 @@ export default function AddNoteScreen()
 			mediaTypes: ["images"],
 			allowsEditing: false,
 			quality: 1,
+			allowsMultipleSelection: true
 		});
 
 		if (!result.canceled) 
 		{
-			let newImages = [...images, result.assets[0]]
+			let newImages = [...images, ...result.assets]
 			setImages(newImages);
 			setCurrentImageIndex(newImages.length - 1); // set to last image
 		}
