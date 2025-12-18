@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
 		flex: 1, marginHorizontal: 30,
 		boxShadow: "0px 4px 5px rgba(0,0,0,0.3)"
 	},
-	floatingContainer: {width: "100%", minWidth: 350, height: 60, position: "absolute", bottom: 25, flexDirection: "row", alignItems: "center", margin: 'auto', justifyContent: 'center'},
+	floatingContainer: {width: "100%", minWidth: 350, height: 60, position: "absolute", bottom: 25, flexDirection: "row", alignItems: "center", margin: 'auto', justifyContent: 'center', pointerEvents: 'none'},
 	searchBarContainer: {width: '90%', flexDirection: 'row', maxWidth: 600, alignItems: 'center'},
 	searchBar: {margin: 10, borderRadius: 10, flex: 1, boxShadow: "0px 4px 5px rgba(0,0,0,0.3)" },
 	addButton: {boxShadow: "0px 4px 5px rgba(0,0,0,0.3)" }
