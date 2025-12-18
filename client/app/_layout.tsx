@@ -1,36 +1,30 @@
 import MainNavigator from "@/components/MainNavigator";
 import { AuthProvider, AuthContext } from "@/context/AuthContext";
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, use } from "react";
 import { KeyboardAvoidingView, Platform, useColorScheme , ActivityIndicator, View } from "react-native";
 import { MD3DarkTheme, MD3LightTheme, PaperProvider } from "react-native-paper";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Redirect } from "expo-router";
-import { modernDarkTheme, modernLightTheme } from "@/theme/modernTheme";
+import { usePersistentTheme } from "@/context/usePersistentTheme";
 
 export default function RootLayout() 
 {
 	const colorScheme = useColorScheme();
-	const [theme, setTheme] = useState(modernLightTheme);
+	const { theme, isDark, toggleTheme } = usePersistentTheme();
 
-	useEffect(() => 
-	{
-		// necessary to avoid mixing themes on initial load
-		if (colorScheme === 'dark') setTheme(modernDarkTheme);
-		else setTheme(modernLightTheme);
-	}, [colorScheme]);
 
 	return (
 		<PaperProvider theme={theme}>
 			<GestureHandlerRootView>
 				<AuthProvider>
-					<AppGate />
+					<AppGate isDark={isDark} toggleTheme={toggleTheme} />
 				</AuthProvider>
 			</GestureHandlerRootView>
 		</PaperProvider>
 	);
 }
 
-const AppGate = () => 
+const AppGate = ({ toggleTheme, isDark }: { toggleTheme: () => void, isDark: boolean }) => 
 {
 	const { loading } = useContext(AuthContext);
 
@@ -44,7 +38,7 @@ const AppGate = () =>
 			style={{ flex: 1 }}
 			behavior={Platform.OS === "ios" ? "padding" : "height"}
 		>
-			<MainNavigator />
+			<MainNavigator isDark={isDark} toggleTheme={toggleTheme} />
 		</KeyboardAvoidingView>
 	);
 };

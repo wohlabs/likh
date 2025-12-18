@@ -1,0 +1,38 @@
+// usePersistentTheme.js
+import { useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { modernDarkTheme, modernLightTheme } from "@/theme/modernTheme";
+
+const STORAGE_KEY = "APP_THEME"; // "light" | "dark"
+
+export function usePersistentTheme() {
+	const [isDark, setIsDark] = useState(false);
+	const [ready, setReady] = useState(false);
+
+	// Load saved theme
+	useEffect(() => {
+		(async () => {
+			try {
+				const saved = await AsyncStorage.getItem(STORAGE_KEY);
+				if (saved === "dark") {
+					setIsDark(true);
+				}
+			} finally {
+				setReady(true);
+			}
+		})();
+	}, []);
+
+	// Persist theme
+	useEffect(() => {
+		if (!ready) return;
+		AsyncStorage.setItem(STORAGE_KEY, isDark ? "dark" : "light");
+	}, [isDark, ready]);
+
+	return {
+		theme: isDark ? modernDarkTheme : modernLightTheme,
+		isDark,
+		toggleTheme: () => setIsDark((prev) => !prev),
+		ready,
+	};
+}

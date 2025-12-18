@@ -9,7 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from "@/services/AxiosInstance";
 import * as WebBrowser from 'expo-web-browser';
 
-export default function MainNavigator()
+export default function MainNavigator({ isDark, toggleTheme }: { isDark: boolean, toggleTheme?: () => void })
 {
 	const colorScheme = useColorScheme();
 	const theme = useTheme()
@@ -72,7 +72,7 @@ export default function MainNavigator()
 				headerTintColor: useTheme().colors.onSurface,
 				headerTitle: () => <Pressable onPress={() => router.navigate("/app")}><ThemeText style={{ fontWeight: "900", letterSpacing: 2 }} variant="titleLarge">likh</ThemeText></Pressable>,
 				headerTitleAlign: "center",
-				headerLeft: () => <IconButton size={20} icon={colorScheme === 'dark' ? 'white-balance-sunny' : 'moon-waning-crescent'} style={[Platform.OS === 'ios' && {margin: 'auto'}]} iconColor={theme.colors.primary} />, // disable back button
+				headerLeft: () => <IconButton size={20} icon={isDark ? 'moon-waning-crescent' : 'white-balance-sunny'} onPress={toggleTheme} style={[Platform.OS === 'ios' && {margin: 'auto'}]} iconColor={theme.colors.primary} />, // disable back button
 				headerRight: () =>
 					token
 						?
