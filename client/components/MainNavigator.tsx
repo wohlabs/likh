@@ -82,6 +82,18 @@ export default function MainNavigator({ isDark, toggleTheme }: { isDark: boolean
 			return
 		}
 	}, [token, segments]);
+	
+	const onTitleClicked = () => {
+		const inAuthGroup = segments[0] === "users";
+		if (inAuthGroup)
+		{
+			router.navigate("/")
+		}
+		else
+		{
+			router.navigate("/app")
+		}
+	}
 
 	return (
 		<Stack
@@ -89,7 +101,7 @@ export default function MainNavigator({ isDark, toggleTheme }: { isDark: boolean
 				contentStyle: {backgroundColor: theme.colors.background},
 				headerStyle: {backgroundColor: theme.colors.surfaceVariant},
 				headerTintColor: useTheme().colors.onSurface,
-				headerTitle: () => <Pressable onPress={() => router.navigate("/app")}><ThemeText style={{ fontWeight: "900", letterSpacing: 2 }} variant="titleLarge">likh</ThemeText></Pressable>,
+				headerTitle: () => <Pressable onPress={onTitleClicked}><ThemeText style={{ fontWeight: "900", letterSpacing: 2 }} variant="titleLarge">likh</ThemeText></Pressable>,
 				headerTitleAlign: "center",
 				headerLeft: () => <IconButton size={20} icon={isDark ? 'moon-waning-crescent' : 'white-balance-sunny'} onPress={toggleTheme} style={[Platform.OS === 'ios' && {margin: 'auto'}]} iconColor={theme.colors.primary} />, // disable back button
 				headerRight: () =>
