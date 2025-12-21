@@ -28,11 +28,6 @@ export default function UserLogin()
 		router.navigate('/app');
 	};
 
-	if (token)
-	{
-		console.log("Already logged in, navigating to protected area");
-		router.navigate('/app');
-	}
 	return (
 		<View style={styles.container}>
 			<View style={styles.formContainer}>
