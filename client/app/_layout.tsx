@@ -1,17 +1,14 @@
 import MainNavigator from "@/components/MainNavigator";
 import { AuthProvider, AuthContext } from "@/context/AuthContext";
-import { useEffect, useState, useContext, use } from "react";
-import { KeyboardAvoidingView, Platform, useColorScheme , ActivityIndicator, View } from "react-native";
-import { MD3DarkTheme, MD3LightTheme, PaperProvider } from "react-native-paper";
+import { useContext } from "react";
+import { KeyboardAvoidingView, Platform, ActivityIndicator, View } from "react-native";
+import { PaperProvider } from "react-native-paper";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { Redirect } from "expo-router";
 import { usePersistentTheme } from "@/context/usePersistentTheme";
 
 export default function RootLayout() 
 {
-	const colorScheme = useColorScheme();
 	const { theme, isDark, toggleTheme } = usePersistentTheme();
-
 
 	return (
 		<PaperProvider theme={theme}>

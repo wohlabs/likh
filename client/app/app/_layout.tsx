@@ -1,8 +1,6 @@
-import MainNavigator from "@/components/MainNavigator";
 import { AuthContext } from "@/context/AuthContext";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { Redirect, Stack } from "expo-router";
-import { useColorScheme } from "react-native";
 import { useTheme } from "react-native-paper";
 
 export default function ProtectedLayout() 
@@ -21,10 +19,6 @@ export default function ProtectedLayout()
 			contentStyle: {backgroundColor: theme.colors.background},
 			headerStyle: {backgroundColor: theme.colors.surfaceVariant},
 			headerTintColor: theme.colors.onSurface
-		}}
-		>
-			<Stack.Screen name="index" />
-			<Stack.Screen name="manga/[mangaId]" />
-		</Stack>
+		}}/>
 	);
 }

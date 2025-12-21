@@ -112,9 +112,7 @@ export default function MainNavigator({ isDark, toggleTheme }: { isDark: boolean
 						</Menu>
 						: <ThemeButton icon={'login'} onPress={() => router.navigate("/users/login")}>Login</ThemeButton>
 			}}
-		>
-			<Stack.Screen name="(protected)" />
-		</Stack>
+		/>
 	)
 }
 

@@ -3,15 +3,13 @@ import { Stack, router } from "expo-router";
 import ThemeText from "@/components/ThemeText";
 import ThemeButton from "@/components/ThemeButton";
 import { useTheme } from "react-native-paper";
-import { useRef, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Reanimated, { useSharedValue, useAnimatedStyle, withRepeat, withTiming, interpolate, Extrapolate } from "react-native-reanimated";
 import { Feather } from "@expo/vector-icons";
 
-const { width, height } = Dimensions.get('window');
 
 export default function LandingPage() {
 	const theme = useTheme();
-	const colorScheme = useColorScheme();
 	const [scrollPosition, setScrollPosition] = useState(0);
 
 	// Animation values

@@ -1,5 +1,5 @@
-import { Children, useRef, useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { useRef, useState } from "react";
+import { StyleSheet } from "react-native";
 import { useSharedValue } from "react-native-reanimated";
 import Carousel, { CarouselRenderItem, ICarouselInstance, Pagination } from "react-native-reanimated-carousel";
 

@@ -1,6 +1,6 @@
 import ThemeText from "@/components/ThemeText";
 import { useContext, useState } from "react";
-import { View, StyleSheet, Linking } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { TextInput } from "react-native-paper";
 import ThemeButton from "@/components/ThemeButton";
 import { router } from "expo-router";
