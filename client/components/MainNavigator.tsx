@@ -113,13 +113,13 @@ export default function MainNavigator({ isDark, toggleTheme }: { isDark: boolean
 						: <ThemeButton icon={'login'} onPress={() => router.navigate("/users/login")}>Login</ThemeButton>
 			}}
 		>
+			<Stack.Screen name="index" options={{headerShown: false}}/>
 			<Stack.Protected guard={token === null || token === undefined || token === ""}>
 				<Stack.Screen name="users/login" />
 				<Stack.Screen name="users/register" />
 			</Stack.Protected>
-
 			<Stack.Protected guard={token !== null && token !== ""}>
-				<Stack.Screen name="app" />
+				<Stack.Screen name="app" options={{headerShown: true}}/>
 			</Stack.Protected>
 		</Stack>
 	)

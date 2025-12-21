@@ -61,7 +61,6 @@ export default function LandingPage() {
 
 	return (
 		<>
-			<Stack.Screen options={{headerShown: false}} />
 			<ScrollView 
 				style={[styles.container, {backgroundColor: theme.colors.background}]} 
 				showsVerticalScrollIndicator={false}
