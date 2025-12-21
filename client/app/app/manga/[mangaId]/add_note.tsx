@@ -22,6 +22,7 @@ import { fetch } from 'expo/fetch';
 import { getMangaDetails } from "@/services/manga.service";
 import { getMangaTitle } from "@/types/IManga";
 import { DropEvent, useDropzone } from "react-dropzone";
+import * as Clipboard from 'expo-clipboard';
 
 const KeyboardDismissWrapper = ({ children }: any) => 
 {
@@ -43,6 +44,7 @@ const KeyboardDismissWrapper = ({ children }: any) =>
 
 export default function AddNoteScreen() 
 {
+	const {username} = useContext(AuthContext);
 	const [text, onChangeText] = useState("");
 	const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
 	const [images, setImages] = useState<ImagePicker.ImagePickerAsset[]>([]);
@@ -54,6 +56,25 @@ export default function AddNoteScreen()
 	const theme = useTheme()
 	let dropZoneRootProps: any = null;
 	let dropZoneInputProps: any = null;
+	
+	const pasteImageFromClipboard = async () => {
+		const pastedImage = await Clipboard.getImageAsync(({format: "png", jpegQuality: 1}));
+
+		if (!pastedImage) return null;
+
+
+		const image: ImagePicker.ImagePickerAsset = {
+			uri: pastedImage.data,
+			type: 'image',
+			fileName: `clipboard_${username}_${Date.now()}.png`,
+			width: pastedImage.size.width,
+			height: pastedImage.size.height,
+		};
+
+		const newImages = [...images, image];
+		setImages(newImages);
+		setCurrentImageIndex(newImages.length - 1); // set to last image
+	}
 
 	// 🌐 Web drag-drop
 	if (Platform.OS === "web") {
@@ -180,7 +201,7 @@ export default function AddNoteScreen()
 							<ThemeText variant="headlineSmall" style={{color: theme.colors.onSurfaceDisabled}}>Add an image using the + icon</ThemeText>
 						}
 						{
-							Platform.OS === 'web' && <div {...dropZoneRootProps()} style={{position: "absolute", width: "100%", height: "100%" }}/>
+							Platform.OS === 'web' && <div {...dropZoneRootProps()} onPaste={pasteImageFromClipboard} style={{position: "absolute", width: "100%", height: "100%" }}/>
 						}
 					</View>
 					<View style={styles.thumbnailsContainer}>
