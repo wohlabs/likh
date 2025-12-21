@@ -1,5 +1,5 @@
-import { router, Stack } from "expo-router";
-import { Linking, Platform, Pressable, useColorScheme, Image, StyleSheet } from "react-native";
+import { Stack, useRouter, useSegments } from "expo-router";
+import { Linking, Platform, Pressable, Image, StyleSheet } from "react-native";
 import ThemeText from "./ThemeText";
 import ThemeButton from "./ThemeButton";
 import { useContext, useEffect, useState } from "react";
@@ -11,10 +11,12 @@ import * as WebBrowser from 'expo-web-browser';
 
 export default function MainNavigator({ isDark, toggleTheme }: { isDark: boolean, toggleTheme?: () => void })
 {
-	const colorScheme = useColorScheme();
 	const theme = useTheme()
 	const {token, username, anilistToken, logout} = useContext(AuthContext);
 	const [optionsVisible, setOptionsVisible] = useState<boolean>(false);
+	const segments = useSegments();
+	const router = useRouter();
+
 	const linkAnilist = () => 
 	{
 		const clientId = 30897;
@@ -63,6 +65,23 @@ export default function MainNavigator({ isDark, toggleTheme }: { isDark: boolean
 			subscription.remove();
 		};
 	}, []);
+
+	useEffect(() => {
+		const inAuthGroup = segments[0] === "users";
+		const inAppGroup = segments[0] === "app";
+
+		// 🚫 Not logged in → block app routes
+		if (!token && inAppGroup) {
+			router.replace("/users/login");
+			return;
+		}
+
+		// ✅ Logged in → block auth routes
+		if (token && inAuthGroup) {
+			router.replace("/app");
+			return
+		}
+	}, [token, segments]);
 
 	return (
 		<Stack
@@ -114,13 +133,6 @@ export default function MainNavigator({ isDark, toggleTheme }: { isDark: boolean
 			}}
 		>
 			<Stack.Screen name="index" options={{headerShown: false}}/>
-			<Stack.Protected guard={token === null || token === undefined || token === ""}>
-				<Stack.Screen name="users/login" />
-				<Stack.Screen name="users/register" />
-			</Stack.Protected>
-			<Stack.Protected guard={token !== null && token !== ""}>
-				<Stack.Screen name="app" options={{headerShown: true}}/>
-			</Stack.Protected>
 		</Stack>
 	)
 }
