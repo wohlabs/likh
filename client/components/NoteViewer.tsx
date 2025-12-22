@@ -77,7 +77,16 @@ export default function NoteViewer({mangaTitle, mangaId, note, onDelete, onEdit,
 			<View style={{ flexDirection: "column", flex: 3}}>
 				<ThemeText variant="bodyLarge">Manhwa/Manga: {mangaTitle || "Unknown"}</ThemeText>
 				<View style={{ flexDirection: "row"}}>
-					<ThemeText variant="bodyLarge">Chapter: {note.startChapter?.toString() || ""} - {note.endChapter?.toString() || ""}</ThemeText>
+					{
+						note.startChapter === -1 ?
+							<ThemeText variant="bodyLarge">Chapter: All</ThemeText>
+							:
+							note.endChapter
+								?
+								<ThemeText variant="bodyLarge">Chapter: {note.startChapter?.toString() || ""} - {note.endChapter?.toString() || ""}</ThemeText>
+								:
+								<ThemeText variant="bodyLarge">Chapter: {note.startChapter?.toString() || ""}</ThemeText>
+					}
 				</View>
 				<ThemeText variant="bodyLarge" style={[{fontWeight: "bold"}]}>Note:</ThemeText>
 				<ScrollView>
