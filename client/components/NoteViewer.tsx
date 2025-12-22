@@ -7,7 +7,7 @@ import ThemeButton from "./ThemeButton";
 import ThemeText from "./ThemeText";
 import { router } from "expo-router";
 
-export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}: { mangaTitle?: string, mangaId: string, note: INoteEntry, style?: StyleProp<ViewStyle>, onDelete?: (noteId: string) => void }) 
+export default function NoteViewer({mangaTitle, mangaId, note, onDelete, onEdit, style}: { mangaTitle?: string, mangaId: string, note: INoteEntry, style?: StyleProp<ViewStyle>, onDelete?: () => void , onEdit?: () => void})
 {
 	const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
 	const [optionsVisible, setOptionsVisible] = useState<boolean>(false);
@@ -91,7 +91,7 @@ export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}:
 					</ThemeButton>
 					<ThemeButton icon={"pencil"}
 						style={styles.viewerButton}
-						onPress={() => {router.navigate(`/app/manga/${mangaId}/edit_note/${note.id}`)}}
+						onPress={onEdit}
 					>
 						Edit
 					</ThemeButton>
@@ -110,7 +110,7 @@ export default function NoteViewer({mangaTitle, mangaId, note, onDelete, style}:
 						}
 					>
 						<Menu.Item 
-							onPress={async () => onDelete && onDelete(note.id)} title="delete" leadingIcon={"delete"}
+							onPress={onDelete} title="delete" leadingIcon={"delete"}
 						/>
 					</Menu>
 				</View>

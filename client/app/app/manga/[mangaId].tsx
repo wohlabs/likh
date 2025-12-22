@@ -182,6 +182,7 @@ export default function MangaDetails()
 										note={item.item} mangaId={Array.isArray(mangaId) ? mangaId[0] : mangaId} mangaTitle={getMangaTitle(manga)}
 										style={[styles.noteViewer, {backgroundColor: theme.colors.background}]}
 										onDelete={() => onDelete(viewerNote.id)}
+										onEdit={() => {router.navigate(`/app/manga/${mangaId}/edit_note/${viewerNote.id}`); setIsViewingOverlay(false)}}
 										key={`NoteViewer_${viewerNote?.id}`}
 									/>
 								)
