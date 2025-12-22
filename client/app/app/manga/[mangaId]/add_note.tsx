@@ -21,8 +21,9 @@ import { AuthContext } from "@/context/AuthContext";
 import { fetch } from 'expo/fetch';
 import { getMangaDetails } from "@/services/manga.service";
 import { getMangaTitle } from "@/types/IManga";
-import { DropEvent, useDropzone } from "react-dropzone";
+import { useDropzone } from "react-dropzone";
 import * as Clipboard from 'expo-clipboard';
+import { blobToBase64 } from "@/components/util";
 
 const KeyboardDismissWrapper = ({ children }: any) => 
 {
@@ -55,13 +56,11 @@ export default function AddNoteScreen()
 	const token = useContext(AuthContext).token
 	const theme = useTheme()
 	let dropZoneRootProps: any = null;
-	let dropZoneInputProps: any = null;
 	
 	const pasteImageFromClipboard = async () => {
 		const pastedImage = await Clipboard.getImageAsync(({format: "png", jpegQuality: 1}));
 
 		if (!pastedImage) return null;
-
 
 		const image: ImagePicker.ImagePickerAsset = {
 			uri: pastedImage.data,
@@ -75,31 +74,99 @@ export default function AddNoteScreen()
 		setImages(newImages);
 		setCurrentImageIndex(newImages.length - 1); // set to last image
 	}
+	
+	async function isImageUrl(url: string) {
+		try {
+			const res = await fetch(url, { method: "HEAD" });
+			const type = res.headers.get("content-type");
+			return type?.startsWith("image/");
+		} catch {
+			return false;
+		}
+	}
+	
+	async function handleDroppedImageAsString(item: DataTransferItem): Promise<ImagePicker.ImagePickerAsset | null> {
+		return new Promise((resolve) => {
+			if (!item) return resolve(null);
+
+			// Convert the dropped item to a data URL string
+			item.getAsString(async (dataUrl) => {
+				if (!dataUrl) return resolve(null);
+				const isImageUrlFlag = await isImageUrl(dataUrl);
+				if (!isImageUrlFlag) return resolve(null)
+
+
+				// Convert data URL to blob
+				const res = await fetch(dataUrl);
+				const blob = await res.blob();
+				const base64 = await blobToBase64(blob);
+
+				const extension = blob.type.split("/")[1] || "png";
+				const fileName = `dropped-image.${extension}`;
+
+				// Create the ImagePickerAsset-like object
+				const imageAsset: ImagePicker.ImagePickerAsset = {
+					uri: base64,
+					fileName: fileName,
+					type: "image"
+				} as ImagePicker.ImagePickerAsset;
+
+				resolve(imageAsset);
+			});
+		});
+	}
+	
+	
+	async function handleDrop(e: React.DragEvent<HTMLDivElement>) {
+		e.preventDefault();
+
+		const { files, items } = e.dataTransfer;
+		
+		let newImages = images;
+		let refresh = false;
+		for (const file of files)
+		{
+			if (file.type.startsWith("image/"))
+			{
+				const image: ImagePicker.ImagePickerAsset = {
+					uri: URL.createObjectURL(file),
+					type: file.type,
+					fileName: file.name,
+					fileSize: file.size
+				} as ImagePicker.ImagePickerAsset;
+				newImages = [...newImages, image];
+				refresh = true
+			}
+		}
+
+		// 2️⃣ Drag from another website (URL-based)
+		for (const item of items)
+		{
+			if (item.type === "text/uri-list")
+			{
+				const asset = await handleDroppedImageAsString(item);
+				if (asset === null) continue;
+				newImages = [...newImages, asset];
+				refresh = true
+			}
+		}
+		if (refresh)
+		{
+			setImages(newImages);
+			setCurrentImageIndex(newImages.length - 1); // set to last image
+		}
+	}
+
 
 	// 🌐 Web drag-drop
 	if (Platform.OS === "web") {
-		const { getRootProps, getInputProps } = useDropzone({
-			accept: { "image/*": [] },
+		const { getRootProps } = useDropzone({
+			accept: { "image/*": []},
 			multiple: true,
 			noClick: true,
 			useFsAccessApi: true,
-			noKeyboard: true,
-			onDropAccepted: (acceptedFiles: any, event: DropEvent) => {
-				if (acceptedFiles[0])
-				{
-					const imageArray: ImagePicker.ImagePickerAsset[] = acceptedFiles.map((file: any) => ({
-						uri: URL.createObjectURL(file),
-						type: file.type,
-						fileName: file.name,
-						fileSize: file.size,
-					}));
-					const newImages = [...images, ...imageArray];
-					setImages(newImages);
-					setCurrentImageIndex(newImages.length - 1); // set to last image
-				}
-			}
+			noKeyboard: true
 		});
-		dropZoneInputProps = getInputProps;
 		dropZoneRootProps = getRootProps;
 	}
 
@@ -201,7 +268,11 @@ export default function AddNoteScreen()
 							<ThemeText variant="headlineSmall" style={{color: theme.colors.onSurfaceDisabled}}>Add an image using the + icon</ThemeText>
 						}
 						{
-							Platform.OS === 'web' && <div {...dropZoneRootProps()} onPaste={pasteImageFromClipboard} style={{position: "absolute", width: "100%", height: "100%" }}/>
+							Platform.OS === 'web' &&
+								<div {...dropZoneRootProps()}
+									onPaste={pasteImageFromClipboard}
+									onDrop={handleDrop}
+									style={{position: "absolute", width: "100%", height: "100%" }}/>
 						}
 					</View>
 					<View style={styles.thumbnailsContainer}>
