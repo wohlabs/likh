@@ -13,6 +13,8 @@ import { deleteMangaNote } from "@/services/notes.service";
 import MangaOverviewHeader from "@/components/MangaOverviewHeader";
 import { getMangaTitle, IMangaDetails } from "@/types/IManga";
 import ThemeCarousel from "@/components/ThemeCarousel";
+import { Style } from "react-native-paper/lib/typescript/components/List/utils";
+import ThemeSearchbar from "@/components/ThemeSearchbar";
 
 function NoteButtons({ onEditPress, onDeletePress }: { onEditPress?: () => void, onDeletePress?: () => void })
 {
@@ -194,7 +196,7 @@ export default function MangaDetails()
 			</ScrollView>
 			<View style={styles.floatingContainer}>
 				<View style={styles.searchBarContainer}>
-					<Searchbar
+					<ThemeSearchbar
 						placeholder="search note"
 						onChangeText={setSearchString}
 						style={styles.searchBar}

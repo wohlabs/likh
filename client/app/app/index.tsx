@@ -7,6 +7,7 @@ import { IconButton, Modal, Portal, Searchbar, useTheme } from "react-native-pap
 import { AuthContext } from "@/context/AuthContext";
 import { addMangaToLibrary, getLibraryMangaThumbnails, getMangaIdsWithNotes, getMyListMangaIds, MangaProps, searchMangaByString } from "@/services/manga.service";
 import { getMangaTitle } from "@/types/IManga";
+import ThemeSearchbar from "@/components/ThemeSearchbar";
 
 export default function Index() 
 {
@@ -83,7 +84,7 @@ export default function Index()
 				/>
 				<View style={styles.searchBarFloating}>
 					<View style={styles.searchBarContainer}>
-						<Searchbar
+						<ThemeSearchbar
 							placeholder="search library"
 							onChangeText={setSearchString}
 							onSubmitEditing={() => { populateNewMangaList(); }}
@@ -103,7 +104,7 @@ export default function Index()
 			<Portal>
 				<Modal visible={isSearching} onDismiss={() => setSearching(false)}
 					contentContainerStyle={[styles.addMangaModalContainer, { backgroundColor: theme.colors.background }]}>
-					<Searchbar
+					<ThemeSearchbar
 						placeholder="search manga"
 						onChangeText={setNewSearchString}
 						onSubmitEditing={() => { populateNewMangaList(); }}
