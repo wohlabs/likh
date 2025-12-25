@@ -1,7 +1,7 @@
 import { IMangaNotes, INoteEntry } from "@/types/INotes";
 import NotePreviewCard from "@/components/NotePreviewCard";
 import NoteViewer from "@/components/NoteViewer";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams, usePathname } from "expo-router";
 import { useCallback, useEffect, useState, useContext } from "react";
 import { FlatList, Platform, ScrollView, StyleProp, useWindowDimensions, View, ViewStyle, StyleSheet } from "react-native";
 import { IconButton, Modal, Portal, Searchbar, useTheme } from "react-native-paper";
@@ -83,9 +83,15 @@ export default function MangaDetails()
 		{
 			Toast.show({
 				type: 'error',
-				text1: error as string,
-				visibilityTime: 5000 // 5s
+				text1: error as string
 			  });
+			
+			setTimeout(() => {
+				router.replace({
+					pathname: '/app/manga/[mangaId]',
+					params: { mangaId: mangaId as string },
+				});
+			}, 50);
 		}
 	}, [error]);
 
