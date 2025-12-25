@@ -5,7 +5,7 @@ import { KeyboardAvoidingView, Platform, ActivityIndicator, View } from "react-n
 import { PaperProvider, useTheme } from "react-native-paper";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { usePersistentTheme } from "@/context/usePersistentTheme";
-import { modernDarkTheme, modernLightTheme } from "@/theme/modernTheme";
+import { LoadingScreen } from "@/components/LoadingScreen";
 
 export default function RootLayout() 
 {
@@ -27,8 +27,6 @@ const AppGate = ({ toggleTheme, isDark }: { toggleTheme: () => void, isDark: boo
 	const { loading } = useContext(AuthContext);
 	const { ready } = usePersistentTheme();
 	
-	const theme = isDark ? modernDarkTheme : modernLightTheme;
-	
 	
 	// Wait until theme is resolved
 	if (!ready) 
@@ -38,7 +36,7 @@ const AppGate = ({ toggleTheme, isDark }: { toggleTheme: () => void, isDark: boo
 
 	if (loading) 
 	{
-		return <LoadingScreen theme={theme} />;  // splash or spinner
+		return <LoadingScreen />;  // splash or spinner
 	}
 
 	return (
@@ -50,12 +48,3 @@ const AppGate = ({ toggleTheme, isDark }: { toggleTheme: () => void, isDark: boo
 		</KeyboardAvoidingView>
 	);
 };
-
-function LoadingScreen({ theme }: { theme: typeof modernLightTheme })
-{
-	return (
-		<View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: theme.colors.background }}>
-			<ActivityIndicator size="large" />
-		</View>
-	);
-}
