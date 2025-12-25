@@ -122,6 +122,13 @@ export default function EditNoteScreen()
 			}
 			setImages(imageAssets)
 		}
+		else
+		{
+			router.push({
+				pathname: "/app/manga/[mangaId]",
+				params: {mangaId: mangaId.toString(), error: "Note not found."}
+			});
+		}
 	}, []);
 
 	useEffect(() => 

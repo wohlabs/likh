@@ -8,6 +8,13 @@ import { IconButton, Menu, useTheme } from "react-native-paper";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from "@/services/AxiosInstance";
 import * as WebBrowser from 'expo-web-browser';
+import Toast from "react-native-toast-message"
+import { ThemeToast } from "./ThemeToast";
+
+
+const toastConfig = {
+  error: (props: any) => <ThemeToast {...props} variant="error" />,
+};
 
 export default function MainNavigator({ isDark, toggleTheme }: { isDark: boolean, toggleTheme?: () => void })
 {
@@ -96,6 +103,7 @@ export default function MainNavigator({ isDark, toggleTheme }: { isDark: boolean
 	}
 
 	return (
+		<>
 		<Stack
 			screenOptions={{
 				contentStyle: {backgroundColor: theme.colors.background},
@@ -146,6 +154,8 @@ export default function MainNavigator({ isDark, toggleTheme }: { isDark: boolean
 		>
 			<Stack.Screen name="index" options={{headerShown: false}}/>
 		</Stack>
+		<Toast config={toastConfig}/>
+		</>
 	)
 }
 

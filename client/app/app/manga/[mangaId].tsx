@@ -15,6 +15,7 @@ import { getMangaTitle, IMangaDetails } from "@/types/IManga";
 import ThemeCarousel from "@/components/ThemeCarousel";
 import { Style } from "react-native-paper/lib/typescript/components/List/utils";
 import ThemeSearchbar from "@/components/ThemeSearchbar";
+import Toast from "react-native-toast-message"
 
 function NoteButtons({ onEditPress, onDeletePress }: { onEditPress?: () => void, onDeletePress?: () => void })
 {
@@ -66,7 +67,7 @@ export default function MangaDetails()
 {
 	const theme = useTheme();
 	const {width} = useWindowDimensions()
-	const { mangaId } = useLocalSearchParams(); // <-- get from URL
+	const { mangaId, error } = useLocalSearchParams(); // <-- get from URL
 	const [manga, setManga] = useState<IMangaDetails>();
 	const [data, setData] = useState<IMangaNotes>([]);
 	const [filteredNotes, setFilteredNotes] = useState<IMangaNotes>([]);
@@ -75,6 +76,18 @@ export default function MangaDetails()
 	const [viewerNote, setViewerNote] = useState<INoteEntry>({id: "", text: "", images: [], startChapter: -1, endChapter: -1, createdAt: "", modifiedAt: "", fromAnilist: false});
 	const [viewerNoteIndex, setViewerNoteIndex] = useState<number>(0);
 	const anilist_token: string = useContext(AuthContext).anilistToken || ""
+	
+	// Optional: Clear the error from the URL so it doesn't persist on refresh
+	useEffect(() => {
+		if (error)
+		{
+			Toast.show({
+				type: 'error',
+				text1: error as string,
+				visibilityTime: 5000 // 5s
+			  });
+		}
+	}, [error]);
 
 	const populateMangaData = useCallback(async () => 
 	{
