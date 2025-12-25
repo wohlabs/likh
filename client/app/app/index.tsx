@@ -8,6 +8,7 @@ import { AuthContext } from "@/context/AuthContext";
 import { addMangaToLibrary, getLibraryMangaThumbnails, getMangaIdsWithNotes, getMyListMangaIds, MangaProps, searchMangaByString } from "@/services/manga.service";
 import { getMangaTitle } from "@/types/IManga";
 import ThemeSearchbar from "@/components/ThemeSearchbar";
+import { LoadingScreen } from "@/components/LoadingScreen";
 
 export default function Index() 
 {
@@ -19,6 +20,7 @@ export default function Index()
 	const [searchString, setSearchString] = useState("")
 	const [newMangaList, setNewMangaList] = useState<MangaProps[]>([]);
 	const [newSearchString, setNewSearchString] = useState("")
+	const [loading, setLoading] = useState<boolean>(true)
 	const { width } = useWindowDimensions();
 	const anilist_token: string = useContext(AuthContext).anilistToken || ""
 	const listColNum = Math.max(Math.ceil(width/250), 1)
@@ -28,7 +30,7 @@ export default function Index()
 		if (anilist_token === undefined || anilist_token === "undefined" || anilist_token === '') 
 		{
 			setMangaList([]);
-			return;
+			return setLoading(false);
 		}
 		const anilistMangaIds: string[] = await getMangaIdsWithNotes(anilist_token)
 
@@ -37,6 +39,7 @@ export default function Index()
 		const libMangaIds: number[] = [...libStringMangaIds, ...anilistMangaIds].map((value) => Number(value))
 		const mangaListResult = await getLibraryMangaThumbnails(Array.from(new Set<number>(libMangaIds)));
 		setMangaList(mangaListResult.success ? mangaListResult.data : []);
+		return setLoading(false);
 	}, [anilist_token]);
 
 	const populateNewMangaList = useCallback(async () => 
@@ -64,25 +67,30 @@ export default function Index()
 				}}
 			/>
 			<View style={{flex: 1}}>
-				<FlatList
-					data={formatData(filteredMangaList, listColNum)}
-					keyExtractor={(item) => item.id}
-					key={`filteredMangaList_${listColNum}`}
-					numColumns={listColNum}
-					style={{flex: 1}}
-					renderItem={({ item }) => (
-						item?.id ?
-							<Pressable style={{ flex:1, padding: 10 }} onPress={() => { router.navigate(`/app/manga/${item.id}`) }}>
-								<Image
-									source={{ uri: item.coverImage?.large }}
-									resizeMode="cover"
-									style={styles.mangaCoverImage}
-								/>
-								<ThemeText variant="titleMedium" style={styles.mangaTitle}>{getMangaTitle(item)}</ThemeText>
-							</Pressable>
-							: <View style={{ flex: 1, margin: 5 }} />
-					)}
-				/>
+				{
+					loading ?
+					<LoadingScreen />
+					:
+					<FlatList
+						data={formatData(filteredMangaList, listColNum)}
+						keyExtractor={(item) => item.id}
+						key={`filteredMangaList_${listColNum}`}
+						numColumns={listColNum}
+						style={{flex: 1}}
+						renderItem={({ item }) => (
+							item?.id ?
+								<Pressable style={{ flex:1, padding: 10 }} onPress={() => { router.navigate(`/app/manga/${item.id}`) }}>
+									<Image
+										source={{ uri: item.coverImage?.large }}
+										resizeMode="cover"
+										style={styles.mangaCoverImage}
+									/>
+									<ThemeText variant="titleMedium" style={styles.mangaTitle}>{getMangaTitle(item)}</ThemeText>
+								</Pressable>
+								: <View style={{ flex: 1, margin: 5 }} />
+						)}
+					/>
+				}
 				<View style={styles.searchBarFloating}>
 					<View style={styles.searchBarContainer}>
 						<ThemeSearchbar
