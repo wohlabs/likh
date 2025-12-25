@@ -2,9 +2,10 @@ import MainNavigator from "@/components/MainNavigator";
 import { AuthProvider, AuthContext } from "@/context/AuthContext";
 import { useContext } from "react";
 import { KeyboardAvoidingView, Platform, ActivityIndicator, View } from "react-native";
-import { PaperProvider } from "react-native-paper";
+import { PaperProvider, useTheme } from "react-native-paper";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { usePersistentTheme } from "@/context/usePersistentTheme";
+import { modernDarkTheme, modernLightTheme } from "@/theme/modernTheme";
 
 export default function RootLayout() 
 {
@@ -24,10 +25,20 @@ export default function RootLayout()
 const AppGate = ({ toggleTheme, isDark }: { toggleTheme: () => void, isDark: boolean }) => 
 {
 	const { loading } = useContext(AuthContext);
+	const { ready } = usePersistentTheme();
+	
+	const theme = isDark ? modernDarkTheme : modernLightTheme;
+	
+	
+	// Wait until theme is resolved
+	if (!ready) 
+	{
+		return null; // or a blank view with safe default background
+	}
 
 	if (loading) 
 	{
-		return <LoadingScreen />;  // splash or spinner
+		return <LoadingScreen theme={theme} />;  // splash or spinner
 	}
 
 	return (
@@ -40,10 +51,10 @@ const AppGate = ({ toggleTheme, isDark }: { toggleTheme: () => void, isDark: boo
 	);
 };
 
-function LoadingScreen() 
+function LoadingScreen({ theme }: { theme: typeof modernLightTheme })
 {
 	return (
-		<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+		<View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: theme.colors.background }}>
 			<ActivityIndicator size="large" />
 		</View>
 	);
