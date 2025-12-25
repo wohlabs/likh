@@ -10,10 +10,12 @@ import api from "@/services/AxiosInstance";
 import * as WebBrowser from 'expo-web-browser';
 import Toast from "react-native-toast-message"
 import { ThemeToast } from "./ThemeToast";
+import LoadingToast from "./LoadingToast";
 
 
 const toastConfig = {
-  error: (props: any) => <ThemeToast {...props} variant="error" />,
+	error: (props: any) => <ThemeToast {...props} variant="error" />,
+	loading: (props: any) => <LoadingToast {...props} />,
 };
 
 export default function MainNavigator({ isDark, toggleTheme }: { isDark: boolean, toggleTheme?: () => void })

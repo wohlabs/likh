@@ -24,6 +24,8 @@ import { getMangaTitle } from "@/types/IManga";
 import { getNote } from "@/services/notes.service";
 import { getImageBase64 } from "@/components/util";
 import { DropEvent, useDropzone } from "react-dropzone";
+import { LoadingScreen } from "@/components/LoadingScreen";
+import Toast from "react-native-toast-message";
 
 const KeyboardDismissWrapper = ({ children }: any) => 
 {
@@ -54,10 +56,27 @@ export default function EditNoteScreen()
 	const [mangaName, setMangaName] = useState<string>("Fetching...");
 	const [addedImages, setAddedImages] = useState<ImagePicker.ImagePickerAsset[]>([]);
 	const [deletedImages, setDeletedImages] = useState<string[]>([]);
+	const [loading, setLoading] = useState<boolean>(true);
 	const token = useContext(AuthContext).token
 	const theme = useTheme()
 	let dropZoneRootProps: any = null;
 	let dropZoneInputProps: any = null;
+	
+	useEffect(() => {
+		if (loading)
+		{
+			Toast.show({
+				type: 'loading',
+				text1: 'loading data...',
+				position: 'top',
+				autoHide: false,
+			}); 
+		}
+		else
+		{
+			Toast.hide()
+		}
+	}, [loading])
 
 	// 🌐 Web drag-drop
 	if (Platform.OS === "web") {
@@ -121,6 +140,7 @@ export default function EditNoteScreen()
 				} as ImagePicker.ImagePickerAsset)
 			}
 			setImages(imageAssets)
+			setLoading(false);
 		}
 		else
 		{
@@ -192,13 +212,13 @@ export default function EditNoteScreen()
 		}).then(() =>router.navigate(`/app/manga/${mangaId}`))
 
 	}
-
+	
 	return (
 		<KeyboardDismissWrapper>
 			<View style={styles.mainLayout}>
 				<Stack.Screen options={{ title: "Edit note" }} />
 				<View style={styles.imageViewerContainer}>
-					<View style={images.length > 0 ? styles.imageViewer : styles.noImageContainer}>
+					<View style={[images.length > 0 ? styles.imageViewer : styles.noImageContainer, {borderColor: theme.colors.outlineVariant}]}>
 						{
 							images.length > 0 ? 
 							<>
@@ -244,7 +264,7 @@ export default function EditNoteScreen()
 									<Image
 										source={{ uri: item.uri }}
 										resizeMode="cover"
-										style={styles.thumbnail}
+										style={[styles.thumbnail, {borderColor: theme.colors.outlineVariant}]}
 									/>
 								</Pressable>
 							)}
@@ -258,13 +278,15 @@ export default function EditNoteScreen()
 				<View style={{ flexDirection: "column", flex: 3}}>
 					<TextInput
 						numberOfLines={1}
-						label={"Manhwa/Manga Name"}
+						label={"manhwa/manga name"}
 						editable
 						keyboardType="number-pad"
 						value={mangaName}
 						placeholder={"start"}
 						placeholderTextColor={"gray"}
 						mode="outlined"
+						outlineStyle={loading && {borderColor: theme.colors.onSurfaceDisabled}}
+						disabled={loading}
 						readOnly
 					/>
 					<View style={{ flexDirection: "row", alignItems: "center"}}>
@@ -278,6 +300,8 @@ export default function EditNoteScreen()
 							placeholder={"start"}
 							placeholderTextColor={"gray"}
 							style={styles.formInput}
+							outlineStyle={loading && {borderColor: theme.colors.onSurfaceDisabled}}
+							disabled={loading}
 							mode="outlined"
 						/>
 						<ThemeText variant="labelLarge">&nbsp;-&nbsp;</ThemeText>
@@ -291,6 +315,8 @@ export default function EditNoteScreen()
 							placeholder={"end (optional)"}
 							placeholderTextColor={"gray"}
 							style={styles.formInput}
+							outlineStyle={loading && {borderColor: theme.colors.onSurfaceDisabled}}
+							disabled={loading}
 							mode="outlined"
 						/>
 					</View>
@@ -304,6 +330,9 @@ export default function EditNoteScreen()
 						onChangeText={onChangeText}
 						mode="outlined"
 						style={[styles.noteInput]}
+						outlineStyle={loading && {borderColor: theme.colors.onSurfaceDisabled}}
+						disabled={loading}
+						activeOutlineColor={theme.colors.primary}
 					/>
 					<View style={styles.buttonsContainer}>
 						<ThemeButton
@@ -338,17 +367,15 @@ const styles = StyleSheet.create({
 		flex: 1,
 		width: "100%",
 		borderRadius: 10,
-		borderColor: "black",
 		borderWidth: 2,
 	},
-	noImageContainer: {flex: 1, justifyContent: "center", alignItems: "center", borderColor: "black", borderWidth: 2, borderRadius: 10, borderStyle:"dashed"},
+	noImageContainer: {flex: 1, justifyContent: "center", alignItems: "center", borderWidth: 2, borderRadius: 10, borderStyle:"dashed"},
 	addImageText: {fontSize: 28, color: "lightgray"},
 	thumbnailsContainer: {height: 100, flexDirection: "row", alignItems: "center"},
 	thumbnail: {
 		height: "100%",
 		aspectRatio: 1,
 		borderRadius: 10,
-		borderColor: "black",
 		borderWidth: 2,
 		marginRight: 5
 	},
