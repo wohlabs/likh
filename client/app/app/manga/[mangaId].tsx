@@ -105,6 +105,7 @@ export default function MangaDetails()
 			manga.description = manga.description?.replace(/<br\s*\/?>/gi, '\n').replace(/<\/?[^>]+(>|$)/g, '');
 			setManga(manga);
 		}
+		setLoading(false);
 	}, [mangaId]);
 
 	useEffect(() => 
@@ -116,7 +117,6 @@ export default function MangaDetails()
 	{
 		const DATA = await getMangaData(mangaId.toString(), anilist_token);
 		setData(DATA);
-		setLoading(false);
 	}, [mangaId, anilist_token]);
 
 	useEffect(() => 
