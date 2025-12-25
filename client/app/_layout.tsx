@@ -1,8 +1,8 @@
 import MainNavigator from "@/components/MainNavigator";
 import { AuthProvider, AuthContext } from "@/context/AuthContext";
 import { useContext } from "react";
-import { KeyboardAvoidingView, Platform, ActivityIndicator, View } from "react-native";
-import { PaperProvider, useTheme } from "react-native-paper";
+import { KeyboardAvoidingView, Platform } from "react-native";
+import { PaperProvider } from "react-native-paper";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { usePersistentTheme } from "@/context/usePersistentTheme";
 import { LoadingScreen } from "@/components/LoadingScreen";
