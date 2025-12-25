@@ -16,6 +16,7 @@ import ThemeCarousel from "@/components/ThemeCarousel";
 import { Style } from "react-native-paper/lib/typescript/components/List/utils";
 import ThemeSearchbar from "@/components/ThemeSearchbar";
 import Toast from "react-native-toast-message"
+import { LoadingScreen } from "@/components/LoadingScreen";
 
 function NoteButtons({ onEditPress, onDeletePress }: { onEditPress?: () => void, onDeletePress?: () => void })
 {
@@ -75,6 +76,7 @@ export default function MangaDetails()
 	const [isViewingOverlay, setIsViewingOverlay] = useState<boolean>(false);
 	const [viewerNote, setViewerNote] = useState<INoteEntry>({id: "", text: "", images: [], startChapter: -1, endChapter: -1, createdAt: "", modifiedAt: "", fromAnilist: false});
 	const [viewerNoteIndex, setViewerNoteIndex] = useState<number>(0);
+	const [loading, setLoading] = useState<boolean>(true);
 	const anilist_token: string = useContext(AuthContext).anilistToken || ""
 	
 	// Optional: Clear the error from the URL so it doesn't persist on refresh
@@ -110,6 +112,7 @@ export default function MangaDetails()
 	{
 		const DATA = await getMangaData(mangaId.toString(), anilist_token);
 		setData(DATA);
+		setLoading(false);
 	}, [mangaId, anilist_token]);
 
 	useEffect(() => 
@@ -141,78 +144,83 @@ export default function MangaDetails()
 	{
 		setViewerNote(filteredNotes[viewerNoteIndex]);
 	}, [filteredNotes, viewerNoteIndex]);
-
+	
 	return (
 		<View style={{flex: 1}}>
-			<ScrollView nestedScrollEnabled={true}>
-				<MangaOverviewHeader manga={manga} style={styles.mangaHeader} />
-				<FlatList
-					data={filteredNotes}
-					keyExtractor={(item) => `NotePreview_${item.id}`}
-					key={`filteredNotes`}
-					numColumns={1}
-					contentContainerStyle={{flexGrow: 0}}
-					scrollEnabled={false}
-					renderItem={({ item, index }: { item: INoteEntry, index: any }) => (
-						Platform.OS === 'web'
-							?
-							<View style={{flex:1, flexDirection: 'row', alignItems: 'center'}}>
-								<NotePreviewCard note={item} style={{ flex: 1, margin: 5}} onPress={()=> {setViewerNoteIndex(index); setIsViewingOverlay(true)}} />
-								<NoteButtons onEditPress={() => router.navigate(`/app/manga/${mangaId}/edit_note/${item.id}`)} onDeletePress={() => onDelete(item.id)} key={`NotePreviewCard_${item.id}`} />
-							</View>
-							:
-							<ReanimatedSwipeable
-								containerStyle={styles.noteContainer}
-								childrenContainerStyle={{flex: 1}}
-								friction={2}
-								renderRightActions={(progress: SharedValue<number>, translation: SharedValue<number>, swipeableMethods: SwipeableMethods) => (
-									<TranslatableButtonContainer
-										note={item}
-										progress={progress}
-										translation={translation}
-										swipeableMethods={swipeableMethods}
-										style= {{flexDirection: 'row', alignItems: 'center'}}
-									>
-										<NoteButtons onEditPress={() => router.navigate(`/app/manga/${mangaId}/edit_note/${item.id}`)} onDeletePress={() => onDelete(item.id)} />
-									</TranslatableButtonContainer>
-								)}
-								key={`NotePreview_Swipeable_${item.id}`}
-							>
-								<NotePreviewCard
-									key={`NotePreview_${item.id}`}
-									note={item} style={{flex: 1,margin: 5, flexDirection: 'row', right: 0}} onPress={()=> {setViewerNoteIndex(index); setIsViewingOverlay(true)}}
-								/>
-							</ReanimatedSwipeable>
-					)}
-				/>
-				<Portal
-					theme={theme}
-				>
-					<Modal visible={isViewingOverlay}
-						theme={theme}
-						contentContainerStyle={styles.noteModalContainer}
-						onDismiss={() => {setIsViewingOverlay(false)}}
-					>
-						<ThemeCarousel
-							data={filteredNotes}
-							width={width}
-							defaultIndex={viewerNoteIndex}
-							carouselRenderItem={(item) =>
-								(
-									<NoteViewer
-										note={item.item} mangaId={Array.isArray(mangaId) ? mangaId[0] : mangaId} mangaTitle={getMangaTitle(manga)}
-										style={[styles.noteViewer, {backgroundColor: theme.colors.background}]}
-										onDelete={() => onDelete(viewerNote.id)}
-										onEdit={() => {router.navigate(`/app/manga/${mangaId}/edit_note/${viewerNote.id}`); setIsViewingOverlay(false)}}
-										key={`NoteViewer_${viewerNote?.id}`}
+			{
+				loading ?
+				<LoadingScreen />
+				:
+				<ScrollView nestedScrollEnabled={true}>
+					<MangaOverviewHeader manga={manga} style={styles.mangaHeader} />
+					<FlatList
+						data={filteredNotes}
+						keyExtractor={(item) => `NotePreview_${item.id}`}
+						key={`filteredNotes`}
+						numColumns={1}
+						contentContainerStyle={{flexGrow: 0}}
+						scrollEnabled={false}
+						renderItem={({ item, index }: { item: INoteEntry, index: any }) => (
+							Platform.OS === 'web'
+								?
+								<View style={{flex:1, flexDirection: 'row', alignItems: 'center'}}>
+									<NotePreviewCard note={item} style={{ flex: 1, margin: 5}} onPress={()=> {setViewerNoteIndex(index); setIsViewingOverlay(true)}} />
+									<NoteButtons onEditPress={() => router.navigate(`/app/manga/${mangaId}/edit_note/${item.id}`)} onDeletePress={() => onDelete(item.id)} key={`NotePreviewCard_${item.id}`} />
+								</View>
+								:
+								<ReanimatedSwipeable
+									containerStyle={styles.noteContainer}
+									childrenContainerStyle={{flex: 1}}
+									friction={2}
+									renderRightActions={(progress: SharedValue<number>, translation: SharedValue<number>, swipeableMethods: SwipeableMethods) => (
+										<TranslatableButtonContainer
+											note={item}
+											progress={progress}
+											translation={translation}
+											swipeableMethods={swipeableMethods}
+											style= {{flexDirection: 'row', alignItems: 'center'}}
+										>
+											<NoteButtons onEditPress={() => router.navigate(`/app/manga/${mangaId}/edit_note/${item.id}`)} onDeletePress={() => onDelete(item.id)} />
+										</TranslatableButtonContainer>
+									)}
+									key={`NotePreview_Swipeable_${item.id}`}
+								>
+									<NotePreviewCard
+										key={`NotePreview_${item.id}`}
+										note={item} style={{flex: 1,margin: 5, flexDirection: 'row', right: 0}} onPress={()=> {setViewerNoteIndex(index); setIsViewingOverlay(true)}}
 									/>
-								)
-							}
-						 />
-					</Modal>
-				</Portal>
-				<View style={{height: 85}}/>
-			</ScrollView>
+								</ReanimatedSwipeable>
+						)}
+					/>
+					<Portal
+						theme={theme}
+					>
+						<Modal visible={isViewingOverlay}
+							theme={theme}
+							contentContainerStyle={styles.noteModalContainer}
+							onDismiss={() => {setIsViewingOverlay(false)}}
+						>
+							<ThemeCarousel
+								data={filteredNotes}
+								width={width}
+								defaultIndex={viewerNoteIndex}
+								carouselRenderItem={(item) =>
+									(
+										<NoteViewer
+											note={item.item} mangaId={Array.isArray(mangaId) ? mangaId[0] : mangaId} mangaTitle={getMangaTitle(manga)}
+											style={[styles.noteViewer, {backgroundColor: theme.colors.background}]}
+											onDelete={() => onDelete(viewerNote.id)}
+											onEdit={() => {router.navigate(`/app/manga/${mangaId}/edit_note/${viewerNote.id}`); setIsViewingOverlay(false)}}
+											key={`NoteViewer_${viewerNote?.id}`}
+										/>
+									)
+								}
+							 />
+						</Modal>
+					</Portal>
+					<View style={{height: 85}}/>
+				</ScrollView>
+			}
 			<View style={styles.floatingContainer}>
 				<View style={styles.searchBarContainer}>
 					<ThemeSearchbar
