@@ -60,8 +60,11 @@ const MANGA_SEARCH_TREND_QUERY = `
 `;
 
 const LIBRARY_MANGA_QUERY = `
-	query ($ids: [Int]){
-		Page(page: 1, perPage: 50) {
+	query ($ids: [Int], $page: Int){
+		Page(page: $page, perPage: 50) {
+			pageInfo {
+				hasNextPage
+			}
 			media(id_in: $ids, type: MANGA, sort: TRENDING_DESC) {
 				id
 				title {
@@ -224,15 +227,25 @@ export const getLibraryMangaThumbnails = async (mangaIds: string[]) : Promise<Se
 {
 	if (mangaIds.length === 0) return {success: true, data: []};
 
-	const query = {
-		query: LIBRARY_MANGA_QUERY,
-		variables: {ids: mangaIds}
-	}
+	console.log("filtered mangaids:", mangaIds) //125167
 
 	try
 	{
-		const result = await api.post('/anilist', query);
-		return {success: true as const, data: result.data.data.Page.media};
+		let allMedias: any[] = []
+		let hasNextPage = true
+		let i = 1;
+		while (hasNextPage)
+		{
+			const query = {
+				query: LIBRARY_MANGA_QUERY,
+				variables: {ids: mangaIds, page: i}
+			}
+			const result = await api.post('/anilist', query);
+			allMedias=[...allMedias, ...result.data.data.Page.media]
+			hasNextPage = result.data.data.Page.pageInfo.hasNextPage
+			i++;
+		}
+		return {success: true as const, data: allMedias};
 	}
 	catch (error: any)
 	{
