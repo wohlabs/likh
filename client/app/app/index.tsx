@@ -33,8 +33,9 @@ export default function Index()
 		const anilistMangaIds: string[] = await getMangaIdsWithNotes(anilist_token)
 
 		const mangaIdsResult = await getMyListMangaIds(anilist_token)
-		let libraryMangaIds: string[] = mangaIdsResult.success ? mangaIdsResult.data : []
-		const mangaListResult = await getLibraryMangaThumbnails(Array.from(new Set<string>([...libraryMangaIds, ...anilistMangaIds])));
+		let libStringMangaIds: string[] = mangaIdsResult.success ? mangaIdsResult.data : []
+		const libMangaIds: number[] = [...libStringMangaIds, ...anilistMangaIds].map((value) => Number(value))
+		const mangaListResult = await getLibraryMangaThumbnails(Array.from(new Set<number>(libMangaIds)));
 		setMangaList(mangaListResult.success ? mangaListResult.data : []);
 	}, [anilist_token]);
 

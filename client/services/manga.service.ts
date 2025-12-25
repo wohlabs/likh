@@ -65,7 +65,7 @@ const LIBRARY_MANGA_QUERY = `
 			pageInfo {
 				hasNextPage
 			}
-			media(id_in: $ids, type: MANGA, sort: TRENDING_DESC) {
+			media(id_in: $ids, type: MANGA) {
 				id
 				title {
 					userPreferred
@@ -223,11 +223,9 @@ export const getMyListMangaIds = async (accessToken: string) : Promise<ServiceRe
 	}
 }
 
-export const getLibraryMangaThumbnails = async (mangaIds: string[]) : Promise<ServiceResult<MangaProps[]>> =>
+export const getLibraryMangaThumbnails = async (mangaIds: number[]) : Promise<ServiceResult<MangaProps[]>> =>
 {
 	if (mangaIds.length === 0) return {success: true, data: []};
-
-	console.log("filtered mangaids:", mangaIds) //125167
 
 	try
 	{
