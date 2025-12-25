@@ -100,7 +100,11 @@ export default function MangaDetails()
 	const populateMangaData = useCallback(async () => 
 	{
 		const manga = await getMangaDetails(mangaId.toString());
-		setManga(manga);
+		if (manga)
+		{
+			manga.description = manga.description?.replace(/<br\s*\/?>/gi, '\n').replace(/<\/?[^>]+(>|$)/g, '');
+			setManga(manga);
+		}
 	}, [mangaId]);
 
 	useEffect(() => 
