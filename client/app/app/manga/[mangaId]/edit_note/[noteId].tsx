@@ -146,7 +146,7 @@ export default function EditNoteScreen()
 		{
 			router.push({
 				pathname: "/app/manga/[mangaId]",
-				params: {mangaId: mangaId.toString(), error: "note not found."}
+				params: {mangaId: mangaId.toString(), error: "note not found"}
 			});
 		}
 	}, []);
