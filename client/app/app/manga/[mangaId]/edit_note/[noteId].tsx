@@ -209,8 +209,22 @@ export default function EditNoteScreen()
 			headers: {
 				authorization: `Bearer ${token}`
 			}
-		}).then(() =>router.navigate(`/app/manga/${mangaId}`))
-
+		})
+		.then(async response => {
+			if (response.ok)
+			{
+				router.navigate(`/app/manga/${mangaId}`)
+			}
+			else
+			{
+				const rawMessage = (await response.text())
+				const errorMessage = rawMessage.slice(1, rawMessage.length - 1)
+				Toast.show({
+					type: "error",
+					text1: errorMessage
+				})
+			}
+		})
 	}
 	
 	return (
