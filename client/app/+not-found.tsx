@@ -11,7 +11,7 @@ export default function NotFoundPage()
 				oops... page not found
 			</ThemeText>
 			<Image
-				source={ Math.floor(Math.random() * 2) === 0 ? require("../assets/images/404_not_found.png") : require("../assets/images/500_internal_server_error.png")}
+				source={require("../assets/images/404_not_found.png")}
 				contentFit='contain'
 				style={{height: "50%", aspectRatio: 1, marginLeft: 75}}
 			/>
