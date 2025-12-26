@@ -238,7 +238,7 @@ export default function AddNoteScreen()
 			<View style={styles.mainLayout}>
 				<Stack.Screen options={{ title: "Add note" }} />
 				<View style={styles.imageViewerContainer}>
-					<View style={images.length > 0 ? styles.imageViewer : styles.noImageContainer}>
+					<View style={[images.length > 0 ? styles.imageViewer : styles.noImageContainer, {borderColor: theme.colors.outlineVariant}]}>
 						{
 							images.length > 0 ? 
 							<>
@@ -284,7 +284,7 @@ export default function AddNoteScreen()
 									<Image
 										source={{ uri: item.uri }}
 										resizeMode="cover"
-										style={styles.thumbnail}
+										style={[styles.thumbnail, {borderColor: theme.colors.outlineVariant}]}
 									/>
 								</Pressable>
 							)}
