@@ -173,6 +173,10 @@ router.get(`/:id`, async (req: Request, res: Response) =>
 	try
 	{
 		const note = await Note.findById(req.params.id).exec()
+		if (note === null)
+		{
+			throw Error("Note not found")
+		}
 		res.json(note)
 	} catch
 	{
