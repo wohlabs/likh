@@ -2,70 +2,95 @@ import ThemeText from "@/components/ThemeText";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import { Image, Pressable, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
-import { IconButton, Menu, useTheme } from "react-native-paper";
+import { IconButton, Menu, Modal, Portal, useTheme } from "react-native-paper";
 import { MangaProps } from "@/services/manga.service";
 import { getMangaTitle } from "@/types/IManga";
 import { LinearGradient } from 'expo-linear-gradient'
 import { modernDarkTheme } from "@/theme/modernTheme";
+import ThemeButton from "./ThemeButton";
 
-export default function MangaCard({item, style} : {item: MangaProps, style: StyleProp<ViewStyle>})
+export default function MangaCard({item, style, onFavorite, onAddToList } : {item: MangaProps, style?: StyleProp<ViewStyle>, onFavorite: () => {}, onAddToList: () => {}})
 {
 	const theme = useTheme();
 	const [optionsVisible, setOptionsVisible] = useState<boolean>(false);
+	const [listsVisible, setListsVisible] = useState<boolean>(false);
 
 	return (
-		<View style={style}>
-			<Pressable 
-				style={[styles.mangaCardContainer, {
-					shadowColor: "#000",
-					shadowOffset: { width: 0, height: 4 },
-					shadowOpacity: 0.08,
-					shadowRadius: 12,
-					elevation: 2,
-					// borderColor: "white",
-					// borderWidth: 1,
-					// borderRadius: 10
-					boxShadow: `0 0 5px 1px ${theme.colors.backdrop}`
-				}]}
-				onPress={() => { router.navigate(`/app/manga/${item.id}`) }}
-			>
-				<Image
-					source={{ uri: item.coverImage?.large }}
-					resizeMode="cover"
-					style={styles.mangaCoverImage}
-				/>
-			{/* Gradient mask */}
-			<LinearGradient
-				colors={["transparent", modernDarkTheme.colors.background]}
-				locations={[0.6, 1]}
-				style={StyleSheet.absoluteFill}
-				pointerEvents="none"
-			/>
-			<View style={styles.bottomContent}>
-				<View style={styles.textContainer}>
-					<ThemeText variant="titleMedium" style={[styles.mangaTitle, {color: modernDarkTheme.colors.onBackground}]} numberOfLines={2}>{getMangaTitle(item)}</ThemeText>
-				</View>
-			</View>
-			<View style={{position: "absolute", top: 0, width: "100%", flexDirection: "row-reverse"}}>
-				<Menu
-					visible={optionsVisible}
-					onDismiss={() =>{setOptionsVisible(false)}}
-					anchor={
-						<IconButton size={15} icon='dots-vertical' mode="contained"
-							onPress={() => setOptionsVisible(true)}
-						/>
-					}
+		<>
+			<View style={style}>
+				<Pressable 
+					style={[styles.mangaCardContainer, {
+						shadowColor: "#000",
+						shadowOffset: { width: 0, height: 4 },
+						shadowOpacity: 0.08,
+						shadowRadius: 12,
+						elevation: 2,
+						boxShadow: `0 0 5px 1px ${theme.colors.backdrop}`
+					}]}
+					onPress={() => { router.navigate(`/app/manga/${item.id}`) }}
 				>
-					<Menu.Item 
-						onPress={() => {}} title="add to list" leadingIcon={"playlist-plus"}
+					<Image
+						source={{ uri: item.coverImage?.large }}
+						resizeMode="cover"
+						style={styles.mangaCoverImage}
 					/>
-				</Menu>
-				<IconButton size={15} icon={"heart-outline"} mode="contained"
-					onPress={() => {}}
+				{/* Gradient mask */}
+				<LinearGradient
+					colors={["transparent", modernDarkTheme.colors.background]}
+					locations={[0.6, 1]}
+					style={StyleSheet.absoluteFill}
+					pointerEvents="none"
 				/>
+				<View style={styles.bottomContent}>
+					<View style={styles.textContainer}>
+						<ThemeText variant="titleMedium" style={[styles.mangaTitle, {color: modernDarkTheme.colors.onBackground}]} numberOfLines={2}>{getMangaTitle(item)}</ThemeText>
+					</View>
+				</View>
+				<View style={{position: "absolute", top: 0, width: "100%", flexDirection: "row-reverse"}}>
+					<Menu
+						visible={optionsVisible}
+						onDismiss={() =>{
+							setOptionsVisible(false)
+							setListsVisible(false)
+						}}
+						anchor={
+							<IconButton size={15} icon='dots-vertical' mode="contained"
+								onPress={() => setOptionsVisible(true)}
+							/>
+						}
+					>
+						{
+							listsVisible ?
+							<>
+								<Menu.Item 
+									title="add to..." leadingIcon={undefined}
+								/>
+								<Menu.Item 
+									onPress={() => {}} title="favourites" leadingIcon={"bookmark-outline"}
+								/>
+								<Menu.Item 
+									onPress={() => {}} title="list 1" leadingIcon={"bookmark-outline"}
+								/>
+								<Menu.Item 
+									onPress={() => {}} title="list 2" leadingIcon={"bookmark"}
+								/>
+								<Menu.Item 
+									onPress={() => {}} title="new list..." leadingIcon={"plus"}
+								/>
+							</>
+							:
+							<Menu.Item 
+								onPress={() => setListsVisible(true)} title="add to list" leadingIcon={"bookmark-outline"}
+							/>
+						}
+					</Menu>
+					<IconButton size={15} icon={"heart-outline"} mode="contained"
+						onPress={onFavorite}
+					/>
+				</View>
+				</Pressable>
 			</View>
-			</Pressable>
-		</View>
+		</>
 	);
 }
 
