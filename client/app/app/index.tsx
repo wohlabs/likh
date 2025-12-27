@@ -3,12 +3,15 @@ import { formatData } from "@/components/util";
 import { Stack, useRouter } from "expo-router";
 import React, { useEffect, useState, useContext, useCallback } from "react";
 import { FlatList, Image, Pressable, StyleSheet, useWindowDimensions, View } from "react-native";
-import { IconButton, Modal, Portal, Searchbar, useTheme } from "react-native-paper";
+import { Button, IconButton, Modal, Portal, Searchbar, useTheme } from "react-native-paper";
+import { BlurView } from "expo-blur";
 import { AuthContext } from "@/context/AuthContext";
 import { addMangaToLibrary, getLibraryMangaThumbnails, getMangaIdsWithNotes, getMyListMangaIds, MangaProps, searchMangaByString } from "@/services/manga.service";
 import { getMangaTitle } from "@/types/IManga";
 import ThemeSearchbar from "@/components/ThemeSearchbar";
 import { LoadingScreen } from "@/components/LoadingScreen";
+import { LinearGradient } from 'expo-linear-gradient'
+import { modernDarkTheme } from "@/theme/modernTheme";
 
 export default function Index() 
 {
@@ -79,14 +82,49 @@ export default function Index()
 						style={{flex: 1}}
 						renderItem={({ item }) => (
 							item?.id ?
-								<Pressable style={{ flex:1, padding: 10 }} onPress={() => { router.navigate(`/app/manga/${item.id}`) }}>
-									<Image
-										source={{ uri: item.coverImage?.large }}
-										resizeMode="cover"
-										style={styles.mangaCoverImage}
+								<View style={{ flex:1, padding: 10,
+								 }}>
+									<Pressable 
+										style={[styles.mangaCardContainer, {
+											shadowColor: "#000",
+											shadowOffset: { width: 0, height: 4 },
+											shadowOpacity: 0.08,
+											shadowRadius: 12,
+											elevation: 2,
+											// borderColor: "white",
+											// borderWidth: 1,
+											// borderRadius: 10
+											boxShadow: `0 0 5px 1px ${theme.colors.backdrop}`
+										}]}
+										onPress={() => { router.navigate(`/app/manga/${item.id}`) }}
+									>
+										<Image
+											source={{ uri: item.coverImage?.large }}
+											resizeMode="cover"
+											style={styles.mangaCoverImage}
+										/>
+									{/* Gradient mask */}
+									<LinearGradient
+										colors={["transparent", modernDarkTheme.colors.background]}
+										locations={[0.6, 1]}
+										style={StyleSheet.absoluteFill}
+										pointerEvents="none"
 									/>
-									<ThemeText variant="titleMedium" style={styles.mangaTitle}>{getMangaTitle(item)}</ThemeText>
-								</Pressable>
+									<View style={styles.bottomContent}>
+										<View style={styles.textContainer}>
+											<ThemeText variant="titleMedium" style={[styles.mangaTitle, {color: modernDarkTheme.colors.onBackground}]} numberOfLines={2}>{getMangaTitle(item)}</ThemeText>
+										</View>
+									</View>
+									<View style={{position: "absolute", top: 0, width: "100%", flexDirection: "row-reverse"}}>
+										<IconButton size={15} icon={"dots-horizontal"} mode="contained"
+											onPress={() => {}}
+										/>
+										<IconButton size={15} icon={"heart-outline"} mode="contained"
+											onPress={() => {}}
+										/>
+									</View>
+									</Pressable>
+								</View>
 								: <View style={{ flex: 1, margin: 5 }} />
 						)}
 					/>
@@ -155,8 +193,25 @@ export default function Index()
 }
 
 const styles = StyleSheet.create({
-	mangaTitle: {textAlign: 'center'},
+	mangaTitle: {textAlign: 'left', margin: 5},
 	mangaCoverImage: { width: '100%', aspectRatio: '0.8', overflow: 'hidden', borderRadius: 10 },
+	mangaCardContainer: { width: '100%', aspectRatio: '0.8', borderRadius: 10, overflow: 'hidden', position: 'relative' },
+	bottomContent: {
+		flex: 1,
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		// padding: 10,
+		position: "absolute",
+		bottom: 0,
+		width: "100%",
+		borderTopLeftRadius: 5,
+		borderTopRightRadius: 5
+	},
+	textContainer: {
+		flex: 1,
+		width: '100%',
+		textAlign: 'left'
+	},
 	searchBarFloating: {
 		width: "100%", minWidth: 350, height: 60, position: "absolute", bottom: 25, flexDirection: "row", alignItems: "center", margin: 'auto', justifyContent: 'center', pointerEvents: 'none'
 	},
