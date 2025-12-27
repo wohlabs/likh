@@ -149,25 +149,6 @@ export default function Index()
 }
 
 const styles = StyleSheet.create({
-	mangaTitle: {textAlign: 'left', margin: 5},
-	mangaCoverImage: { width: '100%', aspectRatio: '0.8', overflow: 'hidden', borderRadius: 10 },
-	mangaCardContainer: { width: '100%', aspectRatio: '0.8', borderRadius: 10, overflow: 'hidden', position: 'relative' },
-	bottomContent: {
-		flex: 1,
-		justifyContent: 'space-between',
-		alignItems: 'center',
-		// padding: 10,
-		position: "absolute",
-		bottom: 0,
-		width: "100%",
-		borderTopLeftRadius: 5,
-		borderTopRightRadius: 5
-	},
-	textContainer: {
-		flex: 1,
-		width: '100%',
-		textAlign: 'left'
-	},
 	searchBarFloating: {
 		width: "100%", minWidth: 350, height: 60, position: "absolute", bottom: 25, flexDirection: "row", alignItems: "center", margin: 'auto', justifyContent: 'center', pointerEvents: 'none'
 	},
