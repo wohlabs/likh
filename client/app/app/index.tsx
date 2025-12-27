@@ -3,15 +3,13 @@ import { formatData } from "@/components/util";
 import { Stack, useRouter } from "expo-router";
 import React, { useEffect, useState, useContext, useCallback } from "react";
 import { FlatList, Image, Pressable, StyleSheet, useWindowDimensions, View } from "react-native";
-import { Button, IconButton, Modal, Portal, Searchbar, useTheme } from "react-native-paper";
-import { BlurView } from "expo-blur";
+import { IconButton, Modal, Portal, useTheme } from "react-native-paper";
 import { AuthContext } from "@/context/AuthContext";
 import { addMangaToLibrary, getLibraryMangaThumbnails, getMangaIdsWithNotes, getMyListMangaIds, MangaProps, searchMangaByString } from "@/services/manga.service";
 import { getMangaTitle } from "@/types/IManga";
 import ThemeSearchbar from "@/components/ThemeSearchbar";
 import { LoadingScreen } from "@/components/LoadingScreen";
-import { LinearGradient } from 'expo-linear-gradient'
-import { modernDarkTheme } from "@/theme/modernTheme";
+import MangaCard from "@/components/MangaCard";
 
 export default function Index() 
 {
@@ -82,49 +80,7 @@ export default function Index()
 						style={{flex: 1}}
 						renderItem={({ item }) => (
 							item?.id ?
-								<View style={{ flex:1, padding: 10,
-								 }}>
-									<Pressable 
-										style={[styles.mangaCardContainer, {
-											shadowColor: "#000",
-											shadowOffset: { width: 0, height: 4 },
-											shadowOpacity: 0.08,
-											shadowRadius: 12,
-											elevation: 2,
-											// borderColor: "white",
-											// borderWidth: 1,
-											// borderRadius: 10
-											boxShadow: `0 0 5px 1px ${theme.colors.backdrop}`
-										}]}
-										onPress={() => { router.navigate(`/app/manga/${item.id}`) }}
-									>
-										<Image
-											source={{ uri: item.coverImage?.large }}
-											resizeMode="cover"
-											style={styles.mangaCoverImage}
-										/>
-									{/* Gradient mask */}
-									<LinearGradient
-										colors={["transparent", modernDarkTheme.colors.background]}
-										locations={[0.6, 1]}
-										style={StyleSheet.absoluteFill}
-										pointerEvents="none"
-									/>
-									<View style={styles.bottomContent}>
-										<View style={styles.textContainer}>
-											<ThemeText variant="titleMedium" style={[styles.mangaTitle, {color: modernDarkTheme.colors.onBackground}]} numberOfLines={2}>{getMangaTitle(item)}</ThemeText>
-										</View>
-									</View>
-									<View style={{position: "absolute", top: 0, width: "100%", flexDirection: "row-reverse"}}>
-										<IconButton size={15} icon={"dots-horizontal"} mode="contained"
-											onPress={() => {}}
-										/>
-										<IconButton size={15} icon={"heart-outline"} mode="contained"
-											onPress={() => {}}
-										/>
-									</View>
-									</Pressable>
-								</View>
+								<MangaCard item={item} style={{ flex:1, padding: 10 }} />
 								: <View style={{ flex: 1, margin: 5 }} />
 						)}
 					/>
