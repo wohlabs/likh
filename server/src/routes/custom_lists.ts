@@ -1,6 +1,6 @@
 import express, { Router, Request, Response } from 'express';
 import AuthenticateMiddleware from '../middleware/Authentication';
-import { MangaList } from '../models/manga_list';
+import { CustomList } from '../models/custom_list.model';
 
 const router: Router = Router();
 
@@ -10,7 +10,7 @@ router.use(express.json())
 router.get(`/`, AuthenticateMiddleware, async (req: Request, res: Response) =>
 {
 	const userId = req.user?.id
-	res.json(await MangaList.find({ userId }).exec())
+	res.json(await CustomList.find({ userId }).exec())
 })
 
 // create new manga list
@@ -18,7 +18,7 @@ router.post(`/`, AuthenticateMiddleware, async (req: Request, res: Response) =>
 {
 	const userId = req.user?.id
 	const { name, description } = req.body
-	const newList = new MangaList({
+	const newList = new CustomList({
 		userId,
 		name,
 		description,
@@ -37,7 +37,7 @@ router.post(`/:listId/:mangaId`, AuthenticateMiddleware, async (req: Request, re
 	{
 		return res.sendStatus(400);
 	}
-	const list = await MangaList.findById(listId).exec()
+	const list = await CustomList.findById(listId).exec()
 	if (list === null)
 	{
 		return res.sendStatus(404);

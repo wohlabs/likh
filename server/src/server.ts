@@ -9,7 +9,7 @@ import AuthenticateMiddleware, { JwtPayload } from './middleware/Authentication'
 import UserRoutes from './routes/users'
 import NoteRoutes from './routes/notes'
 import AnilistRoutes from './routes/anilist'
-import MangaListRoutes from './routes/manga_lists'
+import CustomListRoutes from './routes/custom_lists.js'
 
 dotenv.config()
 
@@ -27,7 +27,7 @@ app.use(cors())
 // Mount routes
 app.use('/users', UserRoutes);
 app.use('/notes', NoteRoutes);
-app.use('/manga-lists', MangaListRoutes);
+app.use('/custom-lists', CustomListRoutes);
 app.use('/anilist', AnilistRoutes);
 
 // test route

@@ -1,6 +1,6 @@
 import { Schema, model, Document, Types } from 'mongoose'
 
-export interface IMangaList extends Document
+export interface ICustomList extends Document
 {
 	userId: Types.ObjectId
 	name: string,
@@ -8,11 +8,11 @@ export interface IMangaList extends Document
 	list: number[]
 }
 
-const MangaListSchema = new Schema<IMangaList>({
+const ICustomListSchema = new Schema<ICustomList>({
 	userId: { type: Schema.ObjectId, ref: 'User' },
 	name: { type: String, required: true },
 	description: { type: String, required: true, default: "" },
 	list: { type: [Number], required: true, default: [] },
 });
 
-export const MangaList = model<IMangaList>('MangaList', MangaListSchema);
+export const CustomList = model<ICustomList>('CustomList', ICustomListSchema);
