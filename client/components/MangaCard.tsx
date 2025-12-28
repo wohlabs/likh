@@ -66,7 +66,7 @@ export default function MangaCard({item, style, onFavorite, onAddToList } : {ite
 									title="add to..." leadingIcon={undefined}
 								/>
 								<Menu.Item 
-									onPress={() => {}} title="favourites" leadingIcon={"bookmark-outline"}
+									onPress={() => {}} title="favorites" leadingIcon={"bookmark-outline"}
 								/>
 								<Menu.Item 
 									onPress={() => {}} title="list 1" leadingIcon={"bookmark-outline"}
