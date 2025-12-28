@@ -13,7 +13,7 @@ router.get(`/`, AuthenticateMiddleware, async (req: Request, res: Response) =>
 	const {mangaId} = req.query
 	if (mangaId == null)
 	{
-		res.json(await CustomList.find({ userId }).select('name'))
+		res.status(200).json(await CustomList.find({ userId }).select('name'))
 	}
 	else
 	{
