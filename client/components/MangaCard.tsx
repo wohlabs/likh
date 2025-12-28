@@ -1,6 +1,6 @@
 import ThemeText from "@/components/ThemeText";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Image, Pressable, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 import { IconButton, Menu, Modal, Portal, useTheme } from "react-native-paper";
 import { MangaProps } from "@/services/manga.service";
@@ -8,12 +8,26 @@ import { getMangaTitle } from "@/types/IManga";
 import { LinearGradient } from 'expo-linear-gradient'
 import { modernDarkTheme } from "@/theme/modernTheme";
 import ThemeButton from "./ThemeButton";
+import { ICustomLists } from "@/types/ICustomList";
+import { getCustomLists } from "@/services/custom_lists";
 
-export default function MangaCard({item, style, onFavorite, onAddToList } : {item: MangaProps, style?: StyleProp<ViewStyle>, onFavorite?: () => {}, onAddToList?: () => {}})
+export default function MangaCard({item, style, allCustomLists, onFavorite, onAddToList } : {item: MangaProps, style?: StyleProp<ViewStyle>, onFavorite?: () => {}, onAddToList?: () => {}, allCustomLists: ICustomLists})
 {
 	const theme = useTheme();
 	const [optionsVisible, setOptionsVisible] = useState<boolean>(false);
 	const [listsVisible, setListsVisible] = useState<boolean>(false);
+	const [mangaCustomLists, setMangaCustomLists] = useState<{ _id: string, name: string, isInList: boolean}[]>([]);
+	
+	const fetchMangaCustomLists = async () => {
+		if (item && item?.id) // undefined id is from "blank" card used to fill in for flat list empty space
+		{
+			setMangaCustomLists(allCustomLists.map((list) => ({ _id: list.id, name: list.name, isInList: list.mangaIds?.includes(Number(item.id)) ?? false })))
+		}
+	}
+	
+	useEffect(() => {
+		fetchMangaCustomLists()
+	}, [])
 
 	return (
 		<>
@@ -54,35 +68,24 @@ export default function MangaCard({item, style, onFavorite, onAddToList } : {ite
 							setListsVisible(false)
 						}}
 						anchor={
-							<IconButton size={15} icon='dots-vertical' mode="contained"
+							<IconButton size={15} icon={mangaCustomLists.reduce((accumulator, currentValue)=> accumulator || currentValue.isInList, false) ? 'bookmark' : 'bookmark-outline'} mode="contained"
 								onPress={() => setOptionsVisible(true)}
 							/>
 						}
 					>
+						<Menu.Item 
+							title={'add to...'} leadingIcon={undefined}
+						/>
 						{
-							listsVisible ?
-							<>
+							mangaCustomLists.map((list) => (
 								<Menu.Item 
-									title="add to..." leadingIcon={undefined}
+									onPress={() => {}} title={list.name} leadingIcon={list.isInList ? "bookmark" : "bookmark-outline"}
 								/>
-								<Menu.Item 
-									onPress={() => {}} title="favorites" leadingIcon={"bookmark-outline"}
-								/>
-								<Menu.Item 
-									onPress={() => {}} title="list 1" leadingIcon={"bookmark-outline"}
-								/>
-								<Menu.Item 
-									onPress={() => {}} title="list 2" leadingIcon={"bookmark"}
-								/>
-								<Menu.Item 
-									onPress={() => {}} title="new list..." leadingIcon={"plus"}
-								/>
-							</>
-							:
-							<Menu.Item 
-								onPress={() => setListsVisible(true)} title="add to list" leadingIcon={"bookmark-outline"}
-							/>
+							))
 						}
+						<Menu.Item 
+							onPress={() => {}} title={'new list'} leadingIcon={'plus'}
+						/>
 					</Menu>
 					<IconButton size={15} icon={"heart-outline"} mode="contained"
 						onPress={onFavorite}

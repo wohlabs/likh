@@ -10,6 +10,8 @@ import { getMangaTitle } from "@/types/IManga";
 import ThemeSearchbar from "@/components/ThemeSearchbar";
 import { LoadingScreen } from "@/components/LoadingScreen";
 import MangaCard from "@/components/MangaCard";
+import { getCustomLists } from "@/services/custom_lists";
+import { ICustomLists } from "@/types/ICustomList";
 
 export default function Index() 
 {
@@ -21,6 +23,7 @@ export default function Index()
 	const [searchString, setSearchString] = useState("")
 	const [newMangaList, setNewMangaList] = useState<MangaProps[]>([]);
 	const [newSearchString, setNewSearchString] = useState("")
+	const [allCustomLists, setAllCustomLists] = useState<ICustomLists>([])
 	const [loading, setLoading] = useState<boolean>(true)
 	const { width } = useWindowDimensions();
 	const anilist_token: string = useContext(AuthContext).anilistToken || ""
@@ -48,6 +51,16 @@ export default function Index()
 		const searchListResult = await searchMangaByString(newSearchString);
 		setNewMangaList(searchListResult.success ? searchListResult.data : []);
 	}, [newSearchString]);
+
+	const populateCustomLists = useCallback(async () => 
+	{
+		const listResponse = await getCustomLists()
+		setAllCustomLists(listResponse.success ? listResponse.data : []);
+	}, []);
+	
+	useEffect(() => {
+		populateCustomLists()
+	}, [])
 
 	useEffect(() => 
 	{
@@ -80,7 +93,7 @@ export default function Index()
 						style={{flex: 1}}
 						renderItem={({ item }) => (
 							item?.id ?
-								<MangaCard item={item} style={{ flex:1, padding: 10 }} />
+								<MangaCard item={item} style={{ flex:1, padding: 10 }} allCustomLists={allCustomLists} />
 								: <View style={{ flex: 1, margin: 5 }} />
 						)}
 					/>
