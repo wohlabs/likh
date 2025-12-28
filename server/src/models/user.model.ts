@@ -1,4 +1,4 @@
-import { Schema, model, Document } from 'mongoose'
+import { Schema, model, Document, Types } from 'mongoose'
 
 export interface IUser extends Document
 {
@@ -6,13 +6,15 @@ export interface IUser extends Document
 	password: string;
 	manga: string[];
 	anilist_token?: string; // optional Anilist OAuth token - lasted forever
+	manga_lists: Types.ObjectId[]; // custom manga lists
 }
 
 const UserSchema = new Schema<IUser>({
 	username: { type: String, required: true, unique: true },
 	password: { type: String, required: true },
 	manga: { type: [String], default: [] },
-	anilist_token: { type: String, required: false, unique: false }
+	anilist_token: { type: String, required: false, unique: false },
+	manga_lists: { type: [Schema.ObjectId], required: true, default: []}
 });
 
 export const User = model<IUser>('User', UserSchema);
