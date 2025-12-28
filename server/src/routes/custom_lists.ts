@@ -1,16 +1,25 @@
 import express, { Router, Request, Response } from 'express';
 import AuthenticateMiddleware from '../middleware/Authentication';
-import { CustomList } from '../models/custom_list.model';
+import { CustomList, ICustomList } from '../models/custom_list.model';
 
 const router: Router = Router();
 
 router.use(express.json())
 
-// get manga lists of current user
+// get manga lists of current user /custom-lists?mangaId=12345
 router.get(`/`, AuthenticateMiddleware, async (req: Request, res: Response) =>
 {
 	const userId = req.user?.id
-	res.json(await CustomList.find({ userId }).exec())
+	const {mangaId} = req.query
+	if (mangaId == null)
+	{
+		res.json(await CustomList.find({ userId }).select('name'))
+	}
+	else
+	{
+		const lists = (await CustomList.find({ userId, mangaIds: mangaId }).select('name'))
+		res.status(200).json(lists)
+	}
 })
 
 // create new manga list
@@ -29,10 +38,11 @@ router.post(`/`, AuthenticateMiddleware, async (req: Request, res: Response) =>
 })
 
 // add manga to list
-router.post(`/:listId/:mangaId`, AuthenticateMiddleware, async (req: Request, res: Response) =>
+router.post(`/:listId/manga`, AuthenticateMiddleware, async (req: Request, res: Response) =>
 {
 	const userId = req.user?.id
-	const { listId, mangaId } = req.params
+	const { listId } = req.params
+	const { mangaId } = req.body
 	if (!listId || !mangaId)
 	{
 		return res.sendStatus(400);
@@ -46,7 +56,7 @@ router.post(`/:listId/:mangaId`, AuthenticateMiddleware, async (req: Request, re
 	{
 		return res.status(401).json("User does not have valid authorization on this list.")
 	}
-	list.list.push(Number(mangaId))
+	list.mangaIds.push(Number(mangaId))
 	list.save()
 	res.sendStatus(200)
 })
