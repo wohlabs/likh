@@ -37,15 +37,16 @@ router.post(`/`, AuthenticateMiddleware, async (req: Request, res: Response) =>
 	res.json(newList)
 })
 
-// add manga to list
+// add manga to favorite list
 router.post(`/favorite/manga`, AuthenticateMiddleware, async (req: Request, res: Response) =>
 {
 	const userId = req.user?.id
-	const { mangaId } = req.body
-	if ( !mangaId)
+	const { mangaId, isFav } = req.body // isFav determines if mangaId is to be added or removed from Favorites list. to be distinguished with isFavorite of a custom list
+	if (!mangaId)
 	{
 		return res.sendStatus(400);
 	}
+	const numMangaId = Number(mangaId)
 	let list = await CustomList.findOne({userId, isFavorite: true}).exec()
 	if (list === null)
 	{
@@ -53,12 +54,19 @@ router.post(`/favorite/manga`, AuthenticateMiddleware, async (req: Request, res:
 			userId,
 			name: 'Favorites',
 			isFavorite: true,
-			mangaIds: []
+			mangaIds: [numMangaId]
 		})
 		list = newFavList
 	}
 
-	list.mangaIds.push(Number(mangaId))
+	if (isFav && !list.mangaIds.includes(numMangaId))
+	{
+		list.mangaIds.push(numMangaId)		
+	}
+	else if (!isFav && list.mangaIds.includes(numMangaId))
+	{
+		list.mangaIds = list.mangaIds.filter((elem) => elem !== numMangaId)
+	}
 	list.save()
 	res.sendStatus(200)
 })
