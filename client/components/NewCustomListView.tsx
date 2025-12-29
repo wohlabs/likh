@@ -6,7 +6,7 @@ import { useCallback, useState } from "react";
 import { createCustomList } from "@/services/custom_lists";
 import { ICustomLists } from "@/types/ICustomList";
 
-export default function NewCustomListView({mangaIdToAdd, setAllCustomLists} : {mangaIdToAdd?: number, setAllCustomLists?: React.Dispatch<React.SetStateAction<ICustomLists>>})
+export default function NewCustomListView({mangaIdToAdd, setAllCustomLists, onCustomListCreated} : {mangaIdToAdd?: number, setAllCustomLists?: React.Dispatch<React.SetStateAction<ICustomLists>>, onCustomListCreated: () => void})
 {
 	const [title, setTitle] = useState<string>("")
 	const [description, setDescription] = useState<string>("")
@@ -17,9 +17,10 @@ export default function NewCustomListView({mangaIdToAdd, setAllCustomLists} : {m
 		const response = await createCustomList(title, description, newMangaIds)
 		if (response.success && setAllCustomLists)
 		{
-			setAllCustomLists((prev) => [...prev, response.data])
+			setAllCustomLists((prev) => { console.log([...prev, response.data]); return [...prev, response.data]})
+			onCustomListCreated()
 		}
-	}, [title, description, mangaIdToAdd]);
+	}, [title, description, mangaIdToAdd, setAllCustomLists, onCustomListCreated]);
 
 	return (
 		<View style={{flex:1, gap: 5}}>

@@ -55,7 +55,7 @@ export default function MangaCard({item, style, allCustomLists, onCreateList } :
 	
 	useEffect(() => {
 		fetchMangaCustomLists()
-	}, [])
+	}, [allCustomLists])
 
 	return (
 		<>
