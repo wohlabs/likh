@@ -13,11 +13,11 @@ router.get(`/`, AuthenticateMiddleware, async (req: Request, res: Response) =>
 	const {mangaId} = req.query
 	if (mangaId == null)
 	{
-		res.status(200).json(await CustomList.find({ userId }).select('name mangaIds'))
+		res.status(200).json(await CustomList.find({ userId }).select('name mangaIds isFavorite'))
 	}
 	else
 	{
-		const lists = (await CustomList.find({ userId, mangaIds: mangaId }).select('name mangaIds'))
+		const lists = (await CustomList.find({ userId, mangaIds: mangaId }).select('name mangaIds isFavorite'))
 		res.status(200).json(lists)
 	}
 })
@@ -35,6 +35,32 @@ router.post(`/`, AuthenticateMiddleware, async (req: Request, res: Response) =>
 	})
 	await newList.save()
 	res.json(newList)
+})
+
+// add manga to list
+router.post(`/favorite/manga`, AuthenticateMiddleware, async (req: Request, res: Response) =>
+{
+	const userId = req.user?.id
+	const { mangaId } = req.body
+	if ( !mangaId)
+	{
+		return res.sendStatus(400);
+	}
+	let list = await CustomList.findOne({userId, isFavorite: true}).exec()
+	if (list === null)
+	{
+		const newFavList = await CustomList.create({
+			userId,
+			name: 'Favorites',
+			isFavorite: true,
+			mangaIds: []
+		})
+		list = newFavList
+	}
+
+	list.mangaIds.push(Number(mangaId))
+	list.save()
+	res.sendStatus(200)
 })
 
 // add manga to list

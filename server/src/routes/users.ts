@@ -3,6 +3,7 @@ import AuthenticateMiddleware, { JWT_SECRET } from '../middleware/Authentication
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { IUser, User } from '../models/user.model';
+import { CustomList } from '../models/custom_list.model';
 
 const router: Router = Router();
 
@@ -21,6 +22,16 @@ router.post(`/`, async (req: Request, res: Response) =>
 			password: hashedPassword
 		});
 		await newUser.save();
+
+		const newFavList = await CustomList.create({
+			userId: newUser._id,
+			name: 'Favorites',
+			description: '',
+			isFavorite: true,
+			mangaIds: []
+		})
+		await newFavList.save();
+
 		res.status(201).json({ message: 'User registered successfully' });
 	} catch
 	{
