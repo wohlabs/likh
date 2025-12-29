@@ -111,47 +111,54 @@ export default function MainNavigator({ isDark, toggleTheme }: { isDark: boolean
 				contentStyle: {backgroundColor: theme.colors.background},
 				headerStyle: {backgroundColor: theme.colors.surfaceVariant},
 				headerTintColor: useTheme().colors.onSurface,
-				headerTitle: () => <Pressable onPress={onTitleClicked}><ThemeText style={{ fontWeight: "900", letterSpacing: 2 }} variant="titleLarge">likh</ThemeText></Pressable>,
+				headerLeft: () => <Pressable onPress={onTitleClicked}><ThemeText style={{ fontWeight: "900", letterSpacing: 2, marginLeft: 10 }} variant="titleLarge">likh</ThemeText></Pressable>,
 				headerTitleAlign: "center",
-				headerLeft: () => <IconButton size={20} icon={isDark ? 'moon-waning-crescent' : 'white-balance-sunny'} onPress={toggleTheme} style={[Platform.OS === 'ios' && {margin: 'auto'}]} iconColor={theme.colors.primary} />, // disable back button
+				headerTitle: () => null,
 				headerRight: () =>
-					token
-						?
-						<Menu
-							visible={optionsVisible}
-							onDismiss={() => setOptionsVisible(false)}
-							anchor={
-								<ThemeButton icon={'account'} onPress={() => setOptionsVisible(true)} mode="text" textColor={theme.colors.primary}>{username}</ThemeButton>
-							}
-						>
-							<Menu.Item 
-								onPress={() => 
-								{
-									if (anilistToken == null || anilistToken === undefined || anilistToken === "undefined" || anilistToken === '')
+				(
+					<>
+						<IconButton size={20} icon={isDark ? 'moon-waning-crescent' : 'white-balance-sunny'} onPress={toggleTheme} style={[Platform.OS === 'ios' && {margin: 'auto'}]} iconColor={theme.colors.primary} />
+						{
+							token
+							?
+							<Menu
+								visible={optionsVisible}
+								onDismiss={() => setOptionsVisible(false)}
+								anchor={
+									<ThemeButton icon={'account'} onPress={() => setOptionsVisible(true)} mode="text" textColor={theme.colors.primary}>{username}</ThemeButton>
+								}
+							>
+								<Menu.Item 
+									onPress={() => 
+									{
+										if (anilistToken == null || anilistToken === undefined || anilistToken === "undefined" || anilistToken === '')
+										{
+											setOptionsVisible(false);
+											linkAnilist();
+											router.replace('/app') // may not be ideal to refresh
+										}
+									}}
+									leadingIcon={() => (
+										<Image
+											source={{ uri: 'https://docs.anilist.co/anilist.png' }}
+											style={styles.anilistIcon}
+										/>
+									)}
+									title={anilistToken == null || anilistToken === undefined || anilistToken === "undefined" || anilistToken === '' ? "Link your Anilist account" : "Anilist linked"}
+								/>
+								<Menu.Item 
+									onPress={() => 
 									{
 										setOptionsVisible(false);
-										linkAnilist();
-										router.replace('/app') // may not be ideal to refresh
-									}
-								}}
-								leadingIcon={() => (
-									<Image
-										source={{ uri: 'https://docs.anilist.co/anilist.png' }}
-										style={styles.anilistIcon}
-									/>
-								)}
-								title={anilistToken == null || anilistToken === undefined || anilistToken === "undefined" || anilistToken === '' ? "Link your Anilist account" : "Anilist linked"}
-							/>
-							<Menu.Item 
-								onPress={() => 
-								{
-									setOptionsVisible(false);
-									logout();
-									router.navigate('/users/login') // may not be ideal to refresh
-								}} title="Logout" leadingIcon={"logout"}
-							/>
-						</Menu>
-						: <ThemeButton icon={'login'} onPress={() => router.navigate("/users/login")}>Login</ThemeButton>
+										logout();
+										router.navigate('/users/login') // may not be ideal to refresh
+									}} title="Logout" leadingIcon={"logout"}
+								/>
+							</Menu>
+							: <ThemeButton icon={'login'} onPress={() => router.navigate("/users/login")}>Login</ThemeButton>
+						}
+					</>
+				)
 			}}
 		>
 			<Stack.Screen name="index" options={{headerShown: false}}/>
