@@ -17,11 +17,13 @@ export default function MangaCard({item, style, allCustomLists, onFavorite, onAd
 	const [optionsVisible, setOptionsVisible] = useState<boolean>(false);
 	const [listsVisible, setListsVisible] = useState<boolean>(false);
 	const [mangaCustomLists, setMangaCustomLists] = useState<{ _id: string, name: string, isInList: boolean}[]>([]);
+	const [isFavorite, setFavorite] = useState<boolean>(false);
 	
 	const fetchMangaCustomLists = async () => {
 		if (item && item?.id) // undefined id is from "blank" card used to fill in for flat list empty space
 		{
-			setMangaCustomLists(allCustomLists.map((list) => ({ _id: list.id, name: list.name, isInList: list.mangaIds?.includes(Number(item.id)) ?? false })))
+			setMangaCustomLists(allCustomLists.filter((list) => !list.isFavorite).map((list) => ({ _id: list.id, name: list.name, isInList: list.mangaIds?.includes(Number(item.id)) ?? false })))
+			setFavorite(allCustomLists.findLast((list) => list.isFavorite)?.mangaIds.includes(Number(item.id)) ?? false)
 		}
 	}
 	
@@ -87,7 +89,7 @@ export default function MangaCard({item, style, allCustomLists, onFavorite, onAd
 							onPress={() => {}} title={'new list'} leadingIcon={'plus'}
 						/>
 					</Menu>
-					<IconButton size={15} icon={"heart-outline"} mode="contained"
+					<IconButton size={15} icon={isFavorite ? "heart" : "heart-outline"} mode="contained"
 						onPress={onFavorite}
 					/>
 				</View>
