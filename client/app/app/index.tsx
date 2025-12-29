@@ -87,7 +87,6 @@ export default function Index()
 			<Stack.Screen
 				options={{
 					title: "Library",
-					headerTitleAlign: "center"
 				}}
 			/>
 			<View style={{flex: 1}}>
