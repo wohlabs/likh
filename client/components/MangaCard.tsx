@@ -9,7 +9,7 @@ import { LinearGradient } from 'expo-linear-gradient'
 import { modernDarkTheme } from "@/theme/modernTheme";
 import ThemeButton from "./ThemeButton";
 import { ICustomLists } from "@/types/ICustomList";
-import { favoriteManga, getCustomLists } from "@/services/custom_lists";
+import { addToCustomList, favoriteManga, getCustomLists } from "@/services/custom_lists";
 
 export default function MangaCard({item, style, allCustomLists, onFavorite, onAddToList } : {item: MangaProps, style?: StyleProp<ViewStyle>, onFavorite?: () => {}, onAddToList?: () => {}, allCustomLists: ICustomLists})
 {
@@ -24,6 +24,24 @@ export default function MangaCard({item, style, allCustomLists, onFavorite, onAd
 		{
 			setMangaCustomLists(allCustomLists.filter((list) => !list.isFavorite).map((list) => ({ _id: list.id, name: list.name, isInList: list.mangaIds?.includes(Number(item.id)) ?? false })))
 			setFavorite(allCustomLists.findLast((list) => list.isFavorite)?.mangaIds.includes(Number(item.id)) ?? false)
+		}
+	}
+
+	const toggleList = async (listId: string) => {
+		if (item && item?.id) // undefined id is from "blank" card used to fill in for flat list empty space
+		{
+			const targetList = mangaCustomLists.findLast((list) => list._id === listId)
+			if (targetList !== undefined)
+			{
+				addToCustomList(Number(item.id), !targetList.isInList)
+				setMangaCustomLists(prevLists =>
+					prevLists.map(list =>
+						list._id === listId
+							? { ...list, isInList: !list.isInList }
+							: list
+					)
+				)
+			}
 		}
 	}
 
@@ -89,7 +107,8 @@ export default function MangaCard({item, style, allCustomLists, onFavorite, onAd
 						{
 							mangaCustomLists.map((list) => (
 								<Menu.Item 
-									onPress={() => {}} title={list.name} leadingIcon={list.isInList ? "bookmark" : "bookmark-outline"}
+									key={`custom_list_${list._id}`}
+									onPress={() => toggleList(list._id)} title={list.name} leadingIcon={list.isInList ? "bookmark" : "bookmark-outline"}
 								/>
 							))
 						}

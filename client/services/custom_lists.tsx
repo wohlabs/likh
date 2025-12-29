@@ -22,6 +22,28 @@ export const getCustomLists = async (mangaId?: number) : Promise<ServiceResult<I
 	}
 }
 
+export const addToCustomList = async (mangaId: number, isIncluded: boolean) : Promise<ServiceResult<null>> =>
+{
+	try
+	{
+		await api.post('/custom-lists/favorite/manga', {
+			mangaId,
+			isIncluded
+		});
+		return {
+			success: true,
+			data: null
+		};
+	}
+	catch (error: any)
+	{
+		return {
+			success: false,
+			error: error.response?.data?.error || "Could not fetch custom lists"
+		};
+	}
+}
+
 export const favoriteManga = async (mangaId: number, isFav: boolean) : Promise<ServiceResult<null>> =>
 {
 	try

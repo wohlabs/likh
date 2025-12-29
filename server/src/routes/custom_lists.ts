@@ -76,7 +76,7 @@ router.post(`/:listId/manga`, AuthenticateMiddleware, async (req: Request, res: 
 {
 	const userId = req.user?.id
 	const { listId } = req.params
-	const { mangaId } = req.body
+	const { mangaId, isIncluded } = req.body
 	if (!listId || !mangaId)
 	{
 		return res.sendStatus(400);
@@ -90,7 +90,16 @@ router.post(`/:listId/manga`, AuthenticateMiddleware, async (req: Request, res: 
 	{
 		return res.status(401).json("User does not have valid authorization on this list.")
 	}
-	list.mangaIds.push(Number(mangaId))
+
+	const numMangaId = Number(mangaId)
+	if (isIncluded && !list.mangaIds.includes(numMangaId))
+	{
+		list.mangaIds.push(numMangaId)		
+	}
+	else if (!isIncluded && list.mangaIds.includes(numMangaId))
+	{
+		list.mangaIds = list.mangaIds.filter((elem) => elem !== numMangaId)
+	}
 	list.save()
 	res.sendStatus(200)
 })
