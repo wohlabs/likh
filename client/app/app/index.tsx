@@ -3,7 +3,7 @@ import { formatData } from "@/components/util";
 import { Stack, useRouter } from "expo-router";
 import React, { useEffect, useState, useContext, useCallback } from "react";
 import { FlatList, Image, Pressable, StyleSheet, useWindowDimensions, View } from "react-native";
-import { IconButton, Modal, Portal, useTheme } from "react-native-paper";
+import { IconButton, Modal, Portal, TextInput, useTheme } from "react-native-paper";
 import { AuthContext } from "@/context/AuthContext";
 import { addMangaToLibrary, getLibraryMangaThumbnails, getMangaIdsWithNotes, getMyListMangaIds, MangaProps, searchMangaByString } from "@/services/manga.service";
 import { getMangaTitle } from "@/types/IManga";
@@ -12,14 +12,18 @@ import { LoadingScreen } from "@/components/LoadingScreen";
 import MangaCard from "@/components/MangaCard";
 import { getCustomLists } from "@/services/custom_lists";
 import { ICustomLists } from "@/types/ICustomList";
+import ThemeButton from "@/components/ThemeButton";
+import NewCustomListView from "@/components/NewCustomListView";
 
 export default function Index() 
 {
 	const router = useRouter();
 	const theme = useTheme()
 	const [mangaList, setMangaList] = useState<MangaProps[]>([]);
+	const [mangaIdToAdd, setMangaIdToAdd] = useState<number | undefined>(undefined);
 	const [filteredMangaList, setFilteredMangaList] = useState<MangaProps[]>([]);
 	const [isSearching, setSearching] = useState(false)
+	const [isCreatingNewList, setCreatingNewList] = useState(false)
 	const [searchString, setSearchString] = useState("")
 	const [newMangaList, setNewMangaList] = useState<MangaProps[]>([]);
 	const [newSearchString, setNewSearchString] = useState("")
@@ -50,6 +54,12 @@ export default function Index()
 	{
 		const searchListResult = await searchMangaByString(newSearchString);
 		setNewMangaList(searchListResult.success ? searchListResult.data : []);
+	}, [newSearchString]);
+
+	const popupCreateNewListWindow = useCallback(async (mangaIdToAdd?: number) => 
+	{
+		setMangaIdToAdd(mangaIdToAdd);
+		setCreatingNewList(true)
 	}, [newSearchString]);
 
 	const populateCustomLists = useCallback(async () => 
@@ -93,7 +103,7 @@ export default function Index()
 						style={{flex: 1}}
 						renderItem={({ item }) => (
 							item?.id ?
-								<MangaCard item={item} style={{ flex:1, padding: 10 }} allCustomLists={allCustomLists} />
+								<MangaCard item={item} style={{ flex:1, padding: 10 }} allCustomLists={allCustomLists} onCreateList={popupCreateNewListWindow}/>
 								: <View style={{ flex: 1, margin: 5 }} />
 						)}
 					/>
@@ -155,6 +165,10 @@ export default function Index()
 							</Pressable>
 						)}
 					/>
+				</Modal>
+				<Modal visible={isCreatingNewList} onDismiss={() => setCreatingNewList(false)}
+					contentContainerStyle={{minWidth: 200, minHeight: 200, width: "30%", height: "50%", backgroundColor: "white", borderRadius: 10, margin: 'auto', padding: 10, gap: 5}}>
+					<NewCustomListView mangaIdToAdd={mangaIdToAdd} setAllCustomLists={setAllCustomLists} />
 				</Modal>
 			</Portal>
 		</>

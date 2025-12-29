@@ -1,4 +1,4 @@
-import { ICustomLists } from "@/types/ICustomList";
+import { ICustomList, ICustomLists } from "@/types/ICustomList";
 import api from "./AxiosInstance";
 import { ServiceResult } from "./IServiceResult";
 
@@ -22,11 +22,35 @@ export const getCustomLists = async (mangaId?: number) : Promise<ServiceResult<I
 	}
 }
 
-export const addToCustomList = async (mangaId: number, isIncluded: boolean) : Promise<ServiceResult<null>> =>
+export const createCustomList = async (name: string, description: string = "", initMangaIds: number[] = []) : Promise<ServiceResult<ICustomList>> =>
 {
 	try
 	{
-		await api.post('/custom-lists/favorite/manga', {
+		const response = await api.post('/custom-lists', {
+			name,
+			description,
+			initMangaIds
+		});
+
+		return {
+			success: true,
+			data: response.data
+		};
+	}
+	catch (error: any)
+	{
+		return {
+			success: false,
+			error: error.response?.data?.error || "Could not fetch custom lists"
+		};
+	}
+}
+
+export const addToCustomList = async (listId: string, mangaId: number, isIncluded: boolean) : Promise<ServiceResult<null>> =>
+{
+	try
+	{
+		await api.post(`/custom-lists/${listId}/manga`, {
 			mangaId,
 			isIncluded
 		});

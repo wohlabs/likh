@@ -26,12 +26,12 @@ router.get(`/`, AuthenticateMiddleware, async (req: Request, res: Response) =>
 router.post(`/`, AuthenticateMiddleware, async (req: Request, res: Response) =>
 {
 	const userId = req.user?.id
-	const { name, description } = req.body
+	const { name, description, initMangaIds } = req.body
 	const newList = new CustomList({
 		userId,
 		name,
 		description,
-		list: []
+		mangaIds: initMangaIds ?? []
 	})
 	await newList.save()
 	res.json(newList)
