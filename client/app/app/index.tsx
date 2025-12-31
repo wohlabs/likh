@@ -14,6 +14,7 @@ import { getCustomLists } from "@/services/custom_lists";
 import { ICustomLists } from "@/types/ICustomList";
 import ThemeButton from "@/components/ThemeButton";
 import NewCustomListView from "@/components/NewCustomListView";
+import AdvancedSearchModal from "@/components/AdvancedSearchModal";
 
 export default function Index() 
 {
@@ -25,6 +26,7 @@ export default function Index()
 	const [isSearching, setSearching] = useState(false)
 	const [isCreatingNewList, setCreatingNewList] = useState(false)
 	const [searchString, setSearchString] = useState("")
+	const [isAdvancedSearching, setIsAdvancedSearching] = useState(false)
 	const [newMangaList, setNewMangaList] = useState<MangaProps[]>([]);
 	const [newSearchString, setNewSearchString] = useState("")
 	const [allCustomLists, setAllCustomLists] = useState<ICustomLists>([])
@@ -110,9 +112,10 @@ export default function Index()
 				<View style={styles.searchBarFloating}>
 					<View style={styles.searchBarContainer}>
 						<ThemeSearchbar
-							placeholder="search library"
+							key="library_search_bar"
+							placeholder="Search manga, notes, lists..."
 							onChangeText={setSearchString}
-							onSubmitEditing={() => { populateNewMangaList(); }}
+							onFocus={() => setIsAdvancedSearching(true)}
 							style={styles.searchBar}
 							value={searchString}
 						/>
@@ -127,6 +130,13 @@ export default function Index()
 				</View>
 			</View>
 			<Portal>
+				<AdvancedSearchModal 
+					visible={isAdvancedSearching} 
+					onDismiss={() => {
+						setIsAdvancedSearching(false);
+						setSearchString('');
+					}} 
+				/>
 				<Modal visible={isSearching} onDismiss={() => setSearching(false)}
 					contentContainerStyle={[styles.addMangaModalContainer, { backgroundColor: theme.colors.background }]}>
 					<ThemeSearchbar

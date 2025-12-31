@@ -10,6 +10,7 @@ import UserRoutes from './routes/users'
 import NoteRoutes from './routes/notes'
 import AnilistRoutes from './routes/anilist'
 import CustomListRoutes from './routes/custom_lists.js'
+import SearchRoutes from './routes/search.js'
 
 dotenv.config()
 
@@ -29,6 +30,7 @@ app.use('/users', UserRoutes);
 app.use('/notes', NoteRoutes);
 app.use('/custom-lists', CustomListRoutes);
 app.use('/anilist', AnilistRoutes);
+app.use('/search', SearchRoutes);
 
 // test route
 app.get(`/`, (req: Request, res: Response) => { res.json('hello world') })
