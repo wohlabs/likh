@@ -166,7 +166,7 @@ export default function Index()
 					/>
 				</Modal>
 				<Modal visible={isCreatingNewList} onDismiss={() => setCreatingNewList(false)}
-					contentContainerStyle={{minWidth: 200, minHeight: 200, width: "30%", height: "50%", backgroundColor: "white", borderRadius: 10, margin: 'auto', padding: 10, gap: 5}}>
+					contentContainerStyle={{minWidth: 200, minHeight: 200, width: "30%", height: "50%", backgroundColor: theme.colors.background, borderRadius: 10, margin: 'auto', padding: 10, gap: 5}}>
 					<NewCustomListView mangaIdToAdd={mangaIdToAdd} setAllCustomLists={setAllCustomLists} onCustomListCreated={async () => setCreatingNewList(false)} />
 				</Modal>
 			</Portal>
