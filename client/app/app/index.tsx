@@ -2,7 +2,7 @@ import ThemeText from "@/components/ThemeText";
 import { formatData } from "@/components/util";
 import { Stack, useRouter } from "expo-router";
 import React, { useEffect, useState, useContext, useCallback } from "react";
-import { FlatList, Image, Pressable, StyleSheet, useWindowDimensions, View } from "react-native";
+import { FlatList, Image, Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from "react-native";
 import { IconButton, Modal, Portal, TextInput, useTheme } from "react-native-paper";
 import { AuthContext } from "@/context/AuthContext";
 import { addMangaToLibrary, getLibraryMangaThumbnails, getMangaIdsWithNotes, getMyListMangaIds, MangaProps, searchMangaByString } from "@/services/manga.service";
@@ -110,33 +110,21 @@ export default function Index()
 					/>
 				}
 				<View style={styles.searchBarFloating}>
-					<View style={styles.searchBarContainer}>
-						<ThemeSearchbar
-							key="library_search_bar"
-							placeholder="Search manga, notes, lists..."
-							onChangeText={setSearchString}
-							onFocus={() => setIsAdvancedSearching(true)}
-							style={styles.searchBar}
-							value={searchString}
+					<ScrollView style={styles.searchBarContainer}
+					keyboardShouldPersistTaps={true}
+					>
+						<AdvancedSearchModal 
+							style={{flex: 1, marginHorizontal: 10, width: '100%'}}
+							visible={isAdvancedSearching} 
+							onDismiss={() => {
+								setIsAdvancedSearching(false);
+								setSearchString('');
+							}} 
 						/>
-						<IconButton
-							icon={"plus"}
-							size={30}
-							onPress={() => { setSearching(!isSearching); populateNewMangaList(); }}
-							style={styles.addNoteIconButton}
-							mode="contained"
-						/>
-					</View>
+					</ScrollView>
 				</View>
 			</View>
 			<Portal>
-				<AdvancedSearchModal 
-					visible={isAdvancedSearching} 
-					onDismiss={() => {
-						setIsAdvancedSearching(false);
-						setSearchString('');
-					}} 
-				/>
 				<Modal visible={isSearching} onDismiss={() => setSearching(false)}
 					contentContainerStyle={[styles.addMangaModalContainer, { backgroundColor: theme.colors.background }]}>
 					<ThemeSearchbar
@@ -186,10 +174,9 @@ export default function Index()
 
 const styles = StyleSheet.create({
 	searchBarFloating: {
-		width: "100%", minWidth: 350, height: 60, position: "absolute", bottom: 25, flexDirection: "row", alignItems: "center", margin: 'auto', justifyContent: 'center', pointerEvents: 'none'
+		width: "100%", minWidth: 350, position: "absolute", bottom: 25, flexDirection: "row", alignItems: "center", margin: 'auto', justifyContent: 'center', pointerEvents: 'none'
 	},
-	searchBarContainer: { width: '90%', maxWidth: 600, flexDirection: 'row', alignItems: 'center' },
-	searchBar: {margin: 10, borderRadius: 10, flex: 1, boxShadow: "0px 4px 5px rgba(0,0,0,0.3)" },
+	searchBarContainer: { width: '90%', maxWidth: 600, flex: 1, flexDirection: 'column' },
 	addNoteIconButton: {boxShadow: "0px 4px 5px rgba(0,0,0,0.3)" },
 	addMangaModalContainer: {
 		padding: 0, margin: 'auto', width: "90%", height: "80%", borderRadius: 10

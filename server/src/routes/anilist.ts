@@ -1,8 +1,17 @@
 import express, { Request, Response } from "express";
 import { anilistRequest } from "../Utility";
+import { jwtDecode } from "jwt-decode";
 
 const router = express.Router();
 router.use(express.json())
+
+export const getUserIdFromToken = (accessToken: string) : number | null => 
+{
+	if (accessToken.length === 0) return null
+	const decodedToken: any = jwtDecode(accessToken);
+	const userId: number = decodedToken.sub;
+	return userId;
+}
 
 // forward request to Anilist API
 router.post("/", async (req: Request, res: Response) => {
@@ -17,5 +26,37 @@ router.post("/", async (req: Request, res: Response) => {
 		return res.status(500).json({ error: err.message || "Failed to fetch data" });
 	}
 });
+
+export const getMangaIdsWithNotes = async (accessToken: string) : Promise<string[]> =>
+{
+	if (accessToken === null || accessToken.length === 0) return []
+	const userId = getUserIdFromToken(accessToken);
+	const query = `query ($userId: Int){
+			MediaListCollection(userId: $userId, type: MANGA) {
+				lists {
+					entries {
+						notes
+						id
+						mediaId
+					}
+				}
+			}
+		}`;
+	const variables = {userId : userId};
+	try
+	{
+		const data = await anilistRequest(query, variables, 3600);
+		const mangaIds = data.data.MediaListCollection.lists.flatMap((list: any) =>
+			list.entries
+				.filter((entry: any) => entry.notes && entry.notes.length > 0)
+				.map((entry: any) => entry.mediaId.toString())
+		);
+		return mangaIds;
+	}
+	catch (err: any)
+	{
+		return [];
+	}
+}
 
 export default router;

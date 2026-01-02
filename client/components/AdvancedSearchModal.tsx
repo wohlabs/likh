@@ -1,10 +1,13 @@
-import React, { useCallback, useState } from 'react';
+import React, { Ref, useCallback, useRef, useState } from 'react';
 import {
 	FlatList,
 	Image,
 	Pressable,
+	StyleProp,
 	StyleSheet,
+	TextInput,
 	View,
+	ViewStyle,
 	useWindowDimensions,
 } from 'react-native';
 import { IconButton, Modal, Portal, useTheme } from 'react-native-paper';
@@ -13,23 +16,28 @@ import ThemeSearchbar from '@/components/ThemeSearchbar';
 import { performAdvancedSearch, SearchResult } from '@/services/search.service';
 import { useRouter } from 'expo-router';
 import { getMangaTitle } from '@/types/IManga';
+import { addMangaToLibrary } from '@/services/manga.service';
 
 interface AdvancedSearchModalProps {
 	visible: boolean;
 	onDismiss: () => void;
+	style?: StyleProp<ViewStyle>
 }
 
-export default function AdvancedSearchModal({ visible, onDismiss }: AdvancedSearchModalProps) {
+export default function AdvancedSearchModal({ visible, onDismiss, style }: AdvancedSearchModalProps) {
 	const theme = useTheme();
 	const router = useRouter();
-	const { width } = useWindowDimensions();
+	const { width, height } = useWindowDimensions();
 	const [searchQuery, setSearchQuery] = useState('');
+	const [isAdvancedSearching, setIsAdvancedSearching] = useState<boolean>(false);
 	const [searchResults, setSearchResults] = useState<SearchResult>({
 		manga: [],
 		notes: [],
 		lists: []
 	});
 	const [isLoading, setIsLoading] = useState(false);
+	const searchRef = useRef<TextInput>(null);
+	const isSubmittingRef = useRef<boolean>(false);
 
 	const handleSearch = useCallback(async () => {
 		if (!searchQuery.trim()) {
@@ -46,23 +54,26 @@ export default function AdvancedSearchModal({ visible, onDismiss }: AdvancedSear
 	}, [searchQuery]);
 
 	const handleMangaPress = (mangaId: number) => {
+		console.log("press manga")
 		onDismiss();
 		router.navigate(`/app/manga/${mangaId}`);
 	};
 
 	const handleNotePress = (mangaId: number) => {
+		console.log("press note")
 		onDismiss();
 		router.navigate(`/app/manga/${mangaId}`);
 	};
 
 	const handleListPress = (listId: string) => {
+		console.log("press list")
 		onDismiss();
 		router.navigate(`/app/custom-lists/${listId}`);
 	};
 
 	const renderMangaResult = ({ item }: { item: any }) => (
 		<Pressable
-			style={[styles.resultItem, { backgroundColor: theme.colors.surfaceVariant }]}
+			style={[styles.resultItem, { backgroundColor: theme.colors.surface }]}
 			onPress={() => handleMangaPress(item.id)}
 		>
 			<Image
@@ -75,7 +86,15 @@ export default function AdvancedSearchModal({ visible, onDismiss }: AdvancedSear
 					{getMangaTitle(item)}
 				</ThemeText>
 			</View>
-			<IconButton icon="chevron-right" size={24} />
+			<IconButton
+				icon={"plus"}
+				mode="outlined"
+				// iconColor={/* mangaList.find((elem) => elem.id === item.id) ?  */theme.colors.primary/*  : theme.colors.primary */}
+				// containerColor={/* mangaList.find((elem) => elem.id === item.id) ?  */theme.colors.primaryContainer/*  : theme.colors.surfaceVariant */}
+				onPress={async () => {
+					await addMangaToLibrary(item.id);
+				}}
+			/>
 		</Pressable>
 	);
 
@@ -92,13 +111,12 @@ export default function AdvancedSearchModal({ visible, onDismiss }: AdvancedSear
 					{item.text}
 				</ThemeText>
 			</View>
-			<IconButton icon="chevron-right" size={24} />
 		</Pressable>
 	);
 
 	const renderListResult = ({ item }: { item: any }) => (
 		<Pressable
-			style={[styles.resultItem, { backgroundColor: theme.colors.surfaceVariant }]}
+			style={[styles.resultItem, { backgroundColor: theme.colors.surface }]}
 			onPress={() => handleListPress(item.id)}
 		>
 			<View style={styles.resultContent}>
@@ -109,20 +127,18 @@ export default function AdvancedSearchModal({ visible, onDismiss }: AdvancedSear
 					{item.mangaIds.length} manga{item.isFavorite ? ' • Favorites' : ''}
 				</ThemeText>
 			</View>
-			<IconButton icon="chevron-right" size={24} />
 		</Pressable>
 	);
 
 	return (
-			<Modal
-				visible={visible}
-				onDismiss={onDismiss}
-				contentContainerStyle={[
+		<>
+			<View
+				style={[
 					styles.container,
-					{ backgroundColor: theme.colors.background }
+					{ backgroundColor: theme.colors.background, opacity: isAdvancedSearching ? 1 : 0, pointerEvents: isAdvancedSearching ? 'auto' : 'none', maxHeight: 0.7 * height, marginHorizontal: 10 },
 				]}
 			>
-				<View style={styles.header}>
+				{/* <View style={styles.header}>
 					<ThemeSearchbar
 						placeholder="Search manga, notes, lists..."
 						value={searchQuery}
@@ -130,7 +146,7 @@ export default function AdvancedSearchModal({ visible, onDismiss }: AdvancedSear
 						onSubmitEditing={handleSearch}
 						style={styles.searchInput}
 					/>
-				</View>
+				</View> */}
 
 				{isLoading ? (
 					<View style={styles.loadingContainer}>
@@ -185,20 +201,41 @@ export default function AdvancedSearchModal({ visible, onDismiss }: AdvancedSear
 						scrollEnabled={true}
 					/>
 				)}
-			</Modal>
+			</View>
+			<ThemeSearchbar
+				ref={searchRef}
+				key="library_search_bar"
+				placeholder="Search manga, notes, lists..."
+				onChangeText={setSearchQuery}
+				onSubmitEditing={() =>  {
+					isSubmittingRef.current=true
+					handleSearch()
+				}}
+				onFocus={() => {
+					setIsAdvancedSearching(true)
+				}}
+				onBlur={() => {
+					if (isSubmittingRef.current) {
+						isSubmittingRef.current = false;
+						searchRef.current?.focus()
+						return;
+					}
+					setIsAdvancedSearching(false)
+				}}
+				style={styles.searchBar}
+				value={searchQuery}
+			/>
+		</>
 	);
 }
 
 const styles = StyleSheet.create({
 	container: {
-		margin: 'auto',
-		width: '95%',
-		maxWidth: 600,
-		height: '85%',
 		borderRadius: 12,
-		overflow: 'hidden',
-		flexDirection: 'column'
+		// flexDirection: 'column',
+		flex: 1
 	},
+	searchBar: {marginHorizontal: 10, marginVertical: 5, height: 60, borderRadius: 10, flex: 1, boxShadow: "0px 4px 5px rgba(0,0,0,0.3)" },
 	header: {
 		padding: 12,
 		borderBottomWidth: 1,
@@ -214,12 +251,12 @@ const styles = StyleSheet.create({
 		alignItems: 'center'
 	},
 	emptyContainer: {
-		flex: 1,
-		justifyContent: 'center',
-		alignItems: 'center'
+		// justifyContent: 'center',
+		// alignItems: 'center',
+		padding: 10
 	},
 	emptyText: {
-		opacity: 0.6
+		opacity: 0.6,
 	},
 	categoryHeader: {
 		marginTop: 8,
@@ -247,7 +284,8 @@ const styles = StyleSheet.create({
 		paddingVertical: 12,
 		marginHorizontal: 8,
 		marginBottom: 8,
-		borderRadius: 8
+		borderRadius: 8,
+		pointerEvents: 'auto'
 	},
 	mangaCover: {
 		width: 40,
