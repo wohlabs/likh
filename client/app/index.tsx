@@ -59,6 +59,8 @@ export default function LandingPage() {
 		setScrollPosition(event.nativeEvent.contentOffset.y);
 	};
 
+	const year = new Date().getFullYear();
+
 	return (
 		<>
 			<ScrollView 
@@ -224,7 +226,7 @@ export default function LandingPage() {
 				{/* Footer */}
 				<View style={[styles.footer, {backgroundColor: theme.colors.surface, borderTopColor: theme.colors.surfaceVariant}]}>
 					<ThemeText style={[styles.footerText, {color: theme.colors.onSurface}]}>
-						© 2025 likh. crafted for manga readers.
+						© <span>{year}</span> likh. crafted for manga readers.
 					</ThemeText>
 				</View>
 			</ScrollView>
