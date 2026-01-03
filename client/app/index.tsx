@@ -1,5 +1,5 @@
-import { View, ScrollView, StyleSheet, Pressable, useColorScheme, Dimensions } from "react-native";
-import { Stack, router } from "expo-router";
+import { View, ScrollView, StyleSheet } from "react-native";
+import { router } from "expo-router";
 import ThemeText from "@/components/ThemeText";
 import ThemeButton from "@/components/ThemeButton";
 import { useTheme } from "react-native-paper";

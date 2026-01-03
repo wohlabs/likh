@@ -1,19 +1,18 @@
 import { IMangaNotes, INoteEntry } from "@/types/INotes";
 import NotePreviewCard from "@/components/NotePreviewCard";
 import NoteViewer from "@/components/NoteViewer";
-import { router, useLocalSearchParams, usePathname } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState, useContext } from "react";
 import { FlatList, Platform, ScrollView, StyleProp, useWindowDimensions, View, ViewStyle, StyleSheet } from "react-native";
-import { IconButton, Modal, Portal, Searchbar, useTheme } from "react-native-paper";
+import { IconButton, Modal, Portal, useTheme } from "react-native-paper";
 import ReanimatedSwipeable, { SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
-import Reanimated, { SharedValue, useAnimatedStyle, useSharedValue } from "react-native-reanimated";
+import Reanimated, { SharedValue, useAnimatedStyle } from "react-native-reanimated";
 import { AuthContext } from "@/context/AuthContext";
 import { getMangaData, getMangaDetails } from "@/services/manga.service";
 import { deleteMangaNote } from "@/services/notes.service";
 import MangaOverviewHeader from "@/components/MangaOverviewHeader";
 import { getMangaTitle, IMangaDetails } from "@/types/IManga";
 import ThemeCarousel from "@/components/ThemeCarousel";
-import { Style } from "react-native-paper/lib/typescript/components/List/utils";
 import ThemeSearchbar from "@/components/ThemeSearchbar";
 import Toast from "react-native-toast-message"
 import { LoadingScreen } from "@/components/LoadingScreen";
@@ -211,7 +210,7 @@ export default function MangaDetails()
 								carouselRenderItem={(item) =>
 									(
 										<NoteViewer
-											note={item.item} mangaId={Array.isArray(mangaId) ? mangaId[0] : mangaId} mangaTitle={getMangaTitle(manga)}
+											note={item.item} mangaTitle={getMangaTitle(manga)}
 											style={[styles.noteViewer, {backgroundColor: theme.colors.background}]}
 											onDelete={() => onDelete(viewerNote.id)}
 											onEdit={() => {router.navigate(`/app/manga/${mangaId}/edit_note/${viewerNote.id}`); setIsViewingOverlay(false)}}

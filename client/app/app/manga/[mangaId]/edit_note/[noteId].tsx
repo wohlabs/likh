@@ -24,7 +24,6 @@ import { getMangaTitle } from "@/types/IManga";
 import { getNote } from "@/services/notes.service";
 import { getImageBase64 } from "@/components/util";
 import { DropEvent, useDropzone } from "react-dropzone";
-import { LoadingScreen } from "@/components/LoadingScreen";
 import Toast from "react-native-toast-message";
 
 const KeyboardDismissWrapper = ({ children }: any) => 

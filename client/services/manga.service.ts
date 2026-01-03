@@ -2,7 +2,6 @@ import api from "@/services/AxiosInstance";
 import { IMangaNotes, INoteEntry } from "@/types/INotes";
 import { getAnilistNote } from "./notes.service";
 import { IMangaDetails } from "@/types/IManga";
-import { getUserIdFromToken } from "@/components/util";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ServiceResult } from "./IServiceResult";
 

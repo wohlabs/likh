@@ -1,4 +1,4 @@
-import React, { Ref, useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import {
 	FlatList,
 	Image,
@@ -10,7 +10,7 @@ import {
 	ViewStyle,
 	useWindowDimensions,
 } from 'react-native';
-import { IconButton, Modal, Portal, useTheme } from 'react-native-paper';
+import { IconButton, useTheme } from 'react-native-paper';
 import ThemeText from '@/components/ThemeText';
 import ThemeSearchbar from '@/components/ThemeSearchbar';
 import { performAdvancedSearch, SearchResult } from '@/services/search.service';

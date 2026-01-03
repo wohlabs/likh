@@ -1,8 +1,8 @@
 import ThemeText from "@/components/ThemeText";
 import { Stack, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { FlatList, Pressable, StyleSheet, View } from "react-native";
-import { Card, IconButton, useTheme } from "react-native-paper";
+import { FlatList, StyleSheet, View } from "react-native";
+import { Card, useTheme } from "react-native-paper";
 import { getCustomLists } from "@/services/custom_lists";
 import { ICustomLists } from "@/types/ICustomList";
 

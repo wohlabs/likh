@@ -5,9 +5,8 @@ import { INoteEntry } from "../types/INotes";
 import { getImageBase64 as getImageBase64 } from "./util";
 import ThemeButton from "./ThemeButton";
 import ThemeText from "./ThemeText";
-import { router } from "expo-router";
 
-export default function NoteViewer({mangaTitle, mangaId, note, onDelete, onEdit, style}: { mangaTitle?: string, mangaId: string, note: INoteEntry, style?: StyleProp<ViewStyle>, onDelete?: () => void , onEdit?: () => void})
+export default function NoteViewer({mangaTitle, note, onDelete, onEdit, style}: { mangaTitle?: string, note: INoteEntry, style?: StyleProp<ViewStyle>, onDelete?: () => void , onEdit?: () => void})
 {
 	const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
 	const [optionsVisible, setOptionsVisible] = useState<boolean>(false);

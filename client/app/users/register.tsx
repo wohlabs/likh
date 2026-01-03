@@ -1,18 +1,16 @@
 import ThemeButton from "@/components/ThemeButton";
 import ThemeText from "@/components/ThemeText";
 import { router } from "expo-router";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { TextInput } from "react-native-paper";
 import { registerUser } from "@/services/users.service";
-import { AuthContext } from "@/context/AuthContext";
 
 export default function UserRegister()
 {
 	const [username, setUsername] = useState<string>('');
 	const [password, setPassword] = useState<string>('');
 	const [error, setError] = useState('');
-	const {token} = useContext(AuthContext);
 
 	const register = async () => 
 	{
