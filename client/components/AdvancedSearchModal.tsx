@@ -171,7 +171,7 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 							renderItem={({ item }: { item: any }) => {
 								if (item.type === 'manga-header' || item.type === 'notes-header' || item.type === 'lists-header') {
 									return (
-										<View style={[styles.categoryHeader, {cursor: 'auto'}]}>
+										<View style={[{cursor: 'auto'}]}>
 											<ThemeText variant="labelLarge" style={styles.categoryLabel}>
 												{item.label}
 											</ThemeText>
@@ -247,10 +247,6 @@ const styles = StyleSheet.create({
 	},
 	emptyText: {
 		opacity: 0.6,
-	},
-	categoryHeader: {
-		marginTop: 8,
-		marginBottom: 8
 	},
 	categorySection: {
 		marginTop: 8
