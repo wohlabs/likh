@@ -17,6 +17,8 @@ import { performAdvancedSearch, SearchResult } from '@/services/search.service';
 import { useRouter } from 'expo-router';
 import { getMangaTitle } from '@/types/IManga';
 import { addMangaToLibrary } from '@/services/manga.service';
+import { hexToRgba } from './util';
+import { modernDarkTheme } from '@/theme/modernTheme';
 
 interface AdvancedSearchModalProps {
 	visible: boolean;
@@ -89,10 +91,9 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 			</View>
 			<IconButton
 				icon={"plus"}
-				mode="outlined"
-				iconColor={!item.inLibrary ?  theme.colors.primary  : theme.colors.onSurfaceDisabled }
-				containerColor={!item.inLibrary ?  theme.colors.primaryContainer  : theme.colors.surfaceDisabled }
-				onPress={async () => {
+				mode="contained"
+				disabled={item.inLibrary}
+				onPress={async (e) => {
 					setIsAdvancedSearching(true)
 					await addMangaToLibrary(item.id);
 					onMangaAdded();
@@ -134,101 +135,83 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 	);
 
 	return (
-		<>
-			<View
-				style={[
-					styles.container,
-					{ backgroundColor: theme.colors.background, opacity: isAdvancedSearching ? 1 : 0, pointerEvents: isAdvancedSearching ? 'auto' : 'none', maxHeight: 0.7 * height, marginHorizontal: 10 },
-				]}
-			>
-				{/* <View style={styles.header}>
-					<ThemeSearchbar
-						placeholder="Search manga, notes, lists..."
-						value={searchQuery}
-						onChangeText={setSearchQuery}
-						onSubmitEditing={handleSearch}
-						style={styles.searchInput}
-					/>
-				</View> */}
+		<Pressable
+			style={{width: '100%', height: '100%', position: 'absolute', top: 0, left: 0, backgroundColor: isAdvancedSearching ? hexToRgba(modernDarkTheme.colors.background, 0.6) : 'transparent'}}
+			onPress={() => setIsAdvancedSearching(false)}
+			pointerEvents={isAdvancedSearching ? 'auto' : 'none'}
+		>
+			<Pressable style={[styles.searchBarFloating]} onPress={(e) => e.stopPropagation()} pointerEvents='none'>
+				<View
+					style={[
+						styles.container,
+						{ backgroundColor: theme.colors.background, maxHeight: 0.7 * height, marginHorizontal: 10, display: isAdvancedSearching ? 'flex' : 'none' },
+					]}
+					pointerEvents={isAdvancedSearching ? 'auto' : 'none'}
+				>
 
-				{isLoading ? (
-					<View style={styles.loadingContainer}>
-						<ThemeText>Searching...</ThemeText>
-					</View>
-				) : searchQuery.trim() === '' ? (
-					<View style={styles.emptyContainer}>
-						<ThemeText variant="bodyMedium" style={styles.emptyText}>
-							Start typing to search
-						</ThemeText>
-					</View>
-				) : searchResults.manga.length === 0 && searchResults.notes.length === 0 && searchResults.lists.length === 0 ? (
-					<View style={styles.emptyContainer}>
-						<ThemeText variant="bodyMedium" style={styles.emptyText}>
-							No results found
-						</ThemeText>
-					</View>
-				) : (
-					<FlatList
-						data={[
-							...(searchResults.manga.length > 0 ? [{ type: 'manga-header', label: 'Manga' } as any] : []),
-							...searchResults.manga.map((m, idx) => ({ type: 'manga', data: m, key: `manga-${idx}` } as any)),
-							...(searchResults.notes.length > 0 ? [{ type: 'notes-header', label: 'Notes' } as any] : []),
-							...searchResults.notes.map((n, idx) => ({ type: 'note', data: n, key: `note-${idx}` } as any)),
-							...(searchResults.lists.length > 0 ? [{ type: 'lists-header', label: 'Lists' } as any] : []),
-							...searchResults.lists.map((l, idx) => ({ type: 'list', data: l, key: `list-${idx}` } as any))
-						]}
-						keyExtractor={(item: any, idx) => item.key || `${item.type}-${idx}`}
-						renderItem={({ item }: { item: any }) => {
-							if (item.type === 'manga-header' || item.type === 'notes-header' || item.type === 'lists-header') {
-								return (
-									<View style={styles.categoryHeader}>
-										<ThemeText variant="labelLarge" style={styles.categoryLabel}>
-											{item.label}
-										</ThemeText>
-										<View style={styles.categoryDivider} />
-									</View>
-								);
-							}
-							
-							if (item.type === 'manga') {
-								return renderMangaResult({ item: item.data });
-							}
-							if (item.type === 'note') {
-								return renderNoteResult({ item: item.data });
-							}
-							if (item.type === 'list') {
-								return renderListResult({ item: item.data });
-							}
-							return null;
-						}}
-						scrollEnabled={true}
-					/>
-				)}
-			</View>
-			<ThemeSearchbar
-				ref={searchRef}
-				key="library_search_bar"
-				placeholder="Search manga, notes, lists..."
-				onChangeText={setSearchQuery}
-				onSubmitEditing={() =>  {
-					isSubmittingRef.current=true
-					handleSearch()
-				}}
-				onFocus={() => {
-					setIsAdvancedSearching(true)
-				}}
-				onBlur={() => {
-					if (isSubmittingRef.current) {
-						isSubmittingRef.current = false;
-						searchRef.current?.focus()
-						return;
-					}
-					setIsAdvancedSearching(false)
-				}}
-				style={styles.searchBar}
-				value={searchQuery}
-			/>
-		</>
+					{searchQuery.trim() === '' ? (
+						<></>
+					) : searchResults.manga.length === 0 && searchResults.notes.length === 0 && searchResults.lists.length === 0 ? (
+						<View style={styles.emptyContainer}>
+							<ThemeText variant="bodyMedium" style={styles.emptyText}>
+								No results found
+							</ThemeText>
+						</View>
+					) : (
+						<FlatList
+							data={[
+								...(searchResults.manga.length > 0 ? [{ type: 'manga-header', label: 'Manga' } as any] : []),
+								...searchResults.manga.map((m, idx) => ({ type: 'manga', data: m, key: `manga-${idx}` } as any)),
+								...(searchResults.notes.length > 0 ? [{ type: 'notes-header', label: 'Notes' } as any] : []),
+								...searchResults.notes.map((n, idx) => ({ type: 'note', data: n, key: `note-${idx}` } as any)),
+								...(searchResults.lists.length > 0 ? [{ type: 'lists-header', label: 'Lists' } as any] : []),
+								...searchResults.lists.map((l, idx) => ({ type: 'list', data: l, key: `list-${idx}` } as any))
+							]}
+							keyExtractor={(item: any, idx) => item.key || `${item.type}-${idx}`}
+							renderItem={({ item }: { item: any }) => {
+								if (item.type === 'manga-header' || item.type === 'notes-header' || item.type === 'lists-header') {
+									return (
+										<View style={[styles.categoryHeader, {cursor: 'auto'}]}>
+											<ThemeText variant="labelLarge" style={styles.categoryLabel}>
+												{item.label}
+											</ThemeText>
+											<View style={styles.categoryDivider} />
+										</View>
+									);
+								}
+								
+								if (item.type === 'manga') {
+									return renderMangaResult({ item: item.data });
+								}
+								if (item.type === 'note') {
+									return renderNoteResult({ item: item.data });
+								}
+								if (item.type === 'list') {
+									return renderListResult({ item: item.data });
+								}
+								return null;
+							}}
+							scrollEnabled={true}
+						/>
+					)}
+				</View>
+				<ThemeSearchbar
+					ref={searchRef}
+					key="library_search_bar"
+					placeholder="Search manga, notes, lists..."
+					onChangeText={setSearchQuery}
+					onSubmitEditing={() =>  {
+						handleSearch()
+					}}
+					onFocus={() => {
+						setIsAdvancedSearching(true)
+					}}
+					style={styles.searchBar}
+					value={searchQuery}
+					loading={isLoading}
+				/>
+			</Pressable>
+		</Pressable>
 	);
 }
 
@@ -236,9 +219,13 @@ const styles = StyleSheet.create({
 	container: {
 		borderRadius: 12,
 		// flexDirection: 'column',
-		flex: 1
+		flex: 1,
+		width: '100%'
 	},
-	searchBar: {marginHorizontal: 10, marginVertical: 5, height: 60, borderRadius: 10, flex: 1, boxShadow: "0px 4px 5px rgba(0,0,0,0.3)" },
+	searchBarFloating: {
+		width: "50%", minWidth: 350, position: "absolute", bottom: 25, flexDirection: "column", alignItems: "center", justifyContent: 'center', pointerEvents: 'none', alignContent: 'center', alignSelf: 'center'
+	},
+	searchBar: {marginHorizontal: 10, marginVertical: 5, height: 60, borderRadius: 10, flex: 1, boxShadow: "0px 4px 5px rgba(0,0,0,0.3)", width: '100%' },
 	header: {
 		padding: 12,
 		borderBottomWidth: 1,

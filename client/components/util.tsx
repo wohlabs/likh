@@ -9,6 +9,17 @@ export const getUserIdFromToken = (accessToken: string) : number | null =>
 	return userId;
 }
 
+export const hexToRgba = (hex: string, alpha = 1) => {
+  const cleanHex = hex.replace('#', '');
+  const bigint = parseInt(cleanHex, 16);
+
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
+
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
+
 export const formatData = (data: any[], numColumns: number) => 
 {
 	// source: https://www.youtube.com/watch?v=8wv0kjsirso

@@ -102,23 +102,16 @@ export default function Index()
 						)}
 					/>
 				}
-				<View style={styles.searchBarFloating}>
-					<ScrollView style={styles.searchBarContainer}
-					keyboardShouldPersistTaps={true}
-					>
-						<AdvancedSearchModal 
-							style={{flex: 1, marginHorizontal: 10, width: '100%'}}
-							visible={isAdvancedSearching} 
-							onDismiss={() => {
-								setIsAdvancedSearching(false);
-								setSearchString('');
-							}} 
-							onMangaAdded={async () => {
-								await populateMangaList()
-							}}
-						/>
-					</ScrollView>
-				</View>
+				<AdvancedSearchModal 
+					visible={isAdvancedSearching} 
+					onDismiss={() => {
+						setIsAdvancedSearching(false);
+						setSearchString('');
+					}} 
+					onMangaAdded={async () => {
+						await populateMangaList()
+					}}
+				/>
 			</View>
 			<Portal>
 				<Modal visible={isSearching} onDismiss={() => setSearching(false)}
@@ -169,9 +162,6 @@ export default function Index()
 }
 
 const styles = StyleSheet.create({
-	searchBarFloating: {
-		width: "100%", minWidth: 350, position: "absolute", bottom: 25, flexDirection: "row", alignItems: "center", margin: 'auto', justifyContent: 'center', pointerEvents: 'none'
-	},
 	searchBarContainer: { width: '90%', maxWidth: 600, flex: 1, flexDirection: 'column' },
 	addNoteIconButton: {boxShadow: "0px 4px 5px rgba(0,0,0,0.3)" },
 	addMangaModalContainer: {

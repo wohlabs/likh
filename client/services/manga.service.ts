@@ -27,7 +27,7 @@ const MANGA_QUERY = `
 export const MANGA_SEARCH_QUERY = `
 query ($search: String, $page: Int, $perPage: Int) {
 	Page (page: $page, perPage: $perPage) {
-		media (search: $search, type: MANGA, sort: TRENDING_DESC) {
+		media (search: $search, type: MANGA, sort: POPULARITY_DESC) {
 			id
 			title {
 				userPreferred
@@ -44,7 +44,7 @@ query ($search: String, $page: Int, $perPage: Int) {
 const MANGA_SEARCH_TREND_QUERY = `
 	query {
 		Page(page: 1, perPage: 10) {
-			media(type: MANGA, sort: TRENDING_DESC) {
+			media(type: MANGA, sort: POPULARITY_DESC) {
 				id
 				title {
 					userPreferred
