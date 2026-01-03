@@ -10,7 +10,7 @@ import {
 	ViewStyle,
 	useWindowDimensions,
 } from 'react-native';
-import { IconButton, useTheme } from 'react-native-paper';
+import { Card, IconButton, useTheme } from 'react-native-paper';
 import ThemeText from '@/components/ThemeText';
 import ThemeSearchbar from '@/components/ThemeSearchbar';
 import { performAdvancedSearch, SearchResult } from '@/services/search.service';
@@ -75,63 +75,65 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 	};
 
 	const renderMangaResult = ({ item }: { item: any }) => (
-		<Pressable
-			style={[styles.resultItem, { backgroundColor: theme.colors.surface }]}
+		<Card
+			style={{ marginHorizontal: 10, marginBottom: 8, backgroundColor: theme.colors.surface }}
 			onPress={() => handleMangaPress(item.id)}
 		>
-			<Image
-				source={{ uri: item.coverImage?.large }}
-				style={styles.mangaCover}
-				resizeMode="contain"
-			/>
-			<View style={styles.resultContent}>
-				<ThemeText variant="titleSmall" numberOfLines={2}>
-					{getMangaTitle(item)}
-				</ThemeText>
-			</View>
-			<IconButton
-				icon={"plus"}
-				mode="contained"
-				disabled={item.inLibrary}
-				onPress={async (e) => {
-					setIsAdvancedSearching(true)
-					await addMangaToLibrary(item.id);
-					onMangaAdded();
-				}}
-			/>
-		</Pressable>
+			<Card.Content style={[styles.resultContent, {flexDirection: 'row', alignItems: 'center'}]}>
+				<Image
+					source={{ uri: item.coverImage?.large }}
+					style={styles.mangaCover}
+					resizeMode="contain"
+				/>
+				<View style={{flex: 1}}>
+					<ThemeText variant="titleSmall" numberOfLines={2}>
+						{getMangaTitle(item)}
+					</ThemeText>
+				</View>
+				<IconButton
+					icon={"plus"}
+					mode="contained"
+					disabled={item.inLibrary}
+					onPress={async (e) => {
+						setIsAdvancedSearching(true)
+						await addMangaToLibrary(item.id);
+						onMangaAdded();
+					}}
+				/>
+			</Card.Content>
+		</Card>
 	);
 
 	const renderNoteResult = ({ item }: { item: any }) => (
-		<Pressable
-			style={[styles.resultItem, { backgroundColor: theme.colors.surface }]}
+		<Card
+			style={{ marginHorizontal: 10, marginBottom: 8, backgroundColor: theme.colors.surface }}
 			onPress={() => handleNotePress(item.mangaId)}
 		>
-			<View style={styles.resultContent}>
+			<Card.Content style={styles.resultContent}>
 				<ThemeText variant="titleSmall" style={styles.noteTitle}>
 					Note - Chapter {item.startChapter}{item.endChapter ? `-${item.endChapter}` : ''}
 				</ThemeText>
 				<ThemeText variant="bodySmall" numberOfLines={2} style={styles.noteText}>
 					{item.text}
 				</ThemeText>
-			</View>
-		</Pressable>
+			</Card.Content>
+		</Card>
 	);
 
 	const renderListResult = ({ item }: { item: any }) => (
-		<Pressable
-			style={[styles.resultItem, { backgroundColor: theme.colors.surface }]}
+		<Card
+			style={{ marginHorizontal: 10, marginBottom: 8, backgroundColor: theme.colors.surface }}
 			onPress={() => handleListPress(item.id)}
 		>
-			<View style={styles.resultContent}>
+			<Card.Content style={styles.resultContent}>
 				<ThemeText variant="titleSmall">
 					{item.name}
 				</ThemeText>
 				<ThemeText variant="bodySmall" style={styles.listMeta}>
 					{item.mangaIds.length} manga{item.isFavorite ? ' • Favorites' : ''}
 				</ThemeText>
-			</View>
-		</Pressable>
+			</Card.Content>
+		</Card>
 	);
 
 	return (
