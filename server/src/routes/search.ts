@@ -79,16 +79,41 @@ router.get('/', AuthenticateMiddleware, async (req: Request, res: Response) => {
 			.sort({ createdAt: -1 })
 			.lean();
 
-		if (notes && notes.length > 0) {
-			searchResults.notes = notes.map((note) => ({
-				id: note._id,
-				mangaId: note.mangaId,
-				text: (note.text || '').substring(0, 100), // Truncate text for preview
-				startChapter: note.startChapter,
-				endChapter: note.endChapter,
-				createdAt: note.createdAt
-			}));
+		try {
+			const MANGA_INFO_QUERY = `
+				query ($ids: [Int], $page: Int){
+					Page(page: $page, perPage: 50) {
+						media(id_in: $ids, type: MANGA) {
+							id
+							title {
+								userPreferred
+								english
+							}
+						}
+					}
+				}
+			`
+			const mangaData: any[] = (await anilistRequest(MANGA_INFO_QUERY, {
+				ids: notes.map((note) => note.mangaId)
+			}, 3600)).data.Page.media;
+
+			if (notes && notes.length > 0) {
+				searchResults.notes = notes.map((note) => ({
+					id: note._id,
+					manga: {
+						_id: note.mangaId,
+						title: mangaData.find((manga) => manga.id === note.mangaId).title
+					},
+					text: (note.text || '').substring(0, 100), // Truncate text for preview
+					startChapter: note.startChapter,
+					endChapter: note.endChapter,
+					createdAt: note.createdAt
+				}));
+			}
+		} catch (err) {
+			console.error('Error searching notes:', err);
 		}
+
 
 		// Search custom lists
 		const lists = await CustomList.find(

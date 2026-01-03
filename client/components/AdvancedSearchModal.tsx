@@ -119,7 +119,7 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 		>
 			<Card.Content style={styles.resultContent}>
 				<ThemeText variant="titleSmall" style={styles.noteTitle}>
-					Note - Chapter {item.startChapter}{item.endChapter ? `-${item.endChapter}` : ''}
+					{getMangaTitle(item.manga)} - Chapter {item.startChapter === -1 ? "All" : `${item.startChapter}${item.endChapter ? ` - ${item.endChapter}` : ''}`}
 				</ThemeText>
 				<ThemeText variant="bodySmall" numberOfLines={2} style={styles.noteText}>
 					{item.text}
