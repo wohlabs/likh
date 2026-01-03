@@ -74,6 +74,14 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 		router.navigate(`/app/custom-lists/${listId}`);
 	};
 
+	const handleShowMore = (category: 'manga' | 'notes' | 'lists') => {
+		onDismiss();
+		router.navigate({
+			pathname: '/app/search-category/[category]',
+			params: { category, query: searchQuery }
+		});
+	};
+
 	const renderMangaResult = ({ item }: { item: any }) => (
 		<Card
 			style={{ marginHorizontal: 10, marginBottom: 8, backgroundColor: theme.colors.surface }}
@@ -164,10 +172,13 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 							data={[
 								...(searchResults.manga.length > 0 ? [{ type: 'manga-header', label: 'Manga' } as any] : []),
 								...searchResults.manga.map((m, idx) => ({ type: 'manga', data: m, key: `manga-${idx}` } as any)),
+								...(searchResults.manga.length > 0 ? [{ type: 'manga-show-more' } as any] : []),
 								...(searchResults.notes.length > 0 ? [{ type: 'notes-header', label: 'Notes' } as any] : []),
 								...searchResults.notes.map((n, idx) => ({ type: 'note', data: n, key: `note-${idx}` } as any)),
+								...(searchResults.notes.length > 0 ? [{ type: 'notes-show-more' } as any] : []),
 								...(searchResults.lists.length > 0 ? [{ type: 'lists-header', label: 'Lists' } as any] : []),
-								...searchResults.lists.map((l, idx) => ({ type: 'list', data: l, key: `list-${idx}` } as any))
+								...searchResults.lists.map((l, idx) => ({ type: 'list', data: l, key: `list-${idx}` } as any)),
+								...(searchResults.lists.length > 0 ? [{ type: 'lists-show-more' } as any] : [])
 							]}
 							keyExtractor={(item: any, idx) => item.key || `${item.type}-${idx}`}
 							renderItem={({ item }: { item: any }) => {
@@ -179,6 +190,30 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 											</ThemeText>
 											<View style={styles.categoryDivider} />
 										</View>
+									);
+								}
+
+								if (item.type === 'manga-show-more' || item.type === 'notes-show-more' || item.type === 'lists-show-more') {
+									const categoryMap = {
+										'manga-show-more': 'manga' as const,
+										'notes-show-more': 'notes' as const,
+										'lists-show-more': 'lists' as const
+									};
+									return (
+										<Pressable
+											style={({ pressed }) => [
+												styles.showMoreButton,
+												{ 
+													backgroundColor: pressed ? theme.colors.primaryContainer : theme.colors.surfaceVariant,
+													opacity: pressed ? 0.8 : 1
+												}
+											]}
+											onPress={() => handleShowMore(categoryMap[item.type as keyof typeof categoryMap])}
+										>
+											<ThemeText variant="labelLarge" style={{ textAlign: 'center', color: theme.colors.primary }}>
+												Show more
+											</ThemeText>
+										</Pressable>
 									);
 								}
 								
@@ -295,5 +330,14 @@ const styles = StyleSheet.create({
 	listMeta: {
 		marginTop: 4,
 		opacity: 0.6
+	},
+	showMoreButton: {
+		marginHorizontal: 10,
+		marginVertical: 8,
+		paddingVertical: 10,
+		paddingHorizontal: 16,
+		borderRadius: 8,
+		justifyContent: 'center',
+		alignItems: 'center'
 	}
 });
