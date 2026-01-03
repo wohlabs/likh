@@ -20,7 +20,6 @@ export default function SearchCategoryPage() {
 	const theme = useTheme();
 	const router = useRouter();
 	const { category, query } = useLocalSearchParams();
-	const { width } = useWindowDimensions();
 	const [results, setResults] = useState<any[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -64,7 +63,7 @@ export default function SearchCategoryPage() {
 		if (searchQuery.trim()) {
 			loadResults(1, false);
 		}
-	}, [searchQuery, category]);
+	}, [category]);
 
 	const handleLoadMore = useCallback(() => {
 		if (!isLoadingMore && hasMore) {

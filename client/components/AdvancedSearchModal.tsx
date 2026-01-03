@@ -77,8 +77,8 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 	const handleShowMore = (category: 'manga' | 'notes' | 'lists') => {
 		onDismiss();
 		router.navigate({
-			pathname: '/app/search-category/[category]',
-			params: { category, query: searchQuery }
+			pathname: '/app/search',
+			params: { category: category, query: searchQuery }
 		});
 	};
 
