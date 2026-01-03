@@ -71,10 +71,6 @@ export default function SearchCategoryPage() {
 		}
 	}, [page, hasMore, isLoadingMore, loadResults]);
 
-	const handleSearch = useCallback(() => {
-		loadResults(1, false);
-	}, [loadResults]);
-
 	const handleMangaPress = (mangaId: number) => {
 		router.navigate(`/app/manga/${mangaId}`);
 	};
@@ -177,18 +173,15 @@ export default function SearchCategoryPage() {
 
 	return (
 		<>
-			<Stack.Screen
-				options={{
-					headerTitle: `${getCategoryTitle()} - "${searchQuery}"`,
-					headerTitleStyle: { fontSize: 14 },
-				}}
-			/>
 			<View style={[styles.container, { backgroundColor: theme.colors.background }]}>
 				<View style={styles.searchBarContainer}>
 					<ThemeSearchbar
 						placeholder={`Search ${getCategoryTitle().toLowerCase()}...`}
 						onChangeText={setSearchQuery}
-						onSubmitEditing={handleSearch}
+						onSubmitEditing={() => router.replace({ 
+							pathname: '/app/search',
+							params: { category: category, query: searchQuery }
+						 })}
 						value={searchQuery}
 						loading={isLoading}
 						style={styles.searchBar}
