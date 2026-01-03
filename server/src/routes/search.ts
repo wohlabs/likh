@@ -228,9 +228,29 @@ router.get('/:category', AuthenticateMiddleware, async (req: Request, res: Respo
 				.sort({ createdAt: -1 })
 				.lean();
 
+			const MANGA_INFO_QUERY = `
+				query ($ids: [Int], $page: Int){
+					Page(page: $page, perPage: 50) {
+						media(id_in: $ids, type: MANGA) {
+							id
+							title {
+								userPreferred
+								english
+							}
+						}
+					}
+				}
+			`
+			const mangaData: any[] = (await anilistRequest(MANGA_INFO_QUERY, {
+				ids: notes.map((note) => note.mangaId)
+			}, 3600)).data.Page.media;
+
 			items = notes.map((note) => ({
 				id: note._id,
-				mangaId: note.mangaId,
+				manga: {
+					_id: note.mangaId,
+					title: mangaData.find((manga) => manga.id === note.mangaId).title
+				},
 				text: (note.text || '').substring(0, 100),
 				startChapter: note.startChapter,
 				endChapter: note.endChapter,
