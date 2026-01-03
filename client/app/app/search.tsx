@@ -124,7 +124,7 @@ export default function SearchCategoryPage() {
 	const renderNoteResult = ({ item }: { item: any }) => (
 		<Card
 			style={{ marginHorizontal: 10, marginBottom: 8, backgroundColor: theme.colors.surface }}
-			onPress={() => handleNotePress(item.mangaId)}
+			onPress={() => handleNotePress(item.manga._id)}
 		>
 			<Card.Content style={styles.resultContent}>
 				<ThemeText variant="titleSmall" style={styles.noteTitle}>
