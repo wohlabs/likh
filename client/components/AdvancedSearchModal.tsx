@@ -22,9 +22,10 @@ interface AdvancedSearchModalProps {
 	visible: boolean;
 	onDismiss: () => void;
 	style?: StyleProp<ViewStyle>
+	onMangaAdded: () => void;
 }
 
-export default function AdvancedSearchModal({ visible, onDismiss, style }: AdvancedSearchModalProps) {
+export default function AdvancedSearchModal({ visible, onDismiss, style, onMangaAdded }: AdvancedSearchModalProps) {
 	const theme = useTheme();
 	const router = useRouter();
 	const { width, height } = useWindowDimensions();
@@ -89,10 +90,12 @@ export default function AdvancedSearchModal({ visible, onDismiss, style }: Advan
 			<IconButton
 				icon={"plus"}
 				mode="outlined"
-				// iconColor={/* mangaList.find((elem) => elem.id === item.id) ?  */theme.colors.primary/*  : theme.colors.primary */}
-				// containerColor={/* mangaList.find((elem) => elem.id === item.id) ?  */theme.colors.primaryContainer/*  : theme.colors.surfaceVariant */}
+				iconColor={!item.inLibrary ?  theme.colors.primary  : theme.colors.onSurfaceDisabled }
+				containerColor={!item.inLibrary ?  theme.colors.primaryContainer  : theme.colors.surfaceDisabled }
 				onPress={async () => {
+					setIsAdvancedSearching(true)
 					await addMangaToLibrary(item.id);
+					onMangaAdded();
 				}}
 			/>
 		</Pressable>

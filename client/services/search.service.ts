@@ -11,6 +11,7 @@ export interface SearchResult {
 		coverImage: {
 			large: string;
 		};
+		inLibrary: boolean;
 	}>;
 	notes: Array<{
 		id: string;

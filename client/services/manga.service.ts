@@ -156,39 +156,6 @@ export const getMangaDetails = async (mangaId: string) : Promise<IMangaDetails |
 	}
 }
 
-export const getMangaIdsWithNotes = async (accessToken: string) : Promise<string[]> =>
-{
-	if (accessToken === null || accessToken.length === 0) return []
-	const userId = getUserIdFromToken(accessToken);
-	const query = `query ($userId: Int){
-			MediaListCollection(userId: $userId, type: MANGA) {
-				lists {
-					entries {
-						notes
-						id
-						mediaId
-					}
-				}
-			}
-		}`;
-	const variables = {userId : userId};
-	try
-	{
-
-		const result = await api.post('/anilist', { query, variables });
-		const mangaIds = result.data.data.MediaListCollection.lists.flatMap((list: any) =>
-			list.entries
-				.filter((entry: any) => entry.notes && entry.notes.length > 0)
-				.map((entry: any) => entry.mediaId.toString())
-		);
-		return mangaIds;
-	}
-	catch (err: any)
-	{
-		return [];
-	}
-}
-
 export const searchMangaByString = async (searchString: string, page: number = 1, perPage: number = 25): Promise<ServiceResult<MangaProps[]>> =>
 {
 	try
@@ -204,7 +171,7 @@ export const searchMangaByString = async (searchString: string, page: number = 1
 	}
 }
 
-export const getMyListMangaIds = async (accessToken: string) : Promise<ServiceResult<string[]>> =>
+export const getMyListMangaIds = async () : Promise<ServiceResult<string[]>> =>
 {
 	try 
 	{

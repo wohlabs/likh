@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { IUser, User } from '../models/user.model';
 import { CustomList } from '../models/custom_list.model';
+import { getMangaIdsWithNotes } from './anilist';
 
 const router: Router = Router();
 
@@ -83,14 +84,40 @@ router.post('/me/anilist/link', AuthenticateMiddleware, async (req: Request, res
 	}
 })
 
+export async function getMangaInLibrary(userId: string)
+{
+		const user: IUser | null = await User.findById(userId).exec();
+		const mangaIdsWithNotes = await getMangaIdsWithNotes(userId);
+		const libMangaIds: Set<string> = new Set()
+		if (user !== null)
+		{
+			for (const mangaId of user?.manga)
+			{
+				libMangaIds.add(mangaId)
+			}
+			for (const mangaId of mangaIdsWithNotes)
+			{
+				libMangaIds.add(mangaId)
+			}
+			return Array.from(libMangaIds)
+		}
+		else
+		{
+			throw "User not found"
+		}
+}
+
 // get manga from user's collection
 router.get(`/me/manga`, AuthenticateMiddleware, async (req: Request, res: Response) =>
 {
 	const userId = req.user?.id
+	if (!userId)
+	{
+		return res.status(400).json("Invalid query")
+	}
 	try
 	{
-		const user: IUser | null = await User.findById(userId).exec();
-		res.json(user?.manga)
+		res.json(await getMangaInLibrary(userId))
 	}
 	catch
 	{

@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import { anilistRequest } from "../Utility";
 import { jwtDecode } from "jwt-decode";
+import { IUser, User } from '../models/user.model';
 
 const router = express.Router();
 router.use(express.json())
@@ -27,9 +28,10 @@ router.post("/", async (req: Request, res: Response) => {
 	}
 });
 
-export const getMangaIdsWithNotes = async (accessToken: string) : Promise<string[]> =>
+export const getMangaIdsWithNotes = async (user_id: string) : Promise<string[]> =>
 {
-	if (accessToken === null || accessToken.length === 0) return []
+	const accessToken = (await User.findById(user_id))?.anilist_token;
+	if (accessToken === undefined || accessToken.length === 0) return []
 	const userId = getUserIdFromToken(accessToken);
 	const query = `query ($userId: Int){
 			MediaListCollection(userId: $userId, type: MANGA) {

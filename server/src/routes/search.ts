@@ -3,6 +3,7 @@ import AuthenticateMiddleware from '../middleware/Authentication';
 import { Note } from '../models/note.model';
 import { CustomList } from '../models/custom_list.model';
 import { anilistRequest } from '../Utility';
+import { getMangaInLibrary } from './users';
 
 const router: Router = Router();
 
@@ -13,6 +14,11 @@ router.use(express.json());
 router.get('/', AuthenticateMiddleware, async (req: Request, res: Response) => {
 	const userId = req.user?.id;
 	const { query } = req.query;
+	
+	if (!userId)
+	{
+		return res.status(400).json({ error: 'Invalid query' });
+	}
 
 	if (!query || typeof query !== 'string') {
 		return res.status(400).json({ error: 'Query parameter is required' });
@@ -49,9 +55,13 @@ router.get('/', AuthenticateMiddleware, async (req: Request, res: Response) => {
 				page: 1,
 				perPage: 2
 			}, 3600);
+			const mangaIdsInLib = await getMangaInLibrary(userId)
 
 			if (mangaData?.data?.Page?.media) {
-				searchResults.manga = mangaData.data.Page.media;
+				searchResults.manga = mangaData.data.Page.media.map((manga: any) => ({
+					...manga,
+					inLibrary: mangaIdsInLib.includes(String(manga.id)) ?? false
+				}));
 			}
 		} catch (err) {
 			console.error('Error searching manga:', err);

@@ -1,11 +1,11 @@
 import ThemeText from "@/components/ThemeText";
 import { formatData } from "@/components/util";
 import { Stack, useRouter } from "expo-router";
-import React, { useEffect, useState, useContext, useCallback } from "react";
+import React, { useEffect, useState, useContext, useCallback, useRef } from "react";
 import { FlatList, Image, Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from "react-native";
 import { IconButton, Modal, Portal, TextInput, useTheme } from "react-native-paper";
 import { AuthContext } from "@/context/AuthContext";
-import { addMangaToLibrary, getLibraryMangaThumbnails, getMangaIdsWithNotes, getMyListMangaIds, MangaProps, searchMangaByString } from "@/services/manga.service";
+import { addMangaToLibrary, getLibraryMangaThumbnails, getMyListMangaIds, MangaProps, searchMangaByString } from "@/services/manga.service";
 import { getMangaTitle } from "@/types/IManga";
 import ThemeSearchbar from "@/components/ThemeSearchbar";
 import { LoadingScreen } from "@/components/LoadingScreen";
@@ -20,6 +20,7 @@ export default function Index()
 {
 	const router = useRouter();
 	const theme = useTheme()
+	const pageRef = useRef<View>(null);
 	const [mangaList, setMangaList] = useState<MangaProps[]>([]);
 	const [mangaIdToAdd, setMangaIdToAdd] = useState<number | undefined>(undefined);
 	const [filteredMangaList, setFilteredMangaList] = useState<MangaProps[]>([]);
@@ -37,17 +38,10 @@ export default function Index()
 
 	const populateMangaList = useCallback(async () => 
 	{
-		if (anilist_token === undefined || anilist_token === "undefined" || anilist_token === '') 
-		{
-			setMangaList([]);
-			return setLoading(false);
-		}
-		const anilistMangaIds: string[] = await getMangaIdsWithNotes(anilist_token)
-
-		const mangaIdsResult = await getMyListMangaIds(anilist_token)
+		const mangaIdsResult = await getMyListMangaIds()
 		let libStringMangaIds: string[] = mangaIdsResult.success ? mangaIdsResult.data : []
-		const libMangaIds: number[] = [...libStringMangaIds, ...anilistMangaIds].map((value) => Number(value))
-		const mangaListResult = await getLibraryMangaThumbnails(Array.from(new Set<number>(libMangaIds)));
+		const libMangaIds: number[] = libStringMangaIds.map((value) => Number(value))
+		const mangaListResult = await getLibraryMangaThumbnails(libMangaIds);
 		setMangaList(mangaListResult.success ? mangaListResult.data : []);
 		return setLoading(false);
 	}, [anilist_token]);
@@ -91,7 +85,7 @@ export default function Index()
 					title: "Library",
 				}}
 			/>
-			<View style={{flex: 1}}>
+			<View ref={pageRef} style={{flex: 1}}>
 				{
 					loading ?
 					<LoadingScreen />
@@ -120,6 +114,9 @@ export default function Index()
 								setIsAdvancedSearching(false);
 								setSearchString('');
 							}} 
+							onMangaAdded={async () => {
+								await populateMangaList()
+							}}
 						/>
 					</ScrollView>
 				</View>
