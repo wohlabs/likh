@@ -116,6 +116,7 @@ export default function NoteViewer({mangaTitle, note, onDelete, onEdit, style}: 
 							<IconButton icon='dots-horizontal' onPress={() => setOptionsVisible(true)}
 							/>
 						}
+						anchorPosition="bottom"
 					>
 						<Menu.Item 
 							onPress={onDelete} title="delete" leadingIcon={"delete"}

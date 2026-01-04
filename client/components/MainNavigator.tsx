@@ -130,6 +130,7 @@ export default function MainNavigator({ isDark, toggleTheme }: { isDark: boolean
 							<Menu
 								visible={optionsVisible}
 								onDismiss={() => setOptionsVisible(false)}
+								anchorPosition="bottom"
 								anchor={
 									<ThemeButton icon={'account'} onPress={() => setOptionsVisible(true)} mode="text" textColor={theme.colors.primary}>{username}</ThemeButton>
 								}
