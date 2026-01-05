@@ -4,6 +4,7 @@ import { Note } from '../models/note.model';
 import { CustomList } from '../models/custom_list.model';
 import { anilistRequest } from '../Utility';
 import { getMangaInLibrary } from './users';
+import { getMangaData } from './anilist';
 
 const router: Router = Router();
 
@@ -80,22 +81,7 @@ router.get('/', AuthenticateMiddleware, async (req: Request, res: Response) => {
 			.lean();
 
 		try {
-			const MANGA_INFO_QUERY = `
-				query ($ids: [Int], $page: Int){
-					Page(page: $page, perPage: 50) {
-						media(id_in: $ids, type: MANGA) {
-							id
-							title {
-								userPreferred
-								english
-							}
-						}
-					}
-				}
-			`
-			const mangaData: any[] = (await anilistRequest(MANGA_INFO_QUERY, {
-				ids: notes.map((note) => note.mangaId)
-			}, 3600)).data.Page.media;
+			const mangaData: any[] = await getMangaData(notes.map((note) => note.mangaId))
 
 			if (notes && notes.length > 0) {
 				searchResults.notes = notes.map((note) => ({
@@ -228,22 +214,7 @@ router.get('/:category', AuthenticateMiddleware, async (req: Request, res: Respo
 				.sort({ createdAt: -1 })
 				.lean();
 
-			const MANGA_INFO_QUERY = `
-				query ($ids: [Int], $page: Int){
-					Page(page: $page, perPage: 50) {
-						media(id_in: $ids, type: MANGA) {
-							id
-							title {
-								userPreferred
-								english
-							}
-						}
-					}
-				}
-			`
-			const mangaData: any[] = (await anilistRequest(MANGA_INFO_QUERY, {
-				ids: notes.map((note) => note.mangaId)
-			}, 3600)).data.Page.media;
+			const mangaData: any[] = await getMangaData(notes.map((note) => note.mangaId))
 
 			items = notes.map((note) => ({
 				id: note._id,

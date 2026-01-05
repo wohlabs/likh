@@ -28,6 +28,38 @@ router.post("/", async (req: Request, res: Response) => {
 	}
 });
 
+export const getMangaData = async (mangaIds: number[]) : Promise<any[]> =>
+{
+	const MANGA_INFO_QUERY = `
+		query ($ids: [Int], $page: Int){
+			Page(page: $page, perPage: 50) {
+				pageInfo {
+					hasNextPage
+				}
+				media(id_in: $ids, type: MANGA) {
+					id
+					title {
+						userPreferred
+						english
+					}
+				}
+			}
+		}
+	`
+
+	let allMedias: any[] = []
+	let hasNextPage = true
+	let i = 1;
+	while (hasNextPage)
+	{
+		const result = await anilistRequest(MANGA_INFO_QUERY, {ids: mangaIds, page: i}, 3600);
+		allMedias=[...allMedias, ...result.data.Page.media]
+		hasNextPage = result.data.Page.pageInfo.hasNextPage
+		i++;
+	}
+	return allMedias;
+}
+
 export const getMangaIdsWithNotes = async (user_id: string) : Promise<string[]> =>
 {
 	const accessToken = (await User.findById(user_id))?.anilist_token;
