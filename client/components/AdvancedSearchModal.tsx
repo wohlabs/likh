@@ -19,6 +19,7 @@ import { getMangaTitle } from '@/types/IManga';
 import { addMangaToLibrary } from '@/services/manga.service';
 import { hexToRgba } from './util';
 import { modernDarkTheme } from '@/theme/modernTheme';
+import ThemeButton from './ThemeButton';
 
 interface AdvancedSearchModalProps {
 	visible: boolean;
@@ -200,20 +201,13 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 										'lists-show-more': 'lists' as const
 									};
 									return (
-										<Pressable
-											style={({ pressed }) => [
-												styles.showMoreButton,
-												{ 
-													backgroundColor: pressed ? theme.colors.primaryContainer : theme.colors.surfaceVariant,
-													opacity: pressed ? 0.8 : 1
-												}
-											]}
+										<ThemeButton 
+											mode='text'
 											onPress={() => handleShowMore(categoryMap[item.type as keyof typeof categoryMap])}
+											style={styles.showMoreButton}
 										>
-											<ThemeText variant="labelLarge" style={{ textAlign: 'center', color: theme.colors.primary }}>
-												Show more
-											</ThemeText>
-										</Pressable>
+											Show more
+										</ThemeButton>
 									);
 								}
 								
@@ -333,11 +327,6 @@ const styles = StyleSheet.create({
 	},
 	showMoreButton: {
 		marginHorizontal: 10,
-		marginVertical: 8,
-		paddingVertical: 10,
-		paddingHorizontal: 16,
 		borderRadius: 8,
-		justifyContent: 'center',
-		alignItems: 'center'
 	}
 });
