@@ -15,18 +15,29 @@ import ThemeSearchbar from '@/components/ThemeSearchbar';
 import { searchCategory, PaginatedSearchResult } from '@/services/search.service';
 import { getMangaTitle } from '@/types/IManga';
 import { addMangaToLibrary } from '@/services/manga.service';
+import {ThemeDropdown} from "@/components/ThemeDropdown";
 
 export default function SearchCategoryPage() {
 	const theme = useTheme();
 	const router = useRouter();
 	const { category, query } = useLocalSearchParams();
 	const [results, setResults] = useState<any[]>([]);
-	const [isLoading, setIsLoading] = useState(false);
-	const [isLoadingMore, setIsLoadingMore] = useState(false);
-	const [page, setPage] = useState(1);
-	const [hasMore, setHasMore] = useState(true);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
+	const [page, setPage] = useState<number>(1);
+	const [hasMore, setHasMore] = useState<boolean>(true);
 	const [searchQuery, setSearchQuery] = useState(query as string || '');
 	const flatListRef = useRef<FlatList>(null);
+  const [showDropDown, setShowDropDown] = React.useState<boolean>(false);
+  const [categoryCB, setCategoryCB] = React.useState<string>(category as string ?? "manga");
+
+	
+	const CATEGORY_OPTIONS = [
+		{ label: 'manga', value: 'manga' },
+		{ label: 'notes', value: 'notes' },
+		{ label: 'lists', value: 'lists' },
+	];
+
 
 	const loadResults = useCallback(
 		async (pageNum: number = 1, append: boolean = false) => {
@@ -175,12 +186,19 @@ export default function SearchCategoryPage() {
 		<>
 			<View style={[styles.container, { backgroundColor: theme.colors.background }]}>
 				<View style={styles.searchBarContainer}>
+					<ThemeDropdown
+						label="category"
+						value={categoryCB}
+						items={CATEGORY_OPTIONS}
+						onChange={setCategoryCB}
+						mode='flat'
+					/>
 					<ThemeSearchbar
 						placeholder={`Search ${getCategoryTitle().toLowerCase()}...`}
 						onChangeText={setSearchQuery}
 						onSubmitEditing={() => router.replace({ 
 							pathname: '/app/search',
-							params: { category: category, query: searchQuery }
+							params: { category: categoryCB, query: searchQuery }
 						 })}
 						value={searchQuery}
 						loading={isLoading}
@@ -230,11 +248,15 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 10,
 		paddingTop: 10,
 		paddingBottom: 5,
+		flexDirection: 'row',
+		alignItems: 'center',
+		alignContent: 'center',
+		verticalAlign: 'middle'
 	},
 	searchBar: {
-		marginVertical: 5,
-		height: 50,
 		borderRadius: 10,
+		flex: 1,
+		marginHorizontal: 5
 	},
 	loaderContainer: {
 		flex: 1,
