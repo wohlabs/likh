@@ -115,13 +115,39 @@ router.get('/', AuthenticateMiddleware, async (req: Request, res: Response) => {
 			.limit(2)
 			.lean();
 
-		if (lists && lists.length > 0) {
+		if (lists && lists.length > 0)
+		{
 			searchResults.lists = lists.map((list) => ({
 				id: list._id,
 				name: list.name,
 				mangaIds: list.mangaIds,
 				isFavorite: list.isFavorite
 			}));
+		}
+
+		if (searchResults.lists.length <= 2)
+		{
+			const mangaData = await anilistRequest(MANGA_SEARCH_QUERY, {
+				search: query,
+				page: 1,
+				perPage: 50
+			}, 3600);
+			const matchingMangaIds = mangaData?.data?.Page?.media?.map((manga: any) => manga.id)
+			const matchingManga = await CustomList.find({
+				_id: { $nin: searchResults.lists.map(list => list.id)},
+				mangaIds: { $in: matchingMangaIds }
+			})
+				.limit(2)
+				.lean();
+			if (matchingManga && matchingManga.length > 0)
+			{
+				searchResults.lists = [ ...searchResults.lists , ...matchingManga.map((list:any) => ({
+					id: list._id,
+					name: list.name,
+					mangaIds: list.mangaIds,
+					isFavorite: list.isFavorite
+				}))].slice(0, 2);
+			}
 		}
 
 		res.status(200).json(searchResults);
