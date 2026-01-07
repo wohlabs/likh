@@ -5,25 +5,6 @@ import { IMangaDetails } from "@/types/IManga";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ServiceResult } from "./IServiceResult";
 
-const MANGA_QUERY = `
-	query GetManga($id: Int) {
-		Media(id: $id, type: MANGA) {
-			id
-			title {
-				userPreferred
-				english
-			}
-			coverImage {
-				large
-			}
-			description
-			genres
-			chapters
-			volumes
-			status
-		}
-	}`;
-
 export const MANGA_SEARCH_QUERY = `
 query ($search: String, $page: Int, $perPage: Int) {
 	Page (page: $page, perPage: $perPage) {
@@ -142,12 +123,8 @@ export const getMangaDetails = async (mangaId: string) : Promise<IMangaDetails |
 {
 	try 
 	{
-		const respone = await api.post("/anilist", {
-			query: MANGA_QUERY,
-			variables: {id : mangaId} 
-		})
-		const data = respone.data.data.Media as IMangaDetails;
-		return data;
+		const respone = await api.get(`/manga/${mangaId}`)
+		return respone.data as IMangaDetails;
 	}
 	catch (err: any)
 	{

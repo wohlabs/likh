@@ -9,8 +9,9 @@ import AuthenticateMiddleware, { JwtPayload } from './middleware/Authentication'
 import UserRoutes from './routes/users'
 import NoteRoutes from './routes/notes'
 import AnilistRoutes from './routes/anilist'
-import CustomListRoutes from './routes/custom_lists.js'
-import SearchRoutes from './routes/search.js'
+import CustomListRoutes from './routes/custom_lists'
+import SearchRoutes from './routes/search'
+import MangaRoutes from './routes/manga'
 
 dotenv.config()
 
@@ -31,6 +32,7 @@ app.use('/notes', NoteRoutes);
 app.use('/custom-lists', CustomListRoutes);
 app.use('/anilist', AnilistRoutes);
 app.use('/search', SearchRoutes);
+app.use('/manga', MangaRoutes);
 
 // test route
 app.get(`/`, (req: Request, res: Response) => { res.json('hello world') })
