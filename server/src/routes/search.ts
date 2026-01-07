@@ -36,7 +36,7 @@ router.get('/', AuthenticateMiddleware, async (req: Request, res: Response) => {
 		const MANGA_SEARCH_QUERY = `
 			query ($search: String, $page: Int, $perPage: Int) {
 				Page (page: $page, perPage: $perPage) {
-					media (search: $search, type: MANGA, sort: TRENDING_DESC) {
+					media (search: $search, type: MANGA) {
 						id
 						title {
 							userPreferred
@@ -167,7 +167,7 @@ router.get('/:category', AuthenticateMiddleware, async (req: Request, res: Respo
 							lastPage
 							hasNextPage
 						}
-						media (search: $search, type: MANGA, sort: TRENDING_DESC) {
+						media (search: $search, type: MANGA) {
 							id
 							title {
 								userPreferred

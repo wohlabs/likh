@@ -8,7 +8,7 @@ import { ServiceResult } from "./IServiceResult";
 export const MANGA_SEARCH_QUERY = `
 query ($search: String, $page: Int, $perPage: Int) {
 	Page (page: $page, perPage: $perPage) {
-		media (search: $search, type: MANGA, sort: POPULARITY_DESC) {
+		media (search: $search, type: MANGA) {
 			id
 			title {
 				userPreferred
@@ -25,7 +25,7 @@ query ($search: String, $page: Int, $perPage: Int) {
 const MANGA_SEARCH_TREND_QUERY = `
 	query {
 		Page(page: 1, perPage: 10) {
-			media(type: MANGA, sort: POPULARITY_DESC) {
+			media(type: MANGA) {
 				id
 				title {
 					userPreferred
