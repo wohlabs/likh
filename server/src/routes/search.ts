@@ -10,6 +10,98 @@ const router: Router = Router();
 
 router.use(express.json());
 
+// CAUTION: have not implemented limit passed 50 for anilist
+const searchLists = async (userId: string, query: string, limit: number = 50, page: number = 1) =>
+{
+	let results: any[] = [];
+
+	// Search custom lists with pagination
+	const total = await CustomList.countDocuments({
+		userId,
+		name: { $regex: query, $options: 'i' }
+	});
+	// Search custom lists
+	const lists = await CustomList.find(
+		{
+			userId,
+			name: { $regex: query, $options: 'i' }
+		},
+	)
+		.skip(Math.max(0, limit * (page - 1)))
+		.limit(limit)
+		.lean();
+
+	if (lists && lists.length > 0)
+	{
+		results = lists.map((list) => ({
+			id: list._id,
+			name: list.name,
+			mangaIds: list.mangaIds,
+			isFavorite: list.isFavorite
+		}));
+	}
+
+	if (results.length <= limit)
+	{
+		// Search manga from AniList
+		const MANGA_SEARCH_QUERY = `
+			query ($search: String, $page: Int, $perPage: Int) {
+				Page (page: $page, perPage: $perPage) {
+					media (search: $search, type: MANGA) {
+						id
+						title {
+							userPreferred
+							english
+						}
+						coverImage {
+							large
+						}
+					}
+				}
+			}
+		`;
+		const matchingMangaIds = (await anilistRequest(MANGA_SEARCH_QUERY, {
+			search: query,
+			page: 1,
+			perPage: 50
+		}, 3600))?.data?.Page?.media?.map((manga: any) => manga.id);
+
+		// Search custom lists with pagination
+		const restTotal = await CustomList.countDocuments({
+			userId,
+			name: { $not: { $regex: query, $options: 'i' }},
+			mangaIds: { $in: matchingMangaIds }
+		});
+		const matchingManga = await CustomList.find({
+			_id: { $nin: results.map(list => list.id)},
+			mangaIds: { $in: matchingMangaIds }
+		})
+			.skip(Math.max(0, limit * (page - 1) - total))
+			.limit(limit)
+			.lean();
+		if (matchingManga && matchingManga.length > 0)
+		{
+			results = [ ...results, ...matchingManga.map((list:any) => ({
+				id: list._id,
+				name: list.name,
+				mangaIds: list.mangaIds,
+				isFavorite: list.isFavorite
+			}))].slice(0, limit);
+		}
+		return {
+			results,
+			hasMore: (limit * (page - 1) - total) + results.length < restTotal
+		};
+	}
+	else
+	{
+		return {
+			results,
+			hasMore: (limit * (page - 1)) + results.length < total
+		};
+	}
+}
+
 // Centralized search endpoint
 // GET /search?query=<search_term>
 router.get('/', AuthenticateMiddleware, async (req: Request, res: Response) => {
@@ -100,55 +192,7 @@ router.get('/', AuthenticateMiddleware, async (req: Request, res: Response) => {
 			console.error('Error searching notes:', err);
 		}
 
-
-		// Search custom lists
-		const lists = await CustomList.find(
-			{
-				userId,
-				$or: [
-					{ name: { $regex: query, $options: 'i' } },
-					{ mangaIds: { $in: [] } } // This will be replaced with actual search logic
-				]
-			},
-			{ name: 1, mangaIds: 1, isFavorite: 1 }
-		)
-			.limit(2)
-			.lean();
-
-		if (lists && lists.length > 0)
-		{
-			searchResults.lists = lists.map((list) => ({
-				id: list._id,
-				name: list.name,
-				mangaIds: list.mangaIds,
-				isFavorite: list.isFavorite
-			}));
-		}
-
-		if (searchResults.lists.length <= 2)
-		{
-			const mangaData = await anilistRequest(MANGA_SEARCH_QUERY, {
-				search: query,
-				page: 1,
-				perPage: 50
-			}, 3600);
-			const matchingMangaIds = mangaData?.data?.Page?.media?.map((manga: any) => manga.id)
-			const matchingManga = await CustomList.find({
-				_id: { $nin: searchResults.lists.map(list => list.id)},
-				mangaIds: { $in: matchingMangaIds }
-			})
-				.limit(2)
-				.lean();
-			if (matchingManga && matchingManga.length > 0)
-			{
-				searchResults.lists = [ ...searchResults.lists , ...matchingManga.map((list:any) => ({
-					id: list._id,
-					name: list.name,
-					mangaIds: list.mangaIds,
-					isFavorite: list.isFavorite
-				}))].slice(0, 2);
-			}
-		}
+		searchResults.lists = (await searchLists(userId, query, 2)).results
 
 		res.status(200).json(searchResults);
 	} catch (err: any) {
@@ -177,6 +221,7 @@ router.get('/:category', AuthenticateMiddleware, async (req: Request, res: Respo
 	const pageNum = Math.max(1, parseInt(page as string) || 1);
 	const pageSizeNum = Math.min(50, Math.max(1, parseInt(pageSize as string) || 20));
 	const skip = (pageNum - 1) * pageSizeNum;
+	let hasMore = false;
 
 	try {
 		let items: any[] = [];
@@ -221,6 +266,7 @@ router.get('/:category', AuthenticateMiddleware, async (req: Request, res: Respo
 				}));
 				total = mangaData.data.Page.pageInfo?.total || 0;
 			}
+			hasMore = skip + items.length < total;
 		} else if (category === 'notes') {
 			// Search notes with pagination
 			total = await Note.countDocuments({
@@ -253,35 +299,20 @@ router.get('/:category', AuthenticateMiddleware, async (req: Request, res: Respo
 				endChapter: note.endChapter,
 				createdAt: note.createdAt
 			}));
+			hasMore = skip + items.length < total;
 		} else if (category === 'lists') {
 			// Search custom lists with pagination
 			total = await CustomList.countDocuments({
 				userId,
 				name: { $regex: query, $options: 'i' }
 			});
-
-			const lists = await CustomList.find(
-				{
-					userId,
-					name: { $regex: query, $options: 'i' }
-				},
-				{ name: 1, mangaIds: 1, isFavorite: 1 }
-			)
-				.skip(skip)
-				.limit(pageSizeNum)
-				.lean();
-
-			items = lists.map((list) => ({
-				id: list._id,
-				name: list.name,
-				mangaIds: list.mangaIds,
-				isFavorite: list.isFavorite
-			}));
+			const temp = await searchLists(userId, query, pageSizeNum, pageNum)
+			items = temp.results
+			hasMore = temp.hasMore
 		} else {
 			return res.status(400).json({ error: 'Invalid category. Must be manga, notes, or lists' });
 		}
 
-		const hasMore = skip + items.length < total;
 
 		res.status(200).json({
 			items,
