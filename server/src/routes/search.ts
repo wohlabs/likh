@@ -62,10 +62,27 @@ const searchLists = async (userId: string, query: string, limit: number = 50, pa
 
 	if (lists && lists.length > 0)
 	{
+		// Fetch manga data for all mangaIds present in the returned lists
+		const allMangaIds = Array.from(new Set(lists.flatMap((l: any) => l.mangaIds)));
+		let allMangaData: any[] = [];
+		try {
+			if (allMangaIds.length > 0) {
+				allMangaData = await getMangaData(allMangaIds);
+			}
+		} catch (err) {
+			console.error('Error fetching manga data for lists:', err);
+		}
+
 		results = lists.map((list) => ({
 			id: list._id,
 			name: list.name,
-			mangaIds: list.mangaIds,
+			manga: (list.mangaIds || []).map((mId: number) => {
+				const md = allMangaData.find((m) => m.id === mId);
+				return {
+					id: mId,
+					title: md?.title || { userPreferred: null, english: null }
+				};
+			}),
 			isFavorite: list.isFavorite
 		}));
 	}

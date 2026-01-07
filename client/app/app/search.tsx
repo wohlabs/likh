@@ -13,7 +13,7 @@ import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import ThemeText from '@/components/ThemeText';
 import ThemeSearchbar from '@/components/ThemeSearchbar';
 import { searchCategory, PaginatedSearchResult } from '@/services/search.service';
-import { getMangaTitle } from '@/types/IManga';
+import { getMangaTitle, IMangaDetails } from '@/types/IManga';
 import { addMangaToLibrary } from '@/services/manga.service';
 import {ThemeDropdown} from "@/components/ThemeDropdown";
 
@@ -150,11 +150,22 @@ export default function SearchCategoryPage() {
 			onPress={() => handleListPress(item.id)}
 		>
 			<Card.Content style={styles.resultContent}>
+				<View style={{flexDirection: 'row', alignContent: 'center'}}>
+					<ThemeText variant="titleSmall">
+						{item.name}
+					</ThemeText>
+					<ThemeText variant="titleSmall" style={{opacity: 0.6}}>
+						&nbsp;• {item.manga.length} manga
+					</ThemeText>
+				</View>
+			</Card.Content>
+			<Card.Content style={styles.listMeta}>
 				<ThemeText variant="titleSmall">
-					{item.name}
-				</ThemeText>
-				<ThemeText variant="bodySmall" style={styles.listMeta}>
-					{item.mangaIds.length} manga{item.isFavorite ? ' • Favorites' : ''}
+				{
+					item.manga?.map((mangaItem: IMangaDetails, index: number) =>(
+							getMangaTitle(mangaItem) + (index === item.manga.length - 1 ? "" : " • ")
+					))
+				}
 				</ThemeText>
 			</Card.Content>
 		</Card>
