@@ -15,16 +15,45 @@ const searchLists = async (userId: string, query: string, limit: number = 50, pa
 {
 	let results: any[] = [];
 
+	// Search manga from AniList
+	const MANGA_SEARCH_QUERY = `
+		query ($search: String, $page: Int, $perPage: Int) {
+			Page (page: $page, perPage: $perPage) {
+				media (search: $search, type: MANGA) {
+					id
+					title {
+						userPreferred
+						english
+					}
+					coverImage {
+						large
+					}
+				}
+			}
+		}
+	`;
+	const matchingMangaIds = (await anilistRequest(MANGA_SEARCH_QUERY, {
+		search: query,
+		page: 1,
+		perPage: 50
+	}, 3600))?.data?.Page?.media?.map((manga: any) => manga.id);
+
 	// Search custom lists with pagination
 	const total = await CustomList.countDocuments({
 		userId,
-		name: { $regex: query, $options: 'i' }
+		$or: [
+			{ name: { $regex: query, $options: 'i' } },
+			{ mangaIds: { $in: matchingMangaIds } }
+		]
 	});
 	// Search custom lists
 	const lists = await CustomList.find(
 		{
 			userId,
-			name: { $regex: query, $options: 'i' }
+			$or: [
+				{ name: { $regex: query, $options: 'i' } },
+				{ mangaIds: { $in: matchingMangaIds } }
+			]
 		},
 	)
 		.skip(Math.max(0, limit * (page - 1)))
@@ -41,65 +70,10 @@ const searchLists = async (userId: string, query: string, limit: number = 50, pa
 		}));
 	}
 
-	if (results.length <= limit)
-	{
-		// Search manga from AniList
-		const MANGA_SEARCH_QUERY = `
-			query ($search: String, $page: Int, $perPage: Int) {
-				Page (page: $page, perPage: $perPage) {
-					media (search: $search, type: MANGA) {
-						id
-						title {
-							userPreferred
-							english
-						}
-						coverImage {
-							large
-						}
-					}
-				}
-			}
-		`;
-		const matchingMangaIds = (await anilistRequest(MANGA_SEARCH_QUERY, {
-			search: query,
-			page: 1,
-			perPage: 50
-		}, 3600))?.data?.Page?.media?.map((manga: any) => manga.id);
-
-		// Search custom lists with pagination
-		const restTotal = await CustomList.countDocuments({
-			userId,
-			name: { $not: { $regex: query, $options: 'i' }},
-			mangaIds: { $in: matchingMangaIds }
-		});
-		const matchingManga = await CustomList.find({
-			_id: { $nin: results.map(list => list.id)},
-			mangaIds: { $in: matchingMangaIds }
-		})
-			.skip(Math.max(0, limit * (page - 1) - total))
-			.limit(limit)
-			.lean();
-		if (matchingManga && matchingManga.length > 0)
-		{
-			results = [ ...results, ...matchingManga.map((list:any) => ({
-				id: list._id,
-				name: list.name,
-				mangaIds: list.mangaIds,
-				isFavorite: list.isFavorite
-			}))].slice(0, limit);
-		}
-		return {
-			results,
-			hasMore: (limit * (page - 1) - total) + results.length < restTotal
-		};
-	}
-	else
-	{
-		return {
-			results,
-			hasMore: (limit * (page - 1)) + results.length < total
-		};
-	}
+	return {
+		results,
+		hasMore: (limit * (page - 1)) + results.length < total
+	};
 }
 
 // Centralized search endpoint
