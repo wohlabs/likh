@@ -11,13 +11,13 @@ const TTL = 7*24*60*60*1000; // 7 days in milliseconds
 router.get("/:id", async (req: Request, res: Response) => {
 	const id: string = req.params?.id;
 	try {
-		const storedManga = await Manga.findById(parseInt(id));
+		const storedManga = await Manga.findOne({ mangaId: parseInt(id) });
 		if (!storedManga)
 		{
 			console.log("Manga not found in DB, fetching from Anilist");
 			const refreshedManga = await anilistRequest(MANGA_QUERY, { id: parseInt(id) } , 3600);
 			const toBeRefreshedManga = new Manga({
-				_id: refreshedManga.data.Media.id,
+				mangaId: refreshedManga.data.Media.id,
 				title: refreshedManga.data.Media.title,
 				coverImage: refreshedManga.data.Media.coverImage,
 				description: refreshedManga.data.Media.description,

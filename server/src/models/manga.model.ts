@@ -1,7 +1,7 @@
 import { model, Schema } from "mongoose";
 
 export type IManga = {
-	_id: number;
+	mangaId: number;
 	title: {
 		userPreferred: string,
 		english: string
@@ -19,7 +19,7 @@ export type IManga = {
 };
 
 const MangaSchema = new Schema<IManga>({
-	_id: { type: Number, required: true, unique: false, index: true },
+	mangaId: { type: Number, required: true, unique: false, index: true },
 	title: {
 		userPreferred: { type: String },
 		english: { type: String }
