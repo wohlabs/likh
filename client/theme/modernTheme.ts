@@ -2,40 +2,40 @@ import { MD3DarkTheme, MD3LightTheme } from 'react-native-paper';
 
 // Modern, classy color palette
 const lightColors = {
-  primary: '#6366F1', // Indigo
-  primaryContainer: '#E0E7FF',
+  primary: '#5B7AFF', // Rich indigo-blue
+  primaryContainer: '#E9EFFE',
   onPrimary: '#FFFFFF',
-  onPrimaryContainer: '#3730A3',
-  secondary: '#EC4899', // Pink
-  secondaryContainer: '#FCE7F3',
+  onPrimaryContainer: '#2E3B9D',
+  secondary: '#D54E7D', // Sophisticated mauve-pink
+  secondaryContainer: '#F8DDE8',
   onSecondary: '#FFFFFF',
-  onSecondaryContainer: '#9D174D',
-  tertiary: '#8B5CF6', // Violet
-  tertiaryContainer: '#F3E8FF',
+  onSecondaryContainer: '#7D1B40',
+  tertiary: '#7C5BA6', // Muted purple
+  tertiaryContainer: '#F0E8FF',
   onTertiary: '#FFFFFF',
-  onTertiaryContainer: '#5B21B6',
-  error: '#DC2626',
+  onTertiaryContainer: '#42275E',
+  error: '#C41E3A',
   onError: '#FFFFFF',
-  errorContainer: '#FEE2E2',
-  onErrorContainer: '#991B1B',
-  background: '#FAFAFA',
-  onBackground: '#1F2937',
+  errorContainer: '#F7D8DC',
+  onErrorContainer: '#630A0F',
+  background: '#FAFBFC',
+  onBackground: '#1A202C',
   surface: '#FFFFFF',
-  onSurface: '#1F2937',
-  surfaceVariant: '#F3F4F6',
-  onSurfaceVariant: '#6B7280',
-  outline: '#D1D5DB',
-  outlineVariant: '#E5E7EB',
+  onSurface: '#1A202C',
+  surfaceVariant: '#F1F3FB',
+  onSurfaceVariant: '#5A5F73',
+  outline: '#C4C7D0',
+  outlineVariant: '#E2E4EA',
   elevation: {
     level0: 'transparent',
-    level1: '#F3F4F6',
-    level2: '#E5E7EB',
-    level3: '#D1D5DB',
-    level4: '#CDCED4',
-    level5: '#C4C7D0',
+    level1: '#F7F9FE',
+    level2: '#EFF3FD',
+    level3: '#E8ECFC',
+    level4: '#E5EAFC',
+    level5: '#E1E7FA',
   },
-  inverseOnSurface: '#F3F4F6',
-  inverseSurface: '#1F2937',
+  inverseOnSurface: '#F2F4F9',
+  inverseSurface: '#1A202C',
 };
 
 const darkColors = {
