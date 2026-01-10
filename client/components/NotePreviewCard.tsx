@@ -50,17 +50,19 @@ export default function NotePreviewCard({ note, style, onPress }: { note: INoteE
 				</View>
 				<View style={{flexDirection: 'row', justifyContent: 'space-between', flex: 1, padding: 5}}>
 					<View style={{flexDirection: 'row', flex: 1, padding: 5, paddingHorizontal: 5, gap: 5}}>
+						{ previews[0] && 
 						<Image
 							source={{ uri: previews[0] }}
 							style={[styles.imagePreview, { opacity: previews.length > 0 ? 1 : 0 }]}
 							resizeMode="cover"
 						/>
+						}
 						<ReadMore
-							numberOfLines={2}
+							numberOfLines={3}
 							renderTruncatedFooter={() => {}}
 							renderRevealedFooter={() => {}}
 							onReady={() => {}}
-							textStyle={{color: theme.colors.onBackground, opacity: note.text ? 1 : 0.6}}
+							textStyle={{color: theme.colors.onBackground, opacity: note.text ? 1 : 0.6, minHeight: 40}}
 							style={{flex: 1}}
 						>
 							<ThemeText variant="bodyMedium">{note.text || "(No notes)"}</ThemeText>
