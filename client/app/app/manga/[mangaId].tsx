@@ -167,7 +167,7 @@ export default function MangaDetails()
 							Platform.OS === 'web' && width > 500
 								?
 								<View style={{flex:1, flexDirection: 'row', alignItems: 'center'}}>
-									<NotePreviewCard note={item} style={{ flex: 1, margin: 5}} onPress={()=> {setViewerNoteIndex(index); setIsViewingOverlay(true)}} />
+									<NotePreviewCard note={item} onPress={()=> {setViewerNoteIndex(index); setIsViewingOverlay(true)}} />
 									<NoteButtons onEditPress={() => router.navigate(`/app/manga/${mangaId}/edit_note/${item.id}`)} onDeletePress={() => onDelete(item.id)} key={`NotePreviewCard_${item.id}`} />
 								</View>
 								:
@@ -190,7 +190,7 @@ export default function MangaDetails()
 								>
 									<NotePreviewCard
 										key={`NotePreview_${item.id}`}
-										note={item} style={{flex: 1,margin: 5, flexDirection: 'row', right: 0}} onPress={()=> {setViewerNoteIndex(index); setIsViewingOverlay(true)}}
+										note={item} onPress={()=> {setViewerNoteIndex(index); setIsViewingOverlay(true)}}
 									/>
 								</ReanimatedSwipeable>
 						)}

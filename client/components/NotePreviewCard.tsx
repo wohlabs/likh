@@ -1,13 +1,15 @@
-import { Image, StyleProp, ViewStyle, StyleSheet } from "react-native";
+import { Image, StyleProp, ViewStyle, StyleSheet, View } from "react-native";
 import { INoteEntry } from "../types/INotes";
 import ThemeText from "./ThemeText";
 import { getImageBase64 } from "./util";
 import { useCallback, useEffect, useState } from "react";
-import { Card } from "react-native-paper";
+import { Card, useTheme } from "react-native-paper";
+import ReadMore from "./ReadMore";
 
 export default function NotePreviewCard({ note, style, onPress }: { note: INoteEntry, style?: StyleProp<ViewStyle>, onPress?: () => void }) 
 {
 	const [previews, setPreviews] = useState<string[]>(note.images);
+	const theme = useTheme()
 
 	const fetchImages = useCallback(async () => 
 	{
@@ -30,24 +32,42 @@ export default function NotePreviewCard({ note, style, onPress }: { note: INoteE
 
 	return (
 		<Card
-			style={style}
+			style={[{ flex: 1, margin: 5, borderRadius: 10}, style]}
 			onPress={onPress}
 		>
-			<Card.Content style={styles.cardContent}>
-				<Image
-					source={{ uri: previews[0] }}
-					style={[styles.imagePreview, { opacity: previews.length > 0 ? 1 : 0 }]}
-					resizeMode="cover"
-				/>
-				<ThemeText variant="bodyMedium" style={styles.middleInfo}>{new Date(note.modifiedAt).toDateString() || "date @ time"}</ThemeText>
-				<ThemeText variant="bodyMedium" style={styles.middleInfo}>
-					{
-						note.startChapter === -1
-							? `All`
-							: `Chapter ${note.startChapter}${note.endChapter ? " - " + note.endChapter : ""}`
-					}
-				</ThemeText>
-				<ThemeText variant="bodyMedium" style={styles.noteSnippet} ellipsizeMode="tail" numberOfLines={1}>{note.text || "No notes"}</ThemeText>
+			<Card.Content style={{flexDirection: 'row', padding: 0, flex: 1}}>
+				<View style={{width: '7%', backgroundColor: theme.colors.surfaceVariant, borderTopLeftRadius: 10, borderBottomLeftRadius: 10, padding: 2, justifyContent: 'center', }}>
+					<ThemeText variant="labelSmall" style={{textAlign: 'center', opacity: 0.6}}>
+						Chapter
+					</ThemeText>
+					<ThemeText variant="labelMedium" style={{textAlign: 'center'}}>
+						{
+							note.startChapter === -1
+								? `Overall`
+								: `${note.startChapter}${note.endChapter ? " - " + note.endChapter : ""}`
+						}
+					</ThemeText>
+				</View>
+				<View style={{flexDirection: 'row', justifyContent: 'space-between', flex: 1, padding: 5}}>
+					<View style={{flexDirection: 'row', flex: 1, padding: 5, paddingHorizontal: 5, gap: 5}}>
+						<Image
+							source={{ uri: previews[0] }}
+							style={[styles.imagePreview, { opacity: previews.length > 0 ? 1 : 0 }]}
+							resizeMode="cover"
+						/>
+						<ReadMore
+							numberOfLines={2}
+							renderTruncatedFooter={() => {}}
+							renderRevealedFooter={() => {}}
+							onReady={() => {}}
+							textStyle={{color: theme.colors.onBackground, opacity: note.text ? 1 : 0.6}}
+							style={{flex: 1}}
+						>
+							<ThemeText variant="bodyMedium">{note.text || "(No notes)"}</ThemeText>
+						</ReadMore>
+					</View>
+					<ThemeText variant="labelSmall" style={{opacity: 0.6}}>{new Date(note.modifiedAt).toLocaleString() || "date @ time"}</ThemeText>
+				</View>
 			</Card.Content>
 		</Card>
 	);
@@ -55,10 +75,10 @@ export default function NotePreviewCard({ note, style, onPress }: { note: INoteE
 
 const styles = StyleSheet.create({
 	noteSnippet: {
-		flex: 1, textAlign: 'right', paddingLeft: 20
+		flex: 1, textAlign: 'left', paddingLeft: 20
 	},
 	imagePreview: {
-		width: 50, aspectRatio: 1, borderRadius: 7, alignSelf: 'center'
+		width: 45, aspectRatio: 1, borderRadius: 7, alignSelf: 'center'
 	},
 	cardContent: {
 		justifyContent: 'space-between', alignItems: 'center', width: '100%', flexDirection: 'row', padding: 10 

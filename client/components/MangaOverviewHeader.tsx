@@ -1,7 +1,7 @@
 import { getMangaTitle, IMangaDetails } from "@/types/IManga";
 import { StyleProp, ViewStyle, StyleSheet, View, Image, GestureResponderEvent } from "react-native";
 import ThemeText from "./ThemeText";
-import ReadMore from 'react-native-read-more-text';
+import ReadMore from '@/components/ReadMore';
 import { useTheme } from "react-native-paper";
 
 
