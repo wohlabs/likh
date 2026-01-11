@@ -117,12 +117,15 @@ export default function MainNavigator({ isDark, toggleTheme }: { isDark: boolean
 				headerRight: () =>
 				(
 					<>
-						<IconButton
-							icon="bookmark-multiple"
-							onPress={() => router.push("/app/custom-lists")}
-							style={{ marginRight: 10 }}
-							iconColor={theme.colors.primary}
-						/>
+						{
+							token &&
+							<IconButton
+								icon="bookmark-multiple"
+								onPress={() => router.push("/app/custom-lists")}
+								style={{ marginRight: 10 }}
+								iconColor={theme.colors.primary}
+							/>
+						}
 						<IconButton size={20} icon={isDark ? 'moon-waning-crescent' : 'white-balance-sunny'} onPress={toggleTheme} style={[Platform.OS === 'ios' && {margin: 'auto'}]} iconColor={theme.colors.primary} />
 						{
 							token
