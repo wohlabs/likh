@@ -13,11 +13,6 @@ import { ThemeToast } from "./ThemeToast";
 import LoadingToast from "./LoadingToast";
 
 
-const toastConfig = {
-	error: (props: any) => <ThemeToast {...props} variant="error" />,
-	loading: (props: any) => <LoadingToast {...props} />,
-};
-
 export default function MainNavigator({ isDark, toggleTheme }: { isDark: boolean, toggleTheme?: () => void })
 {
 	const theme = useTheme()
@@ -173,7 +168,6 @@ export default function MainNavigator({ isDark, toggleTheme }: { isDark: boolean
 		>
 			<Stack.Screen name="index" options={{headerShown: false}}/>
 		</Stack>
-		<Toast config={toastConfig}/>
 		</>
 	)
 }
