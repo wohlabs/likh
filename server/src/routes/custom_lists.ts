@@ -71,6 +71,34 @@ router.post(`/favorite/manga`, AuthenticateMiddleware, async (req: Request, res:
 	res.sendStatus(200)
 })
 
+// edit list attributes
+router.patch(`/:listId`, AuthenticateMiddleware, async (req: Request, res: Response) =>
+{
+	const userId = req.user?.id
+	const { listId } = req.params
+	const { description, name, isFavorite } = req.body
+	if (!listId )
+	{
+		return res.sendStatus(400);
+	}
+	const list = await CustomList.findById(listId).exec()
+	if (list === null)
+	{
+		return res.sendStatus(404);
+	}
+	if (list?.userId.toString() !== userId)
+	{
+		return res.status(401).json("User does not have valid authorization on this list.")
+	}
+
+	if (description) list.description = description
+	if (name) list.name = name
+	if (isFavorite) list.isFavorite = isFavorite
+
+	list.save()
+	res.sendStatus(200)
+})
+
 // add manga to list
 router.post(`/:listId/manga`, AuthenticateMiddleware, async (req: Request, res: Response) =>
 {
