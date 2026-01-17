@@ -11,7 +11,6 @@ export const registerUser = async (username: string, password: string) : Promise
 			error: "Your password needs to:\n- have at least 8 characters.\n- contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character."
 		}
 	}
-
 	try
 	{
 		await api.post('/users', { username, password });

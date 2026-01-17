@@ -24,7 +24,7 @@ router.post(`/`, async (req: Request, res: Response) =>
 	try
 	{
 		const newUser = new User({
-			username,
+			username: username.toLowerCase(),
 			password: hashedPassword
 		});
 		await newUser.save();
@@ -49,7 +49,8 @@ router.post(`/`, async (req: Request, res: Response) =>
 router.post('/login', async (req: Request, res: Response) =>
 {
 	const { username, password } = req.body;
-	const user = await User.findOne({ username });
+	const normUsername = username.toLowerCase()
+	const user = await User.findOne({ username: normUsername });
 	if (!user) return res.status(400).json({ error: 'User not found' });
 
 	const isMatch = await bcrypt.compare(password, user.password);
@@ -58,7 +59,7 @@ router.post('/login', async (req: Request, res: Response) =>
 	const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1y' });
 	res.json({
 		token,
-		username,
+		username: normUsername,
 		...(user.anilist_token && { anilist_token: user.anilist_token})
 	});
 });
