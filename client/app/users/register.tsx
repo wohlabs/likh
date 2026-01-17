@@ -16,7 +16,11 @@ export default function UserRegister()
 	{
 		const result = await registerUser(username, password);
 
-		if (!result.success)
+		if (result.success)
+		{
+			router.navigate("/users/login")
+		}
+		else
 		{
 			setError(result.error);
 			return;
@@ -41,5 +45,5 @@ const styles = StyleSheet.create({
 	container: { flex: 1, justifyContent: 'center', padding: 20 },
 	formContainer: {maxWidth: 500, width: '90%', height: "80%", margin: 'auto', alignItems: 'center', justifyContent: 'center'},
 	input: { marginBottom: 10, borderRadius: 5, width: '100%' },
-	error: { color: 'red', marginBottom: 10 },
+	error: { color: 'red', marginBottom: 10, width: '100%' },
 });

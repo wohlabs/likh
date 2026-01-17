@@ -14,6 +14,11 @@ router.use(express.json())
 router.post(`/`, async (req: Request, res: Response) =>
 {
 	const { username, password } = req.body;
+	const validPasswordRule = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+	if (!validPasswordRule.test(password))
+	{
+		res.status(400).json({ error: 'Your password needs to:\n- have at least 8 characters.\n- contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character.' });
+	}
 	const hashedPassword = await bcrypt.hash(password, 10);
 
 	try
