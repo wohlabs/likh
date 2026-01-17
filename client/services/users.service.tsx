@@ -3,7 +3,7 @@ import { ServiceResult } from "./IServiceResult";
 
 export const registerUser = async (username: string, password: string) : Promise<ServiceResult<null>> =>
 {
-	const validPasswordRule = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+	const validPasswordRule = /^(?=.*?[A-Z])(?=(.*[a-z]){1,})(?=(.*[\d]){1,})(?=(.*[\W]){1,})(?!.*\s).{8,}$/;
 	if (!validPasswordRule.test(password))
 	{
 		return {
