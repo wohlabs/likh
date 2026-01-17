@@ -61,14 +61,19 @@ const AppGate = ({ toggleTheme, isDark }: { toggleTheme: () => void, isDark: boo
 	const wakeupServer = useCallback(async () => {
 		while (true)
 		{
-			const response = await api.get("/")
-			if (response.status == 200)
+			try
 			{
-				console.log('test')
-				await wait(5000)
-				setServerLoading(false)
-				return;
+				const response = await api.get("/")
+				if (response.status == 200)
+				{
+					setServerLoading(false)
+					return;
+				}
 			}
+			catch (e)
+			{
+			}
+			console.log('Failed to wake up the server. trying again.')
 			wait(2000) // wait for 2s until attempting to wake the server up again
 		}
 	}, [])
