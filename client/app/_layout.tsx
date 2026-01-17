@@ -36,7 +36,10 @@ const AppGate = ({ toggleTheme, isDark }: { toggleTheme: () => void, isDark: boo
 {
 	const { loading } = useContext(AuthContext);
 	const { ready } = usePersistentTheme();
-	const [ serverLoading, setServerLoading ] = useState(true)
+	const [ serverLoading, setServerLoading ] = useState(false)
+	
+	
+
 
 	useEffect(() => {
 		if (serverLoading)
@@ -59,6 +62,10 @@ const AppGate = ({ toggleTheme, isDark }: { toggleTheme: () => void, isDark: boo
 	}
 	
 	const wakeupServer = useCallback(async () => {
+		// Start delayed UI timer
+		const timeoutId = setTimeout(() => {
+			setServerLoading(true);
+		}, 5000);
 		while (true)
 		{
 			try
@@ -66,6 +73,7 @@ const AppGate = ({ toggleTheme, isDark }: { toggleTheme: () => void, isDark: boo
 				const response = await api.get("/")
 				if (response.status == 200)
 				{
+					clearTimeout(timeoutId)
 					setServerLoading(false)
 					return;
 				}
