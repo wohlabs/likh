@@ -2,7 +2,7 @@ import { Stack, useRouter, useSegments } from "expo-router";
 import { Linking, Platform, Pressable, Image, StyleSheet } from "react-native";
 import ThemeText from "./ThemeText";
 import ThemeButton from "./ThemeButton";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { AuthContext } from "@/context/AuthContext";
 import { IconButton, Menu, useTheme } from "react-native-paper";
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -11,6 +11,7 @@ import * as WebBrowser from 'expo-web-browser';
 import Toast from "react-native-toast-message"
 import { ThemeToast } from "./ThemeToast";
 import LoadingToast from "./LoadingToast";
+import { LoadingScreen } from "./LoadingScreen";
 
 
 export default function MainNavigator({ isDark, toggleTheme }: { isDark: boolean, toggleTheme?: () => void })
@@ -20,14 +21,54 @@ export default function MainNavigator({ isDark, toggleTheme }: { isDark: boolean
 	const [optionsVisible, setOptionsVisible] = useState<boolean>(false);
 	const segments = useSegments();
 	const router = useRouter();
-
-	const linkAnilist = () => 
-	{
-		const clientId = 30897;
-		const authUrl = `https://anilist.co/api/v2/oauth/authorize?client_id=${clientId}&response_type=token`;
-		// Open the URL in the device's browser
-		WebBrowser.openAuthSessionAsync(authUrl);
-	};
+	const [ serverLoading, setServerLoading ] = useState(segments[0] == "app")
+	
+	useEffect(() => {
+		if (serverLoading && segments[0] != "app")
+		{
+			Toast.show({
+				type: 'loading',
+				text1: 'booting up the server. please wait...',
+				position: 'top',
+				autoHide: false,
+			}); 
+		}
+		else
+		{
+			Toast.hide()
+		}
+	}, [serverLoading]);
+	
+	function wait(ms: number) {
+		return new Promise(resolve => setTimeout(resolve, ms));
+	}
+	
+	const wakeupServer = useCallback(async () => {
+		// Start delayed UI timer
+		const timeoutId = setTimeout(() => {
+			setServerLoading(true);
+		}, 2000);
+		while (true)
+		{
+			try
+			{
+				const response = await api.get("/")
+				if (response.status == 200)
+				{
+					await wait(5000) // wait for 2s until attempting to wake the server up again
+					clearTimeout(timeoutId)
+					setServerLoading(false)
+					return
+				}
+			}
+			catch (e)
+			{
+			}
+			console.log('Failed to wake up the server. trying again.')
+			await wait(2000) // wait for 2s until attempting to wake the server up again
+		}
+	}, [])
+	
 
 	useEffect(() => 
 	{
@@ -86,6 +127,10 @@ export default function MainNavigator({ isDark, toggleTheme }: { isDark: boolean
 			return
 		}
 	}, [token, segments]);
+
+	useEffect(() => {
+		wakeupServer()
+	}, []);
 	
 	const onTitleClicked = () => {
 		const inAuthGroup = segments[0] === "users";
@@ -99,13 +144,27 @@ export default function MainNavigator({ isDark, toggleTheme }: { isDark: boolean
 		}
 	}
 
+	const linkAnilist = () => 
+	{
+		const clientId = 30897;
+		const authUrl = `https://anilist.co/api/v2/oauth/authorize?client_id=${clientId}&response_type=token`;
+		// Open the URL in the device's browser
+		WebBrowser.openAuthSessionAsync(authUrl);
+	};
+	
+	if (segments[0] === "app" && serverLoading)
+	{
+		console.log("hello")
+		return <LoadingScreen text="booting up the server. please wait..." />
+	}
+
 	return (
 		<>
 		<Stack
 			screenOptions={{
 				contentStyle: {backgroundColor: theme.colors.background},
 				headerStyle: {backgroundColor: theme.colors.surfaceVariant},
-				headerTintColor: useTheme().colors.onSurface,
+				headerTintColor: theme.colors.onSurface,
 				headerLeft: () => <Pressable onPress={onTitleClicked}><ThemeText style={{ fontWeight: "900", letterSpacing: 2, marginLeft: 10 }} variant="titleLarge">likh</ThemeText></Pressable>,
 				headerTitleAlign: "center",
 				headerTitle: () => null,

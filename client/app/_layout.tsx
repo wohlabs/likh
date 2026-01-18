@@ -36,59 +36,6 @@ const AppGate = ({ toggleTheme, isDark }: { toggleTheme: () => void, isDark: boo
 {
 	const { loading } = useContext(AuthContext);
 	const { ready } = usePersistentTheme();
-	const [ serverLoading, setServerLoading ] = useState(false)
-	
-	
-
-
-	useEffect(() => {
-		if (serverLoading)
-		{
-			Toast.show({
-				type: 'loading',
-				text1: 'booting up the server. please wait...',
-				position: 'top',
-				autoHide: false,
-			}); 
-		}
-		else
-		{
-			Toast.hide()
-		}
-	}, [serverLoading]);
-	
-	function wait(ms: number) {
-		return new Promise(resolve => setTimeout(resolve, ms));
-	}
-	
-	const wakeupServer = useCallback(async () => {
-		// Start delayed UI timer
-		const timeoutId = setTimeout(() => {
-			setServerLoading(true);
-		}, 5000);
-		while (true)
-		{
-			try
-			{
-				const response = await api.get("/")
-				if (response.status == 200)
-				{
-					clearTimeout(timeoutId)
-					setServerLoading(false)
-					return;
-				}
-			}
-			catch (e)
-			{
-			}
-			console.log('Failed to wake up the server. trying again.')
-			wait(2000) // wait for 2s until attempting to wake the server up again
-		}
-	}, [])
-	
-	useEffect(() => {
-		wakeupServer()
-	}, []);
 	
 	// Wait until theme is resolved
 	if (!ready) 
