@@ -9,8 +9,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from "@/services/AxiosInstance";
 import * as WebBrowser from 'expo-web-browser';
 import Toast from "react-native-toast-message"
-import { ThemeToast } from "./ThemeToast";
-import LoadingToast from "./LoadingToast";
 import { LoadingScreen } from "./LoadingScreen";
 
 
