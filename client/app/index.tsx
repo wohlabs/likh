@@ -4,7 +4,7 @@ import ThemeText from "@/components/ThemeText";
 import ThemeButton from "@/components/ThemeButton";
 import { useTheme } from "react-native-paper";
 import { useEffect, useState } from "react";
-import Reanimated, { useSharedValue, useAnimatedStyle, withRepeat, withTiming, interpolate, Extrapolate } from "react-native-reanimated";
+import Reanimated, { useSharedValue, useAnimatedStyle, withRepeat, withTiming, interpolate, Extrapolate, withSequence } from "react-native-reanimated";
 import { Feather } from "@expo/vector-icons";
 
 
@@ -16,6 +16,28 @@ export default function LandingPage() {
 	const floatingAnim = useSharedValue(0);
 	const rotateAnim = useSharedValue(0);
 	const pulseAnim = useSharedValue(0);
+	const pulse = useSharedValue(0);
+	const activeIndex = useSharedValue(0);
+
+	const ITEM_COUNT = 3;
+	
+	useEffect(() => {
+		const runPulse = () => {
+			pulse.value = 0;
+
+			pulse.value = withSequence(
+				withTiming(1, { duration: 3000 }),
+				withTiming(0, { duration: 3000 }, (finished) => {
+					if (finished) {
+						activeIndex.value = (activeIndex.value + 1) % ITEM_COUNT;
+						runPulse();
+					}
+				})
+			);
+		};
+
+	  runPulse();
+	}, []);
 
 	useEffect(() => {
 		floatingAnim.value = withRepeat(
@@ -27,11 +49,6 @@ export default function LandingPage() {
 			withTiming(1, { duration: 8000 }),
 			-1,
 			false
-		);
-		pulseAnim.value = withRepeat(
-			withTiming(1, { duration: 2000 }),
-			-1,
-			true
 		);
 	}, []);
 
@@ -51,9 +68,17 @@ export default function LandingPage() {
 		],
 	}));
 
-	const pulseStyle = useAnimatedStyle(() => ({
-		opacity: interpolate(pulseAnim.value, [0, 1], [0.5, 1], Extrapolate.CLAMP),
-	}));
+	const usePulseStyle = (index: number) =>
+	  useAnimatedStyle(() => {
+		const isActive = activeIndex.value === index;
+
+		return {
+		  opacity: isActive
+			? interpolate(pulse.value, [0, 1], [0.5, 1])
+			: 0.5,
+		};
+	});
+
 
 	const handleScroll = (event: any) => {
 		setScrollPosition(event.nativeEvent.contentOffset.y);
@@ -110,18 +135,10 @@ export default function LandingPage() {
 						<View style={styles.ctaContainer}>
 							<ThemeButton 
 								mode="contained" 
-								onPress={() => router.push('/users/register')}
+								onPress={() => router.push('/users/login')}
 								style={[styles.ctaButton, {backgroundColor: theme.colors.primary}]}
 							>
 								Start Your Journey
-							</ThemeButton>
-							<ThemeButton 
-								mode="outlined" 
-								onPress={() => router.push('/users/login')}
-								style={styles.ctaButtonOutline}
-								labelStyle={{color: theme.colors.primary}}
-							>
-								Sign In
 							</ThemeButton>
 						</View>
 					</Reanimated.View>
@@ -136,16 +153,14 @@ export default function LandingPage() {
 
 						{/* Feature Cards with Depth */}
 						<View style={styles.featureCardsContainer}>
-							<Reanimated.View style={[styles.featureCard, pulseStyle, {backgroundColor: theme.colors.primaryContainer, borderColor: theme.colors.primary}]}>
+							<Reanimated.View style={[styles.featureCard, usePulseStyle(0), {backgroundColor: theme.colors.primaryContainer, borderColor: theme.colors.primary}]}>
 								<View style={[styles.featureIconBg, {backgroundColor: theme.colors.primary}]}>
 									<Feather name="pen-tool" size={24} color={theme.colors.onPrimary} />
 								</View>
 								<ThemeText style={[styles.featureCardTitle, {color: theme.colors.onBackground}]}>Note Taking</ThemeText>
 								<ThemeText style={[styles.featureCardDesc, {color: theme.colors.onSurface}]}>Capture your thoughts instantly</ThemeText>
 							</Reanimated.View>
-
-							<Reanimated.View style={[styles.featureCard, {
-								...pulseStyle,
+							<Reanimated.View style={[styles.featureCard, usePulseStyle(1), {
 								backgroundColor: theme.colors.secondaryContainer,
 								borderColor: theme.colors.secondary,
 							}]}>
@@ -155,9 +170,7 @@ export default function LandingPage() {
 								<ThemeText style={[styles.featureCardTitle, {color: theme.colors.onBackground}]}>Image Library</ThemeText>
 								<ThemeText style={[styles.featureCardDesc, {color: theme.colors.onSurface}]}>Save your favorite panels</ThemeText>
 							</Reanimated.View>
-
-							<Reanimated.View style={[styles.featureCard, {
-								...pulseStyle,
+							<Reanimated.View style={[styles.featureCard, usePulseStyle(2), {
 								backgroundColor: theme.colors.tertiaryContainer,
 								borderColor: theme.colors.tertiary,
 							}]}>
