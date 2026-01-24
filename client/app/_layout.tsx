@@ -81,10 +81,9 @@ const AppGate = ({ toggleTheme, isDark }: { toggleTheme: () => void, isDark: boo
 				contentStyle: {backgroundColor: theme.colors.background},
 				headerStyle: {backgroundColor: theme.colors.surfaceVariant},
 				headerTintColor: theme.colors.onSurface,
-				header: (() => null)
+				headerShown: false
 			}}
 		>
-			<Stack.Screen name="index" options={{headerShown: false}}/>
 		</Stack>
 	);
 };

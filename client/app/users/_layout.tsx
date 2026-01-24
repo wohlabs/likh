@@ -34,7 +34,7 @@ export default function UsersLayout()
 	useEffect(() => {
 		// 🚫 Not logged in → block app routes
 		if (token) {
-			router.replace("/app/home");
+			router.replace("/app");
 			Toast.hide()
 			return;
 		}
@@ -45,10 +45,9 @@ export default function UsersLayout()
 				contentStyle: {backgroundColor: theme.colors.background},
 				headerStyle: {backgroundColor: theme.colors.surfaceVariant},
 				headerTintColor: theme.colors.onSurface,
-				header: (() => null)
+				headerShown: false
 			}}
 		>
-			<Stack.Screen name="index" options={{headerShown: false}}/>
 		</Stack>
 	)
 }
