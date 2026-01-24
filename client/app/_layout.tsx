@@ -10,6 +10,8 @@ import api from "@/services/AxiosInstance";
 import Toast from "react-native-toast-message";
 import { ThemeToast } from "@/components/ThemeToast";
 import LoadingToast from "@/components/LoadingToast";
+import { ServerContext, ServerProvider } from "@/context/ServerContext";
+import { Stack, useSegments } from "expo-router";
 
 const toastConfig = {
 	error: (props: any) => <ThemeToast {...props} variant="error" />,
@@ -23,10 +25,17 @@ export default function RootLayout()
 	return (
 		<PaperProvider theme={theme}>
 			<GestureHandlerRootView>
-				<AuthProvider>
-					<AppGate isDark={isDark} toggleTheme={toggleTheme} />
-					<Toast config={toastConfig}/>
-				</AuthProvider>
+				<ServerProvider>
+					<AuthProvider>
+						<KeyboardAvoidingView
+							style={{ flex: 1 }}
+							behavior={Platform.OS === "ios" ? "padding" : "height"}
+						>
+							<AppGate isDark={isDark} toggleTheme={toggleTheme} />
+							<Toast config={toastConfig}/>
+						</KeyboardAvoidingView>
+					</AuthProvider>
+				</ServerProvider>
 			</GestureHandlerRootView>
 		</PaperProvider>
 	);
@@ -35,7 +44,25 @@ export default function RootLayout()
 const AppGate = ({ toggleTheme, isDark }: { toggleTheme: () => void, isDark: boolean }) => 
 {
 	const { loading } = useContext(AuthContext);
-	const { ready } = usePersistentTheme();
+	const { ready, theme } = usePersistentTheme();
+	const { isAvailable, loading: isServerLoading } = useContext(ServerContext)
+	const segments = useSegments()
+
+	useEffect(() => {
+		if (isServerLoading && segments[0] != "app")
+		{
+			Toast.show({
+				type: 'loading',
+				text1: 'booting up the server. please wait...',
+				position: 'top',
+				autoHide: false,
+			}); 
+		}
+		else
+		{
+			Toast.hide()
+		}
+	}, [isServerLoading]);
 	
 	// Wait until theme is resolved
 	if (!ready) 
@@ -49,11 +76,15 @@ const AppGate = ({ toggleTheme, isDark }: { toggleTheme: () => void, isDark: boo
 	}
 
 	return (
-		<KeyboardAvoidingView
-			style={{ flex: 1 }}
-			behavior={Platform.OS === "ios" ? "padding" : "height"}
+		<Stack
+			screenOptions={{
+				contentStyle: {backgroundColor: theme.colors.background},
+				headerStyle: {backgroundColor: theme.colors.surfaceVariant},
+				headerTintColor: theme.colors.onSurface,
+				header: (() => null)
+			}}
 		>
-			<MainNavigator isDark={isDark} toggleTheme={toggleTheme} />
-		</KeyboardAvoidingView>
+			<Stack.Screen name="index" options={{headerShown: false}}/>
+		</Stack>
 	);
 };

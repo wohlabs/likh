@@ -1,42 +1,26 @@
-import { Stack, useRouter, useSegments } from "expo-router";
-import { Linking, Platform, Pressable, Image, StyleSheet } from "react-native";
-import ThemeText from "./ThemeText";
-import ThemeButton from "./ThemeButton";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { LoadingScreen } from "@/components/LoadingScreen";
+import ThemeButton from "@/components/ThemeButton";
+import ThemeText from "@/components/ThemeText";
 import { AuthContext } from "@/context/AuthContext";
-import { IconButton, Menu, useTheme } from "react-native-paper";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import api from "@/services/AxiosInstance";
-import * as WebBrowser from 'expo-web-browser';
-import Toast from "react-native-toast-message"
-import { LoadingScreen } from "./LoadingScreen";
 import { ServerContext } from "@/context/ServerContext";
+import { usePersistentTheme } from "@/context/usePersistentTheme";
+import api from "@/services/AxiosInstance";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Redirect, Stack, useRouter, useSegments } from "expo-router";
+import { useContext, useEffect, useState } from "react";
+import { Linking, Platform, Pressable, Image, StyleSheet } from "react-native";
+import { IconButton, Menu, useTheme } from "react-native-paper";
+import Toast from "react-native-toast-message";
+import * as WebBrowser from 'expo-web-browser';
 
-
-export default function MainNavigator({ isDark, toggleTheme }: { isDark: boolean, toggleTheme?: () => void })
+export default function AppLayout()
 {
-	const theme = useTheme()
+	const {theme, toggleTheme, isDark} = usePersistentTheme()
 	const {token, username, anilistToken, logout} = useContext(AuthContext);
 	const [optionsVisible, setOptionsVisible] = useState<boolean>(false);
 	const segments = useSegments();
 	const router = useRouter();
 	const { isAvailable, loading: isServerLoading } = useContext(ServerContext)
-	
-	useEffect(() => {
-		if (isServerLoading && segments[0] != "app" && !isAvailable)
-		{
-			Toast.show({
-				type: 'loading',
-				text1: 'booting up the server. please wait...',
-				position: 'top',
-				autoHide: false,
-			}); 
-		}
-		else
-		{
-			Toast.hide()
-		}
-	}, [isServerLoading]);
 	
 	useEffect(() => 
 	{
@@ -80,19 +64,10 @@ export default function MainNavigator({ isDark, toggleTheme }: { isDark: boolean
 	}, []);
 
 	useEffect(() => {
-		const inAuthGroup = segments[0] === "users";
-		const inAppGroup = segments[0] === "app";
-
 		// 🚫 Not logged in → block app routes
-		if (!token && inAppGroup) {
+		if (!token) {
 			router.replace("/users/login");
 			return;
-		}
-
-		// ✅ Logged in → block auth routes
-		if (token && inAuthGroup) {
-			router.replace("/app");
-			return
 		}
 	}, [token, segments]);
 	
@@ -119,21 +94,11 @@ export default function MainNavigator({ isDark, toggleTheme }: { isDark: boolean
 	if (segments[0] === "app" && !isAvailable)
 	{
 		return (
-		// <Stack
-		// 	screenOptions={{
-		// 		contentStyle: {backgroundColor: theme.colors.background},
-		// 		headerStyle: {backgroundColor: theme.colors.surfaceVariant},
-		// 		headerTintColor: theme.colors.onSurface,
-		// 		header: (() => null)
-		// 	}}
-		// >
 			<LoadingScreen text="booting up the server. please wait..." />
-		// </Stack>
 		);
 	}
 
 	return (
-		<>
 		<Stack
 			screenOptions={{
 				contentStyle: {backgroundColor: theme.colors.background},
@@ -201,7 +166,6 @@ export default function MainNavigator({ isDark, toggleTheme }: { isDark: boolean
 		>
 			<Stack.Screen name="index" options={{headerShown: false}}/>
 		</Stack>
-		</>
 	)
 }
 
