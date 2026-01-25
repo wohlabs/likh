@@ -3,7 +3,7 @@ import ThemeText from "@/components/ThemeText";
 import { router } from "expo-router";
 import { useState } from "react";
 import { View, StyleSheet } from "react-native";
-import { TextInput } from "react-native-paper";
+import { TextInput, useTheme } from "react-native-paper";
 import { registerUser } from "@/services/users.service";
 
 export default function UserRegister()
@@ -11,6 +11,7 @@ export default function UserRegister()
 	const [username, setUsername] = useState<string>('');
 	const [password, setPassword] = useState<string>('');
 	const [error, setError] = useState('');
+	const theme = useTheme()
 
 	const register = async () => 
 	{
@@ -30,6 +31,18 @@ export default function UserRegister()
 	return (
 		<View style={styles.container}>
 			<View style={styles.formContainer}>
+				<ThemeText
+					style={[{
+						fontWeight: "900",
+						letterSpacing: 2,
+						color: theme.colors.primary,
+						marginBottom: 20
+					}]}
+					variant="displayMedium"
+					onPress={() => router.navigate("/")}
+				>
+					likh
+				</ThemeText>
 				<ThemeText variant="headlineSmall">Register</ThemeText>
 				<TextInput label='username' placeholder="username" value={username} onChangeText={setUsername} mode="outlined" style={styles.input} />
 				<TextInput label='password' placeholder="password" value={password} onChangeText={setPassword} mode="outlined" secureTextEntry style={styles.input} />

@@ -1,11 +1,12 @@
 import ThemeText from "@/components/ThemeText";
 import { useContext, useState } from "react";
 import { View, StyleSheet } from "react-native";
-import { TextInput } from "react-native-paper";
+import { TextInput, useTheme } from "react-native-paper";
 import ThemeButton from "@/components/ThemeButton";
 import { router } from "expo-router";
 import { AuthContext } from "@/context/AuthContext";
 import { loginUser } from "@/services/users.service";
+import { Image } from "expo-image";
 
 export default function UserLogin() 
 {
@@ -13,6 +14,7 @@ export default function UserLogin()
 	const [password, setPassword] = useState<string>('');
 	const [error, setError] = useState('');
 	const {login} = useContext(AuthContext);
+	const theme = useTheme()
 
 	const userLogin = async () => 
 	{
@@ -29,6 +31,23 @@ export default function UserLogin()
 	return (
 		<View style={styles.container}>
 			<View style={styles.formContainer}>
+				{/* <Image
+					source={require("../../assets/images/likh.png")}
+					contentFit='contain'
+					style={{height: 200, aspectRatio: 1}}
+				/> */}
+				<ThemeText
+					style={[{
+						fontWeight: "900",
+						letterSpacing: 2,
+						color: theme.colors.primary,
+						marginBottom: 20
+					}]}
+					variant="displayMedium"
+					onPress={() => router.navigate("/")}
+				>
+					likh
+				</ThemeText>
 				<ThemeText variant="headlineSmall">Login</ThemeText>
 				<TextInput label='username' placeholder="username" value={username} onChangeText={setUsername} style={styles.input} mode="outlined" />
 				<TextInput label='password' placeholder="password" value={password} onChangeText={setPassword} secureTextEntry style={styles.input} mode="outlined" />
