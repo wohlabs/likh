@@ -2,8 +2,8 @@ import ThemeText from "@/components/ThemeText";
 import { Stack, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
-import { Card, useTheme } from "react-native-paper";
-import { getCustomLists } from "@/services/custom_lists";
+import { Card, IconButton, Menu, useTheme } from "react-native-paper";
+import { deleteCustomList, getCustomLists } from "@/services/custom_lists";
 import { ICustomLists } from "@/types/ICustomList";
 
 export default function CustomListsIndex()
@@ -42,6 +42,22 @@ export default function CustomListsIndex()
                                         <ThemeText variant="labelLarge" style={{opacity: 0.6}}>{item.mangaIds?.length ?? 0} manga</ThemeText>
                                         <ThemeText variant="bodyMedium" style={{opacity: item.description ? 1 : 0.6}}>{item.description || "(No description)"}</ThemeText>
                                     </View>
+									<IconButton
+										icon={"trash-can-outline"}
+										size={20}
+										disabled={item.isFavorite}
+										onPress={async () => {
+											const result = await deleteCustomList(item._id)
+											if (result.success)
+											{
+												console.log(item._id)
+												console.log(lists[0]._id)
+												setLists(lists.filter((list) => list._id !== item._id))
+											}
+										}}
+										style={{position: 'absolute', right: 0, zIndex: 10}}
+										mode="contained"
+									/>
                                 </Card.Content>
                             </Card>
                     )}

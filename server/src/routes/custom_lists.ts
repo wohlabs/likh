@@ -71,6 +71,29 @@ router.post(`/favorite/manga`, AuthenticateMiddleware, async (req: Request, res:
 	res.sendStatus(200)
 })
 
+// delete list 
+router.delete(`/:listId`, AuthenticateMiddleware, async (req: Request, res: Response) =>
+{
+	const userId = req.user?.id
+	const { listId } = req.params
+	if (!listId )
+	{
+		return res.sendStatus(400);
+	}
+	const list = await CustomList.findById(listId).exec()
+	if (list === null)
+	{
+		return res.sendStatus(404);
+	}
+	if (list?.userId.toString() !== userId)
+	{
+		return res.status(401).json("User does not have valid authorization on this list.")
+	}
+
+	await list.deleteOne();
+	return res.sendStatus(200)
+})
+
 // edit list attributes
 router.patch(`/:listId`, AuthenticateMiddleware, async (req: Request, res: Response) =>
 {
