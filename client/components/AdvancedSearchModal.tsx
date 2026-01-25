@@ -34,6 +34,7 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 	const { width, height } = useWindowDimensions();
 	const [searchQuery, setSearchQuery] = useState('');
 	const [isAdvancedSearching, setIsAdvancedSearching] = useState<boolean>(false);
+	const [isSearchDirty, setSearchDirty] = useState<boolean>(false);
 	const [searchResults, setSearchResults] = useState<SearchResult>({
 		manga: [],
 		notes: [],
@@ -173,7 +174,15 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 
 					{searchQuery.trim() === '' ? (
 						<></>
-					) : searchResults.manga.length === 0 && searchResults.notes.length === 0 && searchResults.lists.length === 0 ? (
+					)
+					:
+					isSearchDirty || isSearchDirty || isLoading ?
+					<View style={styles.emptyContainer}>
+						<ThemeText variant="bodyMedium" style={styles.emptyText}>
+							Search for: <ThemeText style={{fontWeight: "bold"}}>{searchQuery}</ThemeText>
+						</ThemeText>
+					</View>
+					: searchResults.manga.length === 0 && searchResults.notes.length === 0 && searchResults.lists.length === 0 ? (
 						<View style={styles.emptyContainer}>
 							<ThemeText variant="bodyMedium" style={styles.emptyText}>
 								No results found
@@ -241,9 +250,13 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 					ref={searchRef}
 					key="library_search_bar"
 					placeholder="Search manga, notes, lists..."
-					onChangeText={setSearchQuery}
+					onChangeText={(text) => {
+						setSearchQuery(text)
+						setSearchDirty(true)
+					}}
 					onSubmitEditing={() =>  {
 						handleSearch()
+						setSearchDirty(false)
 					}}
 					onFocus={() => {
 						setIsAdvancedSearching(true)
