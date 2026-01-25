@@ -8,6 +8,7 @@ const STORAGE_KEY = "APP_THEME"; // "light" | "dark"
 export function usePersistentTheme() {
 	const [isDark, setIsDark] = useState(false);
 	const [ready, setReady] = useState(false);
+	const [theme, setTheme] = useState(modernLightTheme);
 
 	// Load saved theme
 	useEffect(() => {
@@ -29,8 +30,12 @@ export function usePersistentTheme() {
 		AsyncStorage.setItem(STORAGE_KEY, isDark ? "dark" : "light");
 	}, [isDark, ready]);
 
+	useEffect(() => {
+		setTheme(isDark ? modernDarkTheme : modernLightTheme)
+	}, [isDark, ready]);
+
 	return {
-		theme: isDark ? modernDarkTheme : modernLightTheme,
+		theme: theme,
 		isDark,
 		toggleTheme: () => setIsDark((prev) => !prev),
 		ready,

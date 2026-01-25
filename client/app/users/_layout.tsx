@@ -3,6 +3,7 @@ import { ServerContext } from "@/context/ServerContext";
 import { usePersistentTheme } from "@/context/usePersistentTheme";
 import { Stack, useRouter, useSegments } from "expo-router";
 import { useContext, useEffect, useState } from "react";
+import { PaperProvider } from "react-native-paper";
 import Toast from "react-native-toast-message";
 
 export default function UsersLayout()
@@ -40,14 +41,16 @@ export default function UsersLayout()
 		}
 	}, [token, segments]);
 	return (
-		<Stack
-			screenOptions={{
-				contentStyle: {backgroundColor: theme.colors.background},
-				headerStyle: {backgroundColor: theme.colors.surfaceVariant},
-				headerTintColor: theme.colors.onSurface,
-				headerShown: false
-			}}
-		>
-		</Stack>
+		<PaperProvider theme={theme}>
+			<Stack
+				screenOptions={{
+					contentStyle: {backgroundColor: theme.colors.background},
+					headerStyle: {backgroundColor: theme.colors.surfaceVariant},
+					headerTintColor: theme.colors.onSurface,
+					headerShown: false
+				}}
+			>
+			</Stack>
+		</PaperProvider>
 	)
 }

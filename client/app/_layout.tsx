@@ -11,7 +11,7 @@ import Toast from "react-native-toast-message";
 import { ThemeToast } from "@/components/ThemeToast";
 import LoadingToast from "@/components/LoadingToast";
 import { ServerContext, ServerProvider } from "@/context/ServerContext";
-import { Stack, useSegments } from "expo-router";
+import { Slot, Stack, useSegments } from "expo-router";
 
 const toastConfig = {
 	error: (props: any) => <ThemeToast {...props} variant="error" />,
@@ -23,7 +23,6 @@ export default function RootLayout()
 	const { theme, isDark, toggleTheme } = usePersistentTheme();
 
 	return (
-		<PaperProvider theme={theme}>
 			<GestureHandlerRootView>
 				<ServerProvider>
 					<AuthProvider>
@@ -31,17 +30,16 @@ export default function RootLayout()
 							style={{ flex: 1 }}
 							behavior={Platform.OS === "ios" ? "padding" : "height"}
 						>
-							<AppGate isDark={isDark} toggleTheme={toggleTheme} />
+							<AppGate />
 							<Toast config={toastConfig}/>
 						</KeyboardAvoidingView>
 					</AuthProvider>
 				</ServerProvider>
 			</GestureHandlerRootView>
-		</PaperProvider>
 	);
 }
 
-const AppGate = ({ toggleTheme, isDark }: { toggleTheme: () => void, isDark: boolean }) => 
+const AppGate = () => 
 {
 	const { loading } = useContext(AuthContext);
 	const { ready, theme } = usePersistentTheme();
@@ -76,14 +74,16 @@ const AppGate = ({ toggleTheme, isDark }: { toggleTheme: () => void, isDark: boo
 	}
 
 	return (
-		<Stack
-			screenOptions={{
-				contentStyle: {backgroundColor: theme.colors.background},
-				headerStyle: {backgroundColor: theme.colors.surfaceVariant},
-				headerTintColor: theme.colors.onSurface,
-				headerShown: false
-			}}
-		>
-		</Stack>
+		<PaperProvider theme={theme}>
+			<Stack
+				screenOptions={{
+					contentStyle: {backgroundColor: theme.colors.background},
+					headerStyle: {backgroundColor: theme.colors.surfaceVariant},
+					headerTintColor: theme.colors.onSurface,
+					headerShown: false
+				}}
+			>
+			</Stack>
+		</PaperProvider>
 	);
 };

@@ -9,7 +9,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Redirect, Stack, useRouter, useSegments } from "expo-router";
 import { useContext, useEffect, useState } from "react";
 import { Linking, Platform, Pressable, Image, StyleSheet } from "react-native";
-import { IconButton, Menu, useTheme } from "react-native-paper";
+import { IconButton, Menu, PaperProvider, useTheme } from "react-native-paper";
 import Toast from "react-native-toast-message";
 import * as WebBrowser from 'expo-web-browser';
 
@@ -99,6 +99,7 @@ export default function AppLayout()
 	}
 
 	return (
+		<PaperProvider theme={theme}>
 		<Stack
 			screenOptions={{
 				contentStyle: {backgroundColor: theme.colors.background},
@@ -165,6 +166,7 @@ export default function AppLayout()
 			}}
 		>
 		</Stack>
+		</PaperProvider>
 	)
 }
 
