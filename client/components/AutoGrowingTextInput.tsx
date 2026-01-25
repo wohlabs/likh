@@ -5,7 +5,7 @@ import { Props } from "react-native-paper/lib/typescript/components/TextInput/Te
 
 // this is a PATCH solution for TextInput to handle autogrowing size
 const AutoGrowingTextInput = ({
-	value,
+	value = "",
 	onChangeText,
 	style,
 	minHeight = 50,
