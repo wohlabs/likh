@@ -201,7 +201,13 @@ export default function SearchCategoryPage() {
 						label="category"
 						value={categoryCB}
 						items={CATEGORY_OPTIONS}
-						onChange={setCategoryCB}
+						onChange={(cat: string) => {
+							setCategoryCB(cat)
+							router.replace({ 
+								pathname: '/app/search',
+								params: { category: cat, query: searchQuery }
+							})
+						}}
 						mode='flat'
 					/>
 					<ThemeSearchbar
