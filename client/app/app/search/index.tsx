@@ -2,10 +2,8 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
 	FlatList,
 	Image,
-	Pressable,
 	StyleSheet,
 	View,
-	useWindowDimensions,
 	ActivityIndicator,
 } from 'react-native';
 import { Card, IconButton, useTheme } from 'react-native-paper';

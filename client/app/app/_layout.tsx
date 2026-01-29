@@ -6,11 +6,10 @@ import { ServerContext } from "@/context/ServerContext";
 import { usePersistentTheme } from "@/context/usePersistentTheme";
 import api from "@/services/AxiosInstance";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Redirect, Stack, useRouter, useSegments } from "expo-router";
+import { Stack, useRouter, useSegments } from "expo-router";
 import { useContext, useEffect, useState } from "react";
 import { Linking, Platform, Pressable, Image, StyleSheet } from "react-native";
 import { IconButton, Menu, PaperProvider, useTheme } from "react-native-paper";
-import Toast from "react-native-toast-message";
 import * as WebBrowser from 'expo-web-browser';
 
 export default function AppLayout()
@@ -105,7 +104,7 @@ export default function AppLayout()
 				contentStyle: {backgroundColor: theme.colors.background},
 				headerStyle: {backgroundColor: theme.colors.surfaceVariant},
 				headerTintColor: theme.colors.onSurface,
-				headerLeft: () => <Pressable onPress={onTitleClicked}><ThemeText style={{ fontWeight: "900", letterSpacing: 2, marginLeft: 10 }} variant="titleLarge">likh</ThemeText></Pressable>,
+				headerLeft: () => <Pressable onPress={onTitleClicked}><ThemeText style={{ fontWeight: "900", letterSpacing: 2, marginLeft: 10, color: theme.colors.primary }} variant="titleLarge">likh</ThemeText></Pressable>,
 				headerTitleAlign: "center",
 				headerTitle: () => null,
 				headerRight: () =>

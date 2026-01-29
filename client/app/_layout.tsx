@@ -1,4 +1,3 @@
-import MainNavigator from "@/components/MainNavigator";
 import { AuthProvider, AuthContext } from "@/context/AuthContext";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { KeyboardAvoidingView, Platform } from "react-native";
