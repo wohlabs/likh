@@ -11,6 +11,8 @@ import { useContext, useEffect, useState } from "react";
 import { Linking, Platform, Pressable, Image, StyleSheet } from "react-native";
 import { IconButton, Menu, PaperProvider, useTheme } from "react-native-paper";
 import * as WebBrowser from 'expo-web-browser';
+import Toast from "react-native-toast-message";
+import { toastConfig } from "@/components/ThemeToast";
 
 export default function AppLayout()
 {
@@ -165,6 +167,7 @@ export default function AppLayout()
 			}}
 		>
 		</Stack>
+		<Toast config={toastConfig}/>
 		</PaperProvider>
 	)
 }

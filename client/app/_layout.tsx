@@ -7,15 +7,10 @@ import { usePersistentTheme } from "@/context/usePersistentTheme";
 import { LoadingScreen } from "@/components/LoadingScreen";
 import api from "@/services/AxiosInstance";
 import Toast from "react-native-toast-message";
-import { ThemeToast } from "@/components/ThemeToast";
+import { ThemeToast, toastConfig } from "@/components/ThemeToast";
 import LoadingToast from "@/components/LoadingToast";
 import { ServerContext, ServerProvider } from "@/context/ServerContext";
 import { Slot, Stack, useSegments } from "expo-router";
-
-const toastConfig = {
-	error: (props: any) => <ThemeToast {...props} variant="error" />,
-	loading: (props: any) => <LoadingToast {...props} />,
-};
 
 export default function RootLayout() 
 {
@@ -30,7 +25,6 @@ export default function RootLayout()
 							behavior={Platform.OS === "ios" ? "padding" : "height"}
 						>
 							<AppGate />
-							<Toast config={toastConfig}/>
 						</KeyboardAvoidingView>
 					</AuthProvider>
 				</ServerProvider>
@@ -83,6 +77,7 @@ const AppGate = () =>
 				}}
 			>
 			</Stack>
+			<Toast config={toastConfig}/>
 		</PaperProvider>
 	);
 };

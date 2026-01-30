@@ -1,10 +1,16 @@
 import { View } from "react-native";
 import { Text, useTheme, Surface } from "react-native-paper";
+import LoadingToast from "./LoadingToast";
 
 type Props = {
 	text1?: string;
 	text2?: string;
 	variant?: "success" | "error" | "info";
+};
+
+export const toastConfig = {
+	error: (props: any) => <ThemeToast {...props} variant="error" />,
+	loading: (props: any) => <LoadingToast {...props} />,
 };
 
 export function ThemeToast({ text1, text2, variant = "info" }: Props) {
