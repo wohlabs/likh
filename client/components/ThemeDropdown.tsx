@@ -1,6 +1,6 @@
 import * as React from "react";
-import { ScrollView, Pressable, View, LayoutChangeEvent } from "react-native";
-import { Menu, TextInput } from "react-native-paper";
+import { ScrollView, Pressable, View, LayoutChangeEvent, StyleProp, ViewStyle } from "react-native";
+import { Menu, TextInput, useTheme } from "react-native-paper";
 
 export type DropdownItem<T = string> = {
 	label: string;
@@ -9,9 +9,11 @@ export type DropdownItem<T = string> = {
 
 type ThemeDropdownProps<T = string> = {
 	label: string;
+	hideLabel?: boolean;
 	value: T | null;
 	onChange: (value: T) => void;
 	items: DropdownItem<T>[];
+	style?: StyleProp<ViewStyle>
 	mode?: 'flat' | 'outlined';
 };
 
@@ -20,10 +22,13 @@ export function ThemeDropdown<T>({
 	value,
 	onChange,
 	items,
+	style,
+	hideLabel = false,
 	mode = 'outlined'
 }: ThemeDropdownProps<T>) {
 	const [visible, setVisible] = React.useState(false);
 	const [anchorWidth, setAnchorWidth] = React.useState(0);
+	const theme = useTheme()
 
 	const selectedLabel = items.find((item) => item.value === value)?.label ?? "";
 
@@ -38,16 +43,27 @@ export function ThemeDropdown<T>({
 			contentStyle={{ width: anchorWidth }}
 			anchorPosition="bottom"
 			anchor={
-				<Pressable onPress={() => setVisible(true)} onLayout={onLayout}>
+				<Pressable style={style} onPress={() => setVisible(true)} onLayout={onLayout}>
 					<TextInput
-						label={label}
+						label={hideLabel ? undefined : label}
 						value={selectedLabel}
 						mode={mode}
 						editable={false}
 						pointerEvents="none"
+						underlineColor="transparent"
+						outlineStyle={{borderWidth: 2}}
+						outlineColor="red"
+						contentStyle={{margin: 0}}
+						style={{
+							borderRadius: 10,
+							borderWidth: 1,
+							borderTopLeftRadius: 10,
+							borderTopRightRadius: 10,
+							borderColor: theme.colors.outline
+						}}
 						right={<TextInput.Icon icon="menu-down"
 							onPress={() => setVisible(true)}
-							/>}
+						/>}
 					/>
 				</Pressable>
 			}

@@ -4,7 +4,7 @@ import NoteViewer from "@/components/NoteViewer";
 import { router, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState, useContext } from "react";
 import { FlatList, Platform, ScrollView, StyleProp, useWindowDimensions, View, ViewStyle, StyleSheet } from "react-native";
-import { IconButton, Modal, Portal, useTheme } from "react-native-paper";
+import { Button, IconButton, Menu, Modal, Portal, useTheme } from "react-native-paper";
 import ReanimatedSwipeable, { SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
 import Reanimated, { SharedValue, useAnimatedStyle } from "react-native-reanimated";
 import { AuthContext } from "@/context/AuthContext";
@@ -16,6 +16,8 @@ import ThemeCarousel from "@/components/ThemeCarousel";
 import ThemeSearchbar from "@/components/ThemeSearchbar";
 import Toast from "react-native-toast-message"
 import { LoadingScreen } from "@/components/LoadingScreen";
+import { ThemeDropdown } from "@/components/ThemeDropdown";
+import ThemeText from "@/components/ThemeText";
 
 function NoteButtons({ onEditPress, onDeletePress }: { onEditPress?: () => void, onDeletePress?: () => void })
 {
@@ -76,6 +78,8 @@ export default function MangaDetails()
 	const [viewerNote, setViewerNote] = useState<INoteEntry>({id: "", text: "", images: [], startChapter: -1, endChapter: -1, createdAt: "", modifiedAt: "", fromAnilist: false});
 	const [viewerNoteIndex, setViewerNoteIndex] = useState<number>(0);
 	const [loading, setLoading] = useState<boolean>(true);
+	const [sortByValue, setSortByValue] = useState<string>("chapter");
+	const [sortAscending, setSortAscending] = useState<boolean>(true);
 	const anilist_token: string = useContext(AuthContext).anilistToken || ""
 	
 	// Optional: Clear the error from the URL so it doesn't persist on refresh
@@ -139,9 +143,44 @@ export default function MangaDetails()
 
 	useEffect(() => 
 	{
-
-		setFilteredNotes(searchString.trim().length === 0 ? data : data.filter((note: INoteEntry) => (note.text && note.text.toLowerCase().includes(searchString.toLowerCase()))));
-	}, [searchString, data]);
+		let tempData = searchString.trim().length === 0 ? data : data.filter((note: INoteEntry) => (note.text && note.text.toLowerCase().includes(searchString.toLowerCase())))
+		tempData = tempData.toSorted((a: INoteEntry, b: INoteEntry) => {
+			if (sortByValue === "date modified")
+			{
+				if (sortAscending)
+				{
+					return new Date(a.modifiedAt).getTime() - new Date(b.modifiedAt).getTime()
+				}
+				else
+				{
+					return new Date(b.modifiedAt).getTime() - new Date(a.modifiedAt).getTime()
+				}
+			}
+			else if (sortByValue === "date created")
+			{
+				if (sortAscending)
+				{
+					return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+				}
+				else
+				{
+					return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+				}
+			}
+			else
+			{
+				if (sortAscending)
+				{
+					return a.startChapter - b.startChapter 
+				}
+				else
+				{
+					return b.startChapter - a.startChapter 
+				}
+			}
+		})
+		setFilteredNotes(tempData);
+	}, [searchString, data, sortByValue, sortAscending]);
 
 	useEffect(() => 
 	{
@@ -154,8 +193,36 @@ export default function MangaDetails()
 				loading ?
 				<LoadingScreen />
 				:
-				<ScrollView nestedScrollEnabled={true}>
+				<ScrollView nestedScrollEnabled={true} style={{paddingHorizontal: 5}}>
 					<MangaOverviewHeader manga={manga} style={styles.mangaHeader} />
+					<View style={{flexDirection: 'row-reverse', alignItems: 'center'}}>
+						<IconButton icon={sortAscending ? "sort-ascending" : "sort-descending"} onPress={() => setSortAscending(!sortAscending)}/>
+						<ThemeDropdown
+							label="Sort by"
+							hideLabel={true}
+							value={sortByValue}
+							style={{maxWidth: 200}}
+							items={[
+								{
+									label: "date created",
+									value: "date created"
+								},
+								{
+									label: "date modified",
+									value: "date modified"
+								},
+								{
+									label: "chapter",
+									value: "chapter"
+								}
+							]}
+							onChange={setSortByValue}
+							mode='flat'
+						/>
+						<ThemeText variant="titleMedium" style={{margin:0, marginHorizontal: 5}}>
+							Sort by
+						</ThemeText>
+					</View>
 					<FlatList
 						data={filteredNotes}
 						keyExtractor={(item) => `NotePreview_${item.id}`}
