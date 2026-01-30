@@ -4,7 +4,7 @@ import NoteViewer from "@/components/NoteViewer";
 import { router, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState, useContext } from "react";
 import { FlatList, Platform, ScrollView, StyleProp, useWindowDimensions, View, ViewStyle, StyleSheet } from "react-native";
-import { Button, IconButton, Menu, Modal, Portal, useTheme } from "react-native-paper";
+import { Button, Icon, IconButton, Menu, Modal, Portal, useTheme } from "react-native-paper";
 import ReanimatedSwipeable, { SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
 import Reanimated, { SharedValue, useAnimatedStyle } from "react-native-reanimated";
 import { AuthContext } from "@/context/AuthContext";
@@ -195,73 +195,84 @@ export default function MangaDetails()
 				:
 				<ScrollView nestedScrollEnabled={true} style={{paddingHorizontal: 5}}>
 					<MangaOverviewHeader manga={manga} style={styles.mangaHeader} />
-					<View style={{flexDirection: 'row-reverse', alignItems: 'center'}}>
-						<IconButton icon={sortAscending ? "sort-ascending" : "sort-descending"} onPress={() => setSortAscending(!sortAscending)}/>
-						<ThemeDropdown
-							label="Sort by"
-							hideLabel={true}
-							value={sortByValue}
-							style={{maxWidth: 200}}
-							items={[
-								{
-									label: "date created",
-									value: "date created"
-								},
-								{
-									label: "date modified",
-									value: "date modified"
-								},
-								{
-									label: "chapter",
-									value: "chapter"
-								}
-							]}
-							onChange={setSortByValue}
-							mode='flat'
-						/>
-						<ThemeText variant="titleMedium" style={{margin:0, marginHorizontal: 5}}>
-							Sort by
-						</ThemeText>
-					</View>
-					<FlatList
-						data={filteredNotes}
-						keyExtractor={(item) => `NotePreview_${item.id}`}
-						key={`filteredNotes`}
-						numColumns={1}
-						contentContainerStyle={{flexGrow: 0}}
-						scrollEnabled={true}
-						renderItem={({ item, index }: { item: INoteEntry, index: any }) => (
-							Platform.OS === 'web' && width > 500
-								?
-								<View style={{flex:1, flexDirection: 'row', alignItems: 'center'}}>
-									<NotePreviewCard note={item} onPress={()=> {setViewerNoteIndex(index); setIsViewingOverlay(true)}} />
-									<NoteButtons onEditPress={() => router.navigate(`/app/manga/${mangaId}/edit_note/${item.id}`)} onDeletePress={() => onDelete(item.id)} key={`NotePreviewCard_${item.id}`} />
-								</View>
-								:
-								<ReanimatedSwipeable
-									containerStyle={styles.noteContainer}
-									childrenContainerStyle={{flex: 1}}
-									friction={2}
-									renderRightActions={(progress: SharedValue<number>, translation: SharedValue<number>, swipeableMethods: SwipeableMethods) => (
-										<TranslatableButtonContainer
-											note={item}
-											progress={progress}
-											translation={translation}
-											swipeableMethods={swipeableMethods}
-											style= {{flexDirection: 'row', alignItems: 'center'}}
+					{
+						filteredNotes.length == 0 ?
+						<View style={{flex:1, alignContent: 'center', alignItems: 'center', padding: 10}}>
+							<ThemeText variant="labelLarge" style={{flex: 1, margin: 'auto'}}>
+								No notes found. log a note for this manga
+							</ThemeText>
+						</View>
+						:
+						<>
+							<View style={{flexDirection: 'row-reverse', alignItems: 'center'}}>
+								<IconButton icon={sortAscending ? "sort-ascending" : "sort-descending"} onPress={() => setSortAscending(!sortAscending)}/>
+								<ThemeDropdown
+									label="Sort by"
+									hideLabel={true}
+									value={sortByValue}
+									style={{maxWidth: 200}}
+									items={[
+										{
+											label: "date created",
+											value: "date created"
+										},
+										{
+											label: "date modified",
+											value: "date modified"
+										},
+										{
+											label: "chapter",
+											value: "chapter"
+										}
+									]}
+									onChange={setSortByValue}
+									mode='flat'
+								/>
+								<ThemeText variant="titleMedium" style={{margin:0, marginHorizontal: 5}}>
+									Sort by
+								</ThemeText>
+							</View>
+							<FlatList
+								data={filteredNotes}
+								keyExtractor={(item) => `NotePreview_${item.id}`}
+								key={`filteredNotes`}
+								numColumns={1}
+								contentContainerStyle={{flexGrow: 0}}
+								scrollEnabled={true}
+								renderItem={({ item, index }: { item: INoteEntry, index: any }) => (
+									Platform.OS === 'web' && width > 500
+										?
+										<View style={{flex:1, flexDirection: 'row', alignItems: 'center'}}>
+											<NotePreviewCard note={item} onPress={()=> {setViewerNoteIndex(index); setIsViewingOverlay(true)}} />
+											<NoteButtons onEditPress={() => router.navigate(`/app/manga/${mangaId}/edit_note/${item.id}`)} onDeletePress={() => onDelete(item.id)} key={`NotePreviewCard_${item.id}`} />
+										</View>
+										:
+										<ReanimatedSwipeable
+											containerStyle={styles.noteContainer}
+											childrenContainerStyle={{flex: 1}}
+											friction={2}
+											renderRightActions={(progress: SharedValue<number>, translation: SharedValue<number>, swipeableMethods: SwipeableMethods) => (
+												<TranslatableButtonContainer
+													note={item}
+													progress={progress}
+													translation={translation}
+													swipeableMethods={swipeableMethods}
+													style= {{flexDirection: 'row', alignItems: 'center'}}
+												>
+													<NoteButtons onEditPress={() => router.navigate(`/app/manga/${mangaId}/edit_note/${item.id}`)} onDeletePress={() => onDelete(item.id)} />
+												</TranslatableButtonContainer>
+											)}
+											key={`NotePreview_Swipeable_${item.id}`}
 										>
-											<NoteButtons onEditPress={() => router.navigate(`/app/manga/${mangaId}/edit_note/${item.id}`)} onDeletePress={() => onDelete(item.id)} />
-										</TranslatableButtonContainer>
-									)}
-									key={`NotePreview_Swipeable_${item.id}`}
-								>
-									<NotePreviewCard
-										key={`NotePreview_${item.id}`}
-										note={item} onPress={()=> {setViewerNoteIndex(index); setIsViewingOverlay(true)}}
-									/>
-								</ReanimatedSwipeable>
-						)}
-					/>
+											<NotePreviewCard
+												key={`NotePreview_${item.id}`}
+												note={item} onPress={()=> {setViewerNoteIndex(index); setIsViewingOverlay(true)}}
+											/>
+										</ReanimatedSwipeable>
+								)}
+							/>
+						</>
+					}
 					<Portal
 						theme={theme}
 					>
