@@ -104,7 +104,16 @@ export default function AppLayout()
 		<Stack
 			screenOptions={{
 				contentStyle: {backgroundColor: theme.colors.background},
-				headerStyle: {backgroundColor: theme.colors.surfaceVariant},
+				headerStyle: {
+					backgroundColor: theme.colors.surface,
+					borderWidth: 0,
+					shadowColor: "#000",
+					shadowOffset: { width: 0, height: 4 },
+					shadowOpacity: 0.15,
+					shadowRadius: 12,
+					elevation: 2,
+					boxShadow: `0 0 5px 1px ${theme.colors.backdrop}`
+				},
 				headerTintColor: theme.colors.onSurface,
 				headerLeft: () => <Pressable onPress={onTitleClicked}><ThemeText style={{ fontWeight: "900", letterSpacing: 2, marginLeft: 10, color: theme.colors.primary }} variant="titleLarge">likh</ThemeText></Pressable>,
 				headerTitleAlign: "center",
