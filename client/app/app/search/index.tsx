@@ -143,7 +143,6 @@ export default function SearchCategoryPage() {
 	);
 
 	const renderListResult = ({ item }: { item: any }) => (
-		console.log(item) ??
 		<Card
 			style={{ marginHorizontal: 10, marginBottom: 8, backgroundColor: theme.colors.surface }}
 			onPress={() => handleListPress(item.id)}

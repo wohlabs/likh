@@ -50,8 +50,6 @@ export default function CustomListsIndex()
 											const result = await deleteCustomList(item._id)
 											if (result.success)
 											{
-												console.log(item._id)
-												console.log(lists[0]._id)
 												setLists(lists.filter((list) => list._id !== item._id))
 											}
 										}}

@@ -17,7 +17,7 @@ export default function NewCustomListView({mangaIdToAdd, setAllCustomLists, onCu
 		const response = await createCustomList(title, description, newMangaIds)
 		if (response.success && setAllCustomLists)
 		{
-			setAllCustomLists((prev) => { console.log([...prev, response.data]); return [...prev, response.data]})
+			setAllCustomLists((prev) => [...prev, response.data])
 			onCustomListCreated()
 		}
 	}, [title, description, mangaIdToAdd, setAllCustomLists, onCustomListCreated]);
