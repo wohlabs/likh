@@ -3,8 +3,8 @@ import { Stack, useRouter, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import { FlatList, Image, Pressable, StyleSheet, View, ScrollView } from "react-native";
 import { Button, Card, IconButton, useTheme } from "react-native-paper";
-import { getCustomLists } from "@/services/custom_lists";
-import { getLibraryMangaThumbnails } from "@/services/manga.service";
+import { addToCustomList, getCustomLists } from "@/services/custom_lists";
+import { getLibraryMangaThumbnails, MangaProps } from "@/services/manga.service";
 import { ICustomList } from "@/types/ICustomList";
 import { getMangaTitle } from "@/types/IManga";
 import AutoGrowingTextInput from "@/components/AutoGrowingTextInput";
@@ -18,7 +18,7 @@ export default function CustomListDetail()
 	const theme = useTheme();
 	const router = useRouter();
 	const [list, setList] = useState<ICustomList | null>(null);
-	const [mangas, setMangas] = useState<any[]>([]);
+	const [mangas, setMangas] = useState<MangaProps[]>([]);
 	const [officialDescription, setOfficialDescription] = useState<string>("");
 	const [description, setDescription] = useState<string>("");
 	const [isEditingDescription, setEditingDesc] = useState<boolean>(false);
@@ -128,6 +128,18 @@ export default function CustomListDetail()
 										{getMangaTitle(item)}
 									</ThemeText>
 								</View>
+								<IconButton
+									icon={"trash-can-outline"}
+									size={20}
+									onPress={async () => {
+										const result = await addToCustomList(listId, Number(item.id), false)
+										if (result.success)
+										{
+											setMangas(mangas.filter((manga: MangaProps) => manga.id != item.id))
+										}
+									}}
+									mode="contained"
+								/>
 							</Card.Content>
 						</Card>
 					)}
