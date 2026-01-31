@@ -1,3 +1,5 @@
+import { MangaProps } from "@/services/manga.service";
+
 export type IMangaDetails = {
 	id: string;
 	title: { userPreferred?: string, english?: string };
@@ -7,8 +9,9 @@ export type IMangaDetails = {
 	chapters?: number;
 	// volumes?: number;
 	status?: string;
+	mangaId: number; // should be the same as anilist id
 };
 
-export const getMangaTitle = (manga: IMangaDetails | undefined) : string => {
+export const getMangaTitle = (manga: IMangaDetails | MangaProps | undefined) : string => {
 	return manga?.title.english || manga?.title.userPreferred || "Unknown Title";
 }

@@ -2,12 +2,16 @@ import { ICustomList, ICustomLists } from "@/types/ICustomList";
 import api from "./AxiosInstance";
 import { ServiceResult } from "./IServiceResult";
 
-export const getCustomLists = async (mangaId?: number) : Promise<ServiceResult<ICustomLists>> =>
+export const getCustomLists = async (mangaId?: number, inTheList?: boolean) : Promise<ServiceResult<ICustomLists>> =>
 {
 	try
 	{
-		const optionalParams = mangaId ? `?mangaId=${mangaId}` : ""
-		const response = await api.get('/custom-lists' + optionalParams);
+		const response = await api.get('/custom-lists', {
+			params: {
+				mangaId: mangaId,
+				inTheList: inTheList
+			}
+		});
 		return {
 			success: true,
 			data: response.data

@@ -10,16 +10,22 @@ router.use(express.json())
 router.get(`/`, AuthenticateMiddleware, async (req: Request, res: Response) =>
 {
 	const userId = req.user?.id
-	const {mangaId} = req.query
-	if (mangaId == null)
+	const {mangaId, inTheList} = req.query
+	const findOptions: any = {userId};
+	if (mangaId != null)
 	{
-		res.status(200).json(await CustomList.find({ userId }).select('name manga isFavorite description'))
+		// if inTheList is not set or not "false" => return the list with mangaId
+		if (inTheList != null && inTheList == "false")
+		{
+			findOptions['manga.mangaId'] = { $ne: mangaId }
+		}
+		else
+		{
+			findOptions['manga.mangaId'] = mangaId
+		}
 	}
-	else
-	{
-		const lists = (await CustomList.find({ userId, 'manga.mangaId': mangaId }).select('name manga isFavorite description'))
-		res.status(200).json(lists)
-	}
+	const lists = (await CustomList.find(findOptions).select('name manga isFavorite description'))
+	return res.status(200).json(lists)
 })
 
 // create new manga list

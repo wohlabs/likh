@@ -14,7 +14,6 @@ export default function MangaCard({item, style, allCustomLists, onCreateList } :
 {
 	const theme = useTheme();
 	const [optionsVisible, setOptionsVisible] = useState<boolean>(false);
-	const [listsVisible, setListsVisible] = useState<boolean>(false);
 	const [mangaCustomLists, setMangaCustomLists] = useState<{ _id: string, name: string, isInList: boolean}[]>([]);
 	const [isFavorite, setFavorite] = useState<boolean>(false);
 	
@@ -92,7 +91,6 @@ export default function MangaCard({item, style, allCustomLists, onCreateList } :
 						visible={optionsVisible}
 						onDismiss={() =>{
 							setOptionsVisible(false)
-							setListsVisible(false)
 						}}
 						anchor={
 							<IconButton size={15} icon={mangaCustomLists.reduce((accumulator, currentValue)=> accumulator || currentValue.isInList, false) ? 'bookmark' : 'bookmark-outline'} mode="contained"
