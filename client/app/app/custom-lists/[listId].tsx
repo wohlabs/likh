@@ -5,7 +5,7 @@ import { FlatList, Image, Pressable, StyleSheet, View, ScrollView } from "react-
 import { Button, Card, IconButton, useTheme } from "react-native-paper";
 import { addToCustomList, getCustomLists } from "@/services/custom_lists";
 import { getLibraryMangaThumbnails, MangaProps } from "@/services/manga.service";
-import { ICustomList } from "@/types/ICustomList";
+import { ICustomList, MangaItem } from "@/types/ICustomList";
 import { getMangaTitle } from "@/types/IManga";
 import AutoGrowingTextInput from "@/components/AutoGrowingTextInput";
 import ThemeButton from "@/components/ThemeButton";
@@ -18,11 +18,28 @@ export default function CustomListDetail()
 	const theme = useTheme();
 	const router = useRouter();
 	const [list, setList] = useState<ICustomList | null>(null);
-	const [mangas, setMangas] = useState<MangaProps[]>([]);
+	const [mangas, setMangas] = useState<(MangaProps & {addedDate: Date})[]>([]);
 	const [officialDescription, setOfficialDescription] = useState<string>("");
 	const [description, setDescription] = useState<string>("");
 	const [isEditingDescription, setEditingDesc] = useState<boolean>(false);
 	const [textHovered, setTextHovered] = useState<boolean>(false);
+
+	const getListMangaData = async (mangaList: MangaItem[]) : Promise<(MangaProps & {addedDate: Date})[]> => {
+
+		const result = await getLibraryMangaThumbnails(mangaList.map((m) => m.mangaId));
+		if (result.success)
+		{
+			const addedDataList: any[] = result.data.map((item: any) => {
+				item.addedDate = mangaList.find((m) => m.mangaId == Number(item.id))?.addedAt;
+				return item;
+			})
+			return addedDataList
+		}
+		else
+		{
+			return []
+		}
+	}
 
 	useEffect(() => {
 		(async () => {
@@ -35,8 +52,7 @@ export default function CustomListDetail()
 				setList(list);
 				setDescription(list.description)
 				setOfficialDescription(list.description)
-				const thumbs = await getLibraryMangaThumbnails(list.manga.map(item => item.mangaId));
-				setMangas(thumbs.success ? thumbs.data : []);
+				setMangas(await getListMangaData(list.manga))
 			}
 		})();
 	}, [listId]);
@@ -116,7 +132,7 @@ export default function CustomListDetail()
 					data={mangas}
 					keyExtractor={(item) => item.id}
 					contentContainerStyle={{ padding: 16, paddingVertical: 2, gap: 12 }}
-					renderItem={({ item }) => (
+					renderItem={({ item }: {item: MangaProps & {addedDate: Date}}) => (
 						<Card onPress={() => router.push(`/app/manga/${item.id}`)}>
 							<Card.Content style={styles.mangaRow}>
 								<Image
@@ -127,6 +143,7 @@ export default function CustomListDetail()
 									<ThemeText variant="titleMedium">
 										{getMangaTitle(item)}
 									</ThemeText>
+									<ThemeText variant="labelSmall" style={{opacity: 0.6}}>added on: {new Date(item.addedDate).toLocaleString() || "date @ time"}</ThemeText>
 								</View>
 								<IconButton
 									icon={"trash-can-outline"}
