@@ -6,7 +6,8 @@ import { Button, IconButton, Menu, Portal, useTheme, Modal } from "react-native-
 import { useCallback, useEffect, useState } from "react";
 import NewCustomListView from "./NewCustomListView";
 import { ICustomList, ICustomLists, MangaItem } from "@/types/ICustomList";
-import { getCustomLists } from "@/services/custom_lists";
+import { addToCustomList, getCustomLists } from "@/services/custom_lists";
+import ThemeButton from "./ThemeButton";
 
 
 export default function MangaOverviewHeader({ style, manga } : { style?: StyleProp<ViewStyle>, manga?: IMangaDetails })
@@ -35,6 +36,24 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 			}
 		}
 	}, [])
+
+	const toggleList = async (listId: string) => {
+		const targetList = lists.find((list) => list._id === listId)
+		if (targetList !== undefined)
+		{
+			const result = await addToCustomList(listId, Number(manga?.mangaId), !targetList.isInList)
+			if (result.success)
+			{
+				setLists(prevLists =>
+					prevLists.map(list =>
+						list._id === listId
+							? { ...list, isInList: !list.isInList }
+							: list
+					)
+				)
+			}
+		}
+	}
 	
 	useEffect(() => {
 		fetchLists();
@@ -70,10 +89,14 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 						onDismiss={() =>{
 							setOptionsVisible(false)
 						}}
+						anchorPosition="bottom"
 						anchor={
-							<IconButton size={15} icon={lists.reduce((accumulator, currentValue)=> accumulator || currentValue.isInList, false) ? 'bookmark' : 'bookmark-outline'} mode="contained"
+							<ThemeButton
+								icon={lists.reduce((accumulator, currentValue)=> accumulator || currentValue.isInList, false) ? 'bookmark' : 'bookmark-outline'}
+								mode="contained"
+								style={{borderRadius: 10}}
 								onPress={() => setOptionsVisible(true)}
-							/>
+							> add to list </ThemeButton>
 						}
 					>
 						<Menu.Item 
@@ -83,7 +106,8 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 							lists.map((list, number) => (
 								<Menu.Item 
 									key={list._id ? `custom_list_${list._id}` : `custom_list_undefined_${number}`}
-									onPress={() => null} title={list.name} leadingIcon={list.isInList ? (list.isFavorite ? "heart" : "bookmark") : (list.isFavorite ? "heart-outline" : "bookmark-outline")}
+									onPress={() => toggleList(list._id)} title={list.name}
+									leadingIcon={list.isInList ? (list.isFavorite ? "heart" : "bookmark") : (list.isFavorite ? "heart-outline" : "bookmark-outline")}
 								/>
 							))
 						}
