@@ -1,7 +1,7 @@
 import express, { Router, Request, Response } from 'express';
 import AuthenticateMiddleware from '../middleware/Authentication';
 import { Note } from '../models/note.model';
-import { CustomList } from '../models/custom_list.model';
+import { CustomList, ICustomList, MangaItem } from '../models/custom_list.model';
 import { anilistRequest } from '../Utility';
 import { getMangaInLibrary } from './users';
 import { getMangaData } from './anilist';
@@ -43,7 +43,7 @@ const searchLists = async (userId: string, query: string, limit: number = 50, pa
 		userId,
 		$or: [
 			{ name: { $regex: query, $options: 'i' } },
-			{ mangaIds: { $in: matchingMangaIds } }
+			{ 'manga.mangaId': { $in: matchingMangaIds } }
 		]
 	});
 	// Search custom lists
@@ -52,7 +52,7 @@ const searchLists = async (userId: string, query: string, limit: number = 50, pa
 			userId,
 			$or: [
 				{ name: { $regex: query, $options: 'i' } },
-				{ mangaIds: { $in: matchingMangaIds } }
+				{ 'manga.mangaId': { $in: matchingMangaIds } }
 			]
 		},
 	)
@@ -63,7 +63,7 @@ const searchLists = async (userId: string, query: string, limit: number = 50, pa
 	if (lists && lists.length > 0)
 	{
 		// Fetch manga data for all mangaIds present in the returned lists
-		const allMangaIds = Array.from(new Set(lists.flatMap((l: any) => l.mangaIds)));
+		const allMangaIds = Array.from(new Set(lists.flatMap((l: ICustomList) => l.manga))).map((manga: MangaItem) => manga.mangaId);
 		let allMangaData: any[] = [];
 		try {
 			if (allMangaIds.length > 0) {
@@ -76,10 +76,10 @@ const searchLists = async (userId: string, query: string, limit: number = 50, pa
 		results = lists.map((list) => ({
 			id: list._id,
 			name: list.name,
-			manga: (list.mangaIds || []).map((mId: number) => {
-				const md = allMangaData.find((m) => m.id === mId);
+			manga: (list.manga || []).map((item: MangaItem) => {
+				const md = allMangaData.find((m) => m.id === item.mangaId);
 				return {
-					id: mId,
+					id: item.mangaId,
 					title: md?.title || { userPreferred: null, english: null }
 				};
 			}),

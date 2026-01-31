@@ -1,27 +1,38 @@
 import { Schema, model, Document, Types } from 'mongoose'
 
+export interface MangaItem {
+	mangaId: number // anilist id
+	addedAt: Date
+}
+
 export interface ICustomList extends Document
 {
 	userId: Types.ObjectId
 	name: string,
 	description: string,
 	isFavorite: boolean,
-	mangaIds: number[]
+	manga: MangaItem[]
 }
+
+const MangaItemSchema = new Schema<MangaItem>(
+	{
+		mangaId: { type: Number, required: true },
+		addedAt: { type: Date, default: Date.now }
+	},
+	{ _id: false }
+)
 
 const ICustomListSchema = new Schema<ICustomList>({
 	userId: { type: Schema.ObjectId, ref: 'User' },
 	name: { type: String, required: true },
 	description: { type: String },
 	isFavorite: { type: Boolean, required: true, default: false },
-	mangaIds: { type: [Number], required: true, default: [] },
+	manga: {
+		type: [MangaItemSchema],
+		required: true,
+		default: []
+	},
 });
-
-// 👇 enforcement
-ICustomListSchema.index(
-	{ userId: 1 },
-	{ unique: true, partialFilterExpression: { isFavorite: true } }
-)
 
 ICustomListSchema.pre('deleteOne', function (next) {
 	if (this.getQuery().isFavorite)

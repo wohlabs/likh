@@ -35,7 +35,7 @@ export default function CustomListDetail()
 				setList(list);
 				setDescription(list.description)
 				setOfficialDescription(list.description)
-				const thumbs = await getLibraryMangaThumbnails(list.mangaIds);
+				const thumbs = await getLibraryMangaThumbnails(list.manga.map(item => item.mangaId));
 				setMangas(thumbs.success ? thumbs.data : []);
 			}
 		})();
@@ -62,7 +62,7 @@ export default function CustomListDetail()
 				<View style={styles.header}>
 						<ThemeText variant="titleLarge" style={{paddingHorizontal: 10}}>{list?.name}</ThemeText>
 						<ThemeText variant="labelLarge" style={{opacity: 0.6, paddingHorizontal: 10}}>
-							{list?.mangaIds?.length ?? 0} manga
+							{list?.manga?.length ?? 0} manga
 						</ThemeText>
 						{
 							!isEditingDescription

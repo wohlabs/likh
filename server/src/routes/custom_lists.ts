@@ -1,6 +1,6 @@
 import express, { Router, Request, Response } from 'express';
 import AuthenticateMiddleware from '../middleware/Authentication';
-import { CustomList, ICustomList } from '../models/custom_list.model';
+import { CustomList, ICustomList, MangaItem } from '../models/custom_list.model';
 
 const router: Router = Router();
 
@@ -13,11 +13,11 @@ router.get(`/`, AuthenticateMiddleware, async (req: Request, res: Response) =>
 	const {mangaId} = req.query
 	if (mangaId == null)
 	{
-		res.status(200).json(await CustomList.find({ userId }).select('name mangaIds isFavorite description'))
+		res.status(200).json(await CustomList.find({ userId }).select('name manga isFavorite description'))
 	}
 	else
 	{
-		const lists = (await CustomList.find({ userId, mangaIds: mangaId }).select('name mangaIds isFavorite description'))
+		const lists = (await CustomList.find({ userId, 'manga.mangaId': mangaId }).select('name manga isFavorite description'))
 		res.status(200).json(lists)
 	}
 })
@@ -31,7 +31,7 @@ router.post(`/`, AuthenticateMiddleware, async (req: Request, res: Response) =>
 		userId,
 		name,
 		description,
-		mangaIds: initMangaIds ?? []
+		manga: initMangaIds.map((item: number) => ({mangaId: item, addedDate: new Date()})) ?? []
 	})
 	await newList.save()
 	res.json(newList)
@@ -59,13 +59,13 @@ router.post(`/favorite/manga`, AuthenticateMiddleware, async (req: Request, res:
 		list = newFavList
 	}
 
-	if (isFav && !list.mangaIds.includes(numMangaId))
+	if (isFav && !list.manga.some((item: MangaItem) => item.mangaId === numMangaId))
 	{
-		list.mangaIds.push(numMangaId)		
+		list.manga.push({mangaId: numMangaId, addedAt: new Date()})
 	}
-	else if (!isFav && list.mangaIds.includes(numMangaId))
+	else if (!isFav && list.manga.some((item: MangaItem) => item.mangaId === numMangaId))
 	{
-		list.mangaIds = list.mangaIds.filter((elem) => elem !== numMangaId)
+		list.manga = list.manga.filter((elem) => elem.mangaId !== numMangaId)
 	}
 	list.save()
 	res.sendStatus(200)
@@ -143,13 +143,13 @@ router.post(`/:listId/manga`, AuthenticateMiddleware, async (req: Request, res: 
 	}
 
 	const numMangaId = Number(mangaId)
-	if (isIncluded && !list.mangaIds.includes(numMangaId))
+	if (isIncluded && !list.manga.some((item: MangaItem) => item.mangaId === numMangaId))
 	{
-		list.mangaIds.push(numMangaId)		
+		list.manga.push({mangaId: numMangaId, addedAt: new Date()})
 	}
-	else if (!isIncluded && list.mangaIds.includes(numMangaId))
+	else if (!isIncluded && list.manga.some((item: MangaItem) => item.mangaId === numMangaId))
 	{
-		list.mangaIds = list.mangaIds.filter((elem) => elem !== numMangaId)
+		list.manga = list.manga.filter((elem) => elem.mangaId !== numMangaId)
 	}
 	list.save()
 	res.sendStatus(200)

@@ -7,7 +7,7 @@ import { MangaProps } from "@/services/manga.service";
 import { getMangaTitle } from "@/types/IManga";
 import { LinearGradient } from 'expo-linear-gradient'
 import { modernDarkTheme } from "@/theme/modernTheme";
-import { ICustomLists } from "@/types/ICustomList";
+import { ICustomLists, MangaItem } from "@/types/ICustomList";
 import { addToCustomList, favoriteManga } from "@/services/custom_lists";
 
 export default function MangaCard({item, style, allCustomLists, onCreateList } : {item: MangaProps, style?: StyleProp<ViewStyle>, onCreateList?: (mangaIdToAdd?: number) => {}, allCustomLists: ICustomLists})
@@ -21,8 +21,8 @@ export default function MangaCard({item, style, allCustomLists, onCreateList } :
 	const fetchMangaCustomLists = async () => {
 		if (item && item?.id) // undefined id is from "blank" card used to fill in for flat list empty space
 		{
-			setMangaCustomLists(allCustomLists.filter((list) => !list.isFavorite).map((list) => ({ _id: list._id, name: list.name, isInList: list.mangaIds?.includes(Number(item.id)) ?? false })))
-			setFavorite(allCustomLists.findLast((list) => list.isFavorite)?.mangaIds.includes(Number(item.id)) ?? false)
+			setMangaCustomLists(allCustomLists.filter((list) => !list.isFavorite).map((list) => ({ _id: list._id, name: list.name, isInList: list.manga?.some((m: MangaItem) => m.mangaId === Number(item.id)) })))
+			setFavorite(allCustomLists.findLast((list) => list.isFavorite)?.manga.some(m => m.mangaId === Number(item.id)) ?? false)
 		}
 	}
 

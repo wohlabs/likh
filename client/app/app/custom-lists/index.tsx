@@ -39,7 +39,7 @@ export default function CustomListsIndex()
                                 <Card.Content style={styles.cardContent}>
                                     <View style={styles.cardLeft}>
                                         <ThemeText variant="titleMedium">{item.name}</ThemeText>
-                                        <ThemeText variant="labelLarge" style={{opacity: 0.6}}>{item.mangaIds?.length ?? 0} manga</ThemeText>
+                                        <ThemeText variant="labelLarge" style={{opacity: 0.6}}>{item.manga?.length ?? 0} manga</ThemeText>
                                         <ThemeText variant="bodyMedium" style={{opacity: item.description ? 1 : 0.6}}>{item.description || "(No description)"}</ThemeText>
                                     </View>
 									<IconButton

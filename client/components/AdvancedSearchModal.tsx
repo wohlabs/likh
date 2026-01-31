@@ -20,6 +20,7 @@ import { addMangaToLibrary } from '@/services/manga.service';
 import { hexToRgba } from './util';
 import { modernDarkTheme } from '@/theme/modernTheme';
 import ThemeButton from './ThemeButton';
+import { MangaItem } from '@/types/ICustomList';
 
 interface AdvancedSearchModalProps {
 	visible: boolean;
@@ -148,7 +149,7 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 			<Card.Content style={styles.listMeta}>
 				<ThemeText variant="titleSmall" numberOfLines={1}>
 				{
-					item.manga?.map((mangaItem: IMangaDetails, index: number) =>(
+					item.manga?.map((mangaItem: MangaItem, index: number) =>(
 							getMangaTitle(mangaItem) + (index === item.manga.length - 1 ? "" : " • ")
 					))
 				}
