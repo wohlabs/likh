@@ -82,9 +82,9 @@ export default function CustomListDetail()
 								/>
 								<ThemeText
 									variant="bodyMedium"
-									style={{ color: theme.colors.onSurfaceVariant, flex: 1, backgroundColor: textHovered ? theme.colors.surface : theme.colors.background, padding: 10 }}
+									style={{ color: theme.colors.onSurfaceVariant, flex: 1, backgroundColor: textHovered ? theme.colors.surface : theme.colors.background, padding: 10, opacity: officialDescription ? 1 : 0.6 }}
 								>
-									{officialDescription}
+									{officialDescription || "(no description)"}
 								</ThemeText>
 							</Pressable>
 							:
