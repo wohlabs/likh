@@ -116,7 +116,7 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 						/>
 					</Menu>
 				</View>
-				<View style={{ flex: 1 }}>
+				<View style={{ flex: 1, marginHorizontal: 10 }}>
 					<View style={styles.titleDetailsContainer}>
 						<ThemeText style={styles.title} variant="titleLarge">{getMangaTitle(manga)}</ThemeText>
 					</View>
