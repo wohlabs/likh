@@ -1,6 +1,5 @@
 import api from "@/services/AxiosInstance";
 import { IMangaNotes, INoteEntry } from "@/types/INotes";
-import { getAnilistNote } from "./notes.service";
 import { IMangaDetails } from "@/types/IManga";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ServiceResult } from "./IServiceResult";
@@ -78,20 +77,9 @@ export const getMangaData = async (mangaId: string, access_token: string = "") :
 	{
 		const response = await api.get(`/notes?mangaId=${mangaId}`);
 		const notes: IMangaNotes = response.data.map((item: any): INoteEntry => ({
-			id: item._id,
-			createdAt: item.createdAt,
-			modifiedAt: item.modifiedAt,
-			startChapter: item.startChapter,
-			endChapter: item.endChapter,
-			images: item.images,
-			text: item.text,
-			fromAnilist: false
+			...item,
+			id: item._id
 		}))
-		const anilistNote: INoteEntry | null = await getAnilistNote(mangaId, access_token)
-		if (anilistNote !== null)
-		{
-			notes.push(anilistNote)
-		}
 		await AsyncStorage.setItem('manga_' + mangaId.toString(), JSON.stringify(notes));
 		return notes || JSON.parse("[]");
 	}

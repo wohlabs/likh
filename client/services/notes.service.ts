@@ -4,42 +4,6 @@ import { getUserIdFromToken } from "@/components/util";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ServiceResult } from "./IServiceResult";
 
-export const MANGA_NOTE_QUERY = `
-query ($userId: Int, $mediaId: Int) {
-	MediaList (userId: $userId, mediaId: $mediaId) {
-		id
-		userId
-		notes
-		createdAt
-		updatedAt
-	}
-}
-`
-
-export const getAnilistNote = async (mangaId: string, access_token: string) : Promise<INoteEntry | null> =>
-{
-	try
-	{
-		const result = await api.post('/anilist', { query: MANGA_NOTE_QUERY, variables: {userId : getUserIdFromToken(access_token), mediaId: mangaId} });
-		const item = result.data.data.MediaList
-		if (!item || !item.notes) return null
-		return {
-			id: item.id,
-			createdAt: new Date(item.createdAt * 1000).toString(),
-			modifiedAt: new Date(item.updatedAt * 1000).toString(),
-			startChapter: -1,
-			endChapter: undefined,
-			images: [],
-			text: item.notes,
-			fromAnilist: true
-		} as INoteEntry;
-	}
-	catch (err: any)
-	{
-		return null
-	}
-}
-
 export const addMangaNote = async (mangaId: string, entry: INoteEntry) : Promise<boolean> => 
 {
 	try 

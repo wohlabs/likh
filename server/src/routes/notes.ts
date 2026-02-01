@@ -7,6 +7,7 @@ import { Readable } from 'stream';
 import { getErrorMessage } from '../Utility';
 import { IUser, User } from '../models/user.model';
 import { INote, Note } from '../models/note.model';
+import { getAnilistNote } from './anilist';
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
@@ -163,8 +164,25 @@ router.patch(`/:id`, upload.array('images', 10), AuthenticateMiddleware, async (
 router.get(`/`, AuthenticateMiddleware, async (req: Request, res: Response) =>
 {
 	const userId = req.user?.id
-	const { mangaId } = req.query // temporary. userId shall be determined by session cookie
-	res.json(await Note.find({ userId, mangaId }).exec())
+	const { mangaId } = req.query
+	if (userId && mangaId)
+	{
+		const likhNotes = await Note.find({ userId, mangaId });
+		likhNotes.map((note: INote | any) => {
+			return { ...note, fromAnilist: false};
+		})
+		const user = await User.findById(userId);
+		if (user && user.anilist_token)
+		{
+			const anilistNote: any = user.anilist_token ? await getAnilistNote(mangaId.toString(), user.anilist_token) : null;
+			if (anilistNote)
+			{
+				likhNotes.push({ ...anilistNote, fromAnilist: true})
+			}
+		}
+		return res.json(likhNotes)
+	}
+	return res.sendStatus(400)
 })
 
 // get note of id

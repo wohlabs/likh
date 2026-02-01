@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import { anilistRequest } from "../Utility";
 import { jwtDecode } from "jwt-decode";
 import { IUser, User } from '../models/user.model';
+import { INote } from "../models/note.model";
 
 const router = express.Router();
 router.use(express.json())
@@ -90,6 +91,41 @@ export const getMangaIdsWithNotes = async (user_id: string) : Promise<string[]> 
 	catch (err: any)
 	{
 		return [];
+	}
+}
+
+export const getAnilistNote = async (mangaId: string, access_token: string) : Promise<Partial<INote> | null> =>
+{
+	const MANGA_NOTE_QUERY = `
+	query ($userId: Int, $mediaId: Int) {
+		MediaList (userId: $userId, mediaId: $mediaId) {
+			id
+			userId
+			notes
+			createdAt
+			updatedAt
+		}
+	}
+	`
+
+	try
+	{
+		const data = await anilistRequest(MANGA_NOTE_QUERY, {userId : getUserIdFromToken(access_token), mediaId: mangaId}, 3600);
+		const item = data.data.MediaList
+		if (!item || !item.notes) return null
+		return {
+			id: item.id,
+			createdAt: new Date(item.createdAt * 1000),
+			modifiedAt: new Date(item.updatedAt * 1000),
+			startChapter: -1,
+			endChapter: undefined,
+			images: [],
+			text: item.notes
+		};
+	}
+	catch (err: any)
+	{
+		return null
 	}
 }
 
