@@ -71,7 +71,7 @@ export type MangaProps = {
 };
 
 
-export const getMangaData = async (mangaId: string, access_token: string = "") : Promise<IMangaNotes> => 
+export const getMangaData = async (mangaId: string, access_token?: string) : Promise<IMangaNotes> => 
 {
 	try 
 	{
@@ -107,11 +107,15 @@ export const addMangaToLibrary = async (mangaId: string) : Promise<boolean> =>
 	return true
 };
 
-export const getMangaDetails = async (mangaId: string) : Promise<IMangaDetails | undefined> =>
+export const getMangaDetails = async (mangaId: string, anilist_token?: string) : Promise<IMangaDetails | undefined> =>
 {
 	try 
 	{
-		const respone = await api.get(`/manga/${mangaId}`)
+		const respone = await api.get(`/manga/${mangaId}`, {
+			params: {
+				anilist_token
+			}
+		})
 		return respone.data as IMangaDetails;
 	}
 	catch (err: any)

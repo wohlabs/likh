@@ -1,5 +1,23 @@
 import { model, Schema } from "mongoose";
 
+export type IMediaListStatus = "CURRENT" | "PLANNING" | "COMPLETED" | "DROPPED" | "PAUSED" | "REPEATING";
+
+export const MEDIA_LIST_STATUSES = [
+	"CURRENT",
+	"PLANNING",
+	"COMPLETED",
+	"DROPPED",
+	"PAUSED",
+	"REPEATING",
+] as const
+
+
+export type IMediaListEntry = {
+	id: number,
+	status: IMediaListStatus,
+	score: number
+}
+
 export type IManga = {
 	mangaId: number;
 	title: {
@@ -16,7 +34,22 @@ export type IManga = {
 	volumes?: number;
 	status?: string;
 	updatedAt: Date;
+	mediaListEntry?: IMediaListEntry;
 };
+
+const mediaListEntrySchema = new Schema<IMediaListEntry>(
+	{
+		id: Number,
+		status: {
+			type: String,
+			enum: MEDIA_LIST_STATUSES,
+			required: true,
+			default: "PLANNING"
+		},
+		score: Number
+	},
+	{ _id: false }
+)
 
 const MangaSchema = new Schema<IManga>({
 	mangaId: { type: Number, required: true, unique: false, index: true },
@@ -33,7 +66,8 @@ const MangaSchema = new Schema<IManga>({
 	chapters: { type: Number },
 	volumes: { type: Number },
 	status: { type: String },
-	updatedAt: { type: Date, default: Date.now, required: true }
+	updatedAt: { type: Date, default: Date.now, required: true },
+	mediaListEntry: { type: mediaListEntrySchema, required: false }
 });
 
 export const MANGA_QUERY = `
@@ -52,6 +86,11 @@ export const MANGA_QUERY = `
 			chapters
 			volumes
 			status
+			mediaListEntry {
+				id
+				status
+				score
+			}
 		}
 	}`;
 
