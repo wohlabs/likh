@@ -210,7 +210,7 @@ export default function MangaDetails()
 									label="Sort by"
 									hideLabel={true}
 									value={sortByValue}
-									style={{maxWidth: 200}}
+									style={{maxWidth: 200, height: 40}}
 									items={[
 										{
 											label: "date created",

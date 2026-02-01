@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ScrollView, Pressable, View, LayoutChangeEvent, StyleProp, ViewStyle } from "react-native";
+import { ScrollView, Pressable, View, LayoutChangeEvent, StyleProp, ViewStyle, TextStyle } from "react-native";
 import { Menu, TextInput, useTheme } from "react-native-paper";
 
 export type DropdownItem<T = string> = {
@@ -13,7 +13,7 @@ type ThemeDropdownProps<T = string> = {
 	value: T | null;
 	onChange: (value: T) => void;
 	items: DropdownItem<T>[];
-	style?: StyleProp<ViewStyle>
+	style?: StyleProp<TextStyle>
 	mode?: 'flat' | 'outlined';
 };
 
@@ -43,7 +43,7 @@ export function ThemeDropdown<T>({
 			contentStyle={{ width: anchorWidth }}
 			anchorPosition="bottom"
 			anchor={
-				<Pressable style={style} onPress={() => setVisible(true)} onLayout={onLayout}>
+				<Pressable onPress={() => setVisible(true)} onLayout={onLayout}>
 					<TextInput
 						label={hideLabel ? undefined : label}
 						value={selectedLabel}
@@ -54,13 +54,13 @@ export function ThemeDropdown<T>({
 						outlineStyle={{borderWidth: 2}}
 						outlineColor="red"
 						contentStyle={{margin: 0}}
-						style={{
+						style={[{
 							borderRadius: 10,
 							borderWidth: 1,
 							borderTopLeftRadius: 10,
 							borderTopRightRadius: 10,
 							borderColor: theme.colors.outline
-						}}
+						}, style]}
 						right={<TextInput.Icon icon="menu-down"
 							onPress={() => setVisible(true)}
 						/>}
