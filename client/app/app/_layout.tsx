@@ -161,10 +161,10 @@ export default function AppLayout()
 									title={anilistToken == null || anilistToken === undefined || anilistToken === "undefined" || anilistToken === '' ? "Link your Anilist account" : "Anilist linked"}
 								/>
 								<Menu.Item 
-									onPress={() => 
+									onPress={async () => 
 									{
 										setOptionsVisible(false);
-										logout();
+										await logout();
 										router.navigate('/users/login') // may not be ideal to refresh
 									}} title="Logout" leadingIcon={"logout"}
 								/>
