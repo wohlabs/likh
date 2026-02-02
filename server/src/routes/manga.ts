@@ -20,6 +20,7 @@ router.get("/:id", async (req: Request, res: Response) => {
 			const { id: mangaId, ...returnData } = refreshedManga.data.Media;
 			const toBeRefreshedManga = new Manga({
 				...returnData,
+				mangaId,
 				updatedAt: new Date()
 			})
 			toBeRefreshedManga.save();
