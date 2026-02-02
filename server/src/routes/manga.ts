@@ -36,7 +36,6 @@ router.get("/:id", async (req: Request, res: Response) => {
 			storedManga.chapters = refreshedManga.data.Media.chapters;
 			storedManga.volumes = refreshedManga.data.Media.volumes;
 			storedManga.status = refreshedManga.data.Media.status;
-			storedManga.mediaListEntry = refreshedManga.data.Media.mediaListEntry;
 			storedManga.updatedAt = new Date();
 			storedManga.save();
 			return res.status(200).json(storedManga);

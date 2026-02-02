@@ -12,6 +12,7 @@ import AnilistRoutes from './routes/anilist'
 import CustomListRoutes from './routes/custom_lists'
 import SearchRoutes from './routes/search'
 import MangaRoutes from './routes/manga'
+import MediaEntryRoutes from './routes/media_entry'
 
 dotenv.config()
 
@@ -33,6 +34,7 @@ app.use('/custom-lists', CustomListRoutes);
 app.use('/anilist', AnilistRoutes);
 app.use('/search', SearchRoutes);
 app.use('/manga', MangaRoutes);
+app.use('/media-entry', MediaEntryRoutes);
 
 // test route
 app.get(`/`, (req: Request, res: Response) => { res.json('hello world') })

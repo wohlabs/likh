@@ -3,11 +3,13 @@ import { StyleProp, ViewStyle, StyleSheet, View, Image, GestureResponderEvent } 
 import ThemeText from "./ThemeText";
 import ReadMore from '@/components/ReadMore';
 import { Button, IconButton, Menu, Portal, useTheme, Modal } from "react-native-paper";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import NewCustomListView from "./NewCustomListView";
 import { ICustomList, ICustomLists, MangaItem } from "@/types/ICustomList";
 import { addToCustomList, getCustomLists } from "@/services/custom_lists";
 import ThemeButton from "./ThemeButton";
+import { getMangaStatus } from "@/services/media_entry.service";
+import { AuthContext } from "@/context/AuthContext";
 
 
 export default function MangaOverviewHeader({ style, manga } : { style?: StyleProp<ViewStyle>, manga?: IMangaDetails })
@@ -15,7 +17,9 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 	const theme = useTheme()
 	const [optionsVisible, setOptionsVisible] = useState(false)
 	const [isCreatingNewList, setCreatingNewList] = useState(false)
+	const { anilistToken } = useContext(AuthContext)
 	const [lists, setLists] = useState<(ICustomList & {isInList: boolean})[]>([])
+	const [status, setStatus] = useState<string>("add to library")
 	
 	const addIsInListData = useCallback((lists: ICustomLists) => {
 		return lists.map((list: any) => {
@@ -33,6 +37,17 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 			{
 				const listsWithIsInListData = addIsInListData(result.data)
 				setLists(listsWithIsInListData)
+			}
+		}
+	}, [])
+
+	const fetchStatus = useCallback(async () => {
+		if (manga?.mangaId)
+		{
+			const result = await getMangaStatus(manga.mangaId.toString(), anilistToken ? anilistToken : undefined);
+			if (result.success && result.data != null)
+			{
+				setStatus(result.data.status)
 			}
 		}
 	}, [])
@@ -57,6 +72,7 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 	
 	useEffect(() => {
 		fetchLists();
+		fetchStatus()
 	}, [])
 	
 	const _renderTruncatedFooter = (handlePress : (event: GestureResponderEvent) => void) => {
@@ -78,12 +94,15 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 	return (
 		<View style={style}>
 			<View style={styles.mangaOverviewContainer}>
-				<View style={{flexDirection: 'column'}}>
+				<View style={{flexDirection: 'column', alignItems: 'center'}}>
 					<Image
 						source={{ uri: manga?.coverImage?.large }}
 						resizeMode="contain"
 						style={styles.mangaCoverImage}
 					/>
+					<ThemeText>
+						{status}
+					</ThemeText>
 					<Menu
 						visible={optionsVisible}
 						onDismiss={() =>{
