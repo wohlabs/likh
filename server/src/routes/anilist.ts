@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import { anilistRequest } from "../Utility";
+import { anilistAuthenticatedRequest, anilistRequest } from "../Utility";
 import { jwtDecode } from "jwt-decode";
 import { IUser, User } from '../models/user.model';
 import { INote } from "../models/note.model";
@@ -80,10 +80,9 @@ export const getMangaIdsWithNotes = async (user_id: string) : Promise<string[]> 
 	const variables = {userId : userId};
 	try
 	{
-		const data = await anilistRequest(query, variables, 3600);
+		const data = await anilistAuthenticatedRequest(query, variables, accessToken, 3600);
 		const mangaIds = data.data.MediaListCollection.lists.flatMap((list: any) =>
 			list.entries
-				.filter((entry: any) => entry.notes && entry.notes.length > 0)
 				.map((entry: any) => entry.mediaId.toString())
 		);
 		return mangaIds;
