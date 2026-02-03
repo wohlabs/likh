@@ -10,6 +10,7 @@ import { addToCustomList, getCustomLists } from "@/services/custom_lists";
 import ThemeButton from "./ThemeButton";
 import { getMangaStatus } from "@/services/media_entry.service";
 import { AuthContext } from "@/context/AuthContext";
+import { ThemeDropdown } from "./ThemeDropdown";
 
 
 export default function MangaOverviewHeader({ style, manga } : { style?: StyleProp<ViewStyle>, manga?: IMangaDetails })
@@ -20,6 +21,7 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 	const { anilistToken } = useContext(AuthContext)
 	const [lists, setLists] = useState<(ICustomList & {isInList: boolean})[]>([])
 	const [status, setStatus] = useState<string>("")
+	const [statusOpen, setStatusOpen] = useState<boolean>(false)
 
 	
 	const addIsInListData = useCallback((lists: ICustomLists) => {
@@ -94,47 +96,83 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 
 	return (
 		<View style={style}>
-			<View style={styles.mangaOverviewContainer}>
+			<View style={[styles.mangaOverviewContainer]}>
 				<View style={{flexDirection: 'column', alignItems: 'center'}}>
 					<Image
 						source={{ uri: manga?.coverImage?.large }}
 						resizeMode="contain"
 						style={styles.mangaCoverImage}
 					/>
-					<ThemeText>
-						{status}
-					</ThemeText>
-					<Menu
-						visible={optionsVisible}
-						onDismiss={() =>{
-							setOptionsVisible(false)
-						}}
-						anchorPosition="bottom"
-						anchor={
-							<ThemeButton
-								icon={lists.reduce((accumulator, currentValue)=> accumulator || currentValue.isInList, false) ? 'bookmark' : 'bookmark-outline'}
-								mode="contained"
-								style={{borderRadius: 10}}
-								onPress={() => setOptionsVisible(true)}
-							> add to list </ThemeButton>
-						}
-					>
-						<Menu.Item 
-							title={'add to...'} leadingIcon={undefined}
-						/>
-						{
-							lists.map((list, number) => (
-								<Menu.Item 
-									key={list._id ? `custom_list_${list._id}` : `custom_list_undefined_${number}`}
-									onPress={() => toggleList(list._id)} title={list.name}
-									leadingIcon={list.isInList ? (list.isFavorite ? "heart" : "bookmark") : (list.isFavorite ? "heart-outline" : "bookmark-outline")}
+					<View style={{flexDirection: 'row', alignItems: 'center'}}>
+						<View>
+							<ThemeDropdown
+								value={status}
+								setValue={setStatus}
+								items={[
+									{
+										value: 'CURRENT',
+										label: 'reading'
+									},
+									{
+										value: 'PLANNING',
+										label: 'planning'
+									},
+									{
+										value: 'COMPLETED',
+										label: 'completed'
+									},
+									{
+										value: 'DROPPED',
+										label: 'dropped'
+									},
+									{
+										value: 'PAUSED',
+										label: 'paused'
+									},
+									{
+										value: 'REPEATING',
+										label: 'rereading'
+									},
+								]}
+								open={statusOpen}
+								setOpen={setStatusOpen}
+								multiple={false}
+								listMode="FLATLIST"
+								maxHeight={300}
+							/>
+						</View>
+						<Menu
+							visible={optionsVisible}
+							onDismiss={() =>{
+								setOptionsVisible(false)
+							}}
+							anchorPosition="bottom"
+							anchor={
+								<IconButton
+									icon={lists.reduce((accumulator, currentValue)=> accumulator || currentValue.isInList, false) ? 'bookmark' : 'bookmark-outline'}
+									mode="contained"
+									style={{borderRadius: 10}}
+									onPress={() => setOptionsVisible(true)}
 								/>
-							))
-						}
-						<Menu.Item 
-							onPress={() => {setOptionsVisible(false);setCreatingNewList(true);}} title={'new list'} leadingIcon={'plus'}
-						/>
-					</Menu>
+							}
+						>
+							<Menu.Item 
+								title={'add to...'} leadingIcon={undefined}
+							/>
+							{
+								lists.map((list, number) => (
+									<Menu.Item 
+										key={list._id ? `custom_list_${list._id}` : `custom_list_undefined_${number}`}
+										onPress={() => toggleList(list._id)} title={list.name}
+										leadingIcon={list.isInList ? (list.isFavorite ? "heart" : "bookmark") : (list.isFavorite ? "heart-outline" : "bookmark-outline")}
+									/>
+								))
+							}
+							<Menu.Item 
+								onPress={() => {setOptionsVisible(false);setCreatingNewList(true);}} title={'new list'} leadingIcon={'plus'}
+							/>
+						</Menu>
+					</View>
 				</View>
 				<View style={{ flex: 1, marginHorizontal: 10 }}>
 					<View style={styles.titleDetailsContainer}>

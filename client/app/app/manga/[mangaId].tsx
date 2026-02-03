@@ -325,7 +325,7 @@ export default function MangaDetails()
 }
 
 const styles = StyleSheet.create({
-	mangaHeader: { alignItems: 'center', width: '100%', justifyContent: 'center', flexDirection: 'row', marginVertical: 10 },
+	mangaHeader: { alignItems: 'center', width: '100%', justifyContent: 'center', flexDirection: 'row', marginVertical: 10, zIndex: 3 },
 	actionButton: {boxShadow: "0px 4px 5px rgba(0,0,0,0.3)"},
 	noteContainer: { marginHorizontal: 5, flexDirection: 'row', alignItems: 'center', overflow: 'hidden'},
 	noteModalContainer: { borderRadius: 10, width: '100%', height: '85%', maxHeight: 700, padding: 0},
