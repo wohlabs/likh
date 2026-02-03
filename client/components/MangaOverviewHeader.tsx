@@ -8,7 +8,8 @@ import NewCustomListView from "./NewCustomListView";
 import { ICustomList, ICustomLists, MangaItem } from "@/types/ICustomList";
 import { addToCustomList, getCustomLists } from "@/services/custom_lists";
 import ThemeButton from "./ThemeButton";
-import { getMangaStatus } from "@/services/media_entry.service";
+import Toast from "react-native-toast-message";
+import { getMangaStatus, updateMangaStatus } from "@/services/media_entry.service";
 import { AuthContext } from "@/context/AuthContext";
 import { ThemeDropdown } from "./ThemeDropdown";
 
@@ -22,6 +23,7 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 	const [lists, setLists] = useState<(ICustomList & {isInList: boolean})[]>([])
 	const [status, setStatus] = useState<string>("")
 	const [statusOpen, setStatusOpen] = useState<boolean>(false)
+	const [statusFetched, setStatusFetched] = useState<boolean>(false)
 
 	
 	const addIsInListData = useCallback((lists: ICustomLists) => {
@@ -51,9 +53,23 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 			if (result.success && result.data != null)
 			{
 				setStatus(result.data.status)
+				setStatusFetched(true)
 			}
 		}
 	}, [])
+
+	const handleStatusChange = async (val?: any) => {
+		if (!manga?.mangaId) return;
+		const newStatus = val ?? '';
+		const previous = status;
+		setStatus(newStatus);
+		const result = await updateMangaStatus(manga.mangaId.toString(), newStatus, undefined);
+		if (!result.success)
+		{
+			setStatus(previous);
+			Toast.show({ type: 'error', text1: 'Could not update manga status' });
+		}
+	}
 
 	const toggleList = async (listId: string) => {
 		const targetList = lists.find((list) => list._id === listId)
@@ -72,6 +88,14 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 			}
 		}
 	}
+
+	useEffect(() => {
+		if (statusFetched)
+		{
+			console.log('testtt')
+			handleStatusChange(status)
+		}
+	}, [status, statusFetched])
 	
 	useEffect(() => {
 		fetchLists();

@@ -25,3 +25,24 @@ export const getMangaStatus = async (mangaId: string, anilist_token?: string) : 
 		};
 	}
 }
+
+export const updateMangaStatus = async (mangaId: string, status: string, score?: number) : Promise<ServiceResult<IUserMediaEntry>> =>
+{
+	try 
+	{
+		const response = await api.post(`/media-entry`, { status, score }, {
+			params: { mangaId }
+		});
+		return {
+			success: true,
+			data: response.data
+		};
+	}
+	catch (err: any)
+	{
+		return {
+			success: false,
+			error: 'Unable to update manga status'
+		};
+	}
+}
