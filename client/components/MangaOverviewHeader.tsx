@@ -10,7 +10,6 @@ import { addToCustomList, getCustomLists } from "@/services/custom_lists";
 import ThemeButton from "./ThemeButton";
 import Toast from "react-native-toast-message";
 import { getMangaStatus, updateMangaStatus } from "@/services/media_entry.service";
-import { AuthContext } from "@/context/AuthContext";
 import { ThemeDropdown } from "./ThemeDropdown";
 
 
@@ -19,11 +18,9 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 	const theme = useTheme()
 	const [optionsVisible, setOptionsVisible] = useState(false)
 	const [isCreatingNewList, setCreatingNewList] = useState(false)
-	const { anilistToken } = useContext(AuthContext)
 	const [lists, setLists] = useState<(ICustomList & {isInList: boolean})[]>([])
 	const [status, setStatus] = useState<string>("")
 	const [statusOpen, setStatusOpen] = useState<boolean>(false)
-	const [statusFetched, setStatusFetched] = useState<boolean>(false)
 
 	
 	const addIsInListData = useCallback((lists: ICustomLists) => {
@@ -78,6 +75,19 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 		}
 	};
 
+	const handleCreateEntry = async () => {
+		if (!manga?.mangaId) return;
+		const result = await updateMangaStatus(manga.mangaId.toString(), 'PLANNING', undefined);
+		if (result.success && result.data)
+		{
+			setStatus(result.data.status || 'PLANNING');
+		}
+		else
+		{
+			Toast.show({ type: 'error', text1: 'Could not add to library' });
+		}
+	};
+
 	const toggleList = async (listId: string) => {
 		const targetList = lists.find((list) => list._id === listId)
 		if (targetList !== undefined)
@@ -127,6 +137,12 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 						style={styles.mangaCoverImage}
 					/>
 					<View style={{flexDirection: 'row', alignItems: 'center'}}>
+					{!status ? 
+						<ThemeButton mode="contained" onPress={handleCreateEntry} style={{minWidth:150, marginTop:6}}>
+							add to library
+						</ThemeButton>
+						:
+						<>
 						<View>
 							<ThemeDropdown
 								value={status}
@@ -195,13 +211,14 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 								onPress={() => {setOptionsVisible(false);setCreatingNewList(true);}} title={'new list'} leadingIcon={'plus'}
 							/>
 						</Menu>
+						</>
+					}					
 					</View>
 				</View>
 				<View style={{ flex: 1, marginHorizontal: 10 }}>
 					<View style={styles.titleDetailsContainer}>
 						<ThemeText style={styles.title} variant="titleLarge">{getMangaTitle(manga)}</ThemeText>
 					</View>
-					
 					<ReadMore
 						numberOfLines={5}
 						renderTruncatedFooter={_renderTruncatedFooter}
