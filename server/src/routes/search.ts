@@ -144,7 +144,7 @@ router.get('/', AuthenticateMiddleware, async (req: Request, res: Response) => {
 			if (mangaData?.data?.Page?.media) {
 				searchResults.manga = mangaData.data.Page.media.map((manga: any) => ({
 					...manga,
-					inLibrary: mangaIdsInLib.includes(String(manga.id)) ?? false
+					inLibrary: mangaIdsInLib.includes(manga.id) ?? false
 				}));
 			}
 		} catch (err) {
@@ -253,7 +253,7 @@ router.get('/:category', AuthenticateMiddleware, async (req: Request, res: Respo
 				const mangaIdsInLib = await getMangaInLibrary(userId);
 				items = mangaData.data.Page.media.map((manga: any) => ({
 					...manga,
-					inLibrary: mangaIdsInLib.includes(String(manga.id)) ?? false
+					inLibrary: mangaIdsInLib.includes(manga.id) ?? false
 				}));
 				total = mangaData.data.Page.pageInfo?.total || 0;
 			}
