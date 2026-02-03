@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
 import crypto from "crypto";
-import { ApiCache } from "./models/cache.model";
+import { ApiCache, IApiCache } from "./models/cache.model";
 
 const ANILIST_URL = "https://graphql.anilist.co";
 
@@ -14,6 +14,19 @@ function makeCacheKey(query: string, variables: Record<string, any>, authorizati
   return crypto.createHash("sha1").update(raw).digest("hex");
 }
 
+export async function getCache(query: string, variables: Record<string, any>, authorization?: string) : Promise<IApiCache | null>
+{
+	const key = makeCacheKey(query, variables, authorization);
+
+	// Check MongoDB cache first
+	const cached = await ApiCache.findOne({
+		key,
+		expiresAt: { $gt: new Date() }
+	});
+
+	return cached;
+}
+
 export async function anilistRequest(
   query: string,
   variables: Record<string, any> = {},
@@ -23,7 +36,7 @@ export async function anilistRequest(
 	const key = makeCacheKey(query, variables);
 
 	// Check MongoDB cache first
-	const cached = await ApiCache.findOne({ key });
+	const cached = await getCache(query, variables);
 	if (cached) {
 		return cached.data;
 	}
@@ -42,13 +55,17 @@ export async function anilistRequest(
 
 	const data = await res.json();
 
-	await ApiCache.deleteMany({ key });
-	// Save to cache
-	await ApiCache.create({
-		key,
-		data,
-		expiresAt: new Date(Date.now() + ttl * 1000)
-	});
+	// Create or update current cache with the same key
+	await ApiCache.updateOne(
+		{ key },
+		{
+			$set: {
+				data,
+				expiresAt: new Date(Date.now() + ttl * 1000),
+			},
+		},
+		{ upsert: true }
+	);
 
 	return data;
 }
@@ -63,7 +80,7 @@ export async function anilistAuthenticatedRequest(
 	const key = makeCacheKey(query, variables, access_token);
 
 	// Check MongoDB cache first
-	const cached = await ApiCache.findOne({ key });
+	const cached = await getCache(query, variables, access_token);
 	if (cached) {
 		return cached.data;
 	}
@@ -87,13 +104,17 @@ export async function anilistAuthenticatedRequest(
 
 	const data = await res.json();
 
-	await ApiCache.deleteMany({ key });
-	// Save to cache
-	await ApiCache.create({
-		key,
-		data,
-		expiresAt: new Date(Date.now() + ttl * 1000)
-	});
+	// Create or update current cache with the same key
+	await ApiCache.updateOne(
+		{ key },
+		{
+			$set: {
+				data,
+				expiresAt: new Date(Date.now() + ttl * 1000),
+			},
+		},
+		{ upsert: true }
+	);
 
 	return data;
 }
