@@ -1,7 +1,7 @@
 import express, { Router, Request, Response } from 'express';
 import AuthenticateMiddleware from '../middleware/Authentication';
 import { MEDIA_LIST_STATUSES, USER_MEDIA_ENTRY_MUTATION, USER_MEDIA_ENTRY_QUERY, UserMediaEntry } from '../models/user_media_status.model';
-import { anilistAuthenticatedRequest } from '../Utility';
+import { anilistAuthenticatedRequest, getCache } from '../Utility';
 import { User } from '../models/user.model';
 
 const router: Router = Router();
@@ -14,9 +14,9 @@ router.get(`/`, AuthenticateMiddleware, async (req: Request, res: Response) =>
 	const userId = req.user?.id
 	const { mangaId } = req.query
 	const entry = await UserMediaEntry.findOne({ userId, mangaId });
+	const user = await User.findById(userId);
 	if (!entry)
 	{
-		const user = await User.findById(userId);
 		if (user?.anilist_token)
 		{
 			const result = await anilistAuthenticatedRequest(USER_MEDIA_ENTRY_QUERY, { id: mangaId }, user.anilist_token as string, 3600);
@@ -29,6 +29,7 @@ router.get(`/`, AuthenticateMiddleware, async (req: Request, res: Response) =>
 				mangaId,
 				userId
 			});
+			anilistEntry.save()
 			return res.status(200).json(anilistEntry)
 		}
 		else
@@ -38,6 +39,31 @@ router.get(`/`, AuthenticateMiddleware, async (req: Request, res: Response) =>
 	}
 	else
 	{
+		// if anilist is linked, sync its data to ours
+		if (user?.anilist_token)
+		{ // determines if cache has expires. if yes, overwrite current entry with anilist data
+			const cached = await getCache(USER_MEDIA_ENTRY_QUERY, { id: mangaId }, user?.anilist_token);
+			if (!cached)
+			{
+				const result = await anilistAuthenticatedRequest(USER_MEDIA_ENTRY_QUERY, { id: mangaId }, user.anilist_token as string, 3600);
+				if (result.data.Media.mediaListEntry == null) // TODO: make sure this means deleted
+				{
+					await entry.deleteOne()
+					return res.status(200).json(null)
+				}
+				else
+				{
+					const newAnilistEntry = result.data.Media.mediaListEntry
+					if (newAnilistEntry)
+					{
+						entry.status = newAnilistEntry.status
+						entry.score = newAnilistEntry.score
+					}
+					entry.save()
+				}
+			}
+
+		}
 		return res.status(200).json(entry)
 	}
 })

@@ -29,10 +29,6 @@ export default function SearchCategoryPage() {
 	const [categoryOpen, setCatergoryOpen] = React.useState<boolean>(false);
 	const [categoryCB, setCategoryCB] = React.useState<string>(category as string ?? "manga");
 	
-	const onCategoryChangeCallback = React.useCallback((current: any) => {
-		return {...current, count: 1}
-	}, []);
-
 	const onCategoryChange: React.Dispatch<React.SetStateAction<string>> = (action) => {
 		let nextValue = "";
 		setCategoryCB(prev => {

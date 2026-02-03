@@ -49,27 +49,34 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 	const fetchStatus = useCallback(async () => {
 		if (manga?.mangaId)
 		{
-			const result = await getMangaStatus(manga.mangaId.toString(), anilistToken ? anilistToken : undefined);
+			const result = await getMangaStatus(manga.mangaId.toString());
 			if (result.success && result.data != null)
 			{
 				setStatus(result.data.status)
-				setStatusFetched(true)
 			}
 		}
 	}, [])
 
-	const handleStatusChange = async (val?: any) => {
+	const handleStatusChange: React.Dispatch<React.SetStateAction<string>> = async (action) => {
+		let value = "";
+		setStatus(prev => {
+			const next = typeof action === 'function' ? (action as (prev: string) => string)(prev) : action;
+			value = next;
+			return next;
+		});
+
 		if (!manga?.mangaId) return;
-		const newStatus = val ?? '';
-		const previous = status;
-		setStatus(newStatus);
+		const newStatus = value ?? '';
 		const result = await updateMangaStatus(manga.mangaId.toString(), newStatus, undefined);
 		if (!result.success)
 		{
-			setStatus(previous);
 			Toast.show({ type: 'error', text1: 'Could not update manga status' });
 		}
-	}
+		else
+		{
+			setStatus(newStatus);
+		}
+	};
 
 	const toggleList = async (listId: string) => {
 		const targetList = lists.find((list) => list._id === listId)
@@ -88,14 +95,6 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 			}
 		}
 	}
-
-	useEffect(() => {
-		if (statusFetched)
-		{
-			console.log('testtt')
-			handleStatusChange(status)
-		}
-	}, [status, statusFetched])
 	
 	useEffect(() => {
 		fetchLists();
@@ -131,7 +130,7 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 						<View>
 							<ThemeDropdown
 								value={status}
-								setValue={setStatus}
+								setValue={handleStatusChange}
 								items={[
 									{
 										value: 'CURRENT',
