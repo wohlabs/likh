@@ -5,6 +5,7 @@ export const USER_MEDIA_ENTRY_QUERY = `
 		Media(id: $id, type: MANGA) {
 			mediaListEntry {
 				id
+				mediaId
 				status
 				score
 			}
@@ -12,7 +13,22 @@ export const USER_MEDIA_ENTRY_QUERY = `
 	}`;
 
 export const USER_MEDIA_ENTRY_MUTATION = `
-	mutation GetUserMediaEntry($id: Int) {
+	mutation GetUserMediaEntry(
+		$id: Int
+		$mediaId: Int
+		$status: MediaListStatus
+		$score: Float
+		$progress: Int
+		$progressVolumes: Int
+		$repeat: Int
+		$private: Boolean
+		$notes: String
+		$customLists: [String]
+		$hiddenFromStatusLists: Boolean
+		$advancedScores: [Float]
+		$startedAt: FuzzyDateInput
+		$completedAt: FuzzyDateInput
+	) {
 		SaveMediaListEntry(
 			id: $id
 			mediaId: $mediaId
@@ -28,57 +44,12 @@ export const USER_MEDIA_ENTRY_MUTATION = `
 			advancedScores: $advancedScores
 			startedAt: $startedAt
 			completedAt: $completedAt
-		  ) {
+		) {
 			id
 			mediaId
 			status
 			score
-			advancedScores
-			progress
-			progressVolumes
-			repeat
-			priority
-			private
-			hiddenFromStatusLists
-			customLists
-			notes
-			updatedAt
-			startedAt {
-			  year
-			  month
-			  day
-			}
-			completedAt {
-			  year
-			  month
-			  day
-			}
-			user {
-			  id
-			  name
-			}
-			media {
-			  id
-			  title {
-				userPreferred
-			  }
-			  coverImage {
-				large
-			  }
-			  type
-			  format
-			  status
-			  episodes
-			  volumes
-			  chapters
-			  averageScore
-			  popularity
-			  isAdult
-			  startDate {
-				year
-			  }
-			}
-		  }
+		}
 	}`;
 
 export type IUserMediaStatus = "CURRENT" | "PLANNING" | "COMPLETED" | "DROPPED" | "PAUSED" | "REPEATING";

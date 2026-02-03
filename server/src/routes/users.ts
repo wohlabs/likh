@@ -5,6 +5,8 @@ import jwt from 'jsonwebtoken'
 import { IUser, User } from '../models/user.model';
 import { CustomList } from '../models/custom_list.model';
 import { getMangaIdsWithNotes } from './anilist';
+import { IUserMediaEntry, USER_MEDIA_ENTRY_MUTATION, UserMediaEntry } from '../models/user_media_status.model';
+import { anilistAuthenticatedRequest } from '../Utility';
 
 const router: Router = Router();
 
@@ -87,27 +89,20 @@ router.post('/me/anilist/link', AuthenticateMiddleware, async (req: Request, res
 	}
 })
 
-export async function getMangaInLibrary(userId: string)
+export async function getMangaInLibrary(userId: string) : Promise<Array<number>>
 {
-		const user: IUser | null = await User.findById(userId).exec();
-		const mangaIdsWithNotes = await getMangaIdsWithNotes(userId);
-		const libMangaIds: Set<string> = new Set()
-		if (user !== null)
-		{
-			for (const mangaId of user?.manga)
-			{
-				libMangaIds.add(mangaId)
-			}
-			for (const mangaId of mangaIdsWithNotes)
-			{
-				libMangaIds.add(mangaId)
-			}
-			return Array.from(libMangaIds)
-		}
-		else
-		{
-			throw "User not found"
-		}
+	const mangaIdsWithNotes = await getMangaIdsWithNotes(userId);
+	const libMangaIds: Set<number> = new Set()
+	const entries = await UserMediaEntry.find({ userId }).select('mangaId');
+	for (const entry of entries)
+	{
+		libMangaIds.add(entry.mangaId)
+	}
+	for (const mangaId of mangaIdsWithNotes)
+	{
+		libMangaIds.add(Number(mangaId))
+	}
+	return Array.from(libMangaIds)
 }
 
 // get manga from user's collection
@@ -128,32 +123,71 @@ router.get(`/me/manga`, AuthenticateMiddleware, async (req: Request, res: Respon
 	}
 })
 
+export async function addMangaToLibrary(userId: string, mangaId: number) : Promise<IUserMediaEntry>
+{
+	const user = await User.findById(userId);
+	if (!user) // unlikely. throw excception because user doesn't exist to have a manga
+	{
+		throw Error("User not found")
+	}
+
+	let anilistEntry = null;
+	if (user?.anilist_token)
+	{
+		const anilistResult = await anilistAuthenticatedRequest(USER_MEDIA_ENTRY_MUTATION, { mediaId: mangaId }, user.anilist_token as string, 3600);
+		anilistEntry = anilistResult.data.SaveMediaListEntry
+		if (anilistEntry == null)
+		{
+			throw Error("Could not update anilist")
+		}
+	}
+
+	const entry = await UserMediaEntry.findOne({ userId, mangaId });
+	if (entry) // unexpected to happen. at most it will update itself to match anilist
+	{
+		if (anilistEntry)
+		{
+			entry.status = anilistEntry.status;
+			entry.score = anilistEntry.score;
+			entry.save();
+		}
+		return entry;
+	}
+	else
+	{
+		const newEntry = new UserMediaEntry({
+			userId,
+			mangaId
+		});
+		if (anilistEntry)
+		{
+			newEntry.status = anilistEntry.status;
+			newEntry.score = anilistEntry.score;
+		}
+		newEntry.save();
+		return newEntry;
+	}
+}
+
 // add a manga to collection
 router.post(`/me/manga`, AuthenticateMiddleware, async (req: Request, res: Response) =>
 {
 	const userId = req.user?.id
-	const { mangaId } = req.body
+	const { mangaId } : any = req.body;
 	try
 	{
-		const user: IUser | null = await User.findById(userId).exec();
-		if (user?.manga.indexOf(mangaId) === -1)
+		if (userId && mangaId)
 		{
-			user.manga.push(mangaId)
-			user.save()
-			res.status(200).json(user)
-		}
-		else if (!user)
-		{
-			res.sendStatus(404)
+			return res.status(200).json(addMangaToLibrary(userId, mangaId))
 		}
 		else
 		{
-			res.status(200).json(user)
+			return res.status(400).json("Invalid request")
 		}
 	}
-	catch
+	catch (err: any)
 	{
-		res.sendStatus(404)
+		return res.status(500).json({ error: err?.message || `Failed to update entry` });
 	}
 })
 

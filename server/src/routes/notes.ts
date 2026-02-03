@@ -8,6 +8,7 @@ import { getErrorMessage } from '../Utility';
 import { IUser, User } from '../models/user.model';
 import { INote, Note } from '../models/note.model';
 import { getAnilistNote } from './anilist';
+import { addMangaToLibrary } from './users';
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
@@ -21,8 +22,14 @@ router.post(`/`, upload.array('images', 10), AuthenticateMiddleware, async (req:
 {
 	const userId = req.user?.id;
 	const { mangaId, startChapter, endChapter, text } = req.body
+
+	if (!userId) return res.status(400).json('Invalid request')
+	const user: IUser | null = await User.findById(userId).exec();
+	if (!user) return res.status(400).json('User not found')
 	// invalid note entry
 	if ((!req.files || req.files.length == 0) && !text) return res.status(400).json('Invalid note')
+
+	await addMangaToLibrary(userId, mangaId);
 
 	const imageIds: Types.ObjectId[] = [];
 	try
@@ -66,13 +73,6 @@ router.post(`/`, upload.array('images', 10), AuthenticateMiddleware, async (req:
 		return res.status(500).json({ error: getErrorMessage(err) })
 	}
 
-	const user: IUser | null = await User.findById(userId).exec();
-	if (user?.manga.indexOf(mangaId) === -1)
-	{
-		user.manga.push(mangaId)
-		user.save()
-	}
-
 	const newNote: INote = new Note(
 		{
 			userId,
@@ -84,7 +84,7 @@ router.post(`/`, upload.array('images', 10), AuthenticateMiddleware, async (req:
 		}
 	);
 	await newNote.save()
-	res.json(newNote)
+	return res.json(newNote)
 })
 
 // edit note
