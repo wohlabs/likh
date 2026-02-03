@@ -19,7 +19,8 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 	const [isCreatingNewList, setCreatingNewList] = useState(false)
 	const { anilistToken } = useContext(AuthContext)
 	const [lists, setLists] = useState<(ICustomList & {isInList: boolean})[]>([])
-	const [status, setStatus] = useState<string>("add to library")
+	const [status, setStatus] = useState<string>("")
+
 	
 	const addIsInListData = useCallback((lists: ICustomLists) => {
 		return lists.map((list: any) => {

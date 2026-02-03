@@ -1,86 +1,19 @@
-import * as React from "react";
-import { ScrollView, Pressable, View, LayoutChangeEvent, StyleProp, ViewStyle, TextStyle } from "react-native";
-import { Menu, TextInput, useTheme } from "react-native-paper";
+import { useTheme } from "react-native-paper";
+import DropDownPicker, { DropDownPickerProps } from 'react-native-dropdown-picker';
+import { DimensionValue } from "react-native";
 
-export type DropdownItem<T = string> = {
-	label: string;
-	value: T;
-};
+export function ThemeDropdown(
+	props: DropDownPickerProps<any> & {height?: DimensionValue}
 
-type ThemeDropdownProps<T = string> = {
-	label: string;
-	hideLabel?: boolean;
-	value: T | null;
-	onChange: (value: T) => void;
-	items: DropdownItem<T>[];
-	style?: StyleProp<TextStyle>
-	mode?: 'flat' | 'outlined';
-};
-
-export function ThemeDropdown<T>({
-	label,
-	value,
-	onChange,
-	items,
-	style,
-	hideLabel = false,
-	mode = 'outlined'
-}: ThemeDropdownProps<T>) {
-	const [visible, setVisible] = React.useState(false);
-	const [anchorWidth, setAnchorWidth] = React.useState(0);
-	const theme = useTheme()
-
-	const selectedLabel = items.find((item) => item.value === value)?.label ?? "";
-
-	const onLayout = (e: LayoutChangeEvent) => {
-		setAnchorWidth(e.nativeEvent.layout.width);
-	};
-
-	return (
-		<Menu
-			visible={visible}
-			onDismiss={() => setVisible(false)}
-			contentStyle={{ width: anchorWidth }}
-			anchorPosition="bottom"
-			anchor={
-				<Pressable onPress={() => setVisible(true)} onLayout={onLayout}>
-					<TextInput
-						label={hideLabel ? undefined : label}
-						value={selectedLabel}
-						mode={mode}
-						editable={false}
-						pointerEvents="none"
-						underlineColor="transparent"
-						outlineStyle={{borderWidth: 2}}
-						outlineColor="red"
-						contentStyle={{margin: 0}}
-						style={[{
-							borderRadius: 10,
-							borderWidth: 1,
-							borderTopLeftRadius: 10,
-							borderTopRightRadius: 10,
-							borderColor: theme.colors.outline
-						}, style]}
-						right={<TextInput.Icon icon="menu-down"
-							onPress={() => setVisible(true)}
-						/>}
-					/>
-				</Pressable>
-			}
-		>
-			<ScrollView>
-				{items.map((item) => (
-					<Menu.Item
-						key={String(item.value)}
-						title={item.label}
-						style={{ width: anchorWidth }}
-						onPress={() => {
-							onChange(item.value);
-							setVisible(false);
-						}}
-					/>
-				))}
-			</ScrollView>
-		</Menu>
-	);
+) {
+	const theme = useTheme();
+	return <DropDownPicker
+		theme={theme.dark ? "DARK" : "LIGHT"}
+		style={{minWidth: 150, backgroundColor: theme.colors.surfaceVariant, borderColor: theme.colors.outline, height: props.height}}
+		containerStyle={{height: props.height}}
+		dropDownContainerStyle={{borderColor: theme.colors.outline}}
+		textStyle={{...theme.fonts.labelLarge, color: theme.colors.onSurfaceVariant, padding: 0}}
+		listItemContainerStyle={{backgroundColor: theme.colors.surfaceVariant, borderColor: theme.colors.outline}}
+		{...props}
+	/>;
 }

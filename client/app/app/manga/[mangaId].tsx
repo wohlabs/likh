@@ -80,6 +80,7 @@ export default function MangaDetails()
 	const [loading, setLoading] = useState<boolean>(true);
 	const [sortByValue, setSortByValue] = useState<string>("chapter");
 	const [sortAscending, setSortAscending] = useState<boolean>(true);
+	const [sortOpen, setSortOpen] = useState(false);
 	const anilist_token: string = useContext(AuthContext).anilistToken || ""
 	
 	// Optional: Clear the error from the URL so it doesn't persist on refresh
@@ -204,31 +205,31 @@ export default function MangaDetails()
 						</View>
 						:
 						<>
-							<View style={{flexDirection: 'row-reverse', alignItems: 'center'}}>
+							<View style={{flexDirection: 'row-reverse', alignItems: 'center', zIndex: 2}}>
 								<IconButton icon={sortAscending ? "sort-ascending" : "sort-descending"} onPress={() => setSortAscending(!sortAscending)}/>
-								<ThemeDropdown
-									label="Sort by"
-									hideLabel={true}
-									value={sortByValue}
-									style={{maxWidth: 200, height: 40}}
-									items={[
-										{
-											label: "date created",
-											value: "date created"
-										},
-										{
-											label: "date modified",
-											value: "date modified"
-										},
-										{
-											label: "chapter",
-											value: "chapter"
-										}
-									]}
-									onChange={setSortByValue}
-									mode='flat'
-								/>
-								<ThemeText variant="titleMedium" style={{margin:0, marginHorizontal: 5}}>
+								<View>
+									<ThemeDropdown
+										value={sortByValue}
+										setOpen={setSortOpen}
+										open={sortOpen}
+										items={[
+											{
+												label: "date created",
+												value: "date created"
+											},
+											{
+												label: "date modified",
+												value: "date modified"
+											},
+											{
+												label: "chapter",
+												value: "chapter"
+											}
+										]}
+										setValue={setSortByValue}
+									/>
+								</View>
+								<ThemeText variant="labelLarge" style={{margin:0, marginHorizontal: 5}}>
 									Sort by
 								</ThemeText>
 							</View>

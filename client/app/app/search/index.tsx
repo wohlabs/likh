@@ -26,8 +26,25 @@ export default function SearchCategoryPage() {
 	const [hasMore, setHasMore] = useState<boolean>(true);
 	const [searchQuery, setSearchQuery] = useState(query as string || '');
 	const flatListRef = useRef<FlatList>(null);
-  const [showDropDown, setShowDropDown] = React.useState<boolean>(false);
-  const [categoryCB, setCategoryCB] = React.useState<string>(category as string ?? "manga");
+	const [categoryOpen, setCatergoryOpen] = React.useState<boolean>(false);
+	const [categoryCB, setCategoryCB] = React.useState<string>(category as string ?? "manga");
+	
+	const onCategoryChangeCallback = React.useCallback((current: any) => {
+		return {...current, count: 1}
+	}, []);
+
+	const onCategoryChange: React.Dispatch<React.SetStateAction<string>> = (action) => {
+		let nextValue = "";
+		setCategoryCB(prev => {
+			const next = typeof action === 'function' ? (action as (prev: string) => string)(prev) : action;
+			nextValue = next;
+			return next;
+		});
+		router.replace({ 
+			pathname: '/app/search',
+			params: { category: nextValue, query: searchQuery }
+		})
+	};
 
 	
 	const CATEGORY_OPTIONS = [
@@ -194,20 +211,18 @@ export default function SearchCategoryPage() {
 	return (
 		<>
 			<View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-				<View style={styles.searchBarContainer}>
-					<ThemeDropdown
-						label="category"
-						value={categoryCB}
-						items={CATEGORY_OPTIONS}
-						onChange={(cat: string) => {
-							setCategoryCB(cat)
-							router.replace({ 
-								pathname: '/app/search',
-								params: { category: cat, query: searchQuery }
-							})
-						}}
-						mode='flat'
-					/>
+				<View style={[styles.searchBarContainer, {zIndex: 2}]}>
+					<View style={{height: '100%'}}>
+						<ThemeDropdown
+							value={categoryCB}
+							items={CATEGORY_OPTIONS}
+							multiple={false}
+							setValue={onCategoryChange}
+							open={categoryOpen}
+							setOpen={setCatergoryOpen}
+							height={"100%"}
+						/>
+					</View>
 					<ThemeSearchbar
 						placeholder={`Search ${getCategoryTitle().toLowerCase()}...`}
 						onChangeText={setSearchQuery}
