@@ -54,10 +54,8 @@ router.post(`/`, AuthenticateMiddleware, async (req: Request, res: Response) =>
 		let anilistEntry = null;
 		if (user?.anilist_token)
 		{
-			console.log(status, score, mangaId)
 			const anilistResult = await anilistAuthenticatedRequest(USER_MEDIA_ENTRY_MUTATION, { mediaId: mangaId, status, score }, user.anilist_token as string, 3600);
-			console.log(anilistResult)
-			anilistEntry = anilistResult.data.Media.SaveMediaListEntry
+			anilistEntry = anilistResult.data.SaveMediaListEntry
 			if (anilistEntry == null)
 			{
 				throw Error("Could not update anilist")
@@ -68,7 +66,6 @@ router.post(`/`, AuthenticateMiddleware, async (req: Request, res: Response) =>
 		{
 			entry.status = status // assuming anilist value is the same
 			entry.score = score // assuming anilist value is the same
-			console.log(entry)
 			entry.save();
 			return res.json(entry);
 		}
@@ -85,7 +82,6 @@ router.post(`/`, AuthenticateMiddleware, async (req: Request, res: Response) =>
 				newEntry.status = status
 				newEntry.score = score
 			}
-			console.log(newEntry)
 			newEntry.save()
 			return res.json(newEntry)
 		}
