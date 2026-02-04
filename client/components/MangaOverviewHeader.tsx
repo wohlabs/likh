@@ -186,6 +186,7 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 									multiple={false}
 									listMode="FLATLIST"
 									maxHeight={300}
+									style={{minWidth: 100, backgroundColor: theme.colors.surfaceVariant, borderColor: theme.colors.outline}}
 								/>
 							</View>
 							<Menu
