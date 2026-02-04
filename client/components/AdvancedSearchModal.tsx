@@ -10,6 +10,7 @@ import {
 	ViewStyle,
 	useWindowDimensions,
 } from 'react-native';
+import { BlurView } from "expo-blur";
 import { Card, IconButton, useTheme } from 'react-native-paper';
 import ThemeText from '@/components/ThemeText';
 import ThemeSearchbar from '@/components/ThemeSearchbar';
@@ -160,10 +161,27 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 
 	return (
 		<Pressable
-			style={{width: '100%', height: '100%', position: 'absolute', top: 0, left: 0, backgroundColor: isAdvancedSearching ? hexToRgba(modernDarkTheme.colors.background, 0.6) : 'transparent'}}
+			style={{width: '100%', height: '100%', position: 'absolute', top: 0, left: 0}}
 			onPress={() => setIsAdvancedSearching(false)}
 			pointerEvents={isAdvancedSearching ? 'auto' : 'none'}
 		>
+			{
+				isAdvancedSearching
+				&&
+				<BlurView
+					style={{
+						position: 'absolute',
+						width: '100%',
+						height: '100%',
+					}}
+					pointerEvents='none'
+					focusable={false}
+					tint='dark'
+					intensity={10}
+				>
+					<View style={{ backgroundColor: `${hexToRgba(theme.colors.backdrop, 0.3)}`, height: '100%', width: '100%' }}/>
+				</BlurView>
+			}
 			<Pressable style={[styles.searchBarFloating]} onPress={(e) => e.stopPropagation()} pointerEvents='none'>
 				<View
 					style={[
@@ -279,7 +297,7 @@ const styles = StyleSheet.create({
 		width: '100%'
 	},
 	searchBarFloating: {
-		width: "50%", minWidth: 350, position: "absolute", bottom: 25, flexDirection: "column", alignItems: "center", justifyContent: 'center', pointerEvents: 'none', alignContent: 'center', alignSelf: 'center'
+		width: "50%", minWidth: 350, position: "absolute", bottom: 25, flexDirection: "column", alignItems: "center", justifyContent: 'center', pointerEvents: 'none', alignContent: 'center', alignSelf: 'center', zIndex: 20
 	},
 	searchBar: {marginHorizontal: 10, marginVertical: 5, height: 60, borderRadius: 10, flex: 1, boxShadow: "0px 4px 5px rgba(0,0,0,0.3)", width: '100%' },
 	header: {
