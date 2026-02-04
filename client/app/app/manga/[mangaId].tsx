@@ -100,8 +100,9 @@ export default function MangaDetails()
 	const [isDropActive, setIsDropActive] = useState(false);
 	const token = useContext(AuthContext).token
 
-const pasteImageFromClipboard = async () => {
+const pasteImageFromClipboard = useCallback(async () => {
 	try {
+		console.log('pasting')
 		const pastedImage = await Clipboard.getImageAsync(({format: "png", jpegQuality: 1}));
 		if (!pastedImage) return null;
 
@@ -119,7 +120,7 @@ const pasteImageFromClipboard = async () => {
 	} catch (err) {
 		console.warn('clipboard paste failed', err);
 	}
-}
+}, [addImages])
 
 async function isImageUrl(url: string) {
 	try {
@@ -218,27 +219,18 @@ const handleDrop = useCallback(async (e: React.DragEvent<HTMLDivElement>) => {
 
 		// Detect dragging over the window to activate the overlay so it can receive the drop
 		useEffect(() => {
-			const onWindowDragEnter = (e: DragEvent) => {
-				setIsDropActive(true);
-			};
-			const onWindowDragLeave = (e: DragEvent) => {
-				// small delay to avoid flicker when moving between elements
-				setTimeout(() => setIsDropActive(false), 50);
-			};
 			const onWindowDrop = async (e: DragEvent) => {
 				e.preventDefault();
 				setIsDropActive(false);
 				await handleDrop((e as unknown) as React.DragEvent<HTMLDivElement>);
 			};
 
-			window.addEventListener('dragenter', onWindowDragEnter as unknown as EventListener);
-			window.addEventListener('dragleave', onWindowDragLeave as unknown as EventListener);
 			window.addEventListener('drop', onWindowDrop as unknown as EventListener);
+			window.addEventListener('paste', pasteImageFromClipboard as unknown as EventListener);
 
 			return () => {
-				window.removeEventListener('dragenter', onWindowDragEnter as unknown as EventListener);
-				window.removeEventListener('dragleave', onWindowDragLeave as unknown as EventListener);
 				window.removeEventListener('drop', onWindowDrop as unknown as EventListener);
+				window.removeEventListener('paste', pasteImageFromClipboard as unknown as EventListener);
 			};
 		}, [addImages]);
 	}
@@ -413,9 +405,10 @@ const handleDrop = useCallback(async (e: React.DragEvent<HTMLDivElement>) => {
 					{/* Inline add-note / status input (social-media style) */}
 					<View style={[styles.addNoteContainer, {borderColor: theme.colors.outlineVariant}] }>
 						{Platform.OS === 'web' && isAddingNote && (
-						<div
-							{...(dropZoneRootProps ? dropZoneRootProps() : {})}
-							onPaste={pasteImageFromClipboard} // not currently working
+
+						<div {...dropZoneRootProps()}
+							onPaste={pasteImageFromClipboard}
+							onDrop={handleDrop}
 							style={{position: 'absolute', width: '100%', height: '100%', zIndex: 2, pointerEvents: isDropActive ? 'auto' : 'none', backgroundColor: isDropActive ? 'rgba(0,0,0,0.03)' : 'transparent'}}
 						/>
 					)}
