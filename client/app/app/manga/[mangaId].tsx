@@ -402,7 +402,7 @@ const handleDrop = useCallback(async (e: React.DragEvent<HTMLDivElement>) => {
 						{Platform.OS === 'web' && isAddingNote && (
 						<div
 							{...(dropZoneRootProps ? dropZoneRootProps() : {})}
-							// onPaste={pasteImageFromClipboard}
+							onPaste={pasteImageFromClipboard} // not currently working
 							style={{position: 'absolute', width: '100%', height: '100%', zIndex: 2, pointerEvents: isDropActive ? 'auto' : 'none', backgroundColor: isDropActive ? 'rgba(0,0,0,0.03)' : 'transparent'}}
 						/>
 					)}
