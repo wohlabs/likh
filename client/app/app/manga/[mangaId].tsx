@@ -8,6 +8,9 @@ import { Button, Icon, IconButton, Menu, Modal, Portal, useTheme, TextInput } fr
 import * as ImagePicker from "expo-image-picker";
 import { API_URL } from "@/services/AxiosInstance";
 import { File } from 'expo-file-system';
+import { useDropzone } from "react-dropzone";
+import * as Clipboard from 'expo-clipboard';
+import { blobToBase64 } from "@/components/util";
 import ReanimatedSwipeable, { SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
 import Reanimated, { SharedValue, useAnimatedStyle } from "react-native-reanimated";
 import { AuthContext } from "@/context/AuthContext";
@@ -93,7 +96,139 @@ export default function MangaDetails()
 	const [addImages, setAddImages] = useState<ImagePicker.ImagePickerAsset[]>([]);
 	const [addCurrentImageIndex, setAddCurrentImageIndex] = useState<number>(0);
 	const [newStartChapter, setNewStartChapter] = useState<string>("");
-	const [newEndChapter, setNewEndChapter] = useState<string>("");
+	const [newEndChapter, setNewEndChapter] = useState<string>("");let dropZoneRootProps: any = null;
+	const [isDropActive, setIsDropActive] = useState(false);
+	const token = useContext(AuthContext).token
+
+const pasteImageFromClipboard = async () => {
+	try {
+		const pastedImage = await Clipboard.getImageAsync(({format: "png", jpegQuality: 1}));
+		if (!pastedImage) return null;
+
+		const image: ImagePicker.ImagePickerAsset = {
+			uri: pastedImage.data,
+			type: 'image',
+			fileName: `clipboard_${Date.now()}.png`,
+			width: pastedImage.size?.width ?? 0,
+			height: pastedImage.size?.height ?? 0,
+		};
+
+		const newImgs = [...addImages, image];
+		setAddImages(newImgs);
+		setAddCurrentImageIndex(newImgs.length - 1);
+	} catch (err) {
+		console.warn('clipboard paste failed', err);
+	}
+}
+
+async function isImageUrl(url: string) {
+	try {
+		const res = await fetch(url, { method: "HEAD" });
+		const type = res.headers.get("content-type");
+		return type?.startsWith("image/");
+	} catch {
+		return false;
+	}
+}
+
+async function handleDroppedImageAsString(item: DataTransferItem): Promise<ImagePicker.ImagePickerAsset | null> {
+	return new Promise((resolve) => {
+		if (!item) return resolve(null);
+
+		item.getAsString(async (dataUrl) => {
+			if (!dataUrl) return resolve(null);
+			const isImageUrlFlag = await isImageUrl(dataUrl);
+			if (!isImageUrlFlag) return resolve(null);
+
+			const res = await fetch(dataUrl);
+			const blob = await res.blob();
+			const base64 = await blobToBase64(blob);
+
+			const extension = blob.type.split("/")[1] || "png";
+			const fileName = `dropped-image.${extension}`;
+
+			const imageAsset: ImagePicker.ImagePickerAsset = {
+				uri: base64,
+				fileName: fileName,
+				type: "image"
+			} as ImagePicker.ImagePickerAsset;
+
+			resolve(imageAsset);
+		});
+	});
+}
+
+const handleDrop = useCallback(async (e: React.DragEvent<HTMLDivElement>) => {
+	e.preventDefault();
+
+	const { files, items } = e.dataTransfer;
+	let newImages = [...addImages];
+	let refresh = false
+	for (const file of files) {
+		if (file.type && file.type.startsWith("image/")) {
+			const image: ImagePicker.ImagePickerAsset = {
+				uri: URL.createObjectURL(file),
+				type: file.type,
+				fileName: file.name,
+				fileSize: file.size
+			} as ImagePicker.ImagePickerAsset;
+			newImages = [...newImages, image];
+			refresh = true
+		}
+	}
+
+	for (const item of items) {
+		if (item.type === "text/uri-list") {
+			const asset = await handleDroppedImageAsString(item);
+			if (asset === null) continue;
+			newImages = [...newImages, asset];
+			refresh = true
+		}
+	}
+
+	if (refresh)
+	{
+		setAddImages(newImages);
+		setAddCurrentImageIndex(newImages.length - 1);
+	}
+}, [addImages])
+
+	if (Platform.OS === "web") {
+		const { getRootProps } = useDropzone({
+			accept: { "image/*": []},
+			multiple: true,
+			noClick: true,
+			useFsAccessApi: true,
+			noKeyboard: true
+		});
+		dropZoneRootProps = getRootProps;
+
+		// Detect dragging over the window to activate the overlay so it can receive the drop
+		useEffect(() => {
+			const onWindowDragEnter = (e: DragEvent) => {
+				setIsDropActive(true);
+			};
+			const onWindowDragLeave = (e: DragEvent) => {
+				// small delay to avoid flicker when moving between elements
+				setTimeout(() => setIsDropActive(false), 50);
+			};
+			const onWindowDrop = async (e: DragEvent) => {
+				e.preventDefault();
+				setIsDropActive(false);
+				await handleDrop((e as unknown) as React.DragEvent<HTMLDivElement>);
+			};
+
+			window.addEventListener('dragenter', onWindowDragEnter as unknown as EventListener);
+			window.addEventListener('dragleave', onWindowDragLeave as unknown as EventListener);
+			window.addEventListener('drop', onWindowDrop as unknown as EventListener);
+
+			return () => {
+				window.removeEventListener('dragenter', onWindowDragEnter as unknown as EventListener);
+				window.removeEventListener('dragleave', onWindowDragLeave as unknown as EventListener);
+				window.removeEventListener('drop', onWindowDrop as unknown as EventListener);
+			};
+		}, [addImages]);
+	}
 
 	const pickAddImage = async () => {
 		let result = await ImagePicker.launchImageLibraryAsync({
@@ -137,7 +272,7 @@ export default function MangaDetails()
 			method: 'POST',
 			body: formData,
 			headers: {
-				authorization: `Bearer ${anilist_token}`
+				authorization: `Bearer ${token}`
 			}
 		}).then(async () => {
 			setIsAddingNote(false);
@@ -264,6 +399,13 @@ export default function MangaDetails()
 					<MangaOverviewHeader manga={manga} style={styles.mangaHeader} />
 					{/* Inline add-note / status input (social-media style) */}
 					<View style={[styles.addNoteContainer, {borderColor: theme.colors.outlineVariant}] }>
+						{Platform.OS === 'web' && isAddingNote && (
+						<div
+							{...(dropZoneRootProps ? dropZoneRootProps() : {})}
+							// onPaste={pasteImageFromClipboard}
+							style={{position: 'absolute', width: '100%', height: '100%', zIndex: 2, pointerEvents: isDropActive ? 'auto' : 'none', backgroundColor: isDropActive ? 'rgba(0,0,0,0.03)' : 'transparent'}}
+						/>
+					)}
 						{
 							!isAddingNote ?
 								<Pressable style={styles.addNoteCollapsed} onPress={() => setIsAddingNote(true)}>
