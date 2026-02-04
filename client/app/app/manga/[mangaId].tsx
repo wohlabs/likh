@@ -162,27 +162,40 @@ const handleDrop = useCallback(async (e: React.DragEvent<HTMLDivElement>) => {
 	e.preventDefault();
 
 	const { files, items } = e.dataTransfer;
+	// Prevent duplicates: create a set of existing keys based on fileName or uri
+	const existingKeys = new Set(addImages.map(a => (a.fileName ? a.fileName : a.uri)));
 	let newImages = [...addImages];
-	let refresh = false
-	for (const file of files) {
-		if (file.type && file.type.startsWith("image/")) {
-			const image: ImagePicker.ImagePickerAsset = {
-				uri: URL.createObjectURL(file),
-				type: file.type,
-				fileName: file.name,
-				fileSize: file.size
-			} as ImagePicker.ImagePickerAsset;
-			newImages = [...newImages, image];
-			refresh = true
-		}
-	}
+	let refresh = false;
 
-	for (const item of items) {
-		if (item.type === "text/uri-list") {
-			const asset = await handleDroppedImageAsString(item);
-			if (asset === null) continue;
-			newImages = [...newImages, asset];
-			refresh = true
+	// If blob files are provided, prefer them and skip URI-based items to avoid double-adding
+	if (files && files.length > 0) {
+		for (const file of files) {
+			if (file.type && file.type.startsWith("image/")) {
+				const key = file.name || `${file.type}_${file.size}`;
+				if (existingKeys.has(key)) continue;
+				const image: ImagePicker.ImagePickerAsset = {
+					uri: URL.createObjectURL(file),
+					type: file.type,
+					fileName: file.name,
+					fileSize: file.size
+				} as ImagePicker.ImagePickerAsset;
+				newImages = [...newImages, image];
+				existingKeys.add(key);
+				refresh = true;
+			}
+		}
+	} else {
+		// No blob files: handle URL-based drops
+		for (const item of items) {
+			if (item.type === "text/uri-list") {
+				const asset = await handleDroppedImageAsString(item);
+				if (asset === null) continue;
+				const key = asset.fileName || asset.uri;
+				if (existingKeys.has(key)) continue;
+				newImages = [...newImages, asset];
+				existingKeys.add(key);
+				refresh = true;
+			}
 		}
 	}
 
