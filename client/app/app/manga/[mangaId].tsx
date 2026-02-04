@@ -3,8 +3,11 @@ import NotePreviewCard from "@/components/NotePreviewCard";
 import NoteViewer from "@/components/NoteViewer";
 import { router, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState, useContext } from "react";
-import { FlatList, Platform, ScrollView, StyleProp, useWindowDimensions, View, ViewStyle, StyleSheet } from "react-native";
-import { Button, Icon, IconButton, Menu, Modal, Portal, useTheme } from "react-native-paper";
+import { FlatList, Platform, ScrollView, StyleProp, useWindowDimensions, View, ViewStyle, StyleSheet, Pressable, Image } from "react-native";
+import { Button, Icon, IconButton, Menu, Modal, Portal, useTheme, TextInput } from "react-native-paper";
+import * as ImagePicker from "expo-image-picker";
+import { API_URL } from "@/services/AxiosInstance";
+import { File } from 'expo-file-system';
 import ReanimatedSwipeable, { SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
 import Reanimated, { SharedValue, useAnimatedStyle } from "react-native-reanimated";
 import { AuthContext } from "@/context/AuthContext";
@@ -18,6 +21,7 @@ import Toast from "react-native-toast-message"
 import { LoadingScreen } from "@/components/LoadingScreen";
 import { ThemeDropdown } from "@/components/ThemeDropdown";
 import ThemeText from "@/components/ThemeText";
+import ThemeButton from "@/components/ThemeButton";
 
 function NoteButtons({ onEditPress, onDeletePress }: { onEditPress?: () => void, onDeletePress?: () => void })
 {
@@ -81,8 +85,70 @@ export default function MangaDetails()
 	const [sortByValue, setSortByValue] = useState<string>("chapter");
 	const [sortAscending, setSortAscending] = useState<boolean>(true);
 	const [sortOpen, setSortOpen] = useState(false);
-	const anilist_token: string = useContext(AuthContext).anilistToken || ""
-	
+	const anilist_token: string = useContext(AuthContext).anilistToken || "";
+
+	// Inline add-note UI state
+	const [isAddingNote, setIsAddingNote] = useState<boolean>(false);
+	const [newText, setNewText] = useState<string>("");
+	const [addImages, setAddImages] = useState<ImagePicker.ImagePickerAsset[]>([]);
+	const [addCurrentImageIndex, setAddCurrentImageIndex] = useState<number>(0);
+	const [newStartChapter, setNewStartChapter] = useState<string>("");
+	const [newEndChapter, setNewEndChapter] = useState<string>("");
+
+	const pickAddImage = async () => {
+		let result = await ImagePicker.launchImageLibraryAsync({
+			mediaTypes: ["images"],
+			allowsEditing: false,
+			quality: 1,
+			allowsMultipleSelection: true
+		});
+
+		if (!result.canceled) {
+			let newImgs = [...addImages, ...result.assets];
+			setAddImages(newImgs);
+			setAddCurrentImageIndex(newImgs.length - 1);
+		}
+	};
+
+	const removeAddImage = (index: number) => {
+		const newImgs = addImages.filter((_, i) => i !== index);
+		setAddImages(newImgs);
+		setAddCurrentImageIndex(Math.max(0, addCurrentImageIndex - 1));
+	};
+
+	const submitInlineNote = async () => {
+		if ((addImages.length === 0) && (!newText || newText.trim().length === 0)) return;
+		const formData = new FormData();
+		formData.append('mangaId', mangaId.toString());
+		formData.append('startChapter', newStartChapter ? newStartChapter : String(-1));
+		if (newEndChapter) formData.append('endChapter', newEndChapter);
+		if (newText && newText.trim().length > 0) formData.append('text', newText);
+		for (const image of addImages) {
+			if (Platform.OS === 'web') {
+				const resp = await fetch(image.uri);
+				const blob = await resp.blob();
+				formData.append('images', blob, image.fileName || Date.now().toString());
+			} else {
+				const file: File = new File(image.uri);
+				formData.append('images', file, image.fileName || Date.now().toString());
+			}
+		}
+		await fetch(`${API_URL}/notes`, {
+			method: 'POST',
+			body: formData,
+			headers: {
+				authorization: `Bearer ${anilist_token}`
+			}
+		}).then(async () => {
+			setIsAddingNote(false);
+			setNewText("");
+			setAddImages([]);
+			setNewStartChapter("");
+			setNewEndChapter("");
+			await fetchData();
+		});
+	};
+
 	// Optional: Clear the error from the URL so it doesn't persist on refresh
 	useEffect(() => {
 		if (error)
@@ -196,6 +262,81 @@ export default function MangaDetails()
 				:
 				<ScrollView nestedScrollEnabled={true} style={{paddingHorizontal: 5}}>
 					<MangaOverviewHeader manga={manga} style={styles.mangaHeader} />
+					{/* Inline add-note / status input (social-media style) */}
+					<View style={[styles.addNoteContainer, {borderColor: theme.colors.outlineVariant}] }>
+						{
+							!isAddingNote ?
+								<Pressable style={styles.addNoteCollapsed} onPress={() => setIsAddingNote(true)}>
+									<ThemeText variant="labelLarge">Add a note</ThemeText>
+								</Pressable>
+							:
+								<>
+									<TextInput
+										multiline
+										numberOfLines={3}
+										label={"add a note"}
+										placeholder="write your note..."
+										value={newText}
+										onChangeText={setNewText}
+										mode="outlined"
+										style={styles.addNoteTextInput}
+										autoFocus
+									/>
+									<View style={{flexDirection: 'row', alignItems: 'center', marginTop: 8}}>
+										<TextInput
+											numberOfLines={1}
+											label={"start chapter"}
+											editable
+											keyboardType="number-pad"
+											value={newStartChapter}
+											onChangeText={(text) => setNewStartChapter(text)}
+											placeholder={"start"}
+											style={styles.formInput}
+											mode="outlined"
+										/>
+										<ThemeText variant="labelLarge">&nbsp;-&nbsp;</ThemeText>
+										<TextInput
+											numberOfLines={1}
+											label={"end chapter (optional)"}
+											editable
+											keyboardType="number-pad"
+											value={newEndChapter}
+											onChangeText={(text) => setNewEndChapter(text)}
+											placeholder={"end (optional)"}
+											style={styles.formInput}
+											mode="outlined"
+										/>
+									</View>
+									<View style={{flexDirection: 'row', alignItems: 'center', marginTop: 8}}>
+										<FlatList
+											data={addImages}
+											renderItem={({item, index}) => (
+												<Pressable onPress={() => setAddCurrentImageIndex(index)}>
+													<Image
+														source={{uri: item.uri}}
+														resizeMode="cover"
+														style={[styles.thumbnail, {borderColor: theme.colors.outlineVariant}]}
+													/>
+													<IconButton icon="trash-can-outline" size={18} onPress={() => removeAddImage(index)} style={{position:'absolute', right: 0}} mode="contained" />
+												</Pressable>
+											)}
+											horizontal
+											style={{flex:1}}
+											keyExtractor={(_, index)=>index.toString()}
+										/>
+										<IconButton icon={"plus"} size={26} onPress={pickAddImage} mode="contained" />
+									</View>
+									<View style={{flexDirection: 'row', justifyContent: 'space-evenly', marginTop: 8}}>
+										<ThemeButton style={styles.button} mode="contained-tonal" onPress={() => { setIsAddingNote(false); setNewText(""); setAddImages([]); setNewStartChapter(""); setNewEndChapter(""); }}>
+											Cancel
+										</ThemeButton>
+										<ThemeButton style={styles.button} mode="contained" onPress={submitInlineNote}>
+											Add
+										</ThemeButton>
+									</View>
+								</>
+						}
+					</View>
 					{
 						filteredNotes.length == 0 ?
 						<View style={{flex:1, alignContent: 'center', alignItems: 'center', padding: 10}}>
@@ -314,7 +455,7 @@ export default function MangaDetails()
 					<IconButton
 						icon={"plus"}
 						size={30}
-						onPress={() => router.navigate(`/app/manga/${mangaId}/add_note`)}
+						onPress={() => setIsAddingNote(!isAddingNote)}
 						style={styles.addButton}
 						mode="contained"
 					/>
@@ -333,6 +474,29 @@ const styles = StyleSheet.create({
 		borderRadius: 10,
 		flex: 1, marginHorizontal: 30,
 		boxShadow: "0px 4px 5px rgba(0,0,0,0.3)"
+	},
+	// Add-note (inline) styles
+	addNoteContainer: {
+		borderWidth: 2, borderRadius: 10, padding: 10, marginVertical: 10, backgroundColor: 'transparent',
+		maxWidth: 1000, width: '100%', margin: 'auto'
+	},
+	addNoteCollapsed: {padding: 12, borderRadius: 8, backgroundColor: 'rgba(0,0,0,0.03)', alignItems: 'flex-start'},
+	addNoteTextInput: {minHeight: 80, maxHeight: 140},
+	formInput: {
+		flex: 1,
+		maxWidth: 200
+	},
+	thumbnail: {
+		height: 80,
+		aspectRatio: 1,
+		borderRadius: 10,
+		borderColor: "black",
+		borderWidth: 2,
+		marginRight: 5
+	},
+	button: {
+		flex: 1,
+		margin: 2
 	},
 	floatingContainer: {width: "100%", minWidth: 350, height: 60, position: "absolute", bottom: 25, flexDirection: "row", alignItems: "center", margin: 'auto', justifyContent: 'center', pointerEvents: 'none'},
 	searchBarContainer: {width: '90%', flexDirection: 'row', maxWidth: 600, alignItems: 'center'},
