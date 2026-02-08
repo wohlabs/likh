@@ -500,15 +500,15 @@ export default function MangaDetails() {
 								style={styles.addNoteCollapsed}
 								onPress={() => setIsAddingNote(true)}
 							>
-								<ThemeText variant="labelLarge">Add a note</ThemeText>
+								<ThemeText variant="labelLarge">add a note...</ThemeText>
 							</Pressable>
 						) : (
 							<>
 								<TextInput
 									multiline
 									numberOfLines={3}
-									label={"add a note"}
-									placeholder="write your note..."
+									label={"note"}
+									placeholder="write your note here..."
 									value={newText}
 									onChangeText={setNewText}
 									mode="outlined"
