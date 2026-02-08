@@ -2,7 +2,7 @@ import { getMangaTitle, IMangaDetails } from "@/types/IManga";
 import { StyleProp, ViewStyle, StyleSheet, View, Image, GestureResponderEvent } from "react-native";
 import ThemeText from "./ThemeText";
 import ReadMore from '@/components/ReadMore';
-import { Button, IconButton, Menu, Portal, useTheme, Modal } from "react-native-paper";
+import { Button, IconButton, Menu, Portal, useTheme, Modal, ActivityIndicator } from "react-native-paper";
 import { useCallback, useContext, useEffect, useState } from "react";
 import NewCustomListView from "./NewCustomListView";
 import { ICustomList, ICustomLists, MangaItem } from "@/types/ICustomList";
@@ -21,6 +21,7 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 	const [lists, setLists] = useState<(ICustomList & {isInList: boolean})[]>([])
 	const [status, setStatus] = useState<string>("")
 	const [statusOpen, setStatusOpen] = useState<boolean>(false)
+	const [loading, setLoading] = useState<boolean>(true)
 
 	
 	const addIsInListData = useCallback((lists: ICustomLists) => {
@@ -52,6 +53,7 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 				setStatus(result.data.status)
 			}
 		}
+		setLoading(false)
 	}, [])
 
 	const handleStatusChange: React.Dispatch<React.SetStateAction<string>> = async (action) => {
@@ -129,106 +131,114 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 
 	return (
 		<View style={style}>
-			<View style={[styles.mangaOverviewContainer]}>
-				<View style={{flexDirection: 'column', alignItems: 'center'}}>
-					<Image
-						source={{ uri: manga?.coverImage?.large }}
-						resizeMode="contain"
-						style={styles.mangaCoverImage}
-					/>
-					<View style={{flexDirection: 'row', alignItems: 'center'}}>
-					{!status ? 
-						<ThemeButton mode="contained" onPress={handleCreateEntry} style={{minWidth:150, marginTop:6}}>
-							add to library
-						</ThemeButton>
-						:
-						<>
-						<View>
-							<ThemeDropdown
-								value={status}
-								setValue={handleStatusChange}
-								items={[
-									{
-										value: 'CURRENT',
-										label: 'reading'
-									},
-									{
-										value: 'PLANNING',
-										label: 'planning'
-									},
-									{
-										value: 'COMPLETED',
-										label: 'completed'
-									},
-									{
-										value: 'DROPPED',
-										label: 'dropped'
-									},
-									{
-										value: 'PAUSED',
-										label: 'paused'
-									},
-									{
-										value: 'REPEATING',
-										label: 'rereading'
-									},
-								]}
-								open={statusOpen}
-								setOpen={setStatusOpen}
-								multiple={false}
-								listMode="FLATLIST"
-								maxHeight={300}
-							/>
-						</View>
-						<Menu
-							visible={optionsVisible}
-							onDismiss={() =>{
-								setOptionsVisible(false)
-							}}
-							anchorPosition="bottom"
-							anchor={
-								<IconButton
-									icon={lists.reduce((accumulator, currentValue)=> accumulator || currentValue.isInList, false) ? 'bookmark' : 'bookmark-outline'}
-									mode="contained"
-									style={{borderRadius: 10}}
-									onPress={() => setOptionsVisible(true)}
+			{
+				loading
+				?
+				<ActivityIndicator style={[styles.mangaOverviewContainer, {height: 200}]} />
+				:
+				<View style={[styles.mangaOverviewContainer]}>
+					<View style={{flexDirection: 'column', alignItems: 'center'}}>
+						<Image
+							source={{ uri: manga?.coverImage?.large }}
+							resizeMode="contain"
+							style={styles.mangaCoverImage}
+						/>
+						<View style={{flexDirection: 'row', alignItems: 'center'}}>
+						{
+							!status ? 
+							<ThemeButton mode="contained" onPress={handleCreateEntry} style={{minWidth:150, marginTop:6}}>
+								add to library
+							</ThemeButton>
+							:
+							<>
+							<View>
+								<ThemeDropdown
+									value={status}
+									setValue={handleStatusChange}
+									items={[
+										{
+											value: 'CURRENT',
+											label: 'reading'
+										},
+										{
+											value: 'PLANNING',
+											label: 'planning'
+										},
+										{
+											value: 'COMPLETED',
+											label: 'completed'
+										},
+										{
+											value: 'DROPPED',
+											label: 'dropped'
+										},
+										{
+											value: 'PAUSED',
+											label: 'paused'
+										},
+										{
+											value: 'REPEATING',
+											label: 'rereading'
+										},
+									]}
+									open={statusOpen}
+									setOpen={setStatusOpen}
+									multiple={false}
+									listMode="FLATLIST"
+									maxHeight={300}
+									style={{minWidth: 100, backgroundColor: theme.colors.surfaceVariant, borderColor: theme.colors.outline}}
 								/>
-							}
-						>
-							<Menu.Item 
-								title={'add to...'} leadingIcon={undefined}
-							/>
-							{
-								lists.map((list, number) => (
-									<Menu.Item 
-										key={list._id ? `custom_list_${list._id}` : `custom_list_undefined_${number}`}
-										onPress={() => toggleList(list._id)} title={list.name}
-										leadingIcon={list.isInList ? (list.isFavorite ? "heart" : "bookmark") : (list.isFavorite ? "heart-outline" : "bookmark-outline")}
+							</View>
+							<Menu
+								visible={optionsVisible}
+								onDismiss={() =>{
+									setOptionsVisible(false)
+								}}
+								anchorPosition="bottom"
+								anchor={
+									<IconButton
+										icon={lists.reduce((accumulator, currentValue)=> accumulator || currentValue.isInList, false) ? 'bookmark' : 'bookmark-outline'}
+										mode="contained"
+										style={{borderRadius: 10}}
+										onPress={() => setOptionsVisible(true)}
 									/>
-								))
-							}
-							<Menu.Item 
-								onPress={() => {setOptionsVisible(false);setCreatingNewList(true);}} title={'new list'} leadingIcon={'plus'}
-							/>
-						</Menu>
-						</>
-					}					
+								}
+							>
+								<Menu.Item 
+									title={'add to...'} leadingIcon={undefined}
+								/>
+								{
+									lists.map((list, number) => (
+										<Menu.Item 
+											key={list._id ? `custom_list_${list._id}` : `custom_list_undefined_${number}`}
+											onPress={() => toggleList(list._id)} title={list.name}
+											leadingIcon={list.isInList ? (list.isFavorite ? "heart" : "bookmark") : (list.isFavorite ? "heart-outline" : "bookmark-outline")}
+										/>
+									))
+								}
+								<Menu.Item 
+									onPress={() => {setOptionsVisible(false);setCreatingNewList(true);}} title={'new list'} leadingIcon={'plus'}
+								/>
+							</Menu>
+							</>
+						}					
+						</View>
+					</View>
+					<View style={{ flex: 1, marginHorizontal: 10 }}>
+						<View style={styles.titleDetailsContainer}>
+							<ThemeText style={styles.title} variant="titleLarge">{getMangaTitle(manga)}</ThemeText>
+						</View>
+						<ReadMore
+							numberOfLines={5}
+							renderTruncatedFooter={_renderTruncatedFooter}
+							renderRevealedFooter={_renderRevealedFooter}
+							onReady={() => {}}
+							>
+							<ThemeText variant="bodySmall">{manga?.description}</ThemeText>
+						</ReadMore>
 					</View>
 				</View>
-				<View style={{ flex: 1, marginHorizontal: 10 }}>
-					<View style={styles.titleDetailsContainer}>
-						<ThemeText style={styles.title} variant="titleLarge">{getMangaTitle(manga)}</ThemeText>
-					</View>
-					<ReadMore
-						numberOfLines={5}
-						renderTruncatedFooter={_renderTruncatedFooter}
-						renderRevealedFooter={_renderRevealedFooter}
-						onReady={() => {}}
-						>
-						<ThemeText variant="bodySmall">{manga?.description}</ThemeText>
-					</ReadMore>
-				</View>
-			</View>
+			}
 			<Portal>
 				<Modal visible={isCreatingNewList} onDismiss={() => setCreatingNewList(false)}
 					contentContainerStyle={{minWidth: 200, minHeight: 200, width: "30%", height: "50%", backgroundColor: theme.colors.background, borderRadius: 10, margin: 'auto', padding: 10, gap: 5}}
