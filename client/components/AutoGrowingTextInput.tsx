@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
-import { View, StyleSheet, StyleProp, TextStyle } from "react-native";
-import { TextInput, Text, useTheme } from "react-native-paper";
+import { StyleProp, StyleSheet, TextStyle, View } from "react-native";
+import { Text, TextInput, useTheme } from "react-native-paper";
 import { Props } from "react-native-paper/lib/typescript/components/TextInput/TextInput";
 
 // this is a PATCH solution for TextInput to handle autogrowing size

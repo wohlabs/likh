@@ -1,16 +1,14 @@
-import { AuthProvider, AuthContext } from "@/context/AuthContext";
-import { useCallback, useContext, useEffect, useState } from "react";
-import { KeyboardAvoidingView, Platform } from "react-native";
-import { PaperProvider } from "react-native-paper";
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { usePersistentTheme } from "@/context/usePersistentTheme";
 import { LoadingScreen } from "@/components/LoadingScreen";
-import api from "@/services/AxiosInstance";
-import Toast from "react-native-toast-message";
-import { ThemeToast, toastConfig } from "@/components/ThemeToast";
-import LoadingToast from "@/components/LoadingToast";
+import { toastConfig } from "@/components/ThemeToast";
+import { AuthContext, AuthProvider } from "@/context/AuthContext";
 import { ServerContext, ServerProvider } from "@/context/ServerContext";
-import { Slot, Stack, useSegments } from "expo-router";
+import { usePersistentTheme } from "@/context/usePersistentTheme";
+import { Stack, useSegments } from "expo-router";
+import { useContext, useEffect } from "react";
+import { KeyboardAvoidingView, Platform } from "react-native";
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { PaperProvider } from "react-native-paper";
+import Toast from "react-native-toast-message";
 
 export default function RootLayout() 
 {

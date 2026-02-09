@@ -1,5 +1,5 @@
-import { render } from "@testing-library/react-native";
 import ThemeText from "@/components/ThemeText";
+import { render } from "@testing-library/react-native";
 import { StyleSheet } from "react-native";
 
 describe("<ThemeText />", () => {

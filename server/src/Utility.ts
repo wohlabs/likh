@@ -1,5 +1,5 @@
-import fetch from "node-fetch";
 import crypto from "crypto";
+import fetch from "node-fetch";
 import { ApiCache, IApiCache } from "./models/cache.model";
 
 const ANILIST_URL = "https://graphql.anilist.co";

@@ -1,6 +1,6 @@
-import { useTheme } from "react-native-paper";
-import DropDownPicker, { DropDownPickerProps } from 'react-native-dropdown-picker';
 import { DimensionValue } from "react-native";
+import DropDownPicker, { DropDownPickerProps } from 'react-native-dropdown-picker';
+import { useTheme } from "react-native-paper";
 
 export function ThemeDropdown(
 	props: DropDownPickerProps<any> & {height?: DimensionValue}

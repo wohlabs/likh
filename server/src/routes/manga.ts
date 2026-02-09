@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import { anilistAuthenticatedRequest, anilistRequest } from "../Utility";
+import { anilistAuthenticatedRequest } from "../Utility";
 import { Manga, MANGA_QUERY } from "../models/manga.model";
 
 const router = express.Router();

@@ -1,6 +1,6 @@
 import ThemeText from '@/components/ThemeText';
-import { View } from 'react-native';
 import { Image } from "expo-image";
+import { View } from 'react-native';
 
 export default function NotFoundPage()
 {

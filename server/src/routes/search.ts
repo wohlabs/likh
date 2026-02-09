@@ -1,10 +1,10 @@
-import express, { Router, Request, Response } from 'express';
+import express, { Request, Response, Router } from 'express';
 import AuthenticateMiddleware from '../middleware/Authentication';
-import { Note } from '../models/note.model';
 import { CustomList, ICustomList, MangaItem } from '../models/custom_list.model';
+import { Note } from '../models/note.model';
 import { anilistRequest } from '../Utility';
-import { getMangaInLibrary } from './users';
 import { getMangaData } from './anilist';
+import { getMangaInLibrary } from './users';
 
 const router: Router = Router();
 

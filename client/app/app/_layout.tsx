@@ -1,18 +1,18 @@
 import { LoadingScreen } from "@/components/LoadingScreen";
 import ThemeButton from "@/components/ThemeButton";
 import ThemeText from "@/components/ThemeText";
+import { toastConfig } from "@/components/ThemeToast";
 import { AuthContext } from "@/context/AuthContext";
 import { ServerContext } from "@/context/ServerContext";
 import { usePersistentTheme } from "@/context/usePersistentTheme";
 import api from "@/services/AxiosInstance";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Stack, useRouter, useSegments } from "expo-router";
-import { useContext, useEffect, useState } from "react";
-import { Linking, Platform, Pressable, Image, StyleSheet } from "react-native";
-import { IconButton, Menu, PaperProvider, useTheme } from "react-native-paper";
 import * as WebBrowser from 'expo-web-browser';
+import { useContext, useEffect, useState } from "react";
+import { Image, Linking, Platform, Pressable, StyleSheet } from "react-native";
+import { IconButton, Menu, PaperProvider } from "react-native-paper";
 import Toast from "react-native-toast-message";
-import { toastConfig } from "@/components/ThemeToast";
 
 export default function AppLayout()
 {

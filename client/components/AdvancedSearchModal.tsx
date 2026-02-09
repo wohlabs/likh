@@ -1,27 +1,26 @@
-import React, { useCallback, useRef, useState } from 'react';
-import {
-	FlatList,
-	Image,
-	Pressable,
-	StyleProp,
-	StyleSheet,
-	TextInput,
-	View,
-	ViewStyle,
-	useWindowDimensions,
-} from 'react-native';
-import { BlurView } from "expo-blur";
-import { Card, IconButton, useTheme } from 'react-native-paper';
-import ThemeText from '@/components/ThemeText';
 import ThemeSearchbar from '@/components/ThemeSearchbar';
-import { performAdvancedSearch, SearchResult } from '@/services/search.service';
-import { useRouter } from 'expo-router';
-import { getMangaTitle, IMangaDetails } from '@/types/IManga';
+import ThemeText from '@/components/ThemeText';
 import { addMangaToLibrary, MangaProps } from '@/services/manga.service';
-import { hexToRgba } from './util';
-import { modernDarkTheme } from '@/theme/modernTheme';
+import { performAdvancedSearch, SearchResult } from '@/services/search.service';
+import { getMangaTitle } from '@/types/IManga';
+import { BlurView } from "expo-blur";
+import { useRouter } from 'expo-router';
+import React, { useCallback, useRef, useState } from 'react';
+import
+	{
+		FlatList,
+		Image,
+		Pressable,
+		StyleProp,
+		StyleSheet,
+		TextInput,
+		useWindowDimensions,
+		View,
+		ViewStyle,
+	} from 'react-native';
+import { Card, IconButton, useTheme } from 'react-native-paper';
 import ThemeButton from './ThemeButton';
-import { MangaItem } from '@/types/ICustomList';
+import { hexToRgba } from './util';
 
 interface AdvancedSearchModalProps {
 	visible: boolean;

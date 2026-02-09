@@ -1,10 +1,10 @@
-import { View } from "react-native";
-import ThemeText from "./ThemeText";
-import { TextInput } from "react-native-paper";
-import ThemeButton from "./ThemeButton";
-import { useCallback, useState } from "react";
 import { createCustomList } from "@/services/custom_lists";
 import { ICustomLists } from "@/types/ICustomList";
+import { useCallback, useState } from "react";
+import { View } from "react-native";
+import { TextInput } from "react-native-paper";
+import ThemeButton from "./ThemeButton";
+import ThemeText from "./ThemeText";
 
 export default function NewCustomListView({mangaIdToAdd, setAllCustomLists, onCustomListCreated} : {mangaIdToAdd?: number, setAllCustomLists?: React.Dispatch<React.SetStateAction<ICustomLists>>, onCustomListCreated: () => void})
 {

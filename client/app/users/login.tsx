@@ -1,12 +1,11 @@
-import ThemeText from "@/components/ThemeText";
-import { useContext, useState } from "react";
-import { View, StyleSheet } from "react-native";
-import { TextInput, useTheme } from "react-native-paper";
 import ThemeButton from "@/components/ThemeButton";
-import { router } from "expo-router";
+import ThemeText from "@/components/ThemeText";
 import { AuthContext } from "@/context/AuthContext";
 import { loginUser } from "@/services/users.service";
-import { Image } from "expo-image";
+import { router } from "expo-router";
+import { useContext, useState } from "react";
+import { StyleSheet, View } from "react-native";
+import { TextInput, useTheme } from "react-native-paper";
 
 export default function UserLogin() 
 {

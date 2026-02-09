@@ -1,4 +1,4 @@
-import { model, ObjectId, Schema, Types } from "mongoose";
+import { model, Schema, Types } from "mongoose";
 
 export const USER_MEDIA_ENTRY_QUERY = `
 	query GetUserMediaEntry($id: Int) {

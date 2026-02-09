@@ -1,7 +1,7 @@
 // usePersistentTheme.js
-import { useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { modernDarkTheme, modernLightTheme } from "@/theme/modernTheme";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect, useState } from "react";
 
 const STORAGE_KEY = "APP_THEME"; // "light" | "dark"
 

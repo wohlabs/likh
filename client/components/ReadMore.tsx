@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View, TextStyle, StyleProp, ViewStyle } from "react-native";
+import { StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from "react-native";
 
 type ReadMoreProps = {
 	numberOfLines?: number;

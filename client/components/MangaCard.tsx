@@ -1,14 +1,14 @@
 import ThemeText from "@/components/ThemeText";
+import { addToCustomList, favoriteManga } from "@/services/custom_lists";
+import { MangaProps } from "@/services/manga.service";
+import { modernDarkTheme } from "@/theme/modernTheme";
+import { ICustomLists, MangaItem } from "@/types/ICustomList";
+import { getMangaTitle } from "@/types/IManga";
+import { LinearGradient } from 'expo-linear-gradient';
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Image, Pressable, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 import { IconButton, Menu, useTheme } from "react-native-paper";
-import { MangaProps } from "@/services/manga.service";
-import { getMangaTitle } from "@/types/IManga";
-import { LinearGradient } from 'expo-linear-gradient'
-import { modernDarkTheme } from "@/theme/modernTheme";
-import { ICustomLists, MangaItem } from "@/types/ICustomList";
-import { addToCustomList, favoriteManga } from "@/services/custom_lists";
 
 export default function MangaCard({item, style, allCustomLists, onCreateList } : {item: MangaProps, style?: StyleProp<ViewStyle>, onCreateList?: (mangaIdToAdd?: number) => {}, allCustomLists: ICustomLists})
 {

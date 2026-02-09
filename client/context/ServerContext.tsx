@@ -1,6 +1,5 @@
-import React, { createContext, useState, useEffect, useCallback } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '@/services/AxiosInstance';
+import React, { createContext, useCallback, useEffect, useState } from 'react';
 
 export const ServerContext = createContext({
 	loading: true,

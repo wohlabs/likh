@@ -1,12 +1,12 @@
-import express, { Router, Request, Response } from 'express';
+import bcrypt from 'bcrypt';
+import express, { Request, Response, Router } from 'express';
+import jwt from 'jsonwebtoken';
 import AuthenticateMiddleware, { JWT_SECRET } from '../middleware/Authentication';
-import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
-import { IUser, User } from '../models/user.model';
 import { CustomList } from '../models/custom_list.model';
-import { getMangaIdsWithNotes } from './anilist';
+import { IUser, User } from '../models/user.model';
 import { IUserMediaEntry, USER_MEDIA_ENTRY_MUTATION, UserMediaEntry } from '../models/user_media_status.model';
 import { anilistAuthenticatedRequest } from '../Utility';
+import { getMangaIdsWithNotes } from './anilist';
 
 const router: Router = Router();
 

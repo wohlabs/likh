@@ -1,55 +1,54 @@
-import { IMangaNotes, INoteEntry } from "@/types/INotes";
+import { LoadingScreen } from "@/components/LoadingScreen";
+import MangaOverviewHeader from "@/components/MangaOverviewHeader";
 import NotePreviewCard from "@/components/NotePreviewCard";
 import NoteViewer from "@/components/NoteViewer";
-import { router, useLocalSearchParams } from "expo-router";
-import { useCallback, useEffect, useState, useContext } from "react";
-import {
-	FlatList,
-	Platform,
-	ScrollView,
-	StyleProp,
-	useWindowDimensions,
-	View,
-	ViewStyle,
-	StyleSheet,
-	Pressable,
-	Image,
-} from "react-native";
-import {
-	Button,
-	Icon,
-	IconButton,
-	Menu,
-	Modal,
-	Portal,
-	useTheme,
-	TextInput,
-} from "react-native-paper";
-import * as ImagePicker from "expo-image-picker";
-import { API_URL } from "@/services/AxiosInstance";
-import { File } from "expo-file-system";
-import { useDropzone } from "react-dropzone";
-import * as Clipboard from "expo-clipboard";
+import ThemeButton from "@/components/ThemeButton";
+import ThemeCarousel from "@/components/ThemeCarousel";
+import { ThemeDropdown } from "@/components/ThemeDropdown";
+import ThemeSearchbar from "@/components/ThemeSearchbar";
+import ThemeText from "@/components/ThemeText";
 import { blobToBase64 } from "@/components/util";
+import { AuthContext } from "@/context/AuthContext";
+import { API_URL } from "@/services/AxiosInstance";
+import { getMangaData, getMangaDetails } from "@/services/manga.service";
+import { deleteMangaNote } from "@/services/notes.service";
+import { getMangaTitle, IMangaDetails } from "@/types/IManga";
+import { IMangaNotes, INoteEntry } from "@/types/INotes";
+import * as Clipboard from "expo-clipboard";
+import { File } from "expo-file-system";
+import * as ImagePicker from "expo-image-picker";
+import { router, useLocalSearchParams } from "expo-router";
+import { useCallback, useContext, useEffect, useState } from "react";
+import { useDropzone } from "react-dropzone";
+import
+	{
+		FlatList,
+		Image,
+		Platform,
+		Pressable,
+		ScrollView,
+		StyleProp,
+		StyleSheet,
+		useWindowDimensions,
+		View,
+		ViewStyle,
+	} from "react-native";
 import ReanimatedSwipeable, {
 	SwipeableMethods,
 } from "react-native-gesture-handler/ReanimatedSwipeable";
+import
+	{
+		IconButton,
+		Modal,
+		Portal,
+		TextInput,
+		useTheme
+	} from "react-native-paper";
 import Reanimated, {
 	SharedValue,
 	useAnimatedStyle,
 } from "react-native-reanimated";
-import { AuthContext } from "@/context/AuthContext";
-import { getMangaData, getMangaDetails } from "@/services/manga.service";
-import { deleteMangaNote } from "@/services/notes.service";
-import MangaOverviewHeader from "@/components/MangaOverviewHeader";
-import { getMangaTitle, IMangaDetails } from "@/types/IManga";
-import ThemeCarousel from "@/components/ThemeCarousel";
-import ThemeSearchbar from "@/components/ThemeSearchbar";
 import Toast from "react-native-toast-message";
-import { LoadingScreen } from "@/components/LoadingScreen";
-import { ThemeDropdown } from "@/components/ThemeDropdown";
-import ThemeText from "@/components/ThemeText";
-import ThemeButton from "@/components/ThemeButton";
 
 function NoteButtons({
 	onEditPress,

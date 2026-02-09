@@ -1,5 +1,5 @@
 // components/LoadingToast.tsx
-import { View, ActivityIndicator, Text } from "react-native";
+import { ActivityIndicator, Text, View } from "react-native";
 import { useTheme } from "react-native-paper";
 
 export default function LoadingToast({ text1 }: { text1?: string }) {

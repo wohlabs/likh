@@ -1,12 +1,12 @@
-import express, { Router, Request, Response } from 'express';
-import AuthenticateMiddleware from '../middleware/Authentication';
-import multer from 'multer'
+import express, { Request, Response, Router } from 'express';
 import { Types } from 'mongoose';
-import { getGFSBucket } from '../config/db';
+import multer from 'multer';
 import { Readable } from 'stream';
 import { getErrorMessage } from '../Utility';
-import { IUser, User } from '../models/user.model';
+import { getGFSBucket } from '../config/db';
+import AuthenticateMiddleware from '../middleware/Authentication';
 import { INote, Note } from '../models/note.model';
+import { IUser, User } from '../models/user.model';
 import { getAnilistNote } from './anilist';
 import { addMangaToLibrary } from './users';
 

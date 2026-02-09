@@ -1,5 +1,5 @@
-import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 export const API_URL = process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:3000"; // Fallback to localhost if not defined. The fallback is important to avoid webpack from optimizing away the environment variable
 

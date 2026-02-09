@@ -1,10 +1,10 @@
 import ThemeText from "@/components/ThemeText";
+import { deleteCustomList, getCustomLists } from "@/services/custom_lists";
+import { ICustomLists } from "@/types/ICustomList";
 import { Stack, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
-import { Card, IconButton, Menu, useTheme } from "react-native-paper";
-import { deleteCustomList, getCustomLists } from "@/services/custom_lists";
-import { ICustomLists } from "@/types/ICustomList";
+import { Card, IconButton, useTheme } from "react-native-paper";
 
 export default function CustomListsIndex()
 {

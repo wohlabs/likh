@@ -1,6 +1,6 @@
-import express, { Router, Request, Response } from 'express';
+import express, { Request, Response, Router } from 'express';
 import AuthenticateMiddleware from '../middleware/Authentication';
-import { CustomList, ICustomList, MangaItem } from '../models/custom_list.model';
+import { CustomList, MangaItem } from '../models/custom_list.model';
 
 const router: Router = Router();
 

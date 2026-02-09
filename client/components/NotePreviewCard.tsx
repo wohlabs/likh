@@ -1,10 +1,10 @@
-import { Image, StyleProp, ViewStyle, StyleSheet, View } from "react-native";
+import { useCallback, useEffect, useState } from "react";
+import { Image, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
+import { Card, useTheme } from "react-native-paper";
 import { INoteEntry } from "../types/INotes";
+import ReadMore from "./ReadMore";
 import ThemeText from "./ThemeText";
 import { getImageBase64 } from "./util";
-import { useCallback, useEffect, useState } from "react";
-import { Card, useTheme } from "react-native-paper";
-import ReadMore from "./ReadMore";
 
 export default function NotePreviewCard({ note, style, onPress }: { note: INoteEntry, style?: StyleProp<ViewStyle>, onPress?: () => void }) 
 {

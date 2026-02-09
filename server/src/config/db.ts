@@ -1,5 +1,5 @@
+import { GridFSBucket } from 'mongodb';
 import mongoose from 'mongoose';
-import {GridFSBucket} from 'mongodb'
 
 let gfsBucket: GridFSBucket | undefined = undefined;
 

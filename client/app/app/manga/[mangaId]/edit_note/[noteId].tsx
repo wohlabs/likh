@@ -1,29 +1,29 @@
-import * as ImagePicker from "expo-image-picker";
-import { router, Stack, useLocalSearchParams } from "expo-router";
-import { useCallback, useContext, useEffect, useState } from "react";
-import
-{
-	FlatList,
-	Image,
-	Keyboard,
-	Platform,
-	Pressable,
-	TouchableWithoutFeedback,
-	View,
-	StyleSheet
-} from "react-native";
-import { IconButton, TextInput, useTheme } from "react-native-paper";
 import ThemeButton from "@/components/ThemeButton";
 import ThemeText from "@/components/ThemeText";
-import { API_URL } from "@/services/AxiosInstance";
-import { File } from 'expo-file-system'
-import { AuthContext } from "@/context/AuthContext";
-import { fetch } from 'expo/fetch';
-import { getMangaDetails } from "@/services/manga.service";
-import { getMangaTitle } from "@/types/IManga";
-import { getNote } from "@/services/notes.service";
 import { getImageBase64 } from "@/components/util";
+import { AuthContext } from "@/context/AuthContext";
+import { API_URL } from "@/services/AxiosInstance";
+import { getMangaDetails } from "@/services/manga.service";
+import { getNote } from "@/services/notes.service";
+import { getMangaTitle } from "@/types/IManga";
+import { File } from 'expo-file-system';
+import * as ImagePicker from "expo-image-picker";
+import { router, Stack, useLocalSearchParams } from "expo-router";
+import { fetch } from 'expo/fetch';
+import { useCallback, useContext, useEffect, useState } from "react";
 import { DropEvent, useDropzone } from "react-dropzone";
+import
+	{
+		FlatList,
+		Image,
+		Keyboard,
+		Platform,
+		Pressable,
+		StyleSheet,
+		TouchableWithoutFeedback,
+		View
+	} from "react-native";
+import { IconButton, TextInput, useTheme } from "react-native-paper";
 import Toast from "react-native-toast-message";
 
 const KeyboardDismissWrapper = ({ children }: any) => 

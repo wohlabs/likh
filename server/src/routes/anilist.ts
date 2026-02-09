@@ -1,8 +1,8 @@
 import express, { Request, Response } from "express";
-import { anilistAuthenticatedRequest, anilistRequest } from "../Utility";
 import { jwtDecode } from "jwt-decode";
-import { IUser, User } from '../models/user.model';
 import { INote } from "../models/note.model";
+import { User } from '../models/user.model';
+import { anilistAuthenticatedRequest, anilistRequest } from "../Utility";
 
 const router = express.Router();
 router.use(express.json())

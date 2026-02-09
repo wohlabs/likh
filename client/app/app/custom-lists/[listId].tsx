@@ -1,15 +1,15 @@
+import AutoGrowingTextInput from "@/components/AutoGrowingTextInput";
+import ThemeButton from "@/components/ThemeButton";
 import ThemeText from "@/components/ThemeText";
-import { Stack, useRouter, useLocalSearchParams } from "expo-router";
-import React, { useCallback, useEffect, useState } from "react";
-import { FlatList, Image, Pressable, StyleSheet, View, ScrollView } from "react-native";
-import { Button, Card, IconButton, useTheme } from "react-native-paper";
 import { addToCustomList, getCustomLists } from "@/services/custom_lists";
+import { editList } from "@/services/lists.service";
 import { getLibraryMangaThumbnails, MangaProps } from "@/services/manga.service";
 import { ICustomList, MangaItem } from "@/types/ICustomList";
 import { getMangaTitle } from "@/types/IManga";
-import AutoGrowingTextInput from "@/components/AutoGrowingTextInput";
-import ThemeButton from "@/components/ThemeButton";
-import { editList } from "@/services/lists.service";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
+import React, { useCallback, useEffect, useState } from "react";
+import { FlatList, Image, Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { Card, IconButton, useTheme } from "react-native-paper";
 
 export default function CustomListDetail()
 {

@@ -1,11 +1,11 @@
-import { View, ScrollView, StyleSheet } from "react-native";
-import { router } from "expo-router";
-import ThemeText from "@/components/ThemeText";
 import ThemeButton from "@/components/ThemeButton";
-import { useTheme } from "react-native-paper";
-import { useEffect, useState } from "react";
-import Reanimated, { useSharedValue, useAnimatedStyle, withRepeat, withTiming, interpolate, Extrapolate, withSequence } from "react-native-reanimated";
+import ThemeText from "@/components/ThemeText";
 import { Feather } from "@expo/vector-icons";
+import { router } from "expo-router";
+import { useEffect, useState } from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
+import { useTheme } from "react-native-paper";
+import Reanimated, { Extrapolate, interpolate, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
 
 
 export default function LandingPage() {

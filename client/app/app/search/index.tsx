@@ -1,19 +1,20 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import {
-	FlatList,
-	Image,
-	StyleSheet,
-	View,
-	ActivityIndicator,
-} from 'react-native';
-import { Card, IconButton, useTheme } from 'react-native-paper';
-import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
-import ThemeText from '@/components/ThemeText';
+import { ThemeDropdown } from "@/components/ThemeDropdown";
 import ThemeSearchbar from '@/components/ThemeSearchbar';
-import { searchCategory, PaginatedSearchResult } from '@/services/search.service';
-import { getMangaTitle, IMangaDetails } from '@/types/IManga';
+import ThemeText from '@/components/ThemeText';
 import { addMangaToLibrary } from '@/services/manga.service';
-import {ThemeDropdown} from "@/components/ThemeDropdown";
+import { PaginatedSearchResult, searchCategory } from '@/services/search.service';
+import { getMangaTitle, IMangaDetails } from '@/types/IManga';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import
+	{
+		ActivityIndicator,
+		FlatList,
+		Image,
+		StyleSheet,
+		View,
+	} from 'react-native';
+import { Card, IconButton, useTheme } from 'react-native-paper';
 
 export default function SearchCategoryPage() {
 	const theme = useTheme();

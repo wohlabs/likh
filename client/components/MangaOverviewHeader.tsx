@@ -1,16 +1,16 @@
-import { getMangaTitle, IMangaDetails } from "@/types/IManga";
-import { StyleProp, ViewStyle, StyleSheet, View, Image, GestureResponderEvent } from "react-native";
-import ThemeText from "./ThemeText";
 import ReadMore from '@/components/ReadMore';
-import { Button, IconButton, Menu, Portal, useTheme, Modal, ActivityIndicator } from "react-native-paper";
-import { useCallback, useContext, useEffect, useState } from "react";
-import NewCustomListView from "./NewCustomListView";
-import { ICustomList, ICustomLists, MangaItem } from "@/types/ICustomList";
 import { addToCustomList, getCustomLists } from "@/services/custom_lists";
-import ThemeButton from "./ThemeButton";
-import Toast from "react-native-toast-message";
 import { getMangaStatus, updateMangaStatus } from "@/services/media_entry.service";
+import { ICustomList, ICustomLists, MangaItem } from "@/types/ICustomList";
+import { getMangaTitle, IMangaDetails } from "@/types/IManga";
+import { useCallback, useEffect, useState } from "react";
+import { GestureResponderEvent, Image, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
+import { ActivityIndicator, IconButton, Menu, Modal, Portal, useTheme } from "react-native-paper";
+import Toast from "react-native-toast-message";
+import NewCustomListView from "./NewCustomListView";
+import ThemeButton from "./ThemeButton";
 import { ThemeDropdown } from "./ThemeDropdown";
+import ThemeText from "./ThemeText";
 
 
 export default function MangaOverviewHeader({ style, manga } : { style?: StyleProp<ViewStyle>, manga?: IMangaDetails })

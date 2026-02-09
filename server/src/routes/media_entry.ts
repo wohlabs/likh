@@ -1,8 +1,8 @@
-import express, { Router, Request, Response } from 'express';
+import express, { Request, Response, Router } from 'express';
 import AuthenticateMiddleware from '../middleware/Authentication';
-import { MEDIA_LIST_STATUSES, USER_MEDIA_ENTRY_MUTATION, USER_MEDIA_ENTRY_QUERY, UserMediaEntry } from '../models/user_media_status.model';
-import { anilistAuthenticatedRequest, getCache } from '../Utility';
 import { User } from '../models/user.model';
+import { USER_MEDIA_ENTRY_MUTATION, USER_MEDIA_ENTRY_QUERY, UserMediaEntry } from '../models/user_media_status.model';
+import { anilistAuthenticatedRequest, getCache } from '../Utility';
 
 const router: Router = Router();
 

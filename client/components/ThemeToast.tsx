@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { Text, useTheme, Surface } from "react-native-paper";
+import { Surface, Text, useTheme } from "react-native-paper";
 import LoadingToast from "./LoadingToast";
 
 type Props = {

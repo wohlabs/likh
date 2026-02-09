@@ -1,19 +1,19 @@
-import ThemeText from "@/components/ThemeText";
-import { formatData } from "@/components/util";
-import { Stack, useRouter } from "expo-router";
-import React, { useEffect, useState, useContext, useCallback, useRef } from "react";
-import { FlatList, Image, Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from "react-native";
-import { IconButton, Modal, Portal, useTheme } from "react-native-paper";
-import { AuthContext } from "@/context/AuthContext";
-import { addMangaToLibrary, getLibraryMangaThumbnails, getMyListMangaIds, MangaProps, searchMangaByString } from "@/services/manga.service";
-import { getMangaTitle } from "@/types/IManga";
-import ThemeSearchbar from "@/components/ThemeSearchbar";
+import AdvancedSearchModal from "@/components/AdvancedSearchModal";
 import { LoadingScreen } from "@/components/LoadingScreen";
 import MangaCard from "@/components/MangaCard";
-import { getCustomLists } from "@/services/custom_lists";
-import { ICustomLists } from "@/types/ICustomList";
 import NewCustomListView from "@/components/NewCustomListView";
-import AdvancedSearchModal from "@/components/AdvancedSearchModal";
+import ThemeSearchbar from "@/components/ThemeSearchbar";
+import ThemeText from "@/components/ThemeText";
+import { formatData } from "@/components/util";
+import { AuthContext } from "@/context/AuthContext";
+import { getCustomLists } from "@/services/custom_lists";
+import { addMangaToLibrary, getLibraryMangaThumbnails, getMyListMangaIds, MangaProps, searchMangaByString } from "@/services/manga.service";
+import { ICustomLists } from "@/types/ICustomList";
+import { getMangaTitle } from "@/types/IManga";
+import { Stack, useRouter } from "expo-router";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { FlatList, Image, Pressable, StyleSheet, useWindowDimensions, View } from "react-native";
+import { IconButton, Modal, Portal, useTheme } from "react-native-paper";
 
 export default function Index() 
 {

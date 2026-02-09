@@ -1,6 +1,6 @@
 import React from 'react';
 import { TextInput } from 'react-native';
-import { SearchbarProps, Searchbar, IconButton } from 'react-native-paper';
+import { IconButton, Searchbar, SearchbarProps } from 'react-native-paper';
 
 export default function ThemeSearchbar({ value, onClearIconPress, clearAccessibilityLabel, iconColor, rippleColor, clearIcon, theme, testID, ...rest }: SearchbarProps)
 {
