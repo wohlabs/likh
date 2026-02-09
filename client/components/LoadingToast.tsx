@@ -2,7 +2,8 @@
 import { ActivityIndicator, Text, View } from "react-native";
 import { useTheme } from "react-native-paper";
 
-export default function LoadingToast({ text1 }: { text1?: string }) {
+export default function LoadingToast({ text1 }: { text1?: string }) 
+{
 	const theme = useTheme();
 
 	return (

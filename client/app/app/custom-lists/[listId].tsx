@@ -24,12 +24,14 @@ export default function CustomListDetail()
 	const [isEditingDescription, setEditingDesc] = useState<boolean>(false);
 	const [textHovered, setTextHovered] = useState<boolean>(false);
 
-	const getListMangaData = async (mangaList: MangaItem[]) : Promise<(MangaProps & {addedDate: Date})[]> => {
+	const getListMangaData = async (mangaList: MangaItem[]) : Promise<(MangaProps & {addedDate: Date})[]> => 
+	{
 
 		const result = await getLibraryMangaThumbnails(mangaList.map((m) => m.mangaId));
 		if (result.success)
 		{
-			const addedDataList: any[] = result.data.map((item: any) => {
+			const addedDataList: any[] = result.data.map((item: any) => 
+			{
 				item.addedDate = mangaList.find((m) => m.mangaId == Number(item.id))?.addedAt;
 				return item;
 			})
@@ -41,8 +43,10 @@ export default function CustomListDetail()
 		}
 	}
 
-	useEffect(() => {
-		(async () => {
+	useEffect(() => 
+	{
+		(async () => 
+		{
 			const res = await getCustomLists();
 			const list = res.success
 				? res.data.find((l) => l._id === listId)
@@ -76,12 +80,12 @@ export default function CustomListDetail()
 				style={[{ flex: 1, backgroundColor: theme.colors.background }]}
 			>
 				<View style={styles.header}>
-						<ThemeText variant="titleLarge" style={{paddingHorizontal: 10}}>{list?.name}</ThemeText>
-						<ThemeText variant="labelLarge" style={{opacity: 0.6, paddingHorizontal: 10}}>
-							{list?.manga?.length ?? 0} manga
-						</ThemeText>
-						{
-							!isEditingDescription
+					<ThemeText variant="titleLarge" style={{paddingHorizontal: 10}}>{list?.name}</ThemeText>
+					<ThemeText variant="labelLarge" style={{opacity: 0.6, paddingHorizontal: 10}}>
+						{list?.manga?.length ?? 0} manga
+					</ThemeText>
+					{
+						!isEditingDescription
 							?
 							<Pressable
 								onHoverIn={() => setTextHovered(true)}
@@ -90,7 +94,8 @@ export default function CustomListDetail()
 							>
 								<IconButton icon={"pencil"} size={15} mode="contained"
 									style={{display: textHovered ? 'flex' : 'none', position: 'absolute', top: -20, right: 0, zIndex: 2}}
-									onPress={() => {
+									onPress={() => 
+									{
 										setEditingDesc(true)
 										setTextHovered(false)
 									}}
@@ -118,7 +123,8 @@ export default function CustomListDetail()
 									>
 										Save
 									</ThemeButton>
-									<ThemeButton mode="contained-tonal" onPress={() => {
+									<ThemeButton mode="contained-tonal" onPress={() => 
+									{
 										setEditingDesc(false)
 										setDescription(officialDescription)
 									}}>
@@ -126,7 +132,7 @@ export default function CustomListDetail()
 									</ThemeButton>
 								</View>
 							</View>
-						}
+					}
 				</View>
 				<FlatList
 					data={mangas}
@@ -148,7 +154,8 @@ export default function CustomListDetail()
 								<IconButton
 									icon={"trash-can-outline"}
 									size={20}
-									onPress={async () => {
+									onPress={async () => 
+									{
 										const result = await addToCustomList(listId, Number(item.id), false)
 										if (result.success)
 										{

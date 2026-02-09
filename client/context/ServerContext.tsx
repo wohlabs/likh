@@ -11,13 +11,16 @@ export const ServerProvider = ({ children }: any) =>
 	const [loading, setLoading] = useState<boolean>(false);
 	const [isAvailable, setAvailable] = useState<boolean>(false);
 
-	function wait(ms: number) {
+	function wait(ms: number) 
+	{
 		return new Promise(resolve => setTimeout(resolve, ms));
 	}
 	
-	const wakeupServer = useCallback(async () => {
+	const wakeupServer = useCallback(async () => 
+	{
 		// Start delayed UI timer
-		const timeoutId = setTimeout(() => {
+		const timeoutId = setTimeout(() => 
+		{
 			setLoading(true);
 		}, 3000);
 		while (true)

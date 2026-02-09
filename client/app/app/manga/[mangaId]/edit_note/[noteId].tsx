@@ -13,16 +13,16 @@ import { fetch } from 'expo/fetch';
 import { useCallback, useContext, useEffect, useState } from "react";
 import { DropEvent, useDropzone } from "react-dropzone";
 import
-	{
-		FlatList,
-		Image,
-		Keyboard,
-		Platform,
-		Pressable,
-		StyleSheet,
-		TouchableWithoutFeedback,
-		View
-	} from "react-native";
+{
+	FlatList,
+	Image,
+	Keyboard,
+	Platform,
+	Pressable,
+	StyleSheet,
+	TouchableWithoutFeedback,
+	View
+} from "react-native";
 import { IconButton, TextInput, useTheme } from "react-native-paper";
 import Toast from "react-native-toast-message";
 
@@ -61,7 +61,8 @@ export default function EditNoteScreen()
 	let dropZoneRootProps: any = null;
 	let dropZoneInputProps: any = null;
 	
-	useEffect(() => {
+	useEffect(() => 
+	{
 		if (loading)
 		{
 			Toast.show({
@@ -78,14 +79,16 @@ export default function EditNoteScreen()
 	}, [loading])
 
 	// 🌐 Web drag-drop
-	if (Platform.OS === "web") {
+	if (Platform.OS === "web") 
+	{
 		const { getRootProps, getInputProps } = useDropzone({
 			accept: { "image/*": [] },
 			multiple: true,
 			noClick: true,
 			useFsAccessApi: true,
 			noKeyboard: true,
-			onDropAccepted: (acceptedFiles: any, event: DropEvent) => {
+			onDropAccepted: (acceptedFiles: any, event: DropEvent) => 
+			{
 				if (acceptedFiles[0])
 				{
 					console.log("Files dropped:", acceptedFiles);
@@ -209,21 +212,22 @@ export default function EditNoteScreen()
 				authorization: `Bearer ${token}`
 			}
 		})
-		.then(async response => {
-			if (response.ok)
+			.then(async response => 
 			{
-				router.navigate(`/app/manga/${mangaId}`)
-			}
-			else
-			{
-				const rawMessage = (await response.text())
-				const errorMessage = rawMessage.slice(1, rawMessage.length - 1)
-				Toast.show({
-					type: "error",
-					text1: errorMessage
-				})
-			}
-		})
+				if (response.ok)
+				{
+					router.navigate(`/app/manga/${mangaId}`)
+				}
+				else
+				{
+					const rawMessage = (await response.text())
+					const errorMessage = rawMessage.slice(1, rawMessage.length - 1)
+					Toast.show({
+						type: "error",
+						text1: errorMessage
+					})
+				}
+			})
 	}
 	
 	return (
@@ -234,35 +238,36 @@ export default function EditNoteScreen()
 					<View style={[images.length > 0 ? styles.imageViewer : styles.noImageContainer, {borderColor: theme.colors.outlineVariant}]}>
 						{
 							images.length > 0 ? 
-							<>
-								<Image
-									defaultSource={{
-										uri: "https://png.pngtree.com/png-clipart/20190705/original/pngtree-vector-add-icon-png-image_4232053.jpg",
-									}}
-									source={{
-										uri: images[currentImageIndex].uri || "https://static.thenounproject.com/png/187803-200.png"
-									}}
-									resizeMode="contain"
-									style={{flex: 1}}
-								/>
-								<IconButton
-									icon={"trash-can-outline"}
-									size={20}
-									onPress={() => {
-										const newImages = images.filter((_, index) => index !== currentImageIndex);
-										setImages(newImages);
-										setCurrentImageIndex(Math.max(0, currentImageIndex - 1));
-										if (images[currentImageIndex].assetId) // assetId exists only for pre-existing images
+								<>
+									<Image
+										defaultSource={{
+											uri: "https://png.pngtree.com/png-clipart/20190705/original/pngtree-vector-add-icon-png-image_4232053.jpg",
+										}}
+										source={{
+											uri: images[currentImageIndex].uri || "https://static.thenounproject.com/png/187803-200.png"
+										}}
+										resizeMode="contain"
+										style={{flex: 1}}
+									/>
+									<IconButton
+										icon={"trash-can-outline"}
+										size={20}
+										onPress={() => 
 										{
-											setDeletedImages([...deletedImages, images[currentImageIndex].assetId]);
-										}
-									}}
-									style={{position: 'absolute', right: 0, zIndex: 10}}
-									mode="contained"
-								/>
-							</>
-							:
-							<ThemeText variant="headlineSmall" style={{color: theme.colors.onSurfaceDisabled}}>Add an image using the + icon</ThemeText>
+											const newImages = images.filter((_, index) => index !== currentImageIndex);
+											setImages(newImages);
+											setCurrentImageIndex(Math.max(0, currentImageIndex - 1));
+											if (images[currentImageIndex].assetId) // assetId exists only for pre-existing images
+											{
+												setDeletedImages([...deletedImages, images[currentImageIndex].assetId]);
+											}
+										}}
+										style={{position: 'absolute', right: 0, zIndex: 10}}
+										mode="contained"
+									/>
+								</>
+								:
+								<ThemeText variant="headlineSmall" style={{color: theme.colors.onSurfaceDisabled}}>Add an image using the + icon</ThemeText>
 						}
 						{
 							Platform.OS === 'web' && <div {...dropZoneRootProps()} style={{position: "absolute", width: "100%", height: "100%" }}/>

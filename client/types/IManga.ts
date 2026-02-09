@@ -21,6 +21,7 @@ export type IUserMediaEntry = {
 	score: number;
 };
 
-export const getMangaTitle = (manga: IMangaDetails | MangaProps | undefined) : string => {
+export const getMangaTitle = (manga: IMangaDetails | MangaProps | undefined) : string => 
+{
 	return manga?.title.english || manga?.title.userPreferred || "Unknown Title";
 }

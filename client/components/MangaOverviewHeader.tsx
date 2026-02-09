@@ -24,15 +24,18 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 	const [loading, setLoading] = useState<boolean>(true)
 
 	
-	const addIsInListData = useCallback((lists: ICustomLists) => {
-		return lists.map((list: any) => {
+	const addIsInListData = useCallback((lists: ICustomLists) => 
+	{
+		return lists.map((list: any) => 
+		{
 			const isInList = list.manga.some((mangaItem: MangaItem) => mangaItem.mangaId == manga?.mangaId)
 			list['isInList'] = isInList
 			return list;
 		})
 	}, [manga?.mangaId])
 	
-	const fetchLists = useCallback(async () => {
+	const fetchLists = useCallback(async () => 
+	{
 		if (manga?.mangaId)
 		{
 			const result = await getCustomLists();
@@ -44,7 +47,8 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 		}
 	}, [])
 
-	const fetchStatus = useCallback(async () => {
+	const fetchStatus = useCallback(async () => 
+	{
 		if (manga?.mangaId)
 		{
 			const result = await getMangaStatus(manga.mangaId.toString());
@@ -56,9 +60,11 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 		setLoading(false)
 	}, [])
 
-	const handleStatusChange: React.Dispatch<React.SetStateAction<string>> = async (action) => {
+	const handleStatusChange: React.Dispatch<React.SetStateAction<string>> = async (action) => 
+	{
 		let value = "";
-		setStatus(prev => {
+		setStatus(prev => 
+		{
 			const next = typeof action === 'function' ? (action as (prev: string) => string)(prev) : action;
 			value = next;
 			return next;
@@ -77,7 +83,8 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 		}
 	};
 
-	const handleCreateEntry = async () => {
+	const handleCreateEntry = async () => 
+	{
 		if (!manga?.mangaId) return;
 		const result = await updateMangaStatus(manga.mangaId.toString(), 'PLANNING', undefined);
 		if (result.success && result.data)
@@ -90,7 +97,8 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 		}
 	};
 
-	const toggleList = async (listId: string) => {
+	const toggleList = async (listId: string) => 
+	{
 		const targetList = lists.find((list) => list._id === listId)
 		if (targetList !== undefined)
 		{
@@ -108,12 +116,14 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 		}
 	}
 	
-	useEffect(() => {
+	useEffect(() => 
+	{
 		fetchLists();
 		fetchStatus()
 	}, [])
 	
-	const _renderTruncatedFooter = (handlePress : (event: GestureResponderEvent) => void) => {
+	const _renderTruncatedFooter = (handlePress : (event: GestureResponderEvent) => void) => 
+	{
 		return (
 			<ThemeText style={{color: theme.colors.primary}} onPress={handlePress}>
 				Read more
@@ -121,7 +131,8 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 		);
 	}
 
-	const _renderRevealedFooter = (handlePress : (event: GestureResponderEvent) => void) => {
+	const _renderRevealedFooter = (handlePress : (event: GestureResponderEvent) => void) => 
+	{
 		return (
 			<ThemeText style={{color: theme.colors.primary}} onPress={handlePress}>
 				Show less
@@ -129,7 +140,8 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 		);
 	}
 	
-	function htmlToPlainText(html: string) {
+	function htmlToPlainText(html: string) 
+	{
 		return html
 			// normalize line endings
 			.replace(/\r\n/g, "\n")
@@ -156,115 +168,116 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 		<View style={style}>
 			{
 				loading
-				?
-				<ActivityIndicator style={[styles.mangaOverviewContainer, {height: 200}]} />
-				:
-				<View style={[styles.mangaOverviewContainer]}>
-					<View style={{flexDirection: 'column', alignItems: 'center'}}>
-						<Image
-							source={{ uri: manga?.coverImage?.large }}
-							resizeMode="contain"
-							style={styles.mangaCoverImage}
-						/>
-						<View style={{flexDirection: 'row', alignItems: 'center'}}>
-						{
-							!status ? 
-							<ThemeButton mode="contained" onPress={handleCreateEntry} style={{minWidth:150, marginTop:6}}>
+					?
+					<ActivityIndicator style={[styles.mangaOverviewContainer, {height: 200}]} />
+					:
+					<View style={[styles.mangaOverviewContainer]}>
+						<View style={{flexDirection: 'column', alignItems: 'center'}}>
+							<Image
+								source={{ uri: manga?.coverImage?.large }}
+								resizeMode="contain"
+								style={styles.mangaCoverImage}
+							/>
+							<View style={{flexDirection: 'row', alignItems: 'center'}}>
+								{
+									!status ? 
+										<ThemeButton mode="contained" onPress={handleCreateEntry} style={{minWidth:150, marginTop:6}}>
 								add to library
-							</ThemeButton>
-							:
-							<>
-							<View>
-								<ThemeDropdown
-									value={status}
-									setValue={handleStatusChange}
-									items={[
-										{
-											value: 'CURRENT',
-											label: 'reading'
-										},
-										{
-											value: 'PLANNING',
-											label: 'planning'
-										},
-										{
-											value: 'COMPLETED',
-											label: 'completed'
-										},
-										{
-											value: 'DROPPED',
-											label: 'dropped'
-										},
-										{
-											value: 'PAUSED',
-											label: 'paused'
-										},
-										{
-											value: 'REPEATING',
-											label: 'rereading'
-										},
-									]}
-									open={statusOpen}
-									setOpen={setStatusOpen}
-									multiple={false}
-									listMode="FLATLIST"
-									maxHeight={300}
-									style={{minWidth: 100, backgroundColor: theme.colors.surfaceVariant, borderColor: theme.colors.outline}}
-								/>
+										</ThemeButton>
+										:
+										<>
+											<View>
+												<ThemeDropdown
+													value={status}
+													setValue={handleStatusChange}
+													items={[
+														{
+															value: 'CURRENT',
+															label: 'reading'
+														},
+														{
+															value: 'PLANNING',
+															label: 'planning'
+														},
+														{
+															value: 'COMPLETED',
+															label: 'completed'
+														},
+														{
+															value: 'DROPPED',
+															label: 'dropped'
+														},
+														{
+															value: 'PAUSED',
+															label: 'paused'
+														},
+														{
+															value: 'REPEATING',
+															label: 'rereading'
+														},
+													]}
+													open={statusOpen}
+													setOpen={setStatusOpen}
+													multiple={false}
+													listMode="FLATLIST"
+													maxHeight={300}
+													style={{minWidth: 100, backgroundColor: theme.colors.surfaceVariant, borderColor: theme.colors.outline}}
+												/>
+											</View>
+											<Menu
+												visible={optionsVisible}
+												onDismiss={() =>
+												{
+													setOptionsVisible(false)
+												}}
+												anchorPosition="bottom"
+												anchor={
+													<IconButton
+														icon={lists.reduce((accumulator, currentValue)=> accumulator || currentValue.isInList, false) ? 'bookmark' : 'bookmark-outline'}
+														mode="contained"
+														style={{borderRadius: 10}}
+														onPress={() => setOptionsVisible(true)}
+													/>
+												}
+											>
+												<Menu.Item 
+													title={'add to...'} leadingIcon={undefined}
+												/>
+												{
+													lists.map((list, number) => (
+														<Menu.Item 
+															key={list._id ? `custom_list_${list._id}` : `custom_list_undefined_${number}`}
+															onPress={() => toggleList(list._id)} title={list.name}
+															leadingIcon={list.isInList ? (list.isFavorite ? "heart" : "bookmark") : (list.isFavorite ? "heart-outline" : "bookmark-outline")}
+														/>
+													))
+												}
+												<Menu.Item 
+													onPress={() => {setOptionsVisible(false);setCreatingNewList(true);}} title={'new list'} leadingIcon={'plus'}
+												/>
+											</Menu>
+										</>
+								}					
 							</View>
-							<Menu
-								visible={optionsVisible}
-								onDismiss={() =>{
-									setOptionsVisible(false)
-								}}
-								anchorPosition="bottom"
-								anchor={
-									<IconButton
-										icon={lists.reduce((accumulator, currentValue)=> accumulator || currentValue.isInList, false) ? 'bookmark' : 'bookmark-outline'}
-										mode="contained"
-										style={{borderRadius: 10}}
-										onPress={() => setOptionsVisible(true)}
-									/>
-								}
+						</View>
+						<View style={{ flex: 1, marginHorizontal: 10 }}>
+							<View style={styles.titleDetailsContainer}>
+								<ThemeText style={styles.title} variant="titleLarge">{getMangaTitle(manga)}</ThemeText>
+							</View>
+							<ReadMore
+								numberOfLines={5}
+								renderTruncatedFooter={_renderTruncatedFooter}
+								renderRevealedFooter={_renderRevealedFooter}
+								onReady={() => {}}
 							>
-								<Menu.Item 
-									title={'add to...'} leadingIcon={undefined}
-								/>
-								{
-									lists.map((list, number) => (
-										<Menu.Item 
-											key={list._id ? `custom_list_${list._id}` : `custom_list_undefined_${number}`}
-											onPress={() => toggleList(list._id)} title={list.name}
-											leadingIcon={list.isInList ? (list.isFavorite ? "heart" : "bookmark") : (list.isFavorite ? "heart-outline" : "bookmark-outline")}
-										/>
-									))
-								}
-								<Menu.Item 
-									onPress={() => {setOptionsVisible(false);setCreatingNewList(true);}} title={'new list'} leadingIcon={'plus'}
-								/>
-							</Menu>
-							</>
-						}					
+								<ThemeText variant="bodySmall">
+									{
+										htmlToPlainText(manga?.description)
+									}
+								</ThemeText>
+							</ReadMore>
 						</View>
 					</View>
-					<View style={{ flex: 1, marginHorizontal: 10 }}>
-						<View style={styles.titleDetailsContainer}>
-							<ThemeText style={styles.title} variant="titleLarge">{getMangaTitle(manga)}</ThemeText>
-						</View>
-						<ReadMore
-							numberOfLines={5}
-							renderTruncatedFooter={_renderTruncatedFooter}
-							renderRevealedFooter={_renderRevealedFooter}
-							onReady={() => {}}
-							>
-							<ThemeText variant="bodySmall">
-								{
-									htmlToPlainText(manga?.description)
-								}
-							</ThemeText>
-						</ReadMore>
-					</View>
-				</View>
 			}
 			<Portal>
 				<Modal visible={isCreatingNewList} onDismiss={() => setCreatingNewList(false)}

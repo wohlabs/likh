@@ -5,7 +5,8 @@ import { useTheme } from "react-native-paper";
 export function ThemeDropdown(
 	props: DropDownPickerProps<any> & {height?: DimensionValue}
 
-) {
+) 
+{
 	const theme = useTheme();
 	return <DropDownPicker
 		theme={theme.dark ? "DARK" : "LIGHT"}

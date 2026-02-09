@@ -7,17 +7,17 @@ import { BlurView } from "expo-blur";
 import { useRouter } from 'expo-router';
 import React, { useCallback, useRef, useState } from 'react';
 import
-	{
-		FlatList,
-		Image,
-		Pressable,
-		StyleProp,
-		StyleSheet,
-		TextInput,
-		useWindowDimensions,
-		View,
-		ViewStyle,
-	} from 'react-native';
+{
+	FlatList,
+	Image,
+	Pressable,
+	StyleProp,
+	StyleSheet,
+	TextInput,
+	useWindowDimensions,
+	View,
+	ViewStyle,
+} from 'react-native';
 import { Card, IconButton, useTheme } from 'react-native-paper';
 import ThemeButton from './ThemeButton';
 import { hexToRgba } from './util';
@@ -29,7 +29,8 @@ interface AdvancedSearchModalProps {
 	onMangaAdded: () => void;
 }
 
-export default function AdvancedSearchModal({ visible, onDismiss, style, onMangaAdded }: AdvancedSearchModalProps) {
+export default function AdvancedSearchModal({ visible, onDismiss, style, onMangaAdded }: AdvancedSearchModalProps) 
+{
 	const theme = useTheme();
 	const router = useRouter();
 	const { width, height } = useWindowDimensions();
@@ -45,39 +46,46 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 	const searchRef = useRef<TextInput>(null);
 	const isSubmittingRef = useRef<boolean>(false);
 
-	const handleSearch = useCallback(async () => {
-		if (!searchQuery.trim()) {
+	const handleSearch = useCallback(async () => 
+	{
+		if (!searchQuery.trim()) 
+		{
 			setSearchResults({ manga: [], notes: [], lists: [] });
 			return;
 		}
 
 		setIsLoading(true);
 		const result = await performAdvancedSearch(searchQuery);
-		if (result.success) {
+		if (result.success) 
+		{
 			setSearchResults(result.data);
 		}
 		setIsLoading(false);
 	}, [searchQuery]);
 
-	const handleMangaPress = (mangaId: number) => {
+	const handleMangaPress = (mangaId: number) => 
+	{
 		console.log("press manga")
 		onDismiss();
 		router.navigate(`/app/manga/${mangaId}`);
 	};
 
-	const handleNotePress = (mangaId: number) => {
+	const handleNotePress = (mangaId: number) => 
+	{
 		console.log("press note")
 		onDismiss();
 		router.navigate(`/app/manga/${mangaId}`);
 	};
 
-	const handleListPress = (listId: string) => {
+	const handleListPress = (listId: string) => 
+	{
 		console.log("press list")
 		onDismiss();
 		router.navigate(`/app/custom-lists/${listId}`);
 	};
 
-	const handleShowMore = (category: 'manga' | 'notes' | 'lists') => {
+	const handleShowMore = (category: 'manga' | 'notes' | 'lists') => 
+	{
 		onDismiss();
 		router.navigate({
 			pathname: '/app/search',
@@ -105,7 +113,8 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 					icon={"plus"}
 					mode="contained"
 					disabled={item.inLibrary}
-					onPress={async (e) => {
+					onPress={async (e) => 
+					{
 						setIsAdvancedSearching(true)
 						await addMangaToLibrary(item.id);
 						onMangaAdded();
@@ -148,11 +157,11 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 			</Card.Content>
 			<Card.Content style={styles.listMeta}>
 				<ThemeText variant="titleSmall" numberOfLines={1}>
-				{
-					item.manga?.map((mangaItem: MangaProps, index: number) =>(
+					{
+						item.manga?.map((mangaItem: MangaProps, index: number) =>(
 							getMangaTitle(mangaItem) + (index === item.manga.length - 1 ? "" : " • ")
-					))
-				}
+						))
+					}
 				</ThemeText>
 			</Card.Content>
 		</Card>
@@ -193,90 +202,99 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 					{searchQuery.trim() === '' ? (
 						<></>
 					)
-					:
-					isSearchDirty || isSearchDirty || isLoading ?
-					<View style={styles.emptyContainer}>
-						<ThemeText variant="bodyMedium" style={styles.emptyText}>
+						:
+						isSearchDirty || isSearchDirty || isLoading ?
+							<View style={styles.emptyContainer}>
+								<ThemeText variant="bodyMedium" style={styles.emptyText}>
 							Search for: <ThemeText style={{fontWeight: "bold"}}>{searchQuery}</ThemeText>
-						</ThemeText>
-					</View>
-					: searchResults.manga.length === 0 && searchResults.notes.length === 0 && searchResults.lists.length === 0 ? (
-						<View style={styles.emptyContainer}>
-							<ThemeText variant="bodyMedium" style={styles.emptyText}>
+								</ThemeText>
+							</View>
+							: searchResults.manga.length === 0 && searchResults.notes.length === 0 && searchResults.lists.length === 0 ? (
+								<View style={styles.emptyContainer}>
+									<ThemeText variant="bodyMedium" style={styles.emptyText}>
 								No results found
-							</ThemeText>
-						</View>
-					) : (
-						<FlatList
-							data={[
-								...(searchResults.manga.length > 0 ? [{ type: 'manga-header', label: 'Manga' } as any] : []),
-								...searchResults.manga.map((m, idx) => ({ type: 'manga', data: m, key: `manga-${idx}` } as any)),
-								...(searchResults.manga.length > 0 ? [{ type: 'manga-show-more' } as any] : []),
-								...(searchResults.notes.length > 0 ? [{ type: 'notes-header', label: 'Notes' } as any] : []),
-								...searchResults.notes.map((n, idx) => ({ type: 'note', data: n, key: `note-${idx}` } as any)),
-								...(searchResults.notes.length > 0 ? [{ type: 'notes-show-more' } as any] : []),
-								...(searchResults.lists.length > 0 ? [{ type: 'lists-header', label: 'Lists' } as any] : []),
-								...searchResults.lists.map((l, idx) => ({ type: 'list', data: l, key: `list-${idx}` } as any)),
-								...(searchResults.lists.length > 0 ? [{ type: 'lists-show-more' } as any] : [])
-							]}
-							keyExtractor={(item: any, idx) => item.key || `${item.type}-${idx}`}
-							renderItem={({ item }: { item: any }) => {
-								if (item.type === 'manga-header' || item.type === 'notes-header' || item.type === 'lists-header') {
-									return (
-										<View style={[{cursor: 'auto'}]}>
-											<ThemeText variant="labelLarge" style={styles.categoryLabel}>
-												{item.label}
-											</ThemeText>
-											<View style={styles.categoryDivider} />
-										</View>
-									);
-								}
+									</ThemeText>
+								</View>
+							) : (
+								<FlatList
+									data={[
+										...(searchResults.manga.length > 0 ? [{ type: 'manga-header', label: 'Manga' } as any] : []),
+										...searchResults.manga.map((m, idx) => ({ type: 'manga', data: m, key: `manga-${idx}` } as any)),
+										...(searchResults.manga.length > 0 ? [{ type: 'manga-show-more' } as any] : []),
+										...(searchResults.notes.length > 0 ? [{ type: 'notes-header', label: 'Notes' } as any] : []),
+										...searchResults.notes.map((n, idx) => ({ type: 'note', data: n, key: `note-${idx}` } as any)),
+										...(searchResults.notes.length > 0 ? [{ type: 'notes-show-more' } as any] : []),
+										...(searchResults.lists.length > 0 ? [{ type: 'lists-header', label: 'Lists' } as any] : []),
+										...searchResults.lists.map((l, idx) => ({ type: 'list', data: l, key: `list-${idx}` } as any)),
+										...(searchResults.lists.length > 0 ? [{ type: 'lists-show-more' } as any] : [])
+									]}
+									keyExtractor={(item: any, idx) => item.key || `${item.type}-${idx}`}
+									renderItem={({ item }: { item: any }) => 
+									{
+										if (item.type === 'manga-header' || item.type === 'notes-header' || item.type === 'lists-header') 
+										{
+											return (
+												<View style={[{cursor: 'auto'}]}>
+													<ThemeText variant="labelLarge" style={styles.categoryLabel}>
+														{item.label}
+													</ThemeText>
+													<View style={styles.categoryDivider} />
+												</View>
+											);
+										}
 
-								if (item.type === 'manga-show-more' || item.type === 'notes-show-more' || item.type === 'lists-show-more') {
-									const categoryMap = {
-										'manga-show-more': 'manga' as const,
-										'notes-show-more': 'notes' as const,
-										'lists-show-more': 'lists' as const
-									};
-									return (
-										<ThemeButton 
-											mode='text'
-											onPress={() => handleShowMore(categoryMap[item.type as keyof typeof categoryMap])}
-											style={styles.showMoreButton}
-										>
+										if (item.type === 'manga-show-more' || item.type === 'notes-show-more' || item.type === 'lists-show-more') 
+										{
+											const categoryMap = {
+												'manga-show-more': 'manga' as const,
+												'notes-show-more': 'notes' as const,
+												'lists-show-more': 'lists' as const
+											};
+											return (
+												<ThemeButton 
+													mode='text'
+													onPress={() => handleShowMore(categoryMap[item.type as keyof typeof categoryMap])}
+													style={styles.showMoreButton}
+												>
 											Show more
-										</ThemeButton>
-									);
-								}
+												</ThemeButton>
+											);
+										}
 								
-								if (item.type === 'manga') {
-									return renderMangaResult({ item: item.data });
-								}
-								if (item.type === 'note') {
-									return renderNoteResult({ item: item.data });
-								}
-								if (item.type === 'list') {
-									return renderListResult({ item: item.data });
-								}
-								return null;
-							}}
-							scrollEnabled={true}
-						/>
-					)}
+										if (item.type === 'manga') 
+										{
+											return renderMangaResult({ item: item.data });
+										}
+										if (item.type === 'note') 
+										{
+											return renderNoteResult({ item: item.data });
+										}
+										if (item.type === 'list') 
+										{
+											return renderListResult({ item: item.data });
+										}
+										return null;
+									}}
+									scrollEnabled={true}
+								/>
+							)}
 				</View>
 				<ThemeSearchbar
 					ref={searchRef}
 					key="library_search_bar"
 					placeholder="Search manga, notes, lists..."
-					onChangeText={(text) => {
+					onChangeText={(text) => 
+					{
 						setSearchQuery(text)
 						setSearchDirty(true)
 					}}
-					onSubmitEditing={() =>  {
+					onSubmitEditing={() =>  
+					{
 						handleSearch()
 						setSearchDirty(false)
 					}}
-					onFocus={() => {
+					onFocus={() => 
+					{
 						setIsAdvancedSearching(true)
 					}}
 					style={styles.searchBar}

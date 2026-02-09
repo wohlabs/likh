@@ -15,7 +15,8 @@ export default function UsersLayout()
 	const router = useRouter();
 	const { isAvailable, loading: isServerLoading } = useContext(ServerContext)
 
-	useEffect(() => {
+	useEffect(() => 
+	{
 		console.log(segments)
 		if (isServerLoading && segments[0] != "app")
 		{
@@ -32,9 +33,11 @@ export default function UsersLayout()
 		}
 	}, [isServerLoading, segments]);
 
-	useEffect(() => {
+	useEffect(() => 
+	{
 		// 🚫 Not logged in → block app routes
-		if (token) {
+		if (token) 
+		{
 			router.replace("/app");
 			Toast.hide()
 			return;

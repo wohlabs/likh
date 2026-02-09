@@ -7,16 +7,17 @@ import { getMangaTitle, IMangaDetails } from '@/types/IManga';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import
-	{
-		ActivityIndicator,
-		FlatList,
-		Image,
-		StyleSheet,
-		View,
-	} from 'react-native';
+{
+	ActivityIndicator,
+	FlatList,
+	Image,
+	StyleSheet,
+	View,
+} from 'react-native';
 import { Card, IconButton, useTheme } from 'react-native-paper';
 
-export default function SearchCategoryPage() {
+export default function SearchCategoryPage() 
+{
 	const theme = useTheme();
 	const router = useRouter();
 	const { category, query } = useLocalSearchParams();
@@ -30,9 +31,11 @@ export default function SearchCategoryPage() {
 	const [categoryOpen, setCatergoryOpen] = React.useState<boolean>(false);
 	const [categoryCB, setCategoryCB] = React.useState<string>(category as string ?? "manga");
 	
-	const onCategoryChange: React.Dispatch<React.SetStateAction<string>> = (action) => {
+	const onCategoryChange: React.Dispatch<React.SetStateAction<string>> = (action) => 
+	{
 		let nextValue = "";
-		setCategoryCB(prev => {
+		setCategoryCB(prev => 
+		{
 			const next = typeof action === 'function' ? (action as (prev: string) => string)(prev) : action;
 			nextValue = next;
 			return next;
@@ -52,7 +55,8 @@ export default function SearchCategoryPage() {
 
 
 	const loadResults = useCallback(
-		async (pageNum: number = 1, append: boolean = false) => {
+		async (pageNum: number = 1, append: boolean = false) => 
+		{
 			if (!searchQuery.trim() || !category) return;
 
 			const loader = pageNum === 1 ? setIsLoading : setIsLoadingMore;
@@ -65,11 +69,15 @@ export default function SearchCategoryPage() {
 				20
 			);
 
-			if (result.success) {
+			if (result.success) 
+			{
 				const data = result.data as PaginatedSearchResult;
-				if (append) {
+				if (append) 
+				{
 					setResults(prev => [...prev, ...data.items]);
-				} else {
+				}
+				else 
+				{
 					setResults(data.items);
 					setPage(1);
 				}
@@ -82,27 +90,34 @@ export default function SearchCategoryPage() {
 		[searchQuery, category]
 	);
 
-	useEffect(() => {
-		if (searchQuery.trim()) {
+	useEffect(() => 
+	{
+		if (searchQuery.trim()) 
+		{
 			loadResults(1, false);
 		}
 	}, [category]);
 
-	const handleLoadMore = useCallback(() => {
-		if (!isLoadingMore && hasMore) {
+	const handleLoadMore = useCallback(() => 
+	{
+		if (!isLoadingMore && hasMore) 
+		{
 			loadResults(page + 1, true);
 		}
 	}, [page, hasMore, isLoadingMore, loadResults]);
 
-	const handleMangaPress = (mangaId: number) => {
+	const handleMangaPress = (mangaId: number) => 
+	{
 		router.navigate(`/app/manga/${mangaId}`);
 	};
 
-	const handleNotePress = (mangaId: number) => {
+	const handleNotePress = (mangaId: number) => 
+	{
 		router.navigate(`/app/manga/${mangaId}`);
 	};
 
-	const handleListPress = (listId: string) => {
+	const handleListPress = (listId: string) => 
+	{
 		router.navigate(`/app/custom-lists/${listId}`);
 	};
 
@@ -126,7 +141,8 @@ export default function SearchCategoryPage() {
 					icon="plus"
 					mode="contained"
 					disabled={item.inLibrary}
-					onPress={async (e) => {
+					onPress={async (e) => 
+					{
 						e.stopPropagation();
 						await addMangaToLibrary(item.id);
 						setResults(prevResults =>
@@ -173,30 +189,35 @@ export default function SearchCategoryPage() {
 			</Card.Content>
 			<Card.Content style={styles.listMeta}>
 				<ThemeText variant="titleSmall">
-				{
-					item.manga?.map((mangaItem: IMangaDetails, index: number) =>(
+					{
+						item.manga?.map((mangaItem: IMangaDetails, index: number) =>(
 							getMangaTitle(mangaItem) + (index === item.manga.length - 1 ? "" : " • ")
-					))
-				}
+						))
+					}
 				</ThemeText>
 			</Card.Content>
 		</Card>
 	);
 
-	const renderItem = ({ item }: { item: any }) => {
-		if (category === 'manga') {
+	const renderItem = ({ item }: { item: any }) => 
+	{
+		if (category === 'manga') 
+		{
 			return renderMangaResult({ item });
 		}
-		if (category === 'notes') {
+		if (category === 'notes') 
+		{
 			return renderNoteResult({ item });
 		}
-		if (category === 'lists') {
+		if (category === 'lists') 
+		{
 			return renderListResult({ item });
 		}
 		return null;
 	};
 
-	const getCategoryTitle = () => {
+	const getCategoryTitle = () => 
+	{
 		const titles: Record<string, string> = {
 			manga: 'Manga',
 			notes: 'Notes',

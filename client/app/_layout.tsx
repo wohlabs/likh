@@ -15,18 +15,18 @@ export default function RootLayout()
 	const { theme, isDark, toggleTheme } = usePersistentTheme();
 
 	return (
-			<GestureHandlerRootView>
-				<ServerProvider>
-					<AuthProvider>
-						<KeyboardAvoidingView
-							style={{ flex: 1 }}
-							behavior={Platform.OS === "ios" ? "padding" : "height"}
-						>
-							<AppGate />
-						</KeyboardAvoidingView>
-					</AuthProvider>
-				</ServerProvider>
-			</GestureHandlerRootView>
+		<GestureHandlerRootView>
+			<ServerProvider>
+				<AuthProvider>
+					<KeyboardAvoidingView
+						style={{ flex: 1 }}
+						behavior={Platform.OS === "ios" ? "padding" : "height"}
+					>
+						<AppGate />
+					</KeyboardAvoidingView>
+				</AuthProvider>
+			</ServerProvider>
+		</GestureHandlerRootView>
 	);
 }
 
@@ -37,7 +37,8 @@ const AppGate = () =>
 	const { isAvailable, loading: isServerLoading } = useContext(ServerContext)
 	const segments = useSegments()
 
-	useEffect(() => {
+	useEffect(() => 
+	{
 		if (isServerLoading && segments[0] != "app")
 		{
 			Toast.show({

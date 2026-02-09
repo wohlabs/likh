@@ -8,7 +8,8 @@ import { useTheme } from "react-native-paper";
 import Reanimated, { Extrapolate, interpolate, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
 
 
-export default function LandingPage() {
+export default function LandingPage() 
+{
 	const theme = useTheme();
 	const [scrollPosition, setScrollPosition] = useState(0);
 
@@ -21,14 +22,18 @@ export default function LandingPage() {
 
 	const ITEM_COUNT = 3;
 	
-	useEffect(() => {
-		const runPulse = () => {
+	useEffect(() => 
+	{
+		const runPulse = () => 
+		{
 			pulse.value = 0;
 
 			pulse.value = withSequence(
 				withTiming(1, { duration: 3000 }),
-				withTiming(0, { duration: 3000 }, (finished) => {
-					if (finished) {
+				withTiming(0, { duration: 3000 }, (finished) => 
+				{
+					if (finished) 
+					{
 						activeIndex.value = (activeIndex.value + 1) % ITEM_COUNT;
 						runPulse();
 					}
@@ -39,7 +44,8 @@ export default function LandingPage() {
 	  runPulse();
 	}, []);
 
-	useEffect(() => {
+	useEffect(() => 
+	{
 		floatingAnim.value = withRepeat(
 			withTiming(1, { duration: 3000 }),
 			-1,
@@ -69,18 +75,20 @@ export default function LandingPage() {
 	}));
 
 	const usePulseStyle = (index: number) =>
-	  useAnimatedStyle(() => {
-		const isActive = activeIndex.value === index;
+	  useAnimatedStyle(() => 
+		{
+			const isActive = activeIndex.value === index;
 
-		return {
+			return {
 		  opacity: isActive
-			? interpolate(pulse.value, [0, 1], [0.5, 1])
-			: 0.5,
-		};
-	});
+					? interpolate(pulse.value, [0, 1], [0.5, 1])
+					: 0.5,
+			};
+		});
 
 
-	const handleScroll = (event: any) => {
+	const handleScroll = (event: any) => 
+	{
 		setScrollPosition(event.nativeEvent.contentOffset.y);
 	};
 

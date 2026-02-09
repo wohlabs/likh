@@ -17,7 +17,8 @@ type ReadMoreState = {
 	showAllText: boolean;
 };
 
-export default class ReadMore extends React.Component<ReadMoreProps, ReadMoreState> {
+export default class ReadMore extends React.Component<ReadMoreProps, ReadMoreState> 
+{
 	private _isMounted = false;
 	// using `any` because the RN Text ref has measure but TypeScript defs vary by RN version
 	private _text: any = null;
@@ -28,11 +29,13 @@ export default class ReadMore extends React.Component<ReadMoreProps, ReadMoreSta
 		showAllText: false,
 	};
 
-	async componentDidMount(): Promise<void> {
+	async componentDidMount(): Promise<void> 
+	{
 		this._isMounted = true;
 		await nextFrameAsync();
 
-		if (!this._isMounted) {
+		if (!this._isMounted) 
+		{
 			return;
 		}
 
@@ -40,26 +43,33 @@ export default class ReadMore extends React.Component<ReadMoreProps, ReadMoreSta
 		this.setState({ measured: true });
 		await nextFrameAsync();
 
-		if (!this._isMounted) {
+		if (!this._isMounted) 
+		{
 			return;
 		}
 
 		const limitedHeight = await measureHeightAsync(this._text);
 
-		if (fullHeight > limitedHeight) {
-			this.setState({ shouldShowReadMore: true }, () => {
+		if (fullHeight > limitedHeight) 
+		{
+			this.setState({ shouldShowReadMore: true }, () => 
+			{
 				this.props.onReady && this.props.onReady();
 			});
-		} else {
+		}
+		else 
+		{
 			this.props.onReady && this.props.onReady();
 		}
 	}
 
-	componentWillUnmount(): void {
+	componentWillUnmount(): void 
+	{
 		this._isMounted = false;
 	}
 
-	render(): React.ReactNode {
+	render(): React.ReactNode 
+	{
 		const { measured, showAllText } = this.state;
 		const { numberOfLines } = this.props;
 
@@ -69,7 +79,8 @@ export default class ReadMore extends React.Component<ReadMoreProps, ReadMoreSta
 					// when not measured or showing all, set to 0 to show unlimited lines (keeps original behavior)
 					numberOfLines={measured && !showAllText ? numberOfLines : 0}
 					style={this.props.textStyle}
-					ref={(text) => {
+					ref={(text) => 
+					{
 						this._text = text;
 					}}
 				>
@@ -81,19 +92,24 @@ export default class ReadMore extends React.Component<ReadMoreProps, ReadMoreSta
 		);
 	}
 
-	_handlePressReadMore = () => {
+	_handlePressReadMore = () => 
+	{
 		this.setState({ showAllText: true });
 	};
 
-	_handlePressReadLess = () => {
+	_handlePressReadLess = () => 
+	{
 		this.setState({ showAllText: false });
 	};
 
-	_maybeRenderReadMore(): React.ReactNode {
+	_maybeRenderReadMore(): React.ReactNode 
+	{
 		const { shouldShowReadMore, showAllText } = this.state;
 
-		if (shouldShowReadMore && !showAllText) {
-			if (this.props.renderTruncatedFooter) {
+		if (shouldShowReadMore && !showAllText) 
+		{
+			if (this.props.renderTruncatedFooter) 
+			{
 				return this.props.renderTruncatedFooter(this._handlePressReadMore);
 			}
 
@@ -102,8 +118,11 @@ export default class ReadMore extends React.Component<ReadMoreProps, ReadMoreSta
 					Read more
 				</Text>
 			);
-		} else if (shouldShowReadMore && showAllText) {
-			if (this.props.renderRevealedFooter) {
+		}
+		else if (shouldShowReadMore && showAllText) 
+		{
+			if (this.props.renderRevealedFooter) 
+			{
 				return this.props.renderRevealedFooter(this._handlePressReadLess);
 			}
 
@@ -118,20 +137,25 @@ export default class ReadMore extends React.Component<ReadMoreProps, ReadMoreSta
 	}
 }
 
-function measureHeightAsync(component: any): Promise<number> {
-	return new Promise((resolve) => {
-		if (!component || typeof component.measure !== "function") {
+function measureHeightAsync(component: any): Promise<number> 
+{
+	return new Promise((resolve) => 
+	{
+		if (!component || typeof component.measure !== "function") 
+		{
 			resolve(0);
 			return;
 		}
 
-		component.measure((x: number, y: number, w: number, h: number) => {
+		component.measure((x: number, y: number, w: number, h: number) => 
+		{
 			resolve(h);
 		});
 	});
 }
 
-function nextFrameAsync(): Promise<void> {
+function nextFrameAsync(): Promise<void> 
+{
 	return new Promise((resolve) => requestAnimationFrame(() => resolve()));
 }
 

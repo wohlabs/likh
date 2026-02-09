@@ -43,14 +43,18 @@ export interface PaginatedSearchResult {
 	hasMore: boolean;
 }
 
-export const performAdvancedSearch = async (query: string): Promise<ServiceResult<SearchResult>> => {
-	try {
+export const performAdvancedSearch = async (query: string): Promise<ServiceResult<SearchResult>> => 
+{
+	try 
+	{
 		const response = await api.get(`/search?query=${encodeURIComponent(query)}`);
 		return {
 			success: true,
 			data: response.data
 		};
-	} catch (err: any) {
+	}
+	catch (err: any) 
+	{
 		console.error('Advanced search error:', err);
 		return {
 			success: false,
@@ -64,8 +68,10 @@ export const searchCategory = async (
 	category: 'manga' | 'notes' | 'lists',
 	page: number = 1,
 	pageSize: number = 20
-): Promise<ServiceResult<PaginatedSearchResult>> => {
-	try {
+): Promise<ServiceResult<PaginatedSearchResult>> => 
+{
+	try 
+	{
 		const response = await api.get(
 			`/search/${category}?query=${encodeURIComponent(query)}&page=${page}&pageSize=${pageSize}`
 		);
@@ -73,7 +79,9 @@ export const searchCategory = async (
 			success: true,
 			data: response.data
 		};
-	} catch (err: any) {
+	}
+	catch (err: any) 
+	{
 		console.error(`Category search error for ${category}:`, err);
 		return {
 			success: false,

@@ -17,7 +17,8 @@ export default function MangaCard({item, style, allCustomLists, onCreateList } :
 	const [mangaCustomLists, setMangaCustomLists] = useState<{ _id: string, name: string, isInList: boolean}[]>([]);
 	const [isFavorite, setFavorite] = useState<boolean>(false);
 	
-	const fetchMangaCustomLists = async () => {
+	const fetchMangaCustomLists = async () => 
+	{
 		if (item && item?.id) // undefined id is from "blank" card used to fill in for flat list empty space
 		{
 			setMangaCustomLists(allCustomLists.filter((list) => !list.isFavorite).map((list) => ({ _id: list._id, name: list.name, isInList: list.manga?.some((m: MangaItem) => m.mangaId === Number(item.id)) })))
@@ -25,7 +26,8 @@ export default function MangaCard({item, style, allCustomLists, onCreateList } :
 		}
 	}
 
-	const toggleList = async (listId: string) => {
+	const toggleList = async (listId: string) => 
+	{
 		if (item && item?.id) // undefined id is from "blank" card used to fill in for flat list empty space
 		{
 			const targetList = mangaCustomLists.findLast((list) => list._id === listId)
@@ -43,7 +45,8 @@ export default function MangaCard({item, style, allCustomLists, onCreateList } :
 		}
 	}
 
-	const toggleFavorite = async () => {
+	const toggleFavorite = async () => 
+	{
 		if (item && item?.id) // undefined id is from "blank" card used to fill in for flat list empty space
 		{
 			favoriteManga(Number(item.id), !isFavorite)
@@ -51,7 +54,8 @@ export default function MangaCard({item, style, allCustomLists, onCreateList } :
 		}
 	}
 	
-	useEffect(() => {
+	useEffect(() => 
+	{
 		fetchMangaCustomLists()
 	}, [allCustomLists])
 
@@ -74,49 +78,50 @@ export default function MangaCard({item, style, allCustomLists, onCreateList } :
 						resizeMode="cover"
 						style={styles.mangaCoverImage}
 					/>
-				{/* Gradient mask */}
-				<LinearGradient
-					colors={["transparent", modernDarkTheme.colors.background]}
-					locations={[0.6, 1]}
-					style={StyleSheet.absoluteFill}
-					pointerEvents="none"
-				/>
-				<View style={styles.bottomContent}>
-					<View style={styles.textContainer}>
-						<ThemeText variant="titleMedium" style={[styles.mangaTitle, {color: modernDarkTheme.colors.onBackground}]} numberOfLines={2}>{getMangaTitle(item)}</ThemeText>
-					</View>
-				</View>
-				<View style={{position: "absolute", top: 0, width: "100%", flexDirection: "row-reverse"}}>
-					<Menu
-						visible={optionsVisible}
-						onDismiss={() =>{
-							setOptionsVisible(false)
-						}}
-						anchor={
-							<IconButton size={15} icon={mangaCustomLists.reduce((accumulator, currentValue)=> accumulator || currentValue.isInList, false) ? 'bookmark' : 'bookmark-outline'} mode="contained"
-								onPress={() => setOptionsVisible(true)}
-							/>
-						}
-					>
-						<Menu.Item 
-							title={'add to...'} leadingIcon={undefined}
-						/>
-						{
-							mangaCustomLists.map((list, number) => (
-								<Menu.Item 
-									key={list._id ? `custom_list_${list._id}` : `custom_list_undefined_${number}`}
-									onPress={() => toggleList(list._id)} title={list.name} leadingIcon={list.isInList ? "bookmark" : "bookmark-outline"}
-								/>
-							))
-						}
-						<Menu.Item 
-							onPress={() => {setOptionsVisible(false); onCreateList && onCreateList(Number(item.id) ?? undefined);}} title={'new list'} leadingIcon={'plus'}
-						/>
-					</Menu>
-					<IconButton size={15} icon={isFavorite ? "heart" : "heart-outline"} mode="contained"
-						onPress={() => toggleFavorite()}
+					{/* Gradient mask */}
+					<LinearGradient
+						colors={["transparent", modernDarkTheme.colors.background]}
+						locations={[0.6, 1]}
+						style={StyleSheet.absoluteFill}
+						pointerEvents="none"
 					/>
-				</View>
+					<View style={styles.bottomContent}>
+						<View style={styles.textContainer}>
+							<ThemeText variant="titleMedium" style={[styles.mangaTitle, {color: modernDarkTheme.colors.onBackground}]} numberOfLines={2}>{getMangaTitle(item)}</ThemeText>
+						</View>
+					</View>
+					<View style={{position: "absolute", top: 0, width: "100%", flexDirection: "row-reverse"}}>
+						<Menu
+							visible={optionsVisible}
+							onDismiss={() =>
+							{
+								setOptionsVisible(false)
+							}}
+							anchor={
+								<IconButton size={15} icon={mangaCustomLists.reduce((accumulator, currentValue)=> accumulator || currentValue.isInList, false) ? 'bookmark' : 'bookmark-outline'} mode="contained"
+									onPress={() => setOptionsVisible(true)}
+								/>
+							}
+						>
+							<Menu.Item 
+								title={'add to...'} leadingIcon={undefined}
+							/>
+							{
+								mangaCustomLists.map((list, number) => (
+									<Menu.Item 
+										key={list._id ? `custom_list_${list._id}` : `custom_list_undefined_${number}`}
+										onPress={() => toggleList(list._id)} title={list.name} leadingIcon={list.isInList ? "bookmark" : "bookmark-outline"}
+									/>
+								))
+							}
+							<Menu.Item 
+								onPress={() => {setOptionsVisible(false); onCreateList && onCreateList(Number(item.id) ?? undefined);}} title={'new list'} leadingIcon={'plus'}
+							/>
+						</Menu>
+						<IconButton size={15} icon={isFavorite ? "heart" : "heart-outline"} mode="contained"
+							onPress={() => toggleFavorite()}
+						/>
+					</View>
 				</Pressable>
 			</View>
 		</>

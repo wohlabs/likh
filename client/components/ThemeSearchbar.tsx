@@ -5,7 +5,8 @@ import { IconButton, Searchbar, SearchbarProps } from 'react-native-paper';
 export default function ThemeSearchbar({ value, onClearIconPress, clearAccessibilityLabel, iconColor, rippleColor, clearIcon, theme, testID, ...rest }: SearchbarProps)
 {
 	const root = React.useRef<TextInput>(null);
-	const handleClearPress = (e: any) => {
+	const handleClearPress = (e: any) => 
+	{
 		root.current?.clear();
 		rest.onChangeText?.('');
 		onClearIconPress?.(e);
@@ -15,7 +16,7 @@ export default function ThemeSearchbar({ value, onClearIconPress, clearAccessibi
 			value={value}
 			right={(rightProps: { color: string; style: any; testID: string; }) =>
 				value ?
-				<IconButton
+					<IconButton
 				  borderless
 				  accessibilityLabel={clearAccessibilityLabel}
 				  iconColor={value ? iconColor : 'rgba(255, 255, 255, 0)'}
@@ -25,7 +26,7 @@ export default function ThemeSearchbar({ value, onClearIconPress, clearAccessibi
 				  testID={`${testID}-clear-icon`}
 				  accessibilityRole="button"
 				  theme={theme}
-				/>
+					/>
 				 : null}
 			{...rest}
 		/>

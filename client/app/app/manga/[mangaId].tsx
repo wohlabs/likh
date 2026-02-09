@@ -21,29 +21,29 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import
-	{
-		FlatList,
-		Image,
-		Platform,
-		Pressable,
-		ScrollView,
-		StyleProp,
-		StyleSheet,
-		useWindowDimensions,
-		View,
-		ViewStyle,
-	} from "react-native";
+{
+	FlatList,
+	Image,
+	Platform,
+	Pressable,
+	ScrollView,
+	StyleProp,
+	StyleSheet,
+	useWindowDimensions,
+	View,
+	ViewStyle,
+} from "react-native";
 import ReanimatedSwipeable, {
 	SwipeableMethods,
 } from "react-native-gesture-handler/ReanimatedSwipeable";
 import
-	{
-		IconButton,
-		Modal,
-		Portal,
-		TextInput,
-		useTheme
-	} from "react-native-paper";
+{
+	IconButton,
+	Modal,
+	Portal,
+	TextInput,
+	useTheme
+} from "react-native-paper";
 import Reanimated, {
 	SharedValue,
 	useAnimatedStyle,
@@ -56,7 +56,8 @@ function NoteButtons({
 }: {
 	onEditPress?: () => void;
 	onDeletePress?: () => void;
-}) {
+}) 
+{
 	return (
 		<>
 			<IconButton
@@ -95,8 +96,10 @@ function TranslatableButtonContainer({
 	translation: SharedValue<number>;
 	swipeableMethods: SwipeableMethods;
 	children: React.ReactNode;
-}) {
-	const swipeLeftAnimation = useAnimatedStyle(() => {
+}) 
+{
+	const swipeLeftAnimation = useAnimatedStyle(() => 
+	{
 		return {
 			transform: [{ translateX: translation.value + 140 }],
 		};
@@ -109,7 +112,8 @@ function TranslatableButtonContainer({
 	);
 }
 
-export default function MangaDetails() {
+export default function MangaDetails() 
+{
 	const theme = useTheme();
 	const { width } = useWindowDimensions();
 	const { mangaId, error } = useLocalSearchParams(); // <-- get from URL
@@ -148,8 +152,10 @@ export default function MangaDetails() {
 	const [isDropActive, setIsDropActive] = useState(false);
 	const token = useContext(AuthContext).token;
 
-	const pasteImageFromClipboard = useCallback(async () => {
-		try {
+	const pasteImageFromClipboard = useCallback(async () => 
+	{
+		try 
+		{
 			console.log("pasting");
 			const pastedImage = await Clipboard.getImageAsync({
 				format: "png",
@@ -168,28 +174,37 @@ export default function MangaDetails() {
 			const newImgs = [...addImages, image];
 			setAddImages(newImgs);
 			setAddCurrentImageIndex(newImgs.length - 1);
-		} catch (err) {
+		}
+		catch (err) 
+		{
 			console.warn("clipboard paste failed", err);
 		}
 	}, [addImages]);
 
-	async function isImageUrl(url: string) {
-		try {
+	async function isImageUrl(url: string) 
+	{
+		try 
+		{
 			const res = await fetch(url, { method: "HEAD" });
 			const type = res.headers.get("content-type");
 			return type?.startsWith("image/");
-		} catch {
+		}
+		catch 
+		{
 			return false;
 		}
 	}
 
 	async function handleDroppedImageAsString(
 		item: DataTransferItem,
-	): Promise<ImagePicker.ImagePickerAsset | null> {
-		return new Promise((resolve) => {
+	): Promise<ImagePicker.ImagePickerAsset | null> 
+	{
+		return new Promise((resolve) => 
+		{
 			if (!item) return resolve(null);
 
-			item.getAsString(async (dataUrl) => {
+			item.getAsString(async (dataUrl) => 
+			{
 				if (!dataUrl) return resolve(null);
 				const isImageUrlFlag = await isImageUrl(dataUrl);
 				if (!isImageUrlFlag) return resolve(null);
@@ -213,7 +228,8 @@ export default function MangaDetails() {
 	}
 
 	const handleDrop = useCallback(
-		async (e: React.DragEvent<HTMLDivElement>) => {
+		async (e: React.DragEvent<HTMLDivElement>) => 
+		{
 			e.preventDefault();
 
 			const { files, items } = e.dataTransfer;
@@ -225,9 +241,12 @@ export default function MangaDetails() {
 			let refresh = false;
 
 			// If blob files are provided, prefer them and skip URI-based items to avoid double-adding
-			if (files && files.length > 0) {
-				for (const file of files) {
-					if (file.type && file.type.startsWith("image/")) {
+			if (files && files.length > 0) 
+			{
+				for (const file of files) 
+				{
+					if (file.type && file.type.startsWith("image/")) 
+					{
 						const key = file.name || `${file.type}_${file.size}`;
 						if (existingKeys.has(key)) continue;
 						const image: ImagePicker.ImagePickerAsset = {
@@ -241,10 +260,14 @@ export default function MangaDetails() {
 						refresh = true;
 					}
 				}
-			} else {
+			}
+			else 
+			{
 				// No blob files: handle URL-based drops
-				for (const item of items) {
-					if (item.type === "text/uri-list") {
+				for (const item of items) 
+				{
+					if (item.type === "text/uri-list") 
+					{
 						const asset = await handleDroppedImageAsString(item);
 						if (asset === null) continue;
 						const key = asset.fileName || asset.uri;
@@ -256,7 +279,8 @@ export default function MangaDetails() {
 				}
 			}
 
-			if (refresh) {
+			if (refresh) 
+			{
 				setAddImages(newImages);
 				setAddCurrentImageIndex(newImages.length - 1);
 			}
@@ -264,7 +288,8 @@ export default function MangaDetails() {
 		[addImages],
 	);
 
-	if (Platform.OS === "web") {
+	if (Platform.OS === "web") 
+	{
 		const { getRootProps } = useDropzone({
 			accept: { "image/*": [] },
 			multiple: true,
@@ -275,8 +300,10 @@ export default function MangaDetails() {
 		dropZoneRootProps = getRootProps;
 
 		// Detect dragging over the window to activate the overlay so it can receive the drop
-		useEffect(() => {
-			const onWindowDrop = async (e: DragEvent) => {
+		useEffect(() => 
+		{
+			const onWindowDrop = async (e: DragEvent) => 
+			{
 				e.preventDefault();
 				setIsDropActive(false);
 				await handleDrop(e as unknown as React.DragEvent<HTMLDivElement>);
@@ -288,7 +315,8 @@ export default function MangaDetails() {
 				pasteImageFromClipboard as unknown as EventListener,
 			);
 
-			return () => {
+			return () => 
+			{
 				window.removeEventListener(
 					"drop",
 					onWindowDrop as unknown as EventListener,
@@ -301,7 +329,8 @@ export default function MangaDetails() {
 		}, [addImages]);
 	}
 
-	const pickAddImage = async () => {
+	const pickAddImage = async () => 
+	{
 		let result = await ImagePicker.launchImageLibraryAsync({
 			mediaTypes: ["images"],
 			allowsEditing: false,
@@ -309,20 +338,23 @@ export default function MangaDetails() {
 			allowsMultipleSelection: true,
 		});
 
-		if (!result.canceled) {
+		if (!result.canceled) 
+		{
 			let newImgs = [...addImages, ...result.assets];
 			setAddImages(newImgs);
 			setAddCurrentImageIndex(newImgs.length - 1);
 		}
 	};
 
-	const removeAddImage = (index: number) => {
+	const removeAddImage = (index: number) => 
+	{
 		const newImgs = addImages.filter((_, i) => i !== index);
 		setAddImages(newImgs);
 		setAddCurrentImageIndex(Math.max(0, addCurrentImageIndex - 1));
 	};
 
-	const submitInlineNote = async () => {
+	const submitInlineNote = async () => 
+	{
 		if (addImages.length === 0 && (!newText || newText.trim().length === 0))
 			return;
 		const formData = new FormData();
@@ -333,8 +365,10 @@ export default function MangaDetails() {
 		);
 		if (newEndChapter) formData.append("endChapter", newEndChapter);
 		if (newText && newText.trim().length > 0) formData.append("text", newText);
-		for (const image of addImages) {
-			if (Platform.OS === "web") {
+		for (const image of addImages) 
+		{
+			if (Platform.OS === "web") 
+			{
 				const resp = await fetch(image.uri);
 				const blob = await resp.blob();
 				formData.append(
@@ -342,7 +376,9 @@ export default function MangaDetails() {
 					blob,
 					image.fileName || Date.now().toString(),
 				);
-			} else {
+			}
+			else 
+			{
 				const file: File = new File(image.uri);
 				formData.append(
 					"images",
@@ -357,7 +393,8 @@ export default function MangaDetails() {
 			headers: {
 				authorization: `Bearer ${token}`,
 			},
-		}).then(async () => {
+		}).then(async () => 
+		{
 			setIsAddingNote(false);
 			setNewText("");
 			setAddImages([]);
@@ -368,14 +405,17 @@ export default function MangaDetails() {
 	};
 
 	// Optional: Clear the error from the URL so it doesn't persist on refresh
-	useEffect(() => {
-		if (error) {
+	useEffect(() => 
+	{
+		if (error) 
+		{
 			Toast.show({
 				type: "error",
 				text1: error as string,
 			});
 
-			setTimeout(() => {
+			setTimeout(() => 
+			{
 				router.replace({
 					pathname: "/app/manga/[mangaId]",
 					params: { mangaId: mangaId as string },
@@ -384,71 +424,96 @@ export default function MangaDetails() {
 		}
 	}, [error]);
 
-	const populateMangaData = useCallback(async () => {
+	const populateMangaData = useCallback(async () => 
+	{
 		const manga = await getMangaDetails(mangaId.toString(), anilist_token);
-		if (manga) {
+		if (manga) 
+		{
 			setManga(manga);
 		}
 		setLoading(false);
 	}, [mangaId]);
 
-	useEffect(() => {
+	useEffect(() => 
+	{
 		populateMangaData();
 	}, [populateMangaData]);
 
-	const fetchData = useCallback(async () => {
+	const fetchData = useCallback(async () => 
+	{
 		const DATA = await getMangaData(mangaId.toString(), anilist_token);
 		setData(DATA);
 	}, [mangaId, anilist_token]);
 
-	useEffect(() => {
+	useEffect(() => 
+	{
 		fetchData();
 	}, [fetchData]);
 
-	const onDelete = async (noteId: string) => {
-		try {
+	const onDelete = async (noteId: string) => 
+	{
+		try 
+		{
 			const notes = await deleteMangaNote(mangaId.toString(), noteId);
 			setIsViewingOverlay(false);
 			setData(notes);
-		} catch {
+		}
+		catch 
+		{
 			console.error("Could not delete note");
 		}
 	};
 
-	useEffect(() => {
+	useEffect(() => 
+	{
 		let tempData =
 			searchString.trim().length === 0
 				? data
 				: data.filter(
-						(note: INoteEntry) =>
-							note.text &&
+					(note: INoteEntry) =>
+						note.text &&
 							note.text.toLowerCase().includes(searchString.toLowerCase()),
-					);
-		tempData = tempData.toSorted((a: INoteEntry, b: INoteEntry) => {
-			if (sortByValue === "date modified") {
-				if (sortAscending) {
+				);
+		tempData = tempData.toSorted((a: INoteEntry, b: INoteEntry) => 
+		{
+			if (sortByValue === "date modified") 
+			{
+				if (sortAscending) 
+				{
 					return (
 						new Date(a.modifiedAt).getTime() - new Date(b.modifiedAt).getTime()
 					);
-				} else {
+				}
+				else 
+				{
 					return (
 						new Date(b.modifiedAt).getTime() - new Date(a.modifiedAt).getTime()
 					);
 				}
-			} else if (sortByValue === "date created") {
-				if (sortAscending) {
+			}
+			else if (sortByValue === "date created") 
+			{
+				if (sortAscending) 
+				{
 					return (
 						new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
 					);
-				} else {
+				}
+				else 
+				{
 					return (
 						new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
 					);
 				}
-			} else {
-				if (sortAscending) {
+			}
+			else 
+			{
+				if (sortAscending) 
+				{
 					return a.startChapter - b.startChapter;
-				} else {
+				}
+				else 
+				{
 					return b.startChapter - a.startChapter;
 				}
 			}
@@ -456,7 +521,8 @@ export default function MangaDetails() {
 		setFilteredNotes(tempData);
 	}, [searchString, data, sortByValue, sortAscending]);
 
-	useEffect(() => {
+	useEffect(() => 
+	{
 		setViewerNote(filteredNotes[viewerNoteIndex]);
 	}, [filteredNotes, viewerNoteIndex]);
 
@@ -591,7 +657,8 @@ export default function MangaDetails() {
 									<ThemeButton
 										style={styles.button}
 										mode="contained-tonal"
-										onPress={() => {
+										onPress={() => 
+										{
 											setIsAddingNote(false);
 											setNewText("");
 											setAddImages([]);
@@ -694,7 +761,8 @@ export default function MangaDetails() {
 										>
 											<NotePreviewCard
 												note={item}
-												onPress={() => {
+												onPress={() => 
+												{
 													setViewerNoteIndex(index);
 													setIsViewingOverlay(true);
 												}}
@@ -741,7 +809,8 @@ export default function MangaDetails() {
 											<NotePreviewCard
 												key={`NotePreview_${item.id}`}
 												note={item}
-												onPress={() => {
+												onPress={() => 
+												{
 													setViewerNoteIndex(index);
 													setIsViewingOverlay(true);
 												}}
@@ -757,7 +826,8 @@ export default function MangaDetails() {
 							visible={isViewingOverlay}
 							theme={theme}
 							contentContainerStyle={styles.noteModalContainer}
-							onDismiss={() => {
+							onDismiss={() => 
+							{
 								setIsViewingOverlay(false);
 							}}
 						>
@@ -774,7 +844,8 @@ export default function MangaDetails() {
 											{ backgroundColor: theme.colors.background },
 										]}
 										onDelete={() => onDelete(viewerNote.id)}
-										onEdit={() => {
+										onEdit={() => 
+										{
 											router.navigate(
 												`/app/manga/${mangaId}/edit_note/${viewerNote.id}`,
 											);

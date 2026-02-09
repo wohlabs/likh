@@ -13,15 +13,16 @@ export const toastConfig = {
 	loading: (props: any) => <LoadingToast {...props} />,
 };
 
-export function ThemeToast({ text1, text2, variant = "info" }: Props) {
+export function ThemeToast({ text1, text2, variant = "info" }: Props) 
+{
 	const theme = useTheme();
 
 	const indicatorColor =
 		variant === "error"
 			? theme.colors.error
 			: variant === "success"
-			? theme.colors.primary
-			: theme.colors.outline;
+				? theme.colors.primary
+				: theme.colors.outline;
 
 	return (
 		<Surface

@@ -63,7 +63,8 @@ export default function Index()
 		setAllCustomLists(listResponse.success ? listResponse.data : []);
 	}, []);
 	
-	useEffect(() => {
+	useEffect(() => 
+	{
 		populateCustomLists()
 	}, [])
 
@@ -87,28 +88,30 @@ export default function Index()
 			<View ref={pageRef} style={{flex: 1}}>
 				{
 					loading ?
-					<LoadingScreen />
-					:
-					<FlatList
-						data={formatData(filteredMangaList, listColNum)}
-						keyExtractor={(item) => item.id}
-						key={`filteredMangaList_${listColNum}`}
-						numColumns={listColNum}
-						style={{flex: 1}}
-						renderItem={({ item }) => (
-							item?.id ?
-								<MangaCard item={item} style={{ flex:1, padding: 10 }} allCustomLists={allCustomLists} onCreateList={popupCreateNewListWindow}/>
-								: <View style={{ flex: 1, margin: 5 }} />
-						)}
-					/>
+						<LoadingScreen />
+						:
+						<FlatList
+							data={formatData(filteredMangaList, listColNum)}
+							keyExtractor={(item) => item.id}
+							key={`filteredMangaList_${listColNum}`}
+							numColumns={listColNum}
+							style={{flex: 1}}
+							renderItem={({ item }) => (
+								item?.id ?
+									<MangaCard item={item} style={{ flex:1, padding: 10 }} allCustomLists={allCustomLists} onCreateList={popupCreateNewListWindow}/>
+									: <View style={{ flex: 1, margin: 5 }} />
+							)}
+						/>
 				}
 				<AdvancedSearchModal 
 					visible={isAdvancedSearching} 
-					onDismiss={() => {
+					onDismiss={() => 
+					{
 						setIsAdvancedSearching(false);
 						setSearchString('');
 					}} 
-					onMangaAdded={async () => {
+					onMangaAdded={async () => 
+					{
 						await populateMangaList()
 					}}
 				/>
@@ -142,7 +145,8 @@ export default function Index()
 									mode="contained"
 									iconColor={mangaList.find((elem) => elem.id === item.id) ? theme.colors.surfaceVariant : theme.colors.primary}
 									containerColor={mangaList.find((elem) => elem.id === item.id) ? theme.colors.inverseOnSurface : theme.colors.surfaceVariant}
-									onPress={async () => {
+									onPress={async () => 
+									{
 										await addMangaToLibrary(item.id);
 										populateMangaList();
 										setSearching(false);

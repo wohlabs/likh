@@ -15,7 +15,8 @@ const AutoGrowingTextInput = ({
 	onChangeText: any;
 	stylel?: StyleProp<TextStyle>,
 	minHeight?: number
-}) => {
+}) => 
+{
 	const [height, setHeight] = useState(minHeight);
 	const [selection, setSelection] = useState({start: 0, end: 0});
 	const theme = useTheme();
@@ -44,7 +45,8 @@ const AutoGrowingTextInput = ({
 				selection={selection}
 				onFocus={() => setSelection({ start: value.length, end: value.length })}
 				contentStyle={[ styles.defaultStyling, { minHeight: Math.max(height, minHeight),  ...theme.fonts.bodyMedium }]}
-				onContentSizeChange={(e) => {
+				onContentSizeChange={(e) => 
+				{
 					const newHeight = e.nativeEvent.contentSize.height;
 					if (newHeight !== height)
 					{
@@ -58,7 +60,8 @@ const AutoGrowingTextInput = ({
 			{/* Hidden Text clone for measurement */}
 			<Text
 				style={[styles.hiddenText, styles.defaultStyling, {...theme.fonts.bodyMedium}]}
-				onLayout={(e) => {
+				onLayout={(e) => 
+				{
 					const newHeight = e.nativeEvent.layout.height;
 					if (newHeight !== height)
 					{

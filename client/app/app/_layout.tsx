@@ -64,15 +64,18 @@ export default function AppLayout()
 		};
 	}, []);
 
-	useEffect(() => {
+	useEffect(() => 
+	{
 		// 🚫 Not logged in → block app routes
-		if (!token) {
+		if (!token) 
+		{
 			router.replace("/users/login");
 			return;
 		}
 	}, [token, segments]);
 	
-	const onTitleClicked = () => {
+	const onTitleClicked = () => 
+	{
 		const inAuthGroup = segments[0] === "users";
 		if (inAuthGroup)
 		{
@@ -101,82 +104,82 @@ export default function AppLayout()
 
 	return (
 		<PaperProvider theme={theme}>
-		<Stack
-			screenOptions={{
-				contentStyle: {backgroundColor: theme.colors.background},
-				headerStyle: {
-					backgroundColor: theme.colors.surface,
-					borderWidth: 0,
-					shadowColor: "#000",
-					shadowOffset: { width: 0, height: 4 },
-					shadowOpacity: 0.15,
-					shadowRadius: 12,
-					elevation: 2,
-					boxShadow: `0 0 5px 1px ${theme.colors.backdrop}`
-				},
-				headerTintColor: theme.colors.onSurface,
-				headerLeft: () => <Pressable onPress={onTitleClicked}><ThemeText style={{ fontWeight: "900", letterSpacing: 2, marginLeft: 10, color: theme.colors.primary }} variant="titleLarge">likh</ThemeText></Pressable>,
-				headerTitleAlign: "center",
-				headerTitle: () => null,
-				headerRight: () =>
-				(
-					<>
-						{
-							token &&
+			<Stack
+				screenOptions={{
+					contentStyle: {backgroundColor: theme.colors.background},
+					headerStyle: {
+						backgroundColor: theme.colors.surface,
+						borderWidth: 0,
+						shadowColor: "#000",
+						shadowOffset: { width: 0, height: 4 },
+						shadowOpacity: 0.15,
+						shadowRadius: 12,
+						elevation: 2,
+						boxShadow: `0 0 5px 1px ${theme.colors.backdrop}`
+					},
+					headerTintColor: theme.colors.onSurface,
+					headerLeft: () => <Pressable onPress={onTitleClicked}><ThemeText style={{ fontWeight: "900", letterSpacing: 2, marginLeft: 10, color: theme.colors.primary }} variant="titleLarge">likh</ThemeText></Pressable>,
+					headerTitleAlign: "center",
+					headerTitle: () => null,
+					headerRight: () =>
+						(
+							<>
+								{
+									token &&
 							<IconButton
 								icon="bookmark-multiple"
 								onPress={() => router.push("/app/custom-lists")}
 								style={{ marginRight: 10 }}
 								iconColor={theme.colors.primary}
 							/>
-						}
-						<IconButton size={20} icon={isDark ? 'moon-waning-crescent' : 'white-balance-sunny'} onPress={toggleTheme} style={[Platform.OS === 'ios' && {margin: 'auto'}]} iconColor={theme.colors.primary} />
-						{
-							token
-							?
-							<Menu
-								visible={optionsVisible}
-								onDismiss={() => setOptionsVisible(false)}
-								anchorPosition="bottom"
-								anchor={
-									<ThemeButton icon={'account'} onPress={() => setOptionsVisible(true)} mode="text" textColor={theme.colors.primary}>{username}</ThemeButton>
 								}
-							>
-								<Menu.Item 
-									onPress={() => 
-									{
-										if (anilistToken == null || anilistToken === undefined || anilistToken === "undefined" || anilistToken === '')
-										{
-											setOptionsVisible(false);
-											linkAnilist();
-											router.replace('/app') // may not be ideal to refresh
-										}
-									}}
-									leadingIcon={() => (
-										<Image
-											source={{ uri: 'https://docs.anilist.co/anilist.png' }}
-											style={styles.anilistIcon}
-										/>
-									)}
-									title={anilistToken == null || anilistToken === undefined || anilistToken === "undefined" || anilistToken === '' ? "Link your Anilist account" : "Anilist linked"}
-								/>
-								<Menu.Item 
-									onPress={async () => 
-									{
-										setOptionsVisible(false);
-										await logout();
-										router.navigate('/users/login') // may not be ideal to refresh
-									}} title="Logout" leadingIcon={"logout"}
-								/>
-							</Menu>
-							: <ThemeButton icon={'login'} onPress={() => router.navigate("/users/login")}>Login</ThemeButton>
-						}
-					</>
-				)
-			}}
-		>
-		</Stack>
-		<Toast config={toastConfig}/>
+								<IconButton size={20} icon={isDark ? 'moon-waning-crescent' : 'white-balance-sunny'} onPress={toggleTheme} style={[Platform.OS === 'ios' && {margin: 'auto'}]} iconColor={theme.colors.primary} />
+								{
+									token
+										?
+										<Menu
+											visible={optionsVisible}
+											onDismiss={() => setOptionsVisible(false)}
+											anchorPosition="bottom"
+											anchor={
+												<ThemeButton icon={'account'} onPress={() => setOptionsVisible(true)} mode="text" textColor={theme.colors.primary}>{username}</ThemeButton>
+											}
+										>
+											<Menu.Item 
+												onPress={() => 
+												{
+													if (anilistToken == null || anilistToken === undefined || anilistToken === "undefined" || anilistToken === '')
+													{
+														setOptionsVisible(false);
+														linkAnilist();
+														router.replace('/app') // may not be ideal to refresh
+													}
+												}}
+												leadingIcon={() => (
+													<Image
+														source={{ uri: 'https://docs.anilist.co/anilist.png' }}
+														style={styles.anilistIcon}
+													/>
+												)}
+												title={anilistToken == null || anilistToken === undefined || anilistToken === "undefined" || anilistToken === '' ? "Link your Anilist account" : "Anilist linked"}
+											/>
+											<Menu.Item 
+												onPress={async () => 
+												{
+													setOptionsVisible(false);
+													await logout();
+													router.navigate('/users/login') // may not be ideal to refresh
+												}} title="Logout" leadingIcon={"logout"}
+											/>
+										</Menu>
+										: <ThemeButton icon={'login'} onPress={() => router.navigate("/users/login")}>Login</ThemeButton>
+								}
+							</>
+						)
+				}}
+			>
+			</Stack>
+			<Toast config={toastConfig}/>
 		</PaperProvider>
 	)
 }
