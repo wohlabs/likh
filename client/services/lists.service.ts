@@ -1,7 +1,7 @@
 import api from "./AxiosInstance";
 import { ServiceResult } from "./IServiceResult";
 
-export const editList = async (listId: string, newData: {}) : Promise<ServiceResult<null>> =>
+export const editList = async (listId: string, newData: object) : Promise<ServiceResult<null>> =>
 {
 	try 
 	{

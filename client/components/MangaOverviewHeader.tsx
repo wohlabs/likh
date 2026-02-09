@@ -45,7 +45,7 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 				setLists(listsWithIsInListData)
 			}
 		}
-	}, [])
+	}, [addIsInListData, manga?.mangaId])
 
 	const fetchStatus = useCallback(async () => 
 	{
@@ -58,7 +58,7 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 			}
 		}
 		setLoading(false)
-	}, [])
+	}, [manga?.mangaId])
 
 	const handleStatusChange: React.Dispatch<React.SetStateAction<string>> = async (action) => 
 	{
@@ -120,7 +120,7 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 	{
 		fetchLists();
 		fetchStatus()
-	}, [])
+	}, [fetchLists, fetchStatus])
 	
 	const _renderTruncatedFooter = (handlePress : (event: GestureResponderEvent) => void) => 
 	{

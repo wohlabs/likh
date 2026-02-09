@@ -58,8 +58,6 @@ export default function EditNoteScreen()
 	const [loading, setLoading] = useState<boolean>(true);
 	const token = useContext(AuthContext).token
 	const theme = useTheme()
-	let dropZoneRootProps: any = null;
-	let dropZoneInputProps: any = null;
 	
 	useEffect(() => 
 	{
@@ -79,36 +77,34 @@ export default function EditNoteScreen()
 	}, [loading])
 
 	// 🌐 Web drag-drop
-	if (Platform.OS === "web") 
-	{
-		const { getRootProps, getInputProps } = useDropzone({
-			accept: { "image/*": [] },
-			multiple: true,
-			noClick: true,
-			useFsAccessApi: true,
-			noKeyboard: true,
-			onDropAccepted: (acceptedFiles: any, event: DropEvent) => 
+	const { getRootProps /*, getInputProps*/ } = useDropzone({
+		accept: { "image/*": [] },
+		multiple: true,
+		noClick: true,
+		useFsAccessApi: true,
+		noKeyboard: true,
+		disabled: Platform.OS !== 'web',
+		onDropAccepted: (acceptedFiles: any, event: DropEvent) => 
+		{
+			if (acceptedFiles[0])
 			{
-				if (acceptedFiles[0])
-				{
-					console.log("Files dropped:", acceptedFiles);
-					const imageArray: ImagePicker.ImagePickerAsset[] = acceptedFiles.map((file: any) => ({
-						uri: URL.createObjectURL(file),
-						type: file.type,
-						fileName: file.name,
-						fileSize: file.size,
-					}));
-					const newImages = [...images, ...imageArray];
-					setImages(newImages);
-					setCurrentImageIndex(newImages.length - 1); // set to last image
-					let newAddedImages = [...addedImages, ...imageArray]
-					setAddedImages(newAddedImages);
-				}
+				console.log("Files dropped:", acceptedFiles);
+				const imageArray: ImagePicker.ImagePickerAsset[] = acceptedFiles.map((file: any) => ({
+					uri: URL.createObjectURL(file),
+					type: file.type,
+					fileName: file.name,
+					fileSize: file.size,
+				}));
+				const newImages = [...images, ...imageArray];
+				setImages(newImages);
+				setCurrentImageIndex(newImages.length - 1); // set to last image
+				let newAddedImages = [...addedImages, ...imageArray]
+				setAddedImages(newAddedImages);
 			}
-		});
-		dropZoneInputProps = getInputProps;
-		dropZoneRootProps = getRootProps;
-	}
+		}
+	});
+	// const dropZoneInputProps = getInputProps;
+	const dropZoneRootProps = getRootProps;
 
 	const populateMangaData = useCallback(async () => 
 	{
@@ -151,7 +147,7 @@ export default function EditNoteScreen()
 				params: {mangaId: mangaId.toString(), error: "note not found"}
 			});
 		}
-	}, []);
+	}, [mangaId, noteId]);
 
 	useEffect(() => 
 	{

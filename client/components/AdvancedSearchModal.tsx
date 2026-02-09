@@ -33,7 +33,7 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 {
 	const theme = useTheme();
 	const router = useRouter();
-	const { width, height } = useWindowDimensions();
+	const { height } = useWindowDimensions();
 	const [searchQuery, setSearchQuery] = useState('');
 	const [isAdvancedSearching, setIsAdvancedSearching] = useState<boolean>(false);
 	const [isSearchDirty, setSearchDirty] = useState<boolean>(false);
@@ -44,7 +44,6 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 	});
 	const [isLoading, setIsLoading] = useState(false);
 	const searchRef = useRef<TextInput>(null);
-	const isSubmittingRef = useRef<boolean>(false);
 
 	const handleSearch = useCallback(async () => 
 	{

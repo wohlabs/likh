@@ -36,8 +36,9 @@ export const ServerProvider = ({ children }: any) =>
 					return
 				}
 			}
-			catch (e)
+			catch (e: any)
 			{
+				console.error(e);
 			}
 			console.log('Failed to wake up the server. trying again.')
 			await wait(10000) // wait for 2s until attempting to wake the server up again
@@ -48,7 +49,7 @@ export const ServerProvider = ({ children }: any) =>
 	useEffect(() => 
 	{
 		wakeupServer();
-	}, []);
+	}, [wakeupServer]);
 
 
 	return (

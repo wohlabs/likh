@@ -96,7 +96,7 @@ export default function SearchCategoryPage()
 		{
 			loadResults(1, false);
 		}
-	}, [category]);
+	}, [category, loadResults, searchQuery]);
 
 	const handleLoadMore = useCallback(() => 
 	{

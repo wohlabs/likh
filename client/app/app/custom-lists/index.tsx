@@ -11,7 +11,6 @@ export default function CustomListsIndex()
 	const theme = useTheme();
 	const router = useRouter();
 	const [lists, setLists] = useState<ICustomLists>([]);
-	const [loading, setLoading] = useState(true);
 
 	useEffect(() => 
 	{
@@ -19,7 +18,6 @@ export default function CustomListsIndex()
 		{
 			const res = await getCustomLists();
 			setLists(res.success ? res.data : []);
-			setLoading(false);
 		})();
 	}, []);
 

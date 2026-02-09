@@ -2,18 +2,17 @@ import { AuthContext } from "@/context/AuthContext";
 import { ServerContext } from "@/context/ServerContext";
 import { usePersistentTheme } from "@/context/usePersistentTheme";
 import { Stack, useRouter, useSegments } from "expo-router";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { PaperProvider } from "react-native-paper";
 import Toast from "react-native-toast-message";
 
 export default function UsersLayout()
 {
-	const {theme, toggleTheme, isDark} = usePersistentTheme()
-	const {token, username, anilistToken, logout} = useContext(AuthContext);
-	const [optionsVisible, setOptionsVisible] = useState<boolean>(false);
+	const {theme} = usePersistentTheme()
+	const {token} = useContext(AuthContext);
 	const segments = useSegments();
 	const router = useRouter();
-	const { isAvailable, loading: isServerLoading } = useContext(ServerContext)
+	const { loading: isServerLoading } = useContext(ServerContext)
 
 	useEffect(() => 
 	{
@@ -42,7 +41,7 @@ export default function UsersLayout()
 			Toast.hide()
 			return;
 		}
-	}, [token, segments]);
+	}, [token, segments, router]);
 	return (
 		<PaperProvider theme={theme}>
 			<Stack

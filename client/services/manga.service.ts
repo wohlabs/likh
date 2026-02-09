@@ -118,7 +118,7 @@ export const getMangaDetails = async (mangaId: string, anilist_token?: string) :
 		})
 		return respone.data as IMangaDetails;
 	}
-	catch (err: any)
+	catch
 	{
 		return undefined;
 	}

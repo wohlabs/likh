@@ -12,8 +12,6 @@ import Toast from "react-native-toast-message";
 
 export default function RootLayout() 
 {
-	const { theme, isDark, toggleTheme } = usePersistentTheme();
-
 	return (
 		<GestureHandlerRootView>
 			<ServerProvider>
@@ -34,12 +32,12 @@ const AppGate = () =>
 {
 	const { loading } = useContext(AuthContext);
 	const { ready, theme } = usePersistentTheme();
-	const { isAvailable, loading: isServerLoading } = useContext(ServerContext)
+	const { loading: isServerLoading } = useContext(ServerContext)
 	const segments = useSegments()
 
 	useEffect(() => 
 	{
-		if (isServerLoading && segments[0] != "app")
+		if (isServerLoading && segments[0] !== "app")
 		{
 			Toast.show({
 				type: 'loading',
@@ -52,7 +50,7 @@ const AppGate = () =>
 		{
 			Toast.hide()
 		}
-	}, [isServerLoading]);
+	}, [isServerLoading, segments]);
 	
 	// Wait until theme is resolved
 	if (!ready) 

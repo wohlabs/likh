@@ -21,7 +21,7 @@ export default function AppLayout()
 	const [optionsVisible, setOptionsVisible] = useState<boolean>(false);
 	const segments = useSegments();
 	const router = useRouter();
-	const { isAvailable, loading: isServerLoading } = useContext(ServerContext)
+	const { isAvailable } = useContext(ServerContext)
 	
 	useEffect(() => 
 	{
@@ -72,7 +72,7 @@ export default function AppLayout()
 			router.replace("/users/login");
 			return;
 		}
-	}, [token, segments]);
+	}, [token, segments, router]);
 	
 	const onTitleClicked = () => 
 	{

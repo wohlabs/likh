@@ -5,13 +5,12 @@ import NewCustomListView from "@/components/NewCustomListView";
 import ThemeSearchbar from "@/components/ThemeSearchbar";
 import ThemeText from "@/components/ThemeText";
 import { formatData } from "@/components/util";
-import { AuthContext } from "@/context/AuthContext";
 import { getCustomLists } from "@/services/custom_lists";
 import { addMangaToLibrary, getLibraryMangaThumbnails, getMyListMangaIds, MangaProps, searchMangaByString } from "@/services/manga.service";
 import { ICustomLists } from "@/types/ICustomList";
 import { getMangaTitle } from "@/types/IManga";
 import { Stack, useRouter } from "expo-router";
-import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { FlatList, Image, Pressable, StyleSheet, useWindowDimensions, View } from "react-native";
 import { IconButton, Modal, Portal, useTheme } from "react-native-paper";
 
@@ -32,7 +31,6 @@ export default function Index()
 	const [allCustomLists, setAllCustomLists] = useState<ICustomLists>([])
 	const [loading, setLoading] = useState<boolean>(true)
 	const { width } = useWindowDimensions();
-	const anilist_token: string = useContext(AuthContext).anilistToken || ""
 	const listColNum = Math.max(Math.ceil(width/250), 1)
 
 	const populateMangaList = useCallback(async () => 
@@ -43,7 +41,7 @@ export default function Index()
 		const mangaListResult = await getLibraryMangaThumbnails(libMangaIds);
 		setMangaList(mangaListResult.success ? mangaListResult.data : []);
 		return setLoading(false);
-	}, [anilist_token]);
+	}, []);
 
 	const populateNewMangaList = useCallback(async () => 
 	{
@@ -55,7 +53,7 @@ export default function Index()
 	{
 		setMangaIdToAdd(mangaIdToAdd);
 		setCreatingNewList(true)
-	}, [newSearchString]);
+	}, []);
 
 	const populateCustomLists = useCallback(async () => 
 	{
@@ -66,7 +64,7 @@ export default function Index()
 	useEffect(() => 
 	{
 		populateCustomLists()
-	}, [])
+	}, [populateCustomLists])
 
 	useEffect(() => 
 	{

@@ -6,7 +6,7 @@ import { ICustomLists, MangaItem } from "@/types/ICustomList";
 import { getMangaTitle } from "@/types/IManga";
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Image, Pressable, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 import { IconButton, Menu, useTheme } from "react-native-paper";
 
@@ -17,14 +17,14 @@ export default function MangaCard({item, style, allCustomLists, onCreateList } :
 	const [mangaCustomLists, setMangaCustomLists] = useState<{ _id: string, name: string, isInList: boolean}[]>([]);
 	const [isFavorite, setFavorite] = useState<boolean>(false);
 	
-	const fetchMangaCustomLists = async () => 
+	const fetchMangaCustomLists = useCallback(async () => 
 	{
 		if (item && item?.id) // undefined id is from "blank" card used to fill in for flat list empty space
 		{
 			setMangaCustomLists(allCustomLists.filter((list) => !list.isFavorite).map((list) => ({ _id: list._id, name: list.name, isInList: list.manga?.some((m: MangaItem) => m.mangaId === Number(item.id)) })))
 			setFavorite(allCustomLists.findLast((list) => list.isFavorite)?.manga.some(m => m.mangaId === Number(item.id)) ?? false)
 		}
-	}
+	}, [allCustomLists, item])
 
 	const toggleList = async (listId: string) => 
 	{
@@ -57,7 +57,7 @@ export default function MangaCard({item, style, allCustomLists, onCreateList } :
 	useEffect(() => 
 	{
 		fetchMangaCustomLists()
-	}, [allCustomLists])
+	}, [allCustomLists, fetchMangaCustomLists])
 
 	return (
 		<>

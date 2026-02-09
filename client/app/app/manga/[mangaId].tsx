@@ -195,9 +195,9 @@ export default function MangaDetails()
 		}
 	}
 
-	async function handleDroppedImageAsString(
+	const handleDroppedImageAsString = useCallback(async (
 		item: DataTransferItem,
-	): Promise<ImagePicker.ImagePickerAsset | null> 
+	): Promise<ImagePicker.ImagePickerAsset | null> =>
 	{
 		return new Promise((resolve) => 
 		{
@@ -225,7 +225,7 @@ export default function MangaDetails()
 				resolve(imageAsset);
 			});
 		});
-	}
+	}, [])
 
 	const handleDrop = useCallback(
 		async (e: React.DragEvent<HTMLDivElement>) => 
@@ -285,49 +285,47 @@ export default function MangaDetails()
 				setAddCurrentImageIndex(newImages.length - 1);
 			}
 		},
-		[addImages],
+		[addImages, handleDroppedImageAsString]
 	);
 
-	if (Platform.OS === "web") 
+	const { getRootProps } = useDropzone({
+		accept: { "image/*": [] },
+		multiple: true,
+		noClick: true,
+		useFsAccessApi: true,
+		noKeyboard: true,
+		disabled: Platform.OS !== 'web'
+	});
+	dropZoneRootProps = getRootProps;
+
+	// Detect dragging over the window to activate the overlay so it can receive the drop
+	useEffect(() => 
 	{
-		const { getRootProps } = useDropzone({
-			accept: { "image/*": [] },
-			multiple: true,
-			noClick: true,
-			useFsAccessApi: true,
-			noKeyboard: true,
-		});
-		dropZoneRootProps = getRootProps;
-
-		// Detect dragging over the window to activate the overlay so it can receive the drop
-		useEffect(() => 
+		const onWindowDrop = async (e: DragEvent) => 
 		{
-			const onWindowDrop = async (e: DragEvent) => 
-			{
-				e.preventDefault();
-				setIsDropActive(false);
-				await handleDrop(e as unknown as React.DragEvent<HTMLDivElement>);
-			};
+			e.preventDefault();
+			setIsDropActive(false);
+			await handleDrop(e as unknown as React.DragEvent<HTMLDivElement>);
+		};
 
-			window.addEventListener("drop", onWindowDrop as unknown as EventListener);
-			window.addEventListener(
+		window.addEventListener("drop", onWindowDrop as unknown as EventListener);
+		window.addEventListener(
+			"paste",
+			pasteImageFromClipboard as unknown as EventListener,
+		);
+
+		return () => 
+		{
+			window.removeEventListener(
+				"drop",
+				onWindowDrop as unknown as EventListener,
+			);
+			window.removeEventListener(
 				"paste",
 				pasteImageFromClipboard as unknown as EventListener,
 			);
-
-			return () => 
-			{
-				window.removeEventListener(
-					"drop",
-					onWindowDrop as unknown as EventListener,
-				);
-				window.removeEventListener(
-					"paste",
-					pasteImageFromClipboard as unknown as EventListener,
-				);
-			};
-		}, [addImages]);
-	}
+		};
+	}, [addImages]);
 
 	const pickAddImage = async () => 
 	{
@@ -422,7 +420,7 @@ export default function MangaDetails()
 				});
 			}, 50);
 		}
-	}, [error]);
+	}, [error, mangaId]);
 
 	const populateMangaData = useCallback(async () => 
 	{
@@ -432,7 +430,7 @@ export default function MangaDetails()
 			setManga(manga);
 		}
 		setLoading(false);
-	}, [mangaId]);
+	}, [mangaId, anilist_token]);
 
 	useEffect(() => 
 	{

@@ -20,7 +20,7 @@ export const getMangaStatus = async (mangaId: string) : Promise<ServiceResult<IU
 	{
 		return {
 			success: false,
-			error: 'Unable to get manga status'
+			error: err.response?.data?.error ?? 'Unable to get manga status'
 		};
 	}
 }
@@ -41,7 +41,7 @@ export const updateMangaStatus = async (mangaId: string, status: string, score?:
 	{
 		return {
 			success: false,
-			error: 'Unable to update manga status'
+			error: err.response?.data?.error ?? 'Unable to update manga status'
 		};
 	}
 }

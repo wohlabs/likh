@@ -16,7 +16,6 @@ export default function LandingPage()
 	// Animation values
 	const floatingAnim = useSharedValue(0);
 	const rotateAnim = useSharedValue(0);
-	const pulseAnim = useSharedValue(0);
 	const pulse = useSharedValue(0);
 	const activeIndex = useSharedValue(0);
 
@@ -42,7 +41,7 @@ export default function LandingPage()
 		};
 
 	  runPulse();
-	}, []);
+	}, [activeIndex, pulse]);
 
 	useEffect(() => 
 	{
@@ -56,7 +55,7 @@ export default function LandingPage()
 			-1,
 			false
 		);
-	}, []);
+	}, [floatingAnim, rotateAnim]);
 
 	const floatingStyle = useAnimatedStyle(() => ({
 		transform: [
@@ -212,7 +211,7 @@ export default function LandingPage()
 								<ThemeText style={styles.valueCardIconText}>🎨</ThemeText>
 							</View>
 							<ThemeText style={[styles.valueCardTitle, {color: theme.colors.onBackground}]}>Beautiful Design</ThemeText>
-							<ThemeText style={[styles.valueCardText, {color: theme.colors.onSurface}]}>Modern interface you'll love to use</ThemeText>
+							<ThemeText style={[styles.valueCardText, {color: theme.colors.onSurface}]}>Modern interface you&#39;ll love to use</ThemeText>
 						</View>
 
 						<View style={[styles.valueCard, {backgroundColor: theme.colors.surface, borderColor: theme.colors.surfaceVariant}]}>
