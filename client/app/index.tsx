@@ -3,15 +3,17 @@ import ThemeText from "@/components/ThemeText";
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, useColorScheme, View } from "react-native";
 import { useTheme } from "react-native-paper";
 import Reanimated, { Extrapolate, interpolate, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
 import "../global.css"
+import { themes, usePersistentTheme } from "@/context/usePersistentTheme";
 
 export default function LandingPage() 
 {
 	const theme = useTheme();
 	const [scrollPosition, setScrollPosition] = useState(0);
+	const { themeScheme } = usePersistentTheme()
 
 	// Animation values
 	const floatingAnim = useSharedValue(0);
@@ -96,7 +98,8 @@ export default function LandingPage()
 	return (
 		<>
 			<ScrollView 
-				style={[styles.container, {backgroundColor: theme.colors.background}]} 
+				style={[styles.container, themes[themeScheme]]} 
+				className="bg-background"
 				showsVerticalScrollIndicator={false}
 				onScroll={handleScroll}
 				scrollEventThrottle={16}
