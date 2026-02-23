@@ -2,8 +2,9 @@ import { LoadingScreen } from "@/components/LoadingScreen";
 import { toastConfig } from "@/components/ThemeToast";
 import { AuthContext, AuthProvider } from "@/context/AuthContext";
 import { ServerContext, ServerProvider } from "@/context/ServerContext";
-import { usePersistentTheme } from "@/context/usePersistentTheme";
+import { themes, usePersistentTheme } from "@/context/usePersistentTheme";
 import { Stack, useSegments } from "expo-router";
+import { VariableContextProvider } from "nativewind";
 import { useContext, useEffect } from "react";
 import { KeyboardAvoidingView, Platform } from "react-native";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -31,7 +32,7 @@ export default function RootLayout()
 const AppGate = () => 
 {
 	const { loading } = useContext(AuthContext);
-	const { ready, theme } = usePersistentTheme();
+	const { ready, theme, themeScheme } = usePersistentTheme();
 	const { loading: isServerLoading } = useContext(ServerContext)
 	const segments = useSegments()
 
@@ -64,17 +65,19 @@ const AppGate = () =>
 	}
 
 	return (
-		<PaperProvider theme={theme}>
-			<Stack
-				screenOptions={{
-					contentStyle: {backgroundColor: theme.colors.background},
-					headerStyle: {backgroundColor: theme.colors.surfaceVariant},
-					headerTintColor: theme.colors.onSurface,
-					headerShown: false
-				}}
-			>
-			</Stack>
-			<Toast config={toastConfig}/>
-		</PaperProvider>
+		<VariableContextProvider value={themes[themeScheme]}>
+			<PaperProvider theme={theme}>
+				<Stack
+					screenOptions={{
+						contentStyle: {backgroundColor: theme.colors.background},
+						headerStyle: {backgroundColor: theme.colors.surfaceVariant},
+						headerTintColor: theme.colors.onSurface,
+						headerShown: false
+					}}
+				>
+				</Stack>
+				<Toast config={toastConfig}/>
+			</PaperProvider>
+		</VariableContextProvider>
 	);
 };

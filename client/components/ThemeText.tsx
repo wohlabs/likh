@@ -1,14 +1,12 @@
 import React from 'react';
-import { Text, TextProps } from 'react-native-paper';
+import {Text, TextProps} from 'react-native';
+import "../global.css"
 
-export default function ThemeText({ children, style, ...props }: TextProps<Text>)
+export default function ThemeText({ children, ...props }: TextProps)
 {
 	return (
 		<Text
-			style={[
-				{textTransform: 'lowercase'}, // Default theme-based styles
-				style,
-			]}
+			className='text-onBackground lowercase'
 			{...props}
 		>
 			{children}

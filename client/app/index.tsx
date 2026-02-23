@@ -3,7 +3,7 @@ import ThemeText from "@/components/ThemeText";
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, useColorScheme, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 import { useTheme } from "react-native-paper";
 import Reanimated, { Extrapolate, interpolate, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
 import "../global.css"
@@ -57,7 +57,13 @@ export default function LandingPage()
 			-1,
 			false
 		);
-	}, [floatingAnim, rotateAnim]);
+	}, [floatingAnim, rotateAnim])
+
+	// Helper to get theme-based classes
+	const getColorClasses = (colorKey: keyof typeof theme.colors, opacity?: number) => {
+		const color = theme.colors[colorKey];
+		return { backgroundColor: color, opacity: opacity || 1 };
+	};
 
 	const floatingStyle = useAnimatedStyle(() => ({
 		transform: [
@@ -98,55 +104,55 @@ export default function LandingPage()
 	return (
 		<>
 			<ScrollView 
-				style={[styles.container, themes[themeScheme]]} 
-				className="bg-background"
+				className="flex-1 bg-background"
 				showsVerticalScrollIndicator={false}
 				onScroll={handleScroll}
 				scrollEventThrottle={16}
 			>
 				{/* Header */}
-				<View style={styles.header}>
-					<ThemeText style={[styles.logo, {color: theme.colors.primary}]}>likh</ThemeText>
+				<View className="flex-row justify-between items-center px-5 pt-12.5 pb-7.5">
+					<ThemeText className="text-onBackground text-3xl font-extrabold tracking-wider">likh</ThemeText>
 					<ThemeButton 
 						mode="text" 
 						onPress={() => router.push('/users/login')}
-						labelStyle={styles.loginLabel}
+						labelStyle={{fontSize: 14, fontWeight: '600'}}
 					>
 						login
 					</ThemeButton>
 				</View>
 
 				{/* Hero Section with 3D Effects */}
-				<View style={[styles.heroSection, {backgroundColor: theme.colors.background}]}>
+				<View className="px-5 py-20 items-center justify-center relative min-h-150 overflow-hidden" style={{backgroundColor: theme.colors.background}}>
 					{/* Animated Background Elements */}
-					<View style={styles.backgroundGradient}>
-						<Reanimated.View style={[styles.floatingOrb, rotateStyle, {
+					<View className="absolute w-full h-full top-0 left-0">
+						<Reanimated.View className="absolute w-75 h-75 rounded-full -top-25 -right-25" style={[rotateStyle, {
 							backgroundColor: theme.colors.primary,
 							opacity: 0.15,
 						}]} />
-						<Reanimated.View style={[styles.floatingOrb2, floatingStyle, {
+						<Reanimated.View className="absolute w-62.5 h-62.5 rounded-full -bottom-20 -left-20" style={[floatingStyle, {
 							backgroundColor: theme.colors.secondary,
 							opacity: 0.1,
 						}]} />
-						<Reanimated.View style={[styles.floatingOrb3, {
+						<Reanimated.View className="absolute w-50 h-50 rounded-full bottom-25 right-12.5" style={{
 							backgroundColor: theme.colors.tertiary,
 							opacity: 0.08,
-						}]} />
+						}} />
 					</View>
 
 					{/* Hero Content */}
-					<Reanimated.View style={[styles.heroContent, floatingStyle]}>
-						<ThemeText style={[styles.heroTitle, {color: theme.colors.onBackground}]}>
+					<Reanimated.View className="z-10 items-center" style={floatingStyle}>
+						<ThemeText className="text-onBackground text-5xl font-black text-center mb-5 leading-tight" style={{fontSize: 56, lineHeight: 64}}>
 							Track Your Story
 						</ThemeText>
-						<ThemeText style={[styles.heroSubtitle, {color: theme.colors.onSurface}]}>
+						<ThemeText className="text-onSurface text-lg text-center mb-10 max-w-90 font-medium" style={{fontSize: 18, lineHeight: 28}}>
 							Capture every moment, every thought, every emotion from the manga you love
 						</ThemeText>
-						<View style={styles.ctaContainer}>
+						<View className="flex-row gap-3 justify-center flex-wrap">
 							<ThemeButton 
 								mode="contained" 
 								onPress={() => router.push('/users/login')}
-								style={[styles.ctaButton, {backgroundColor: theme.colors.primary}]}
+								className="min-w-40 rounded-2xl"
+								style={{backgroundColor: theme.colors.primary}}
 							>
 								Start Your Journey
 							</ThemeButton>
@@ -155,90 +161,123 @@ export default function LandingPage()
 				</View>
 
 				{/* Features Showcase Section */}
-				<View style={[styles.featuresShowcase, {backgroundColor: theme.colors.surface}]}>
-					<View style={styles.featureShowcaseContent}>
-						<ThemeText style={[styles.sectionTitle, {color: theme.colors.onBackground}]}>
+				<View className="py-15 my-10" style={{backgroundColor: theme.colors.surface}}>
+					<View className="px-5">
+						<ThemeText className="text-onBackground text-3xl font-black text-center mb-6" style={{color: theme.colors.onBackground}}>
 							Designed for Manga Lovers
 						</ThemeText>
 
 						{/* Feature Cards with Depth */}
-						<View style={styles.featureCardsContainer}>
-							<Reanimated.View style={[styles.featureCard, usePulseStyle(0), {backgroundColor: theme.colors.primaryContainer, borderColor: theme.colors.primary}]}>
-								<View style={[styles.featureIconBg, {backgroundColor: theme.colors.primary}]}>
+						<View className="gap-4 mt-6">
+							<Reanimated.View className="py-5 px-4 rounded-3xl border items-center" style={[usePulseStyle(0), {
+								backgroundColor: theme.colors.primaryContainer,
+								borderColor: theme.colors.primary,
+								borderWidth: 1,
+							}]}>
+								<View className="w-14 h-14 rounded-2xl justify-center items-center mb-3" style={{backgroundColor: theme.colors.primary}}>
 									<Feather name="pen-tool" size={24} color={theme.colors.onPrimary} />
 								</View>
-								<ThemeText style={[styles.featureCardTitle, {color: theme.colors.onBackground}]}>Note Taking</ThemeText>
-								<ThemeText style={[styles.featureCardDesc, {color: theme.colors.onSurface}]}>Capture your thoughts instantly</ThemeText>
+								<ThemeText className="text-onBackground text-base font-bold text-center" style={{color: theme.colors.onBackground}}>Note Taking</ThemeText>
+								<ThemeText className="text-onSurface text-sm text-center mt-1" style={{color: theme.colors.onSurface, lineHeight: 18}}>Capture your thoughts instantly</ThemeText>
 							</Reanimated.View>
-							<Reanimated.View style={[styles.featureCard, usePulseStyle(1), {
+							<Reanimated.View className="py-5 px-4 rounded-3xl border items-center" style={[usePulseStyle(1), {
 								backgroundColor: theme.colors.secondaryContainer,
 								borderColor: theme.colors.secondary,
+								borderWidth: 1,
 							}]}>
-								<View style={[styles.featureIconBg, {backgroundColor: theme.colors.secondary}]}>
+								<View className="w-14 h-14 rounded-2xl justify-center items-center mb-3" style={{backgroundColor: theme.colors.secondary}}>
 									<Feather name="image" size={24} color={theme.colors.onSecondary} />
 								</View>
-								<ThemeText style={[styles.featureCardTitle, {color: theme.colors.onBackground}]}>Image Library</ThemeText>
-								<ThemeText style={[styles.featureCardDesc, {color: theme.colors.onSurface}]}>Save your favorite panels</ThemeText>
+								<ThemeText className="text-onBackground text-base font-bold text-center" style={{color: theme.colors.onBackground}}>Image Library</ThemeText>
+								<ThemeText className="text-onSurface text-sm text-center mt-1" style={{color: theme.colors.onSurface, lineHeight: 18}}>Save your favorite panels</ThemeText>
 							</Reanimated.View>
-							<Reanimated.View style={[styles.featureCard, usePulseStyle(2), {
+							<Reanimated.View className="py-5 px-4 rounded-3xl border items-center" style={[usePulseStyle(2), {
 								backgroundColor: theme.colors.tertiaryContainer,
 								borderColor: theme.colors.tertiary,
+								borderWidth: 1,
 							}]}>
-								<View style={[styles.featureIconBg, {backgroundColor: theme.colors.tertiary}]}>
+								<View className="w-14 h-14 rounded-2xl justify-center items-center mb-3" style={{backgroundColor: theme.colors.tertiary}}>
 									<Feather name="layers" size={24} color={theme.colors.onTertiary} />
 								</View>
-								<ThemeText style={[styles.featureCardTitle, {color: theme.colors.onBackground}]}>Organization</ThemeText>
-								<ThemeText style={[styles.featureCardDesc, {color: theme.colors.onSurface}]}>Track chapters seamlessly</ThemeText>
+								<ThemeText className="text-onBackground text-base font-bold text-center" style={{color: theme.colors.onBackground}}>Organization</ThemeText>
+								<ThemeText className="text-onSurface text-sm text-center mt-1" style={{color: theme.colors.onSurface, lineHeight: 18}}>Track chapters seamlessly</ThemeText>
 							</Reanimated.View>
 						</View>
 					</View>
 				</View>
 
 				{/* Value Section with Staggered Cards */}
-				<View style={[styles.valueSection, {backgroundColor: theme.colors.background}]}>
-					<ThemeText style={[styles.sectionTitle, {color: theme.colors.onBackground, marginBottom: 32}]}>
+				<View className="px-5 py-12.5" style={{backgroundColor: theme.colors.background}}>
+					<ThemeText className="text-onBackground text-3xl font-black text-center mb-8" style={{color: theme.colors.onBackground}}>
 						Why Choose likh?
 					</ThemeText>
 
-					<View style={styles.valueCardsContainer}>
-						<View style={[styles.valueCard, {backgroundColor: theme.colors.surface, borderColor: theme.colors.surfaceVariant}]}>
-							<View style={[styles.valueCardIcon, {backgroundColor: theme.colors.primaryContainer}]}>
-								<ThemeText style={styles.valueCardIconText}>⚡</ThemeText>
+					<View className="gap-4">
+						<View className="py-6 px-4 rounded-3xl border items-center shadow-sm" style={{
+							backgroundColor: theme.colors.surface,
+							borderColor: theme.colors.surfaceVariant,
+							borderWidth: 1,
+							shadowColor: '#000',
+							shadowOffset: { width: 0, height: 4 },
+							shadowOpacity: 0.08,
+							shadowRadius: 12,
+							elevation: 2,
+						}}>
+							<View className="w-16 h-16 rounded-2xl justify-center items-center mb-4" style={{backgroundColor: theme.colors.primaryContainer}}>
+								<ThemeText className="text-4xl">⚡</ThemeText>
 							</View>
-							<ThemeText style={[styles.valueCardTitle, {color: theme.colors.onBackground}]}>Lightning Fast</ThemeText>
-							<ThemeText style={[styles.valueCardText, {color: theme.colors.onSurface}]}>No lag, no delays, just pure reading bliss</ThemeText>
+							<ThemeText className="text-onBackground text-lg font-bold text-center mb-2" style={{color: theme.colors.onBackground}}>Lightning Fast</ThemeText>
+							<ThemeText className="text-onSurface text-sm text-center" style={{color: theme.colors.onSurface, lineHeight: 20}}>No lag, no delays, just pure reading bliss</ThemeText>
 						</View>
 
-						<View style={[styles.valueCard, {backgroundColor: theme.colors.surface, borderColor: theme.colors.surfaceVariant}]}>
-							<View style={[styles.valueCardIcon, {backgroundColor: theme.colors.secondaryContainer}]}>
-								<ThemeText style={styles.valueCardIconText}>🎨</ThemeText>
+						<View className="py-6 px-4 rounded-3xl border items-center shadow-sm" style={{
+							backgroundColor: theme.colors.surface,
+							borderColor: theme.colors.surfaceVariant,
+							borderWidth: 1,
+							shadowColor: '#000',
+							shadowOffset: { width: 0, height: 4 },
+							shadowOpacity: 0.08,
+							shadowRadius: 12,
+							elevation: 2,
+						}}>
+							<View className="w-16 h-16 rounded-2xl justify-center items-center mb-4" style={{backgroundColor: theme.colors.secondaryContainer}}>
+								<ThemeText className="text-4xl">🎨</ThemeText>
 							</View>
-							<ThemeText style={[styles.valueCardTitle, {color: theme.colors.onBackground}]}>Beautiful Design</ThemeText>
-							<ThemeText style={[styles.valueCardText, {color: theme.colors.onSurface}]}>Modern interface you&#39;ll love to use</ThemeText>
+							<ThemeText className="text-onBackground text-lg font-bold text-center mb-2" style={{color: theme.colors.onBackground}}>Beautiful Design</ThemeText>
+							<ThemeText className="text-onSurface text-sm text-center" style={{color: theme.colors.onSurface, lineHeight: 20}}>Modern interface you&#39;ll love to use</ThemeText>
 						</View>
 
-						<View style={[styles.valueCard, {backgroundColor: theme.colors.surface, borderColor: theme.colors.surfaceVariant}]}>
-							<View style={[styles.valueCardIcon, {backgroundColor: theme.colors.tertiaryContainer}]}>
-								<ThemeText style={styles.valueCardIconText}>🔒</ThemeText>
+						<View className="py-6 px-4 rounded-3xl border items-center shadow-sm" style={{
+							backgroundColor: theme.colors.surface,
+							borderColor: theme.colors.surfaceVariant,
+							borderWidth: 1,
+							shadowColor: '#000',
+							shadowOffset: { width: 0, height: 4 },
+							shadowOpacity: 0.08,
+							shadowRadius: 12,
+							elevation: 2,
+						}}>
+							<View className="w-16 h-16 rounded-2xl justify-center items-center mb-4" style={{backgroundColor: theme.colors.tertiaryContainer}}>
+								<ThemeText className="text-4xl">🔒</ThemeText>
 							</View>
-							<ThemeText style={[styles.valueCardTitle, {color: theme.colors.onBackground}]}>Privacy First</ThemeText>
-							<ThemeText style={[styles.valueCardText, {color: theme.colors.onSurface}]}>Your notes, your data, always secure</ThemeText>
+							<ThemeText className="text-onBackground text-lg font-bold text-center mb-2" style={{color: theme.colors.onBackground}}>Privacy First</ThemeText>
+							<ThemeText className="text-onSurface text-sm text-center" style={{color: theme.colors.onSurface, lineHeight: 20}}>Your notes, your data, always secure</ThemeText>
 						</View>
 					</View>
 				</View>
 
 				{/* CTA Section */}
-				<View style={[styles.ctaSection, {backgroundColor: theme.colors.primary}]}>
-					<ThemeText style={[styles.bottomTitle, {color: theme.colors.onPrimary}]}>
+				<View className="py-15 px-5 items-center my-10 rounded-3xl" style={{backgroundColor: theme.colors.primary}}>
+					<ThemeText className="text-onPrimary text-3xl font-black text-center mb-3 leading-tight" style={{color: theme.colors.onPrimary, fontSize: 32, lineHeight: 40}}>
 						Start Your Manga Journey
 					</ThemeText>
-					<ThemeText style={[styles.bottomSubtitle, {color: theme.colors.onPrimary}]}>
+					<ThemeText className="text-onPrimary text-base text-center mb-8 font-medium" style={{color: theme.colors.onPrimary}}>
 						Free forever. No credit card required.
 					</ThemeText>
 					<ThemeButton 
 						mode="contained" 
 						onPress={() => router.push('/users/register')}
-						style={styles.largeCTA}
+						className="min-w-50 rounded-2xl"
 						buttonColor={theme.colors.onPrimary}
 						labelStyle={{color: theme.colors.primary}}
 					>
@@ -247,8 +286,12 @@ export default function LandingPage()
 				</View>
 
 				{/* Footer */}
-				<View style={[styles.footer, {backgroundColor: theme.colors.surface, borderTopColor: theme.colors.surfaceVariant}]}>
-					<ThemeText style={[styles.footerText, {color: theme.colors.onSurface}]}>
+				<View className="px-5 py-7.5 items-center border-t mb-5" style={{
+					backgroundColor: theme.colors.surface,
+					borderTopColor: theme.colors.surfaceVariant,
+					borderTopWidth: 1,
+				}}>
+					<ThemeText className="text-onSurface text-xs font-medium" style={{color: theme.colors.onSurface}}>
 						© <span>{year}</span> likh. crafted for manga readers.
 					</ThemeText>
 				</View>
@@ -257,222 +300,3 @@ export default function LandingPage()
 	);
 }
 
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-	},
-	header: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-		alignItems: "center",
-		paddingHorizontal: 20,
-		paddingTop: 50,
-		paddingBottom: 30,
-	},
-	logo: {
-		fontSize: 28,
-		fontWeight: "900",
-		letterSpacing: 2,
-	},
-	loginLabel: {
-		fontSize: 14,
-		fontWeight: "600",
-	},
-	heroSection: {
-		paddingHorizontal: 20,
-		paddingVertical: 80,
-		alignItems: "center",
-		justifyContent: "center",
-		position: "relative",
-		minHeight: 600,
-		overflow: "hidden",
-	},
-	backgroundGradient: {
-		position: "absolute",
-		width: "100%",
-		height: "100%",
-		top: 0,
-		left: 0,
-	},
-	floatingOrb: {
-		position: "absolute",
-		width: 300,
-		height: 300,
-		borderRadius: 150,
-		top: -100,
-		right: -100,
-	},
-	floatingOrb2: {
-		position: "absolute",
-		width: 250,
-		height: 250,
-		borderRadius: 125,
-		bottom: -80,
-		left: -80,
-	},
-	floatingOrb3: {
-		position: "absolute",
-		width: 200,
-		height: 200,
-		borderRadius: 100,
-		bottom: 100,
-		right: 50,
-	},
-	heroContent: {
-		zIndex: 1,
-		alignItems: "center",
-	},
-	heroTitle: {
-		fontSize: 56,
-		fontWeight: "900",
-		lineHeight: 64,
-		marginBottom: 20,
-		textAlign: "center",
-	},
-	heroSubtitle: {
-		fontSize: 18,
-		lineHeight: 28,
-		marginBottom: 40,
-		maxWidth: 360,
-		textAlign: "center",
-		fontWeight: "500",
-	},
-	ctaContainer: {
-		flexDirection: "row",
-		gap: 12,
-		justifyContent: "center",
-		flexWrap: "wrap",
-	},
-	ctaButton: {
-		minWidth: 160,
-		borderRadius: 12,
-	},
-	ctaButtonOutline: {
-		minWidth: 160,
-		borderRadius: 12,
-		borderWidth: 2,
-	},
-	featuresShowcase: {
-		paddingVertical: 60,
-		marginVertical: 40,
-	},
-	featureShowcaseContent: {
-		paddingHorizontal: 20,
-	},
-	featureCardsContainer: {
-		gap: 16,
-		marginTop: 24,
-	},
-	featureCard: {
-		paddingVertical: 20,
-		paddingHorizontal: 16,
-		borderRadius: 16,
-		borderWidth: 1,
-		alignItems: "center",
-	},
-	featureIconBg: {
-		width: 56,
-		height: 56,
-		borderRadius: 12,
-		justifyContent: "center",
-		alignItems: "center",
-		marginBottom: 12,
-	},
-	featureCardTitle: {
-		fontSize: 16,
-		fontWeight: "700",
-		marginBottom: 6,
-		textAlign: "center",
-	},
-	featureCardDesc: {
-		fontSize: 13,
-		lineHeight: 18,
-		textAlign: "center",
-	},
-	sectionTitle: {
-		fontSize: 32,
-		fontWeight: "900",
-		marginBottom: 24,
-		textAlign: "center",
-	},
-	valueSection: {
-		paddingHorizontal: 20,
-		paddingVertical: 50,
-	},
-	valueCardsContainer: {
-		gap: 16,
-	},
-	valueCard: {
-		paddingVertical: 24,
-		paddingHorizontal: 16,
-		borderRadius: 16,
-		borderWidth: 1,
-		alignItems: "center",
-		shadowColor: "#000",
-		shadowOffset: { width: 0, height: 4 },
-		shadowOpacity: 0.08,
-		shadowRadius: 12,
-		elevation: 2,
-	},
-	valueCardIcon: {
-		width: 64,
-		height: 64,
-		borderRadius: 12,
-		justifyContent: "center",
-		alignItems: "center",
-		marginBottom: 16,
-	},
-	valueCardIconText: {
-		fontSize: 32,
-	},
-	valueCardTitle: {
-		fontSize: 18,
-		fontWeight: "700",
-		marginBottom: 8,
-		textAlign: "center",
-	},
-	valueCardText: {
-		fontSize: 14,
-		lineHeight: 20,
-		textAlign: "center",
-	},
-	ctaSection: {
-		paddingVertical: 60,
-		paddingHorizontal: 20,
-		alignItems: "center",
-		marginVertical: 40,
-		borderRadius: 20,
-	},
-	bottomTitle: {
-		fontSize: 32,
-		fontWeight: "900",
-		textAlign: "center",
-		marginBottom: 12,
-		lineHeight: 40,
-	},
-	bottomSubtitle: {
-		fontSize: 16,
-		textAlign: "center",
-		marginBottom: 32,
-		fontWeight: "500",
-	},
-	largeCTA: {
-		minWidth: 200,
-		borderRadius: 12,
-	},
-	bottomText: {
-		fontSize: 13,
-		fontWeight: "500",
-	},
-	footer: {
-		paddingHorizontal: 20,
-		paddingVertical: 30,
-		alignItems: "center",
-		borderTopWidth: 1,
-		marginBottom: 20,
-	},
-	footerText: {
-		fontSize: 12,
-		fontWeight: "500",
-	},
-});

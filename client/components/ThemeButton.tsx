@@ -5,7 +5,8 @@ export default function ThemeButton({ children, labelStyle, ...props }: ButtonPr
 {
 	return (
 		<Button
-			labelStyle={[{textTransform: 'lowercase'}, labelStyle]}
+			className='lowercase'
+			labelStyle={[labelStyle]}
 			{...props}
 		>
 			{children}
