@@ -4,11 +4,13 @@ import ThemeText from "@/components/ThemeText";
 import { toastConfig } from "@/components/ThemeToast";
 import { AuthContext } from "@/context/AuthContext";
 import { ServerContext } from "@/context/ServerContext";
-import { usePersistentTheme } from "@/context/usePersistentTheme";
+import { themes, usePersistentTheme } from "@/context/usePersistentTheme";
 import api from "@/services/AxiosInstance";
+import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Stack, useRouter, useSegments } from "expo-router";
 import * as WebBrowser from 'expo-web-browser';
+import { VariableContextProvider } from "nativewind";
 import { useContext, useEffect, useState } from "react";
 import { Image, Linking, Platform, Pressable, StyleSheet } from "react-native";
 import { IconButton, Menu, PaperProvider } from "react-native-paper";
@@ -16,7 +18,7 @@ import Toast from "react-native-toast-message";
 
 export default function AppLayout()
 {
-	const {theme, toggleTheme, isDark} = usePersistentTheme()
+	const {theme, toggleTheme, isDark, themeScheme} = usePersistentTheme()
 	const {token, username, anilistToken, logout} = useContext(AuthContext);
 	const [optionsVisible, setOptionsVisible] = useState<boolean>(false);
 	const segments = useSegments();
@@ -103,6 +105,8 @@ export default function AppLayout()
 	}
 
 	return (
+
+		<VariableContextProvider value={themes[themeScheme]}>
 		<PaperProvider theme={theme}>
 			<Stack
 				screenOptions={{
@@ -118,7 +122,7 @@ export default function AppLayout()
 						boxShadow: `0 0 5px 1px ${theme.colors.backdrop}`
 					},
 					headerTintColor: theme.colors.onSurface,
-					headerLeft: () => <Pressable onPress={onTitleClicked}><ThemeText style={{ fontWeight: "900", letterSpacing: 2, marginLeft: 10, color: theme.colors.primary }} variant="titleLarge">likh</ThemeText></Pressable>,
+					headerLeft: () => <ThemeText className="text-onBackground text-2xl font-extrabold tracking-wider" style={{ marginLeft: 10 }} onPress={onTitleClicked}>likh</ThemeText>,
 					headerTitleAlign: "center",
 					headerTitle: () => null,
 					headerRight: () =>
@@ -126,14 +130,21 @@ export default function AppLayout()
 							<>
 								{
 									token &&
-							<IconButton
-								icon="bookmark-multiple"
-								onPress={() => router.push("/app/custom-lists")}
-								style={{ marginRight: 10 }}
-								iconColor={theme.colors.primary}
-							/>
+									<Ionicons
+										name="bookmarks-sharp"
+										size={24}
+										onPress={() => router.push("/app/custom-lists")}
+										style={{ margin: 10 }}
+										className="text-primary"
+									/>
 								}
-								<IconButton size={20} icon={isDark ? 'moon-waning-crescent' : 'white-balance-sunny'} onPress={toggleTheme} style={[Platform.OS === 'ios' && {margin: 'auto'}]} iconColor={theme.colors.primary} />
+								<Ionicons
+									size={24}
+									name={isDark ? 'moon-sharp' : 'sunny-sharp'}
+									onPress={toggleTheme}
+									style={[Platform.OS === 'ios' && {margin: 'auto'}]}
+									className="text-primary auto"
+								/>
 								{
 									token
 										?
@@ -158,7 +169,7 @@ export default function AppLayout()
 												leadingIcon={() => (
 													<Image
 														source={{ uri: 'https://docs.anilist.co/anilist.png' }}
-														style={styles.anilistIcon}
+														className="w-6 h-6 rounded"
 													/>
 												)}
 												title={anilistToken == null || anilistToken === undefined || anilistToken === "undefined" || anilistToken === '' ? "Link your Anilist account" : "Anilist linked"}
@@ -181,11 +192,6 @@ export default function AppLayout()
 			</Stack>
 			<Toast config={toastConfig}/>
 		</PaperProvider>
+		</VariableContextProvider>
 	)
 }
-
-const styles = StyleSheet.create({
-	anilistIcon: {
-		width: 24, height: 24, borderRadius: 4
-	}
-});
