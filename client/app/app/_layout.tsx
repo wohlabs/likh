@@ -107,29 +107,29 @@ export default function AppLayout()
 	return (
 
 		<VariableContextProvider value={themes[themeScheme]}>
-		<PaperProvider theme={theme}>
-			<Stack
-				screenOptions={{
-					contentStyle: {backgroundColor: theme.colors.background},
-					headerStyle: {
-						backgroundColor: theme.colors.surface,
-						borderWidth: 0,
-						shadowColor: "#000",
-						shadowOffset: { width: 0, height: 4 },
-						shadowOpacity: 0.15,
-						shadowRadius: 12,
-						elevation: 2,
-						boxShadow: `0 0 5px 1px ${theme.colors.backdrop}`
-					},
-					headerTintColor: theme.colors.onSurface,
-					headerLeft: () => <ThemeText className="text-onBackground text-2xl font-extrabold tracking-wider" style={{ marginLeft: 10 }} onPress={onTitleClicked}>likh</ThemeText>,
-					headerTitleAlign: "center",
-					headerTitle: () => null,
-					headerRight: () =>
-						(
-							<>
-								{
-									token &&
+			<PaperProvider theme={theme}>
+				<Stack
+					screenOptions={{
+						contentStyle: {backgroundColor: theme.colors.background},
+						headerStyle: {
+							backgroundColor: theme.colors.surface,
+							borderWidth: 0,
+							shadowColor: "#000",
+							shadowOffset: { width: 0, height: 4 },
+							shadowOpacity: 0.15,
+							shadowRadius: 12,
+							elevation: 2,
+							boxShadow: `0 0 5px 1px ${theme.colors.backdrop}`
+						},
+						headerTintColor: theme.colors.onSurface,
+						headerLeft: () => <ThemeText className="text-onBackground text-2xl font-extrabold tracking-wider" style={{ marginLeft: 10 }} onPress={onTitleClicked}>likh</ThemeText>,
+						headerTitleAlign: "center",
+						headerTitle: () => null,
+						headerRight: () =>
+							(
+								<>
+									{
+										token &&
 									<Ionicons
 										name="bookmarks-sharp"
 										size={24}
@@ -137,61 +137,61 @@ export default function AppLayout()
 										style={{ margin: 10 }}
 										className="text-primary"
 									/>
-								}
-								<Ionicons
-									size={24}
-									name={isDark ? 'moon-sharp' : 'sunny-sharp'}
-									onPress={toggleTheme}
-									style={[Platform.OS === 'ios' && {margin: 'auto'}]}
-									className="text-primary auto"
-								/>
-								{
-									token
-										?
-										<Menu
-											visible={optionsVisible}
-											onDismiss={() => setOptionsVisible(false)}
-											anchorPosition="bottom"
-											anchor={
-												<ThemeButton icon={'account'} onPress={() => setOptionsVisible(true)} mode="text" textColor={theme.colors.primary}>{username}</ThemeButton>
-											}
-										>
-											<Menu.Item 
-												onPress={() => 
-												{
-													if (anilistToken == null || anilistToken === undefined || anilistToken === "undefined" || anilistToken === '')
+									}
+									<Ionicons
+										size={24}
+										name={isDark ? 'moon-sharp' : 'sunny-sharp'}
+										onPress={toggleTheme}
+										style={[Platform.OS === 'ios' && {margin: 'auto'}]}
+										className="text-primary auto"
+									/>
+									{
+										token
+											?
+											<Menu
+												visible={optionsVisible}
+												onDismiss={() => setOptionsVisible(false)}
+												anchorPosition="bottom"
+												anchor={
+													<ThemeButton icon={'account'} onPress={() => setOptionsVisible(true)} mode="text" textColor={theme.colors.primary}>{username}</ThemeButton>
+												}
+											>
+												<Menu.Item 
+													onPress={() => 
+													{
+														if (anilistToken == null || anilistToken === undefined || anilistToken === "undefined" || anilistToken === '')
+														{
+															setOptionsVisible(false);
+															linkAnilist();
+															router.replace('/app') // may not be ideal to refresh
+														}
+													}}
+													leadingIcon={() => (
+														<Image
+															source={{ uri: 'https://docs.anilist.co/anilist.png' }}
+															className="w-6 h-6 rounded"
+														/>
+													)}
+													title={anilistToken == null || anilistToken === undefined || anilistToken === "undefined" || anilistToken === '' ? "Link your Anilist account" : "Anilist linked"}
+												/>
+												<Menu.Item 
+													onPress={async () => 
 													{
 														setOptionsVisible(false);
-														linkAnilist();
-														router.replace('/app') // may not be ideal to refresh
-													}
-												}}
-												leadingIcon={() => (
-													<Image
-														source={{ uri: 'https://docs.anilist.co/anilist.png' }}
-														className="w-6 h-6 rounded"
-													/>
-												)}
-												title={anilistToken == null || anilistToken === undefined || anilistToken === "undefined" || anilistToken === '' ? "Link your Anilist account" : "Anilist linked"}
-											/>
-											<Menu.Item 
-												onPress={async () => 
-												{
-													setOptionsVisible(false);
-													await logout();
-													router.navigate('/users/login') // may not be ideal to refresh
-												}} title="Logout" leadingIcon={"logout"}
-											/>
-										</Menu>
-										: <ThemeButton icon={'login'} onPress={() => router.navigate("/users/login")}>Login</ThemeButton>
-								}
-							</>
-						)
-				}}
-			>
-			</Stack>
-			<Toast config={toastConfig}/>
-		</PaperProvider>
+														await logout();
+														router.navigate('/users/login') // may not be ideal to refresh
+													}} title="Logout" leadingIcon={"logout"}
+												/>
+											</Menu>
+											: <ThemeButton icon={'login'} onPress={() => router.navigate("/users/login")}>Login</ThemeButton>
+									}
+								</>
+							)
+					}}
+				>
+				</Stack>
+				<Toast config={toastConfig}/>
+			</PaperProvider>
 		</VariableContextProvider>
 	)
 }

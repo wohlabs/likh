@@ -60,7 +60,8 @@ export default function LandingPage()
 	}, [floatingAnim, rotateAnim])
 
 	// Helper to get theme-based classes
-	const getColorClasses = (colorKey: keyof typeof theme.colors, opacity?: number) => {
+	const getColorClasses = (colorKey: keyof typeof theme.colors, opacity?: number) => 
+	{
 		const color = theme.colors[colorKey];
 		return { backgroundColor: color, opacity: opacity || 1 };
 	};
