@@ -2,7 +2,7 @@ import { LoadingScreen } from "@/components/LoadingScreen";
 import { toastConfig } from "@/components/ThemeToast";
 import { AuthContext, AuthProvider } from "@/context/AuthContext";
 import { ServerContext, ServerProvider } from "@/context/ServerContext";
-import { themes, usePersistentTheme } from "@/context/usePersistentTheme";
+import { ThemeProvider, themes, usePersistentTheme } from "@/context/usePersistentTheme";
 import { Stack, useSegments } from "expo-router";
 import { VariableContextProvider } from "nativewind";
 import { useContext, useEffect } from "react";
@@ -17,12 +17,14 @@ export default function RootLayout()
 		<GestureHandlerRootView>
 			<ServerProvider>
 				<AuthProvider>
-					<KeyboardAvoidingView
-						style={{ flex: 1 }}
-						behavior={Platform.OS === "ios" ? "padding" : "height"}
-					>
-						<AppGate />
-					</KeyboardAvoidingView>
+					<ThemeProvider>
+						<KeyboardAvoidingView
+							style={{ flex: 1 }}
+							behavior={Platform.OS === "ios" ? "padding" : "height"}
+						>
+							<AppGate />
+						</KeyboardAvoidingView>
+					</ThemeProvider>
 				</AuthProvider>
 			</ServerProvider>
 		</GestureHandlerRootView>
