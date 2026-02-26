@@ -24,7 +24,7 @@ export default function NewCustomListView({mangaIdToAdd, setAllCustomLists, onCu
 
 	return (
 		<View style={{flex:1, gap: 5}}>
-			<ThemeText variant="titleLarge">Create New List</ThemeText>
+			<ThemeText>Create New List</ThemeText>
 			<TextInput
 				numberOfLines={1}
 				label={"title"}

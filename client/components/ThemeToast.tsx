@@ -1,5 +1,5 @@
-import { View } from "react-native";
-import { Surface, Text, useTheme } from "react-native-paper";
+import { View, Text } from "react-native";
+import { Surface, useTheme } from "react-native-paper";
 import LoadingToast from "./LoadingToast";
 
 type Props = {
@@ -45,8 +45,8 @@ export function ThemeToast({ text1, text2, variant = "info" }: Props)
 
 			{/* CONTENT */}
 			<View style={{ padding: 16, flex: 1 }}>
-				{text1 && <Text variant="titleMedium">{text1}</Text>}
-				{text2 && <Text variant="bodyMedium">{text2}</Text>}
+				{text1 && <Text>{text1}</Text>}
+				{text2 && <Text>{text2}</Text>}
 			</View>
 		</Surface>
 	);

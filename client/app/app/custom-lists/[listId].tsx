@@ -80,8 +80,8 @@ export default function CustomListDetail()
 				style={[{ flex: 1, backgroundColor: theme.colors.background }]}
 			>
 				<View style={styles.header}>
-					<ThemeText variant="titleLarge" style={{paddingHorizontal: 10}}>{list?.name}</ThemeText>
-					<ThemeText variant="labelLarge" style={{opacity: 0.6, paddingHorizontal: 10}}>
+					<ThemeText style={{paddingHorizontal: 10}}>{list?.name}</ThemeText>
+					<ThemeText style={{opacity: 0.6, paddingHorizontal: 10}}>
 						{list?.manga?.length ?? 0} manga
 					</ThemeText>
 					{
@@ -102,7 +102,6 @@ export default function CustomListDetail()
 									onHoverIn={() => setTextHovered(true)}
 								/>
 								<ThemeText
-									variant="bodyMedium"
 									style={{ color: theme.colors.onSurfaceVariant, flex: 1, backgroundColor: textHovered ? theme.colors.surface : theme.colors.background, padding: 10, opacity: officialDescription ? 1 : 0.6 }}
 								>
 									{officialDescription || "(no description)"}
@@ -146,10 +145,10 @@ export default function CustomListDetail()
 									style={styles.thumb}
 								/>
 								<View style={{ flex: 1 }}>
-									<ThemeText variant="titleMedium">
+									<ThemeText>
 										{getMangaTitle(item)}
 									</ThemeText>
-									<ThemeText variant="labelSmall" style={{opacity: 0.6}}>added on: {new Date(item.addedDate).toLocaleString() || "date @ time"}</ThemeText>
+									<ThemeText style={{opacity: 0.6}}>added on: {new Date(item.addedDate).toLocaleString() || "date @ time"}</ThemeText>
 								</View>
 								<IconButton
 									icon={"trash-can-outline"}

@@ -51,7 +51,7 @@ export default function NoteViewer({mangaTitle, note, onDelete, onEdit, style}: 
 						/>
 						:
 						<View style={styles.noImagesContainer}>
-							<ThemeText variant="headlineSmall" style={{color: theme.colors.onSurfaceDisabled}}>No images</ThemeText>
+							<ThemeText style={{color: theme.colors.onSurfaceDisabled}}>No images</ThemeText>
 						</View>
 				}
 				<View style={{height: 100, flexDirection: "row"}}>
@@ -74,22 +74,22 @@ export default function NoteViewer({mangaTitle, note, onDelete, onEdit, style}: 
 				</View>
 			</View>
 			<View style={{ flexDirection: "column", flex: 3}}>
-				<ThemeText variant="bodyLarge">Manhwa/Manga: {mangaTitle || "Unknown"}</ThemeText>
+				<ThemeText>Manhwa/Manga: {mangaTitle || "Unknown"}</ThemeText>
 				<View style={{ flexDirection: "row"}}>
 					{
 						note.startChapter === -1 ?
-							<ThemeText variant="bodyLarge">Chapter: All</ThemeText>
+							<ThemeText>Chapter: All</ThemeText>
 							:
 							note.endChapter
 								?
-								<ThemeText variant="bodyLarge">Chapter: {note.startChapter?.toString() || ""} - {note.endChapter?.toString() || ""}</ThemeText>
+								<ThemeText>Chapter: {note.startChapter?.toString() || ""} - {note.endChapter?.toString() || ""}</ThemeText>
 								:
-								<ThemeText variant="bodyLarge">Chapter: {note.startChapter?.toString() || ""}</ThemeText>
+								<ThemeText>Chapter: {note.startChapter?.toString() || ""}</ThemeText>
 					}
 				</View>
-				<ThemeText variant="bodyLarge" style={[{fontWeight: "bold"}]}>Note:</ThemeText>
+				<ThemeText style={[{fontWeight: "bold"}]}>Note:</ThemeText>
 				<ScrollView>
-					<ThemeText variant="bodyLarge" selectable={true}>{note.text}</ThemeText>
+					<ThemeText selectable={true}>{note.text}</ThemeText>
 				</ScrollView>
 				<View style={styles.viewerButtonsContainer}>
 					<ThemeButton icon={'share'} style={styles.viewerButton}

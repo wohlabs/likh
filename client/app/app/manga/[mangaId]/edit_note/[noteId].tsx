@@ -263,7 +263,7 @@ export default function EditNoteScreen()
 									/>
 								</>
 								:
-								<ThemeText variant="headlineSmall" style={{color: theme.colors.onSurfaceDisabled}}>Add an image using the + icon</ThemeText>
+								<ThemeText style={{color: theme.colors.onSurfaceDisabled}}>Add an image using the + icon</ThemeText>
 						}
 						{
 							Platform.OS === 'web' && <div {...dropZoneRootProps()} style={{position: "absolute", width: "100%", height: "100%" }}/>
@@ -318,7 +318,7 @@ export default function EditNoteScreen()
 							disabled={loading}
 							mode="outlined"
 						/>
-						<ThemeText variant="labelLarge">&nbsp;-&nbsp;</ThemeText>
+						<ThemeText>&nbsp;-&nbsp;</ThemeText>
 						<TextInput
 							numberOfLines={1}
 							label={"end chapter (optional)"}

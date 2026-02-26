@@ -7,7 +7,7 @@ export default function NotFoundPage()
 	return (
 		<View style={{flex: 1, alignContent: 'center', alignItems: "center", justifyContent: 'center', flexDirection: "column"}}>
 			<ThemeText style={{textAlign: "center", fontWeight: 'bold', fontSize: 150}}>404</ThemeText>
-			<ThemeText variant='headlineSmall'>
+			<ThemeText>
 				oops... page not found
 			</ThemeText>
 			<Image

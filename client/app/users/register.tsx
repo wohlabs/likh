@@ -38,12 +38,11 @@ export default function UserRegister()
 						color: theme.colors.primary,
 						marginBottom: 20
 					}]}
-					variant="displayMedium"
 					onPress={() => router.navigate("/")}
 				>
 					likh
 				</ThemeText>
-				<ThemeText variant="headlineSmall">Register</ThemeText>
+				<ThemeText>Register</ThemeText>
 				<TextInput label='username' placeholder="username" value={username} onChangeText={setUsername} mode="outlined" style={styles.input} />
 				<TextInput label='password' placeholder="password" value={password} onChangeText={setPassword} mode="outlined" secureTextEntry style={styles.input} />
 				{error ? <ThemeText style={styles.error}>{error}</ThemeText> : null}

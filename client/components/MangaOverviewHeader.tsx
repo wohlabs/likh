@@ -262,7 +262,7 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 						</View>
 						<View style={{ flex: 1, marginHorizontal: 10 }}>
 							<View style={styles.titleDetailsContainer}>
-								<ThemeText style={styles.title} variant="titleLarge">{getMangaTitle(manga)}</ThemeText>
+								<ThemeText style={styles.title}>{getMangaTitle(manga)}</ThemeText>
 							</View>
 							<ReadMore
 								numberOfLines={5}
@@ -270,7 +270,7 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 								renderRevealedFooter={_renderRevealedFooter}
 								onReady={() => {}}
 							>
-								<ThemeText variant="bodySmall">
+								<ThemeText>
 									{
 										htmlToPlainText(manga?.description)
 									}

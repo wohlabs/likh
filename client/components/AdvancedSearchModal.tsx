@@ -104,7 +104,7 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 					resizeMode="contain"
 				/>
 				<View style={{flex: 1}}>
-					<ThemeText variant="titleSmall" numberOfLines={2}>
+					<ThemeText numberOfLines={2}>
 						{getMangaTitle(item)}
 					</ThemeText>
 				</View>
@@ -129,10 +129,10 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 			onPress={() => handleNotePress(item.manga._id)}
 		>
 			<Card.Content style={styles.resultContent}>
-				<ThemeText variant="titleSmall" style={styles.noteTitle}>
+				<ThemeText style={styles.noteTitle}>
 					{getMangaTitle(item.manga)} - Chapter {item.startChapter === -1 ? "All" : `${item.startChapter}${item.endChapter ? ` - ${item.endChapter}` : ''}`}
 				</ThemeText>
-				<ThemeText variant="bodySmall" numberOfLines={2} style={styles.noteText}>
+				<ThemeText numberOfLines={2} style={styles.noteText}>
 					{item.text}
 				</ThemeText>
 			</Card.Content>
@@ -146,16 +146,16 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 		>
 			<Card.Content style={styles.resultContent}>
 				<View style={{flexDirection: 'row', alignContent: 'center'}}>
-					<ThemeText variant="titleSmall">
+					<ThemeText >
 						{item.name}
 					</ThemeText>
-					<ThemeText variant="titleSmall" style={{opacity: 0.6}}>
+					<ThemeText style={{opacity: 0.6}}>
 						&nbsp;• {item.manga.length} manga
 					</ThemeText>
 				</View>
 			</Card.Content>
 			<Card.Content style={styles.listMeta}>
-				<ThemeText variant="titleSmall" numberOfLines={1}>
+				<ThemeText numberOfLines={1}>
 					{
 						item.manga?.map((mangaItem: MangaProps, index: number) =>(
 							getMangaTitle(mangaItem) + (index === item.manga.length - 1 ? "" : " • ")
@@ -204,13 +204,13 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 						:
 						isSearchDirty || isSearchDirty || isLoading ?
 							<View style={styles.emptyContainer}>
-								<ThemeText variant="bodyMedium" style={styles.emptyText}>
+								<ThemeText style={styles.emptyText}>
 							Search for: <ThemeText style={{fontWeight: "bold"}}>{searchQuery}</ThemeText>
 								</ThemeText>
 							</View>
 							: searchResults.manga.length === 0 && searchResults.notes.length === 0 && searchResults.lists.length === 0 ? (
 								<View style={styles.emptyContainer}>
-									<ThemeText variant="bodyMedium" style={styles.emptyText}>
+									<ThemeText style={styles.emptyText}>
 								No results found
 									</ThemeText>
 								</View>
@@ -234,7 +234,7 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 										{
 											return (
 												<View style={[{cursor: 'auto'}]}>
-													<ThemeText variant="labelLarge" style={styles.categoryLabel}>
+													<ThemeText style={styles.categoryLabel}>
 														{item.label}
 													</ThemeText>
 													<View style={styles.categoryDivider} />

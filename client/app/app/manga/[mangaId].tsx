@@ -560,7 +560,7 @@ export default function MangaDetails()
 								style={styles.addNoteCollapsed}
 								onPress={() => setIsAddingNote(true)}
 							>
-								<ThemeText variant="labelLarge">add a note...</ThemeText>
+								<ThemeText>add a note...</ThemeText>
 							</Pressable>
 						) : (
 							<>
@@ -593,7 +593,7 @@ export default function MangaDetails()
 										style={styles.formInput}
 										mode="outlined"
 									/>
-									<ThemeText variant="labelLarge">&nbsp;-&nbsp;</ThemeText>
+									<ThemeText>&nbsp;-&nbsp;</ThemeText>
 									<TextInput
 										numberOfLines={1}
 										label={"end chapter (optional)"}
@@ -687,7 +687,6 @@ export default function MangaDetails()
 							}}
 						>
 							<ThemeText
-								variant="labelLarge"
 								style={{ flex: 1, margin: "auto" }}
 							>
 								No notes found. log a note for this manga
@@ -729,7 +728,6 @@ export default function MangaDetails()
 									/>
 								</View>
 								<ThemeText
-									variant="labelLarge"
 									style={{ margin: 0, marginHorizontal: 5 }}
 								>
 									Sort by

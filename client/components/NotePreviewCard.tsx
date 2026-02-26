@@ -37,10 +37,10 @@ export default function NotePreviewCard({ note, style, onPress }: { note: INoteE
 		>
 			<Card.Content style={{flexDirection: 'row', padding: 0, flex: 1}}>
 				<View style={{width: 60, backgroundColor: theme.colors.surfaceVariant, borderTopLeftRadius: 10, borderBottomLeftRadius: 10, padding: 2, justifyContent: 'center', }}>
-					<ThemeText variant="labelSmall" style={{textAlign: 'center', opacity: 0.6}}>
+					<ThemeText style={{textAlign: 'center', opacity: 0.6}}>
 						Chapter
 					</ThemeText>
-					<ThemeText variant="labelMedium" style={{textAlign: 'center'}}>
+					<ThemeText style={{textAlign: 'center'}}>
 						{
 							note.startChapter === -1
 								? `Overall`
@@ -66,9 +66,9 @@ export default function NotePreviewCard({ note, style, onPress }: { note: INoteE
 								textStyle={{color: theme.colors.onBackground, opacity: note.text ? 1 : 0.6, minHeight: 20}}
 								style={{flex: 1}}
 							>
-								<ThemeText variant="bodyMedium" numberOfLines={3}>{note.text || "(No notes)"}</ThemeText>
+								<ThemeText numberOfLines={3}>{note.text || "(No notes)"}</ThemeText>
 							</ReadMore>
-							<ThemeText variant="labelSmall" style={{opacity: 0.6, textAlign: 'right'}}>{new Date(note.modifiedAt).toLocaleString() || "date @ time"}</ThemeText>
+							<ThemeText style={{opacity: 0.6, textAlign: 'right'}}>{new Date(note.modifiedAt).toLocaleString() || "date @ time"}</ThemeText>
 						</View>
 					</View>
 				</View>

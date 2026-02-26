@@ -137,7 +137,7 @@ export default function Index()
 									resizeMode="contain"
 									style={{height: "100%", aspectRatio: 0.8}}
 								/>
-								<ThemeText variant="titleMedium" style={styles.addMangaTitle}>{getMangaTitle(item)}</ThemeText>
+								<ThemeText style={styles.addMangaTitle}>{getMangaTitle(item)}</ThemeText>
 								<IconButton
 									icon={"plus"}
 									mode="contained"

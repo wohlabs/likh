@@ -87,7 +87,7 @@ export default function MangaCard({item, style, allCustomLists, onCreateList } :
 					/>
 					<View style={styles.bottomContent}>
 						<View style={styles.textContainer}>
-							<ThemeText variant="titleMedium" style={[styles.mangaTitle, {color: modernDarkTheme.colors.onBackground}]} numberOfLines={2}>{getMangaTitle(item)}</ThemeText>
+							<ThemeText style={[styles.mangaTitle, {color: modernDarkTheme.colors.onBackground}]} numberOfLines={2}>{getMangaTitle(item)}</ThemeText>
 						</View>
 					</View>
 					<View style={{position: "absolute", top: 0, width: "100%", flexDirection: "row-reverse"}}>

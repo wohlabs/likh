@@ -42,12 +42,11 @@ export default function UserLogin()
 						color: theme.colors.primary,
 						marginBottom: 20
 					}]}
-					variant="displayMedium"
 					onPress={() => router.navigate("/")}
 				>
 					likh
 				</ThemeText>
-				<ThemeText variant="headlineSmall">Login</ThemeText>
+				<ThemeText>Login</ThemeText>
 				<TextInput label='username' placeholder="username" value={username} onChangeText={setUsername} style={styles.input} mode="outlined" />
 				<TextInput label='password' placeholder="password" value={password} onChangeText={setPassword} secureTextEntry style={styles.input} mode="outlined" />
 				{error ? <ThemeText style={styles.error}>{error}</ThemeText> : null}
