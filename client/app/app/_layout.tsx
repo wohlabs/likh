@@ -12,13 +12,13 @@ import { Stack, useRouter, useSegments } from "expo-router";
 import * as WebBrowser from 'expo-web-browser';
 import { VariableContextProvider } from "nativewind";
 import { useContext, useEffect, useState } from "react";
-import { Image, Linking, Platform, Pressable, StyleSheet } from "react-native";
-import { IconButton, Menu, PaperProvider } from "react-native-paper";
+import { Image, Linking, Platform } from "react-native";
+import { Menu, PaperProvider } from "react-native-paper";
 import Toast from "react-native-toast-message";
 
 export default function AppLayout()
 {
-	const {theme, toggleTheme, isDark, themeScheme} = usePersistentTheme()
+	const {theme, toggleTheme, themeScheme} = usePersistentTheme()
 	const {token, username, anilistToken, logout} = useContext(AuthContext);
 	const [optionsVisible, setOptionsVisible] = useState<boolean>(false);
 	const segments = useSegments();
@@ -140,7 +140,7 @@ export default function AppLayout()
 									}
 									<Ionicons
 										size={24}
-										name={isDark ? 'moon-sharp' : 'sunny-sharp'}
+										name={themeScheme === "dark" ? 'moon-sharp' : 'sunny-sharp'}
 										onPress={toggleTheme}
 										style={[Platform.OS === 'ios' && {margin: 'auto'}]}
 										className="text-primary auto"
@@ -153,7 +153,7 @@ export default function AppLayout()
 												onDismiss={() => setOptionsVisible(false)}
 												anchorPosition="bottom"
 												anchor={
-													<ThemeButton icon={'account'} onPress={() => setOptionsVisible(true)} mode="text" textColor={theme.colors.primary}>{username}</ThemeButton>
+													<ThemeButton icon={'account'} onPress={() => setOptionsVisible(true)} mode="text">{username}</ThemeButton>
 												}
 											>
 												<Menu.Item 

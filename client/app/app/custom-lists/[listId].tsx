@@ -69,7 +69,7 @@ export default function CustomListDetail()
 			setOfficialDescription(description)
 			setEditingDesc(false)
 		}
-	}, [description]);
+	}, [description, listId]);
 	
 	return (
 		<>

@@ -325,7 +325,7 @@ export default function MangaDetails()
 				pasteImageFromClipboard as unknown as EventListener,
 			);
 		};
-	}, [addImages]);
+	}, [addImages, handleDrop, pasteImageFromClipboard]);
 
 	const pickAddImage = async () => 
 	{
@@ -677,7 +677,7 @@ export default function MangaDetails()
 							</>
 						)}
 					</View>
-					{filteredNotes.length == 0 ? (
+					{filteredNotes.length === 0 ? (
 						<View
 							style={{
 								flex: 1,

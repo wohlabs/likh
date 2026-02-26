@@ -28,7 +28,7 @@ export const ServerProvider = ({ children }: any) =>
 			try
 			{
 				const response = await api.get("/")
-				if (response.status == 200)
+				if (response.status === 200)
 				{
 					clearTimeout(timeoutId)
 					setLoading(false)

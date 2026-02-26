@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Pressable, PressableProps, Text, TextStyle, ViewStyle } from 'react-native';
+import { Pressable, PressableProps, Text, TextStyle } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 interface ThemeButtonProps extends Omit<PressableProps, 'children'> {

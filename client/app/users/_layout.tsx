@@ -17,7 +17,7 @@ export default function UsersLayout()
 	useEffect(() => 
 	{
 		console.log(segments)
-		if (isServerLoading && segments[0] != "app")
+		if (isServerLoading && segments[0] !== "app")
 		{
 			Toast.show({
 				type: 'loading',

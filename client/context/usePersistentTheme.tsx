@@ -92,17 +92,21 @@ interface ThemeProviderProps {
 	children: ReactNode;
 }
 
-export function ThemeProvider({ children }: ThemeProviderProps) {
+export function ThemeProvider({ children }: ThemeProviderProps) 
+{
 	const [ready, setReady] = useState(false);
 	const [theme, setTheme] = useState(modernLightTheme);
 	const [themeScheme, setThemeScheme] = useState<ThemeScheme>('light');
 
 	// Load saved theme
-	useEffect(() => {
-		(async () => {
-			try {
+	useEffect(() => 
+	{
+		(async () => 
+		{
+			try 
+			{
 				const saved = await AsyncStorage.getItem(STORAGE_KEY);
-				if (saved == 'light' || saved == 'dark')
+				if (saved === 'light' || saved === 'dark')
 				{
 					setThemeScheme(saved);
 				}
@@ -110,27 +114,31 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
 				{
 					setThemeScheme('light');
 				}
-			} finally {
+			}
+			finally 
+			{
 				setReady(true);
 			}
 		})();
 	}, []);
 
 	// Persist theme
-	useEffect(() => {
+	useEffect(() => 
+	{
 		if (!ready) return;
 		AsyncStorage.setItem(STORAGE_KEY, themeScheme);
 	}, [themeScheme, ready]);
 
 	// Update theme object
-	useEffect(() => {
-		setTheme(themeScheme == 'dark' ? modernDarkTheme : modernLightTheme);
+	useEffect(() => 
+	{
+		setTheme(themeScheme === 'dark' ? modernDarkTheme : modernLightTheme);
 	}, [themeScheme, ready]);
 
 	const value: ThemeContextValue = {
 		theme,
 		themeScheme,
-		toggleTheme: () => setThemeScheme(prev => prev == 'dark' ? 'light' : 'dark'),
+		toggleTheme: () => setThemeScheme(prev => prev === 'dark' ? 'light' : 'dark'),
 		ready,
 	};
 
@@ -140,10 +148,12 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
 		</ThemeContext.Provider>
 	);
 }
-export function usePersistentTheme() {
+export function usePersistentTheme() 
+{
 	const context = useContext(ThemeContext);
 
-	if (!context) {
+	if (!context) 
+	{
 		throw new Error('useTheme must be used within a ThemeProvider');
 	}
 

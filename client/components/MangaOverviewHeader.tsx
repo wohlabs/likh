@@ -272,7 +272,7 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 							>
 								<ThemeText>
 									{
-										htmlToPlainText(manga?.description)
+										htmlToPlainText(manga?.description || "")
 									}
 								</ThemeText>
 							</ReadMore>
