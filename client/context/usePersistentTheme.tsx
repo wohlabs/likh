@@ -81,7 +81,6 @@ type ThemeScheme = 'light' | 'dark';
 
 interface ThemeContextValue {
 	theme: typeof modernLightTheme;
-	isDark: boolean;
 	themeScheme: ThemeScheme;
 	toggleTheme: () => void;
 	ready: boolean;
@@ -94,7 +93,6 @@ interface ThemeProviderProps {
 }
 
 export function ThemeProvider({ children }: ThemeProviderProps) {
-	const [isDark, setIsDark] = useState(false);
 	const [ready, setReady] = useState(false);
 	const [theme, setTheme] = useState(modernLightTheme);
 	const [themeScheme, setThemeScheme] = useState<ThemeScheme>('light');
@@ -104,8 +102,13 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
 		(async () => {
 			try {
 				const saved = await AsyncStorage.getItem(STORAGE_KEY);
-				if (saved === 'dark') {
-					setIsDark(true);
+				if (saved == 'light' || saved == 'dark')
+				{
+					setThemeScheme(saved);
+				}
+				else
+				{
+					setThemeScheme('light');
 				}
 			} finally {
 				setReady(true);
@@ -116,20 +119,18 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
 	// Persist theme
 	useEffect(() => {
 		if (!ready) return;
-		AsyncStorage.setItem(STORAGE_KEY, isDark ? 'dark' : 'light');
-	}, [isDark, ready]);
+		AsyncStorage.setItem(STORAGE_KEY, themeScheme);
+	}, [themeScheme, ready]);
 
 	// Update theme object
 	useEffect(() => {
-		setTheme(isDark ? modernDarkTheme : modernLightTheme);
-		setThemeScheme(isDark ? 'dark' : 'light');
-	}, [isDark, ready]);
+		setTheme(themeScheme == 'dark' ? modernDarkTheme : modernLightTheme);
+	}, [themeScheme, ready]);
 
 	const value: ThemeContextValue = {
 		theme,
-		isDark,
 		themeScheme,
-		toggleTheme: () => setIsDark(prev => !prev),
+		toggleTheme: () => setThemeScheme(prev => prev == 'dark' ? 'light' : 'dark'),
 		ready,
 	};
 
