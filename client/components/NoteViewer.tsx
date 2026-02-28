@@ -1,17 +1,19 @@
 import { useCallback, useEffect, useState } from "react";
-import { FlatList, Image, Pressable, ScrollView, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
-import { IconButton, Menu, useTheme } from 'react-native-paper';
+import { FlatList, Image, Pressable, ScrollView, StyleProp, StyleSheet, useColorScheme, View, ViewStyle } from "react-native";
+import { IconButton, Menu } from 'react-native-paper';
 import { INoteEntry } from "../types/INotes";
 import ThemeButton from "./ThemeButton";
 import ThemeText from "./ThemeText";
 import { getImageBase64 } from "./util";
+import { Ionicons } from "@expo/vector-icons";
+import { themes, usePersistentTheme } from "@/context/usePersistentTheme";
 
 export default function NoteViewer({mangaTitle, note, onDelete, onEdit, style}: { mangaTitle?: string, note: INoteEntry, style?: StyleProp<ViewStyle>, onDelete?: () => void , onEdit?: () => void})
 {
 	const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
 	const [optionsVisible, setOptionsVisible] = useState<boolean>(false);
 	const [images, setImages] = useState<string[]>(note.images);
-	const theme = useTheme();
+	const {theme, toggleTheme, themeScheme} = usePersistentTheme()
 
 
 	const fetchImages = useCallback(async () => 
@@ -92,21 +94,24 @@ export default function NoteViewer({mangaTitle, note, onDelete, onEdit, style}: 
 					<ThemeText selectable={true}>{note.text}</ThemeText>
 				</ScrollView>
 				<View style={styles.viewerButtonsContainer}>
-					<ThemeButton icon={'share'} style={styles.viewerButton}
+					<ThemeButton style={styles.viewerButton}
 						onPress={() => {}}
 					>
+						<Ionicons name="share-social" size={16} color={themes[themeScheme]["--color-onPrimary"]}/>
 						Share
 					</ThemeButton>
-					<ThemeButton icon={"pencil"}
+					<ThemeButton
 						style={styles.viewerButton}
 						onPress={onEdit}
 					>
+						<Ionicons name="pencil" size={16} color={themes[themeScheme]["--color-onPrimary"]}/>
 						Edit
 					</ThemeButton>
-					<ThemeButton icon='heart'
+					<ThemeButton
 						style={styles.viewerButton}
 						onPress={() => {}}
 					>
+						<Ionicons name="heart" size={16} color={themes[themeScheme]["--color-onPrimary"]}/>
 						Favorite
 					</ThemeButton>
 					<Menu

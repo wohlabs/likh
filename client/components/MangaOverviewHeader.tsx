@@ -182,7 +182,7 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 								{
 									!status ? 
 										<ThemeButton mode="contained" onPress={handleCreateEntry} style={{minWidth:150, marginTop:6}}>
-								add to library
+											add to library
 										</ThemeButton>
 										:
 										<>

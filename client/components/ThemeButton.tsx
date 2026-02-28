@@ -1,33 +1,17 @@
 import React, { useState } from 'react';
-import { Pressable, PressableProps, Text, TextStyle } from 'react-native';
+import { Button, ButtonProps, Pressable, PressableProps, Text, TextStyle } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-interface ThemeButtonProps extends Omit<PressableProps, 'children'> {
-  icon?: string;
+interface ThemeButtonProps extends PressableProps {
   mode?: 'contained' | 'outlined' | 'text' | 'contained-tonal';
-  labelStyle?: TextStyle;
-  disabled?: boolean;
-  children?: React.ReactNode;
 }
 
-export default function ThemeButton({
-	children,
-	onPress,
-	mode = 'text',
-	disabled = false,
-	style,
-	icon,
-	className = '',
-	labelStyle,
-	textColor,
-	...props
-}: ThemeButtonProps) 
-{
-	const [pressed, setPressed] = useState(false);
 
+export default function ThemeButton({ className, children, mode = 'contained', disabled, ...props }: ThemeButtonProps)
+{
 	const getModeClasses = () => 
 	{
-		const baseClasses = 'rounded-lg flex-row items-center justify-center gap-2';
+		const baseClasses = 'rounded-lg flex-row gap-2 align-baseline items-baseline';
 
 		switch (mode) 
 		{
@@ -43,7 +27,6 @@ export default function ThemeButton({
 
 	const getTextColorClass = () => 
 	{
-		if (textColor) return '';
 		if (disabled) return 'text-onSurfaceVariant';
 		
 		switch (mode) 
@@ -58,46 +41,12 @@ export default function ThemeButton({
 		}
 	};
 
-	const textColorClass = getTextColorClass();
-	const buttonClasses = getModeClasses();
-
-	// Handle style as array or single value
-	const flattenedStyle = Array.isArray(style) ? Object.assign({}, ...style) : style;
-
 	return (
 		<Pressable
-			onPress={onPress}
-			disabled={disabled}
-			onPressIn={() => setPressed(true)}
-			onPressOut={() => setPressed(false)}
-			style={[
-				{ 
-					opacity: pressed ? (mode === 'text' ? 0.7 : 0.8) : 1,
-				},
-				flattenedStyle,
-			]}
-			className={buttonClasses}
+			className={`${getModeClasses()} ${getTextColorClass()} lowercase ${className}`}
 			{...props}
 		>
-			{icon && (
-				<MaterialCommunityIcons
-					name={icon as any}
-					size={20}
-					className={textColorClass}
-					style={{ color: textColor }}
-				/>
-			)}
-			{children && (
-				<Text
-					style={[
-						textColor ? { color: textColor } : undefined,
-						labelStyle,
-					]}
-					className={`text-base font-medium lowercase ${textColorClass}`}
-				>
-					{children}
-				</Text>
-			)}
+			{children}
 		</Pressable>
 	);
 };

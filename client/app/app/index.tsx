@@ -9,6 +9,7 @@ import { getCustomLists } from "@/services/custom_lists";
 import { addMangaToLibrary, getLibraryMangaThumbnails, getMyListMangaIds, MangaProps, searchMangaByString } from "@/services/manga.service";
 import { ICustomLists } from "@/types/ICustomList";
 import { getMangaTitle } from "@/types/IManga";
+import { Ionicons } from "@expo/vector-icons";
 import { Stack, useRouter } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { FlatList, Image, Pressable, StyleSheet, useWindowDimensions, View } from "react-native";
@@ -138,6 +139,7 @@ export default function Index()
 									style={{height: "100%", aspectRatio: 0.8}}
 								/>
 								<ThemeText style={styles.addMangaTitle}>{getMangaTitle(item)}</ThemeText>
+								<Ionicons />
 								<IconButton
 									icon={"plus"}
 									mode="contained"

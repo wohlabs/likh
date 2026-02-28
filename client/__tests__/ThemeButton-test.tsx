@@ -6,7 +6,7 @@ import ThemeButton from "@/components/ThemeButton";
 describe("<ThemeButton />", () => {
 	test("Text renders as lowercase", () => {
 		const { getByText } = render(
-			<ThemeButton labelStyle={[{ alignContent: "center" }]}>
+			<ThemeButton>
 				V3ry FunNY miXeD-case LETTERS !@#$%^&*
 			</ThemeButton>
 		);

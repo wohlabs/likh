@@ -61,7 +61,7 @@
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@tailwindcss/postcss": "^4.2.0",
-    "@types/jest": "29.5.14",
+    "@types/jest": "^29.5.14",
     "@types/react": "~19.1.10",
     "@types/react-native-read-more-text": "^1.0.4",
     "eslint": "~9.39.2",

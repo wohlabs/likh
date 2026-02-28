@@ -255,7 +255,7 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 													onPress={() => handleShowMore(categoryMap[item.type as keyof typeof categoryMap])}
 													style={styles.showMoreButton}
 												>
-											Show more
+													Show more
 												</ThemeButton>
 											);
 										}

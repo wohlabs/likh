@@ -146,44 +146,47 @@ export default function AppLayout()
 										className="text-primary auto"
 									/>
 									{
-										token
-											?
-											<Menu
-												visible={optionsVisible}
-												onDismiss={() => setOptionsVisible(false)}
-												anchorPosition="bottom"
-												anchor={
-													<ThemeButton icon={'account'} onPress={() => setOptionsVisible(true)} mode="text">{username}</ThemeButton>
-												}
-											>
-												<Menu.Item 
-													onPress={() => 
-													{
-														if (anilistToken == null || anilistToken === undefined || anilistToken === "undefined" || anilistToken === '')
-														{
-															setOptionsVisible(false);
-															linkAnilist();
-															router.replace('/app') // may not be ideal to refresh
-														}
-													}}
-													leadingIcon={() => (
-														<Image
-															source={{ uri: 'https://docs.anilist.co/anilist.png' }}
-															className="w-6 h-6 rounded"
-														/>
-													)}
-													title={anilistToken == null || anilistToken === undefined || anilistToken === "undefined" || anilistToken === '' ? "Link your Anilist account" : "Anilist linked"}
-												/>
-												<Menu.Item 
-													onPress={async () => 
+										<Menu
+											visible={optionsVisible}
+											onDismiss={() => setOptionsVisible(false)}
+											anchorPosition="bottom"
+											anchor={
+												<ThemeButton
+													onPress={() => setOptionsVisible(true)}
+													mode="text"
+												>
+													<Ionicons name="person" color={theme.colors.onBackground} size={16}/>
+													{username}
+												</ThemeButton>
+											}
+										>
+											<Menu.Item 
+												onPress={() => 
+												{
+													if (anilistToken == null || anilistToken === undefined || anilistToken === "undefined" || anilistToken === '')
 													{
 														setOptionsVisible(false);
-														await logout();
-														router.navigate('/users/login') // may not be ideal to refresh
-													}} title="Logout" leadingIcon={"logout"}
-												/>
-											</Menu>
-											: <ThemeButton icon={'login'} onPress={() => router.navigate("/users/login")}>Login</ThemeButton>
+														linkAnilist();
+														router.replace('/app') // may not be ideal to refresh
+													}
+												}}
+												leadingIcon={() => (
+													<Image
+														source={{ uri: 'https://docs.anilist.co/anilist.png' }}
+														className="w-6 h-6 rounded"
+													/>
+												)}
+												title={anilistToken == null || anilistToken === undefined || anilistToken === "undefined" || anilistToken === '' ? "Link your Anilist account" : "Anilist linked"}
+											/>
+											<Menu.Item 
+												onPress={async () => 
+												{
+													setOptionsVisible(false);
+													await logout();
+													router.navigate('/users/login') // may not be ideal to refresh
+												}} title="Logout" leadingIcon={"logout"}
+											/>
+										</Menu>
 									}
 								</>
 							)

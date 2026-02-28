@@ -103,9 +103,9 @@ export default function LandingPage()
 				<View className="flex-row justify-between items-center px-5 pt-12.5 pb-7.5">
 					<ThemeText className="text-onBackground text-3xl font-extrabold tracking-wider">likh</ThemeText>
 					<ThemeButton 
+						className="text-md font-medium"
 						mode="text" 
 						onPress={() => router.push('/users/login')}
-						labelStyle={{fontSize: 14, fontWeight: '600'}}
 					>
 						login
 					</ThemeButton>
@@ -220,7 +220,7 @@ export default function LandingPage()
 						onPress={() => router.push('/users/register')}
 						className="min-w-50 rounded-2xl"
 					>
-				Begin Now
+						Begin Now
 					</ThemeButton>
 				</View>
 
