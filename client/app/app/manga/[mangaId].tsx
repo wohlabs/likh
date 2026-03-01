@@ -15,6 +15,7 @@ import { getMangaData, getMangaDetails } from "@/services/manga.service";
 import { deleteMangaNote } from "@/services/notes.service";
 import { getMangaTitle, IMangaDetails } from "@/types/IManga";
 import { IMangaNotes, INoteEntry } from "@/types/INotes";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
 import { File } from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
@@ -39,11 +40,9 @@ import ReanimatedSwipeable, {
 } from "react-native-gesture-handler/ReanimatedSwipeable";
 import
 {
-	IconButton,
 	Modal,
 	Portal,
 	TextInput,
-	useTheme
 } from "react-native-paper";
 import Reanimated, {
 	SharedValue,
@@ -61,26 +60,26 @@ function NoteButtons({
 {
 	return (
 		<>
-			<IconButton
-				icon={"pencil-outline"}
+			<Ionicons
+				name={"pencil-outline"}
+				className="icon-button-contained"
 				size={20}
 				onPress={onEditPress}
 				style={styles.actionButton}
-				mode="contained"
 			/>
-			<IconButton
-				icon={"share-outline"}
+			<Ionicons
+				name={"share-outline"}
+				className="icon-button-contained"
 				size={20}
 				onPress={() => {}}
 				style={styles.actionButton}
-				mode="contained"
 			/>
-			<IconButton
-				icon={"trash-can-outline"}
+			<Ionicons
+				name={"trash-outline"}
+				className="icon-button-contained"
 				size={20}
 				onPress={onDeletePress}
 				style={styles.actionButton}
-				mode="contained"
 			/>
 		</>
 	);
@@ -626,12 +625,12 @@ export default function MangaDetails()
 														{ borderColor: theme['--color-outlineVariant'] },
 													]}
 												/>
-												<IconButton
-													icon="trash-can-outline"
+												<Ionicons
+													name="trash-outline"
+													className="icon-button-contained"
 													size={18}
 													onPress={() => removeAddImage(index)}
 													style={{ position: "absolute", right: 0 }}
-													mode="contained"
 												/>
 											</Pressable>
 										)}
@@ -639,11 +638,11 @@ export default function MangaDetails()
 										style={{ flex: 1 }}
 										keyExtractor={(_, index) => index.toString()}
 									/>
-									<IconButton
-										icon={"plus"}
+									<Ionicons
+										name={"add"}
+										className="icon-button-contained"
 										size={26}
 										onPress={pickAddImage}
-										mode="contained"
 									/>
 								</View>
 								<View
@@ -702,8 +701,10 @@ export default function MangaDetails()
 									zIndex: 2,
 								}}
 							>
-								<IconButton
-									icon={sortAscending ? "sort-ascending" : "sort-descending"}
+								<MaterialCommunityIcons
+									name={sortAscending ? "sort-ascending" : "sort-descending"}
+									size={22}
+									className="icon-button"
 									onPress={() => setSortAscending(!sortAscending)}
 								/>
 								<View>
@@ -864,12 +865,12 @@ export default function MangaDetails()
 						style={styles.searchBar}
 						value={searchString}
 					/>
-					<IconButton
-						icon={"plus"}
+					<Ionicons
+						icon={"add"}
+						className='icon-button-contained'
 						size={30}
 						onPress={() => setIsAddingNote(!isAddingNote)}
 						style={styles.addButton}
-						mode="contained"
 					/>
 				</View>
 			</View>

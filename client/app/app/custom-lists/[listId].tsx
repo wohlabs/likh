@@ -7,10 +7,11 @@ import { editList } from "@/services/lists.service";
 import { getLibraryMangaThumbnails, MangaProps } from "@/services/manga.service";
 import { ICustomList, MangaItem } from "@/types/ICustomList";
 import { getMangaTitle } from "@/types/IManga";
+import { Ionicons } from "@expo/vector-icons";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import { FlatList, Image, Pressable, ScrollView, StyleSheet, View } from "react-native";
-import { Card, IconButton } from "react-native-paper";
+import { Card } from "react-native-paper";
 
 export default function CustomListDetail()
 {
@@ -93,8 +94,9 @@ export default function CustomListDetail()
 								onHoverOut={() => setTextHovered(false)}
 								style={{cursor: 'auto'}}
 							>
-								<IconButton icon={"pencil"} size={15} mode="contained"
-									style={{display: textHovered ? 'flex' : 'none', position: 'absolute', top: -20, right: 0, zIndex: 2}}
+								<Ionicons name={"pencil-sharp"} size={16}
+									className={`${textHovered ? 'flex' : 'hidden'} icon-button-contained absolute z-10 right-0 -top-5`}
+									color={theme['--color-onSurfaceVariant']}
 									onPress={() => 
 									{
 										setEditingDesc(true)
@@ -151,8 +153,10 @@ export default function CustomListDetail()
 									</ThemeText>
 									<ThemeText style={{opacity: 0.6}}>added on: {new Date(item.addedDate).toLocaleString() || "date @ time"}</ThemeText>
 								</View>
-								<IconButton
-									icon={"trash-can-outline"}
+								<Ionicons
+									name={"trash-sharp"}
+									className="icon-button-contained"
+									color={theme['--color-onSurfaceVariant']}
 									size={20}
 									onPress={async () => 
 									{
@@ -162,7 +166,6 @@ export default function CustomListDetail()
 											setMangas(mangas.filter((manga: MangaProps) => manga.id != item.id))
 										}
 									}}
-									mode="contained"
 								/>
 							</Card.Content>
 						</Card>

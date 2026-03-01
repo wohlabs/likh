@@ -5,6 +5,7 @@ import { usePersistentTheme } from "@/context/usePersistentTheme";
 import { addMangaToLibrary } from '@/services/manga.service';
 import { PaginatedSearchResult, searchCategory } from '@/services/search.service';
 import { getMangaTitle, IMangaDetails } from '@/types/IManga';
+import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import
@@ -15,7 +16,7 @@ import
 	StyleSheet,
 	View,
 } from 'react-native';
-import { Card, IconButton } from 'react-native-paper';
+import { Card } from 'react-native-paper';
 
 export default function SearchCategoryPage() 
 {
@@ -138,9 +139,9 @@ export default function SearchCategoryPage()
 						{getMangaTitle(item)}
 					</ThemeText>
 				</View>
-				<IconButton
-					icon="plus"
-					mode="contained"
+				<Ionicons
+					name="add"
+					className="icon-button-contained"
 					disabled={item.inLibrary}
 					onPress={async (e) => 
 					{

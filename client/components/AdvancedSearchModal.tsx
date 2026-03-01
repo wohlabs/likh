@@ -18,10 +18,11 @@ import
 	View,
 	ViewStyle,
 } from 'react-native';
-import { Card, IconButton } from 'react-native-paper';
+import { Card } from 'react-native-paper';
 import ThemeButton from './ThemeButton';
 import { hexToRgba } from './util';
 import { usePersistentTheme } from '@/context/usePersistentTheme';
+import { Ionicons } from '@expo/vector-icons';
 
 interface AdvancedSearchModalProps {
 	visible: boolean;
@@ -109,9 +110,10 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 						{getMangaTitle(item)}
 					</ThemeText>
 				</View>
-				<IconButton
-					icon={"plus"}
-					mode="contained"
+				<Ionicons
+					size={20}
+					name={"add"}
+					className='icon-button-contained'
 					disabled={item.inLibrary}
 					onPress={async (e) => 
 					{

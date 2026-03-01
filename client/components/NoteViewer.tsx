@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { FlatList, Image, Pressable, ScrollView, StyleProp, StyleSheet, useColorScheme, View, ViewStyle } from "react-native";
-import { IconButton, Menu } from 'react-native-paper';
+import { Menu } from 'react-native-paper';
 import { INoteEntry } from "../types/INotes";
 import ThemeButton from "./ThemeButton";
 import ThemeText from "./ThemeText";
@@ -118,7 +118,8 @@ export default function NoteViewer({mangaTitle, note, onDelete, onEdit, style}: 
 						visible={optionsVisible}
 						onDismiss={() => setOptionsVisible(false)}
 						anchor={
-							<IconButton icon='dots-horizontal' onPress={() => setOptionsVisible(true)}
+							<Ionicons name='ellipsis-horizontal'
+								onPress={() => setOptionsVisible(true)}
 							/>
 						}
 						anchorPosition="bottom"

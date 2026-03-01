@@ -14,7 +14,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Stack, useRouter } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { FlatList, Image, Pressable, StyleSheet, useWindowDimensions, View } from "react-native";
-import { IconButton, Modal, Portal, useTheme } from "react-native-paper";
+import { Modal, Portal } from "react-native-paper";
 
 export default function Index() 
 {
@@ -24,7 +24,6 @@ export default function Index()
 	const [mangaList, setMangaList] = useState<MangaProps[]>([]);
 	const [mangaIdToAdd, setMangaIdToAdd] = useState<number | undefined>(undefined);
 	const [filteredMangaList, setFilteredMangaList] = useState<MangaProps[]>([]);
-	const [isSearching, setSearching] = useState(false)
 	const [isCreatingNewList, setCreatingNewList] = useState(false)
 	const [searchString, setSearchString] = useState("")
 	const [isAdvancedSearching, setIsAdvancedSearching] = useState(false)
@@ -71,7 +70,7 @@ export default function Index()
 	useEffect(() => 
 	{
 		populateMangaList()
-	}, [isSearching, populateMangaList]);
+	}, [populateMangaList]);
 
 	useEffect(() => 
 	{
@@ -117,46 +116,6 @@ export default function Index()
 				/>
 			</View>
 			<Portal>
-				<Modal visible={isSearching} onDismiss={() => setSearching(false)}
-					contentContainerStyle={[styles.addMangaModalContainer, { backgroundColor: theme['--color-background'] }]}>
-					<ThemeSearchbar
-						placeholder="search manga"
-						onChangeText={setNewSearchString}
-						onSubmitEditing={() => { populateNewMangaList(); }}
-						style={styles.addMangaModalSearchBar}
-						value={newSearchString}
-					/>
-					<FlatList
-						data={newMangaList}
-						keyExtractor={(item) => item.id}
-						key={`newMangaList_${Date.now()}`}
-						numColumns={1}
-						style={{flex: 1}}
-						renderItem={({ item }) => (
-							<Pressable style={styles.addMangaContainer} onPress={() => { setSearching(false); router.navigate(`/app/manga/${item.id}`) }}>
-								<Image
-									source={{ uri: item.coverImage?.large }}
-									resizeMode="contain"
-									style={{height: "100%", aspectRatio: 0.8}}
-								/>
-								<ThemeText style={styles.addMangaTitle}>{getMangaTitle(item)}</ThemeText>
-								<Ionicons />
-								<IconButton
-									icon={"plus"}
-									mode="contained"
-									iconColor={mangaList.find((elem) => elem.id === item.id) ? theme['--color-surfaceVariant'] : theme['--color-primary']}
-									containerColor={mangaList.find((elem) => elem.id === item.id) ? theme['--color-inverseOnSurface'] : theme['--color-surfaceVariant']}
-									onPress={async () => 
-									{
-										await addMangaToLibrary(item.id);
-										populateMangaList();
-										setSearching(false);
-									}}
-								/>
-							</Pressable>
-						)}
-					/>
-				</Modal>
 				<Modal visible={isCreatingNewList} onDismiss={() => setCreatingNewList(false)}
 					contentContainerStyle={{minWidth: 200, minHeight: 200, width: "30%", height: "50%", backgroundColor: theme['--color-background'], borderRadius: 10, margin: 'auto', padding: 10, gap: 5}}>
 					<NewCustomListView mangaIdToAdd={mangaIdToAdd} setAllCustomLists={setAllCustomLists} onCustomListCreated={async () => setCreatingNewList(false)} />
@@ -168,7 +127,6 @@ export default function Index()
 
 const styles = StyleSheet.create({
 	searchBarContainer: { width: '90%', maxWidth: 600, flex: 1, flexDirection: 'column' },
-	addNoteIconButton: {boxShadow: "0px 4px 5px rgba(0,0,0,0.3)" },
 	addMangaModalContainer: {
 		padding: 0, margin: 'auto', width: "90%", height: "80%", borderRadius: 10
 	},

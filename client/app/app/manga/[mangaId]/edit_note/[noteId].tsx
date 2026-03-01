@@ -7,6 +7,7 @@ import { API_URL } from "@/services/AxiosInstance";
 import { getMangaDetails } from "@/services/manga.service";
 import { getNote } from "@/services/notes.service";
 import { getMangaTitle } from "@/types/IManga";
+import { Ionicons } from "@expo/vector-icons";
 import { File } from 'expo-file-system';
 import * as ImagePicker from "expo-image-picker";
 import { router, Stack, useLocalSearchParams } from "expo-router";
@@ -24,7 +25,7 @@ import
 	TouchableWithoutFeedback,
 	View
 } from "react-native";
-import { IconButton, TextInput, useTheme } from "react-native-paper";
+import { TextInput } from "react-native-paper";
 import Toast from "react-native-toast-message";
 
 const KeyboardDismissWrapper = ({ children }: any) => 
@@ -246,8 +247,9 @@ export default function EditNoteScreen()
 										resizeMode="contain"
 										style={{flex: 1}}
 									/>
-									<IconButton
-										icon={"trash-can-outline"}
+									<Ionicons
+										name={"trash-outline"}
+										className="icon-button-contained"
 										size={20}
 										onPress={() => 
 										{
@@ -260,7 +262,6 @@ export default function EditNoteScreen()
 											}
 										}}
 										style={{position: 'absolute', right: 0, zIndex: 10}}
-										mode="contained"
 									/>
 								</>
 								:
@@ -287,7 +288,10 @@ export default function EditNoteScreen()
 							style={styles.thumbnailList}
 							keyExtractor={(_, index) => index.toString()}
 						/>
-						<IconButton icon={"plus"} size={30} onPress={pickImage} style={{justifyContent: "center"}} mode="contained"/>
+						<Ionicons name={"add"} size={30}
+							className="icon-button-contained"
+							onPress={pickImage} style={{justifyContent: "center"}}
+						/>
 					</View>
 				</View>
 				<View style={{ flexDirection: "column", flex: 3}}>

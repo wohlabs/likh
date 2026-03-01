@@ -1,11 +1,9 @@
-import React, { useState } from 'react';
-import { Button, ButtonProps, Pressable, PressableProps, Text, TextStyle } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import React from 'react';
+import { Pressable, PressableProps } from 'react-native';
 
 interface ThemeButtonProps extends PressableProps {
   mode?: 'contained' | 'outlined' | 'text' | 'contained-tonal';
 }
-
 
 export default function ThemeButton({ className, children, mode = 'contained', disabled, ...props }: ThemeButtonProps)
 {

@@ -130,13 +130,13 @@ export default function AppLayout()
 								<>
 									{
 										token &&
-									<Ionicons
-										name="bookmarks-sharp"
-										size={24}
-										onPress={() => router.push("/app/custom-lists")}
-										style={{ margin: 10 }}
-										className="text-primary"
-									/>
+										<Ionicons
+											name="bookmarks-sharp"
+											size={24}
+											onPress={() => router.push("/app/custom-lists")}
+											style={{ margin: 10 }}
+											className="text-primary"
+										/>
 									}
 									<Ionicons
 										size={24}

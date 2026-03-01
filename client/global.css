@@ -38,3 +38,19 @@
   --color-inverseOnSurface: '#F2F4F9';
   --color-inverseSurface: '#1A202C';
 }
+
+.icon-button-contained {
+  padding: 0.5rem;
+  margin: 0.5rem;
+  background-color: var(--color-surfaceVariant);
+  color: var(--color-onSurfaceVariant);
+  border-radius: 100%;
+}
+
+.icon-button {
+  padding: 0.5rem;
+  margin: 0.5rem;
+  background-color: var(--color-elevation-level0);
+  color: var(--color-onSurfaceVariant);
+  border-radius: 100%;
+}

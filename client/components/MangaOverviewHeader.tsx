@@ -5,13 +5,14 @@ import { ICustomList, ICustomLists, MangaItem } from "@/types/ICustomList";
 import { getMangaTitle, IMangaDetails } from "@/types/IManga";
 import { useCallback, useEffect, useState } from "react";
 import { GestureResponderEvent, Image, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
-import { ActivityIndicator, IconButton, Menu, Modal, Portal } from "react-native-paper";
+import { ActivityIndicator, Menu, Modal, Portal } from "react-native-paper";
 import Toast from "react-native-toast-message";
 import NewCustomListView from "./NewCustomListView";
 import ThemeButton from "./ThemeButton";
 import { ThemeDropdown } from "./ThemeDropdown";
 import ThemeText from "./ThemeText";
 import { usePersistentTheme } from '@/context/usePersistentTheme';
+import { Ionicons } from '@expo/vector-icons';
 
 
 export default function MangaOverviewHeader({ style, manga } : { style?: StyleProp<ViewStyle>, manga?: IMangaDetails })
@@ -233,9 +234,10 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 												}}
 												anchorPosition="bottom"
 												anchor={
-													<IconButton
-														icon={lists.reduce((accumulator, currentValue)=> accumulator || currentValue.isInList, false) ? 'bookmark' : 'bookmark-outline'}
-														mode="contained"
+													<Ionicons
+														size={20}
+														name={lists.reduce((accumulator, currentValue)=> accumulator || currentValue.isInList, false) ? 'bookmark' : 'bookmark-outline'}
+														className='icon-button-contained'
 														style={{borderRadius: 10}}
 														onPress={() => setOptionsVisible(true)}
 													/>

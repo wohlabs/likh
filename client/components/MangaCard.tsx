@@ -2,14 +2,14 @@ import ThemeText from "@/components/ThemeText";
 import { usePersistentTheme } from "@/context/usePersistentTheme";
 import { addToCustomList, favoriteManga } from "@/services/custom_lists";
 import { MangaProps } from "@/services/manga.service";
-import { modernDarkTheme } from "@/theme/modernTheme";
 import { ICustomLists, MangaItem } from "@/types/ICustomList";
 import { getMangaTitle } from "@/types/IManga";
+import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import { Image, Pressable, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
-import { IconButton, Menu } from "react-native-paper";
+import { Menu } from "react-native-paper";
 
 export default function MangaCard({item, style, allCustomLists, onCreateList } : {item: MangaProps, style?: StyleProp<ViewStyle>, onCreateList?: (mangaIdToAdd?: number) => {}, allCustomLists: ICustomLists})
 {
@@ -99,7 +99,9 @@ export default function MangaCard({item, style, allCustomLists, onCreateList } :
 								setOptionsVisible(false)
 							}}
 							anchor={
-								<IconButton size={15} icon={mangaCustomLists.reduce((accumulator, currentValue)=> accumulator || currentValue.isInList, false) ? 'bookmark' : 'bookmark-outline'} mode="contained"
+								<Ionicons size={15}
+									name={mangaCustomLists.reduce((accumulator, currentValue)=> accumulator || currentValue.isInList, false) ? 'bookmark' : 'bookmark-outline'}
+									className='icon-button-contained'
 									onPress={() => setOptionsVisible(true)}
 								/>
 							}
@@ -119,7 +121,8 @@ export default function MangaCard({item, style, allCustomLists, onCreateList } :
 								onPress={() => {setOptionsVisible(false); onCreateList && onCreateList(Number(item.id) ?? undefined);}} title={'new list'} leadingIcon={'plus'}
 							/>
 						</Menu>
-						<IconButton size={15} icon={isFavorite ? "heart" : "heart-outline"} mode="contained"
+						<Ionicons size={15} name={isFavorite ? "heart" : "heart-outline"}
+							className="icon-button-contained"
 							onPress={() => toggleFavorite()}
 						/>
 					</View>

@@ -1,14 +1,16 @@
 import ThemeText from "@/components/ThemeText";
+import { usePersistentTheme } from "@/context/usePersistentTheme";
 import { deleteCustomList, getCustomLists } from "@/services/custom_lists";
 import { ICustomLists } from "@/types/ICustomList";
+import { Ionicons } from "@expo/vector-icons";
 import { Stack, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
-import { Card, IconButton, useTheme } from "react-native-paper";
+import { Card } from "react-native-paper";
 
 export default function CustomListsIndex()
 {
-	const theme = useTheme();
+	const { theme } = usePersistentTheme();
 	const router = useRouter();
 	const [lists, setLists] = useState<ICustomLists>([]);
 
@@ -42,8 +44,9 @@ export default function CustomListsIndex()
 									<ThemeText style={{opacity: 0.6}}>{item.manga?.length ?? 0} manga</ThemeText>
 									<ThemeText style={{opacity: item.description ? 1 : 0.6}}>{item.description || "(No description)"}</ThemeText>
 								</View>
-								<IconButton
-									icon={"trash-can-outline"}
+								<Ionicons
+									name={"trash-sharp"}
+									className="icon-button"
 									size={20}
 									disabled={item.isFavorite}
 									onPress={async () => 
