@@ -18,9 +18,10 @@ import
 	View,
 	ViewStyle,
 } from 'react-native';
-import { Card, IconButton, useTheme } from 'react-native-paper';
+import { Card, IconButton } from 'react-native-paper';
 import ThemeButton from './ThemeButton';
 import { hexToRgba } from './util';
+import { usePersistentTheme } from '@/context/usePersistentTheme';
 
 interface AdvancedSearchModalProps {
 	visible: boolean;
@@ -31,7 +32,7 @@ interface AdvancedSearchModalProps {
 
 export default function AdvancedSearchModal({ visible, onDismiss, style, onMangaAdded }: AdvancedSearchModalProps) 
 {
-	const theme = useTheme();
+	const { theme } = usePersistentTheme();
 	const router = useRouter();
 	const { height } = useWindowDimensions();
 	const [searchQuery, setSearchQuery] = useState('');
@@ -94,7 +95,7 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 
 	const renderMangaResult = ({ item }: { item: any }) => (
 		<Card
-			style={{ marginHorizontal: 10, marginBottom: 8, backgroundColor: theme.colors.surface }}
+			style={{ marginHorizontal: 10, marginBottom: 8, backgroundColor: theme['--color-surface'] }}
 			onPress={() => handleMangaPress(item.id)}
 		>
 			<Card.Content style={[styles.resultContent, {flexDirection: 'row', alignItems: 'center'}]}>
@@ -125,7 +126,7 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 
 	const renderNoteResult = ({ item }: { item: any }) => (
 		<Card
-			style={{ marginHorizontal: 10, marginBottom: 8, backgroundColor: theme.colors.surface }}
+			style={{ marginHorizontal: 10, marginBottom: 8, backgroundColor: theme['--color-surface'] }}
 			onPress={() => handleNotePress(item.manga._id)}
 		>
 			<Card.Content style={styles.resultContent}>
@@ -141,7 +142,7 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 
 	const renderListResult = ({ item }: { item: any }) => (
 		<Card
-			style={{ marginHorizontal: 10, marginBottom: 8, backgroundColor: theme.colors.surface }}
+			style={{ marginHorizontal: 10, marginBottom: 8, backgroundColor: theme['--color-surface'] }}
 			onPress={() => handleListPress(item.id)}
 		>
 			<Card.Content style={styles.resultContent}>
@@ -186,14 +187,14 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 					tint='dark'
 					intensity={10}
 				>
-					<View style={{ backgroundColor: `${hexToRgba(theme.colors.backdrop, 0.3)}`, height: '100%', width: '100%' }}/>
+					<View style={{ backgroundColor: `${hexToRgba(theme['--color-elevation-level1'], 0.3)}`, height: '100%', width: '100%' }}/>
 				</BlurView>
 			}
 			<Pressable style={[styles.searchBarFloating]} onPress={(e) => e.stopPropagation()} pointerEvents='none'>
 				<View
 					style={[
 						styles.container,
-						{ backgroundColor: theme.colors.background, maxHeight: 0.7 * height, marginHorizontal: 10, display: isAdvancedSearching ? 'flex' : 'none' },
+						{ backgroundColor: theme['--color-background'], maxHeight: 0.7 * height, marginHorizontal: 10, display: isAdvancedSearching ? 'flex' : 'none' },
 					]}
 					pointerEvents={isAdvancedSearching ? 'auto' : 'none'}
 				>

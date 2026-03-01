@@ -5,17 +5,18 @@ import { ICustomList, ICustomLists, MangaItem } from "@/types/ICustomList";
 import { getMangaTitle, IMangaDetails } from "@/types/IManga";
 import { useCallback, useEffect, useState } from "react";
 import { GestureResponderEvent, Image, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
-import { ActivityIndicator, IconButton, Menu, Modal, Portal, useTheme } from "react-native-paper";
+import { ActivityIndicator, IconButton, Menu, Modal, Portal } from "react-native-paper";
 import Toast from "react-native-toast-message";
 import NewCustomListView from "./NewCustomListView";
 import ThemeButton from "./ThemeButton";
 import { ThemeDropdown } from "./ThemeDropdown";
 import ThemeText from "./ThemeText";
+import { usePersistentTheme } from '@/context/usePersistentTheme';
 
 
 export default function MangaOverviewHeader({ style, manga } : { style?: StyleProp<ViewStyle>, manga?: IMangaDetails })
 {
-	const theme = useTheme()
+	const { theme } = usePersistentTheme()
 	const [optionsVisible, setOptionsVisible] = useState(false)
 	const [isCreatingNewList, setCreatingNewList] = useState(false)
 	const [lists, setLists] = useState<(ICustomList & {isInList: boolean})[]>([])
@@ -125,7 +126,7 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 	const _renderTruncatedFooter = (handlePress : (event: GestureResponderEvent) => void) => 
 	{
 		return (
-			<ThemeText style={{color: theme.colors.primary}} onPress={handlePress}>
+			<ThemeText style={{color: theme['--color-primary']}} onPress={handlePress}>
 				Read more
 			</ThemeText>
 		);
@@ -134,7 +135,7 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 	const _renderRevealedFooter = (handlePress : (event: GestureResponderEvent) => void) => 
 	{
 		return (
-			<ThemeText style={{color: theme.colors.primary}} onPress={handlePress}>
+			<ThemeText style={{color: theme['--color-primary']}} onPress={handlePress}>
 				Show less
 			</ThemeText>
 		);
@@ -221,7 +222,7 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 													multiple={false}
 													listMode="FLATLIST"
 													maxHeight={300}
-													style={{minWidth: 100, backgroundColor: theme.colors.surfaceVariant, borderColor: theme.colors.outline}}
+													style={{minWidth: 100, backgroundColor: theme['--color-surfaceVariant'], borderColor: theme['--color-outline']}}
 												/>
 											</View>
 											<Menu
@@ -281,7 +282,7 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 			}
 			<Portal>
 				<Modal visible={isCreatingNewList} onDismiss={() => setCreatingNewList(false)}
-					contentContainerStyle={{minWidth: 200, minHeight: 200, width: "30%", height: "50%", backgroundColor: theme.colors.background, borderRadius: 10, margin: 'auto', padding: 10, gap: 5}}
+					contentContainerStyle={{minWidth: 200, minHeight: 200, width: "30%", height: "50%", backgroundColor: theme['--color-background'], borderRadius: 10, margin: 'auto', padding: 10, gap: 5}}
 				>
 					<NewCustomListView mangaIdToAdd={Number(manga?.mangaId)} setAllCustomLists={() => null} onCustomListCreated={async () => setCreatingNewList(false)} />
 				</Modal>

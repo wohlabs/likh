@@ -6,7 +6,43 @@ import { createContext, ReactNode, useContext, useEffect, useState } from "react
 
 const STORAGE_KEY = "APP_THEME"; // "light" | "dark"
 
-export const themes = {
+// theme/theme-vars.ts
+export type ThemeVars = {
+	'--color-primary': string;
+	'--color-primaryContainer': string;
+	'--color-onPrimary': string;
+	'--color-onPrimaryContainer': string;
+	'--color-secondary': string;
+	'--color-secondaryContainer': string;
+	'--color-onSecondary': string;
+	'--color-onSecondaryContainer': string;
+	'--color-tertiary': string;
+	'--color-tertiaryContainer': string;
+	'--color-onTertiary': string;
+	'--color-onTertiaryContainer': string;
+	'--color-error': string;
+	'--color-onError': string;
+	'--color-errorContainer': string;
+	'--color-onErrorContainer': string;
+	'--color-background': string;
+	'--color-onBackground': string;
+	'--color-surface': string;
+	'--color-onSurface': string;
+	'--color-surfaceVariant': string;
+	'--color-onSurfaceVariant': string;
+	'--color-outline': string;
+	'--color-outlineVariant': string;
+	'--color-elevation-level0': string;
+	'--color-elevation-level1': string;
+	'--color-elevation-level2': string;
+	'--color-elevation-level3': string;
+	'--color-elevation-level4': string;
+	'--color-elevation-level5': string;
+	'--color-inverseOnSurface': string;
+	'--color-inverseSurface': string;
+};
+
+export const themes: { light: ThemeVars, dark: ThemeVars} = {
 	light: vars({
 		'--color-primary': '#5B7AFF',
 		'--color-primaryContainer': '#E9EFFE',
@@ -40,7 +76,7 @@ export const themes = {
 		'--color-elevation-level5': '#E1E7FA',
 		'--color-inverseOnSurface': '#F2F4F9',
 		'--color-inverseSurface': '#1A202C',
-	}),
+	}) as ThemeVars,
 	dark: vars({
 		'--color-primary': '#A5B4FC', // Light indigo
 		'--color-primaryContainer': '#312E81',
@@ -74,13 +110,13 @@ export const themes = {
 		'--color-elevation-level5': '#94A3B8',
 		'--color-inverseOnSurface': '#334155',
 		'--color-inverseSurface': '#E2E8F0',
-	}),
+	}) as ThemeVars,
 }
 
 type ThemeScheme = 'light' | 'dark';
 
 interface ThemeContextValue {
-	theme: typeof modernLightTheme;
+	theme: ThemeVars;
 	themeScheme: ThemeScheme;
 	toggleTheme: () => void;
 	ready: boolean;
@@ -95,7 +131,7 @@ interface ThemeProviderProps {
 export function ThemeProvider({ children }: ThemeProviderProps) 
 {
 	const [ready, setReady] = useState(false);
-	const [theme, setTheme] = useState(modernLightTheme);
+	const [theme, setTheme] = useState<ThemeVars>(themes['light']);
 	const [themeScheme, setThemeScheme] = useState<ThemeScheme>('light');
 
 	// Load saved theme
@@ -132,7 +168,7 @@ export function ThemeProvider({ children }: ThemeProviderProps)
 	// Update theme object
 	useEffect(() => 
 	{
-		setTheme(themeScheme === 'dark' ? modernDarkTheme : modernLightTheme);
+		setTheme(themeScheme === 'dark' ? themes['dark'] : themes['light']);
 	}, [themeScheme, ready]);
 
 	const value: ThemeContextValue = {

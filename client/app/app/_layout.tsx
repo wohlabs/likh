@@ -106,22 +106,22 @@ export default function AppLayout()
 
 	return (
 
-		<VariableContextProvider value={themes[themeScheme]}>
-			<PaperProvider theme={theme}>
+		<VariableContextProvider value={theme}>
+			<PaperProvider>
 				<Stack
 					screenOptions={{
-						contentStyle: {backgroundColor: theme.colors.background},
+						contentStyle: {backgroundColor: theme["--color-background"]},
 						headerStyle: {
-							backgroundColor: theme.colors.surface,
+							backgroundColor: theme["--color-surface"],
 							borderWidth: 0,
 							shadowColor: "#000",
 							shadowOffset: { width: 0, height: 4 },
 							shadowOpacity: 0.15,
 							shadowRadius: 12,
 							elevation: 2,
-							boxShadow: `0 0 5px 1px ${theme.colors.backdrop}`
+							boxShadow: `0 0 5px 1px ${theme['--color-elevation-level0']}`
 						},
-						headerTintColor: theme.colors.onSurface,
+						headerTintColor: theme["--color-onSurface"],
 						headerLeft: () => <ThemeText className="text-onBackground text-2xl font-extrabold tracking-wider" style={{ marginLeft: 10 }} onPress={onTitleClicked}>likh</ThemeText>,
 						headerTitleAlign: "center",
 						headerTitle: () => null,
@@ -155,7 +155,7 @@ export default function AppLayout()
 													onPress={() => setOptionsVisible(true)}
 													mode="text"
 												>
-													<Ionicons name="person" color={theme.colors.onBackground} size={16}/>
+													<Ionicons name="person" color={theme['--color-onBackground']} size={16}/>
 													{username}
 												</ThemeButton>
 											}

@@ -21,8 +21,8 @@ export function ThemeToast({ text1, text2, variant = "info" }: Props)
 		variant === "error"
 			? theme.colors.error
 			: variant === "success"
-				? theme.colors.primary
-				: theme.colors.outline;
+				? theme['--color-primary']
+				: theme['--color-outline'];
 
 	return (
 		<Surface
@@ -32,7 +32,7 @@ export function ThemeToast({ text1, text2, variant = "info" }: Props)
 				borderRadius: 12,
 				overflow: "hidden", // 🔑 keeps bar clipped
 				minWidth: 280,
-				backgroundColor: theme.colors.surface,
+				backgroundColor: theme['--color-surface'],
 			}}
 		>
 			{/* LEFT INDICATOR BAR */}

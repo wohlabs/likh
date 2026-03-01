@@ -1,15 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
 import { Image, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
-import { Card, useTheme } from "react-native-paper";
+import { Card } from "react-native-paper";
 import { INoteEntry } from "../types/INotes";
 import ReadMore from "./ReadMore";
 import ThemeText from "./ThemeText";
 import { getImageBase64 } from "./util";
+import { usePersistentTheme } from "@/context/usePersistentTheme";
 
 export default function NotePreviewCard({ note, style, onPress }: { note: INoteEntry, style?: StyleProp<ViewStyle>, onPress?: () => void }) 
 {
 	const [previews, setPreviews] = useState<string[]>(note.images);
-	const theme = useTheme()
+	const { theme } = usePersistentTheme()
 
 	const fetchImages = useCallback(async () => 
 	{
@@ -36,7 +37,7 @@ export default function NotePreviewCard({ note, style, onPress }: { note: INoteE
 			onPress={onPress}
 		>
 			<Card.Content style={{flexDirection: 'row', padding: 0, flex: 1}}>
-				<View style={{width: 60, backgroundColor: theme.colors.surfaceVariant, borderTopLeftRadius: 10, borderBottomLeftRadius: 10, padding: 2, justifyContent: 'center', }}>
+				<View style={{width: 60, backgroundColor: theme['--color-surfaceVariant'], borderTopLeftRadius: 10, borderBottomLeftRadius: 10, padding: 2, justifyContent: 'center', }}>
 					<ThemeText style={{textAlign: 'center', opacity: 0.6}}>
 						Chapter
 					</ThemeText>
@@ -63,7 +64,7 @@ export default function NotePreviewCard({ note, style, onPress }: { note: INoteE
 								renderTruncatedFooter={() => {}}
 								renderRevealedFooter={() => {}}
 								onReady={() => {}}
-								textStyle={{color: theme.colors.onBackground, opacity: note.text ? 1 : 0.6, minHeight: 20}}
+								textStyle={{color: theme['--color-onBackground'], opacity: note.text ? 1 : 0.6, minHeight: 20}}
 								style={{flex: 1}}
 							>
 								<ThemeText numberOfLines={3}>{note.text || "(No notes)"}</ThemeText>

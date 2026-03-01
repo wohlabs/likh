@@ -11,7 +11,7 @@ export default function ThemeButton({ className, children, mode = 'contained', d
 {
 	const getModeClasses = () => 
 	{
-		const baseClasses = 'rounded-lg flex-row gap-2 align-baseline items-baseline';
+		const baseClasses = 'rounded-lg flex-row gap-2 align-baseline items-baseline justify-center';
 
 		switch (mode) 
 		{

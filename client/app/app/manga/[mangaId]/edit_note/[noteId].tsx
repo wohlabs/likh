@@ -2,6 +2,7 @@ import ThemeButton from "@/components/ThemeButton";
 import ThemeText from "@/components/ThemeText";
 import { getImageBase64 } from "@/components/util";
 import { AuthContext } from "@/context/AuthContext";
+import { usePersistentTheme } from "@/context/usePersistentTheme";
 import { API_URL } from "@/services/AxiosInstance";
 import { getMangaDetails } from "@/services/manga.service";
 import { getNote } from "@/services/notes.service";
@@ -57,7 +58,7 @@ export default function EditNoteScreen()
 	const [deletedImages, setDeletedImages] = useState<string[]>([]);
 	const [loading, setLoading] = useState<boolean>(true);
 	const token = useContext(AuthContext).token
-	const theme = useTheme()
+	const { theme } = usePersistentTheme()
 	
 	useEffect(() => 
 	{
@@ -231,7 +232,7 @@ export default function EditNoteScreen()
 			<View style={styles.mainLayout}>
 				<Stack.Screen options={{ title: "Edit note" }} />
 				<View style={styles.imageViewerContainer}>
-					<View style={[images.length > 0 ? styles.imageViewer : styles.noImageContainer, {borderColor: theme.colors.outlineVariant}]}>
+					<View style={[images.length > 0 ? styles.imageViewer : styles.noImageContainer, {borderColor: theme['--color-outlineVariant']}]}>
 						{
 							images.length > 0 ? 
 								<>
@@ -263,7 +264,7 @@ export default function EditNoteScreen()
 									/>
 								</>
 								:
-								<ThemeText style={{color: theme.colors.onSurfaceDisabled}}>Add an image using the + icon</ThemeText>
+								<ThemeText style={{color: theme['--color-outline']}}>Add an image using the + icon</ThemeText>
 						}
 						{
 							Platform.OS === 'web' && <div {...dropZoneRootProps()} style={{position: "absolute", width: "100%", height: "100%" }}/>
@@ -278,7 +279,7 @@ export default function EditNoteScreen()
 									<Image
 										source={{ uri: item.uri }}
 										resizeMode="cover"
-										style={[styles.thumbnail, {borderColor: theme.colors.outlineVariant}]}
+										style={[styles.thumbnail, {borderColor: theme['--color-outlineVariant']}]}
 									/>
 								</Pressable>
 							)}
@@ -299,7 +300,7 @@ export default function EditNoteScreen()
 						placeholder={"start"}
 						placeholderTextColor={"gray"}
 						mode="outlined"
-						outlineStyle={loading && {borderColor: theme.colors.onSurfaceDisabled}}
+						outlineStyle={loading && {borderColor: theme['--color-outline']}}
 						disabled={loading}
 						readOnly
 					/>
@@ -314,7 +315,7 @@ export default function EditNoteScreen()
 							placeholder={"start"}
 							placeholderTextColor={"gray"}
 							style={styles.formInput}
-							outlineStyle={loading && {borderColor: theme.colors.onSurfaceDisabled}}
+							outlineStyle={loading && {borderColor: theme['--color-outline']}}
 							disabled={loading}
 							mode="outlined"
 						/>
@@ -329,7 +330,7 @@ export default function EditNoteScreen()
 							placeholder={"end (optional)"}
 							placeholderTextColor={"gray"}
 							style={styles.formInput}
-							outlineStyle={loading && {borderColor: theme.colors.onSurfaceDisabled}}
+							outlineStyle={loading && {borderColor: theme['--color-outline']}}
 							disabled={loading}
 							mode="outlined"
 						/>
@@ -344,9 +345,9 @@ export default function EditNoteScreen()
 						onChangeText={onChangeText}
 						mode="outlined"
 						style={[styles.noteInput]}
-						outlineStyle={loading && {borderColor: theme.colors.onSurfaceDisabled}}
+						outlineStyle={loading && {borderColor: theme['--color-outline']}}
 						disabled={loading}
-						activeOutlineColor={theme.colors.primary}
+						activeOutlineColor={theme['--color-primary']}
 					/>
 					<View style={styles.buttonsContainer}>
 						<ThemeButton

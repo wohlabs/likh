@@ -1,6 +1,7 @@
 import { ThemeDropdown } from "@/components/ThemeDropdown";
 import ThemeSearchbar from '@/components/ThemeSearchbar';
 import ThemeText from '@/components/ThemeText';
+import { usePersistentTheme } from "@/context/usePersistentTheme";
 import { addMangaToLibrary } from '@/services/manga.service';
 import { PaginatedSearchResult, searchCategory } from '@/services/search.service';
 import { getMangaTitle, IMangaDetails } from '@/types/IManga';
@@ -14,11 +15,11 @@ import
 	StyleSheet,
 	View,
 } from 'react-native';
-import { Card, IconButton, useTheme } from 'react-native-paper';
+import { Card, IconButton } from 'react-native-paper';
 
 export default function SearchCategoryPage() 
 {
-	const theme = useTheme();
+	const { theme } = usePersistentTheme();
 	const router = useRouter();
 	const { category, query } = useLocalSearchParams();
 	const [results, setResults] = useState<any[]>([]);
@@ -123,7 +124,7 @@ export default function SearchCategoryPage()
 
 	const renderMangaResult = ({ item }: { item: any }) => (
 		<Card
-			style={{ marginHorizontal: 10, marginBottom: 8, backgroundColor: theme.colors.surface }}
+			style={{ marginHorizontal: 10, marginBottom: 8, backgroundColor: theme['--color-surface'] }}
 			onPress={() => handleMangaPress(item.id)}
 		>
 			<Card.Content style={[styles.resultContent, { flexDirection: 'row', alignItems: 'center' }]}>
@@ -158,7 +159,7 @@ export default function SearchCategoryPage()
 
 	const renderNoteResult = ({ item }: { item: any }) => (
 		<Card
-			style={{ marginHorizontal: 10, marginBottom: 8, backgroundColor: theme.colors.surface }}
+			style={{ marginHorizontal: 10, marginBottom: 8, backgroundColor: theme['--color-surface'] }}
 			onPress={() => handleNotePress(item.manga._id)}
 		>
 			<Card.Content style={styles.resultContent}>
@@ -174,7 +175,7 @@ export default function SearchCategoryPage()
 
 	const renderListResult = ({ item }: { item: any }) => (
 		<Card
-			style={{ marginHorizontal: 10, marginBottom: 8, backgroundColor: theme.colors.surface }}
+			style={{ marginHorizontal: 10, marginBottom: 8, backgroundColor: theme['--color-surface'] }}
 			onPress={() => handleListPress(item.id)}
 		>
 			<Card.Content style={styles.resultContent}>
@@ -228,7 +229,7 @@ export default function SearchCategoryPage()
 
 	return (
 		<>
-			<View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+			<View style={[styles.container, { backgroundColor: theme['--color-background'] }]}>
 				<View style={[styles.searchBarContainer, {zIndex: 2}]}>
 					<View style={{height: '100%'}}>
 						<ThemeDropdown
@@ -256,7 +257,7 @@ export default function SearchCategoryPage()
 
 				{isLoading && results.length === 0 ? (
 					<View style={styles.loaderContainer}>
-						<ActivityIndicator size="large" color={theme.colors.primary} />
+						<ActivityIndicator size="large" color={theme['--color-primary']} />
 					</View>
 				) : results.length === 0 ? (
 					<View style={styles.emptyContainer}>
@@ -275,7 +276,7 @@ export default function SearchCategoryPage()
 						ListFooterComponent={
 							isLoadingMore ? (
 								<View style={styles.footerLoader}>
-									<ActivityIndicator size="small" color={theme.colors.primary} />
+									<ActivityIndicator size="small" color={theme['--color-primary']} />
 								</View>
 							) : null
 						}

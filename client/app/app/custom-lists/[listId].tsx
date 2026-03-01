@@ -1,6 +1,7 @@
 import AutoGrowingTextInput from "@/components/AutoGrowingTextInput";
 import ThemeButton from "@/components/ThemeButton";
 import ThemeText from "@/components/ThemeText";
+import { usePersistentTheme } from "@/context/usePersistentTheme";
 import { addToCustomList, getCustomLists } from "@/services/custom_lists";
 import { editList } from "@/services/lists.service";
 import { getLibraryMangaThumbnails, MangaProps } from "@/services/manga.service";
@@ -9,13 +10,13 @@ import { getMangaTitle } from "@/types/IManga";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import { FlatList, Image, Pressable, ScrollView, StyleSheet, View } from "react-native";
-import { Card, IconButton, useTheme } from "react-native-paper";
+import { Card, IconButton } from "react-native-paper";
 
 export default function CustomListDetail()
 {
 	const params = useLocalSearchParams();
 	const listId = params.listId as string;
-	const theme = useTheme();
+	const { theme } = usePersistentTheme();
 	const router = useRouter();
 	const [list, setList] = useState<ICustomList | null>(null);
 	const [mangas, setMangas] = useState<(MangaProps & {addedDate: Date})[]>([]);
@@ -77,7 +78,7 @@ export default function CustomListDetail()
 				options={{ title: list?.name ?? "List", headerTitleAlign: "center" }}
 			/>
 			<ScrollView
-				style={[{ flex: 1, backgroundColor: theme.colors.background }]}
+				style={[{ flex: 1, backgroundColor: theme['--color-background'] }]}
 			>
 				<View style={styles.header}>
 					<ThemeText style={{paddingHorizontal: 10}}>{list?.name}</ThemeText>
@@ -102,7 +103,7 @@ export default function CustomListDetail()
 									onHoverIn={() => setTextHovered(true)}
 								/>
 								<ThemeText
-									style={{ color: theme.colors.onSurfaceVariant, flex: 1, backgroundColor: textHovered ? theme.colors.surface : theme.colors.background, padding: 10, opacity: officialDescription ? 1 : 0.6 }}
+									style={{ color: theme['--color-onSurfaceVariant'], flex: 1, backgroundColor: textHovered ? theme['--color-surface'] : theme['--color-background'], padding: 10, opacity: officialDescription ? 1 : 0.6 }}
 								>
 									{officialDescription || "(no description)"}
 								</ThemeText>

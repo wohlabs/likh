@@ -5,6 +5,7 @@ import NewCustomListView from "@/components/NewCustomListView";
 import ThemeSearchbar from "@/components/ThemeSearchbar";
 import ThemeText from "@/components/ThemeText";
 import { formatData } from "@/components/util";
+import { usePersistentTheme } from "@/context/usePersistentTheme";
 import { getCustomLists } from "@/services/custom_lists";
 import { addMangaToLibrary, getLibraryMangaThumbnails, getMyListMangaIds, MangaProps, searchMangaByString } from "@/services/manga.service";
 import { ICustomLists } from "@/types/ICustomList";
@@ -18,7 +19,7 @@ import { IconButton, Modal, Portal, useTheme } from "react-native-paper";
 export default function Index() 
 {
 	const router = useRouter();
-	const theme = useTheme()
+	const {theme} = usePersistentTheme()
 	const pageRef = useRef<View>(null);
 	const [mangaList, setMangaList] = useState<MangaProps[]>([]);
 	const [mangaIdToAdd, setMangaIdToAdd] = useState<number | undefined>(undefined);
@@ -117,7 +118,7 @@ export default function Index()
 			</View>
 			<Portal>
 				<Modal visible={isSearching} onDismiss={() => setSearching(false)}
-					contentContainerStyle={[styles.addMangaModalContainer, { backgroundColor: theme.colors.background }]}>
+					contentContainerStyle={[styles.addMangaModalContainer, { backgroundColor: theme['--color-background'] }]}>
 					<ThemeSearchbar
 						placeholder="search manga"
 						onChangeText={setNewSearchString}
@@ -143,8 +144,8 @@ export default function Index()
 								<IconButton
 									icon={"plus"}
 									mode="contained"
-									iconColor={mangaList.find((elem) => elem.id === item.id) ? theme.colors.surfaceVariant : theme.colors.primary}
-									containerColor={mangaList.find((elem) => elem.id === item.id) ? theme.colors.inverseOnSurface : theme.colors.surfaceVariant}
+									iconColor={mangaList.find((elem) => elem.id === item.id) ? theme['--color-surfaceVariant'] : theme['--color-primary']}
+									containerColor={mangaList.find((elem) => elem.id === item.id) ? theme['--color-inverseOnSurface'] : theme['--color-surfaceVariant']}
 									onPress={async () => 
 									{
 										await addMangaToLibrary(item.id);
@@ -157,7 +158,7 @@ export default function Index()
 					/>
 				</Modal>
 				<Modal visible={isCreatingNewList} onDismiss={() => setCreatingNewList(false)}
-					contentContainerStyle={{minWidth: 200, minHeight: 200, width: "30%", height: "50%", backgroundColor: theme.colors.background, borderRadius: 10, margin: 'auto', padding: 10, gap: 5}}>
+					contentContainerStyle={{minWidth: 200, minHeight: 200, width: "30%", height: "50%", backgroundColor: theme['--color-background'], borderRadius: 10, margin: 'auto', padding: 10, gap: 5}}>
 					<NewCustomListView mangaIdToAdd={mangaIdToAdd} setAllCustomLists={setAllCustomLists} onCustomListCreated={async () => setCreatingNewList(false)} />
 				</Modal>
 			</Portal>

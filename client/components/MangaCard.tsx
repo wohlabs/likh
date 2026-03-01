@@ -1,4 +1,5 @@
 import ThemeText from "@/components/ThemeText";
+import { usePersistentTheme } from "@/context/usePersistentTheme";
 import { addToCustomList, favoriteManga } from "@/services/custom_lists";
 import { MangaProps } from "@/services/manga.service";
 import { modernDarkTheme } from "@/theme/modernTheme";
@@ -8,11 +9,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { router } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import { Image, Pressable, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
-import { IconButton, Menu, useTheme } from "react-native-paper";
+import { IconButton, Menu } from "react-native-paper";
 
 export default function MangaCard({item, style, allCustomLists, onCreateList } : {item: MangaProps, style?: StyleProp<ViewStyle>, onCreateList?: (mangaIdToAdd?: number) => {}, allCustomLists: ICustomLists})
 {
-	const theme = useTheme();
+	const { theme } = usePersistentTheme();
 	const [optionsVisible, setOptionsVisible] = useState<boolean>(false);
 	const [mangaCustomLists, setMangaCustomLists] = useState<{ _id: string, name: string, isInList: boolean}[]>([]);
 	const [isFavorite, setFavorite] = useState<boolean>(false);
@@ -69,7 +70,7 @@ export default function MangaCard({item, style, allCustomLists, onCreateList } :
 						shadowOpacity: 0.08,
 						shadowRadius: 12,
 						elevation: 2,
-						boxShadow: `0 0 5px 1px ${theme.colors.backdrop}`
+						boxShadow: `0 0 5px 1px ${theme['--color-elevation-level1']}`
 					}]}
 					onPress={() => { router.navigate(`/app/manga/${item.id}`) }}
 				>
@@ -80,14 +81,14 @@ export default function MangaCard({item, style, allCustomLists, onCreateList } :
 					/>
 					{/* Gradient mask */}
 					<LinearGradient
-						colors={["transparent", modernDarkTheme.colors.background]}
+						colors={["transparent", theme['--color-background']]}
 						locations={[0.6, 1]}
 						style={StyleSheet.absoluteFill}
 						pointerEvents="none"
 					/>
 					<View style={styles.bottomContent}>
 						<View style={styles.textContainer}>
-							<ThemeText style={[styles.mangaTitle, {color: modernDarkTheme.colors.onBackground}]} numberOfLines={2}>{getMangaTitle(item)}</ThemeText>
+							<ThemeText style={[styles.mangaTitle, {color: theme['--color-onBackground']}]} numberOfLines={2}>{getMangaTitle(item)}</ThemeText>
 						</View>
 					</View>
 					<View style={{position: "absolute", top: 0, width: "100%", flexDirection: "row-reverse"}}>

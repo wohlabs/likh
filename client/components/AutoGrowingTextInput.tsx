@@ -1,7 +1,9 @@
+import { usePersistentTheme } from "@/context/usePersistentTheme";
 import React, { useRef, useState } from "react";
 import { StyleProp, StyleSheet, TextStyle, View } from "react-native";
-import { Text, TextInput, useTheme } from "react-native-paper";
+import { Text, TextInput } from "react-native-paper";
 import { Props } from "react-native-paper/lib/typescript/components/TextInput/TextInput";
+import ThemeText from "./ThemeText";
 
 // this is a PATCH solution for TextInput to handle autogrowing size
 const AutoGrowingTextInput = ({
@@ -19,7 +21,7 @@ const AutoGrowingTextInput = ({
 {
 	const [height, setHeight] = useState(minHeight);
 	const [selection, setSelection] = useState({start: 0, end: 0});
-	const theme = useTheme();
+	const { theme } = usePersistentTheme();
 	
 	const inputRef = useRef(null);
 
@@ -38,13 +40,14 @@ const AutoGrowingTextInput = ({
 			<TextInput
 				{...props}
 				ref={inputRef}
+				className="text-md"
 				multiline
 				value={value}
 				onChangeText={onChangeText}
 				autoFocus
 				selection={selection}
 				onFocus={() => setSelection({ start: value.length, end: value.length })}
-				contentStyle={[ styles.defaultStyling, { minHeight: Math.max(height, minHeight),  ...theme.fonts.bodyMedium }]}
+				contentStyle={[ styles.defaultStyling, { minHeight: Math.max(height, minHeight)}]}
 				onContentSizeChange={(e) => 
 				{
 					const newHeight = e.nativeEvent.contentSize.height;
@@ -58,8 +61,9 @@ const AutoGrowingTextInput = ({
 			/>
 
 			{/* Hidden Text clone for measurement */}
-			<Text
-				style={[styles.hiddenText, styles.defaultStyling, {...theme.fonts.bodyMedium}]}
+			<ThemeText
+				className="text-md"
+				style={[styles.hiddenText, styles.defaultStyling]}
 				onLayout={(e) => 
 				{
 					const newHeight = e.nativeEvent.layout.height;
@@ -70,7 +74,7 @@ const AutoGrowingTextInput = ({
 				}}
 			>
 				{normalizeText(value) || " "}
-			</Text>
+			</ThemeText>
 		</View>
 	);
 };

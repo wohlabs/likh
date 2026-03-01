@@ -1,12 +1,13 @@
 import { View } from "react-native";
-import { ActivityIndicator, useTheme } from "react-native-paper";
+import { ActivityIndicator } from "react-native-paper";
 import ThemeText from "./ThemeText";
+import { usePersistentTheme } from "@/context/usePersistentTheme";
 
 export function LoadingScreen({text} : {text?: string})
 {
-	const theme = useTheme();
+	const { theme } = usePersistentTheme();
 	return (
-		<View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: theme.colors.background }}>
+		<View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: theme['--color-background'] }}>
 			<ActivityIndicator size="large" />
 			<ThemeText style={{margin: 16}}>
 				{text}

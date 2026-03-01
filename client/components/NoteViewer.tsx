@@ -6,14 +6,14 @@ import ThemeButton from "./ThemeButton";
 import ThemeText from "./ThemeText";
 import { getImageBase64 } from "./util";
 import { Ionicons } from "@expo/vector-icons";
-import { themes, usePersistentTheme } from "@/context/usePersistentTheme";
+import { usePersistentTheme } from "@/context/usePersistentTheme";
 
 export default function NoteViewer({mangaTitle, note, onDelete, onEdit, style}: { mangaTitle?: string, note: INoteEntry, style?: StyleProp<ViewStyle>, onDelete?: () => void , onEdit?: () => void})
 {
 	const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
 	const [optionsVisible, setOptionsVisible] = useState<boolean>(false);
 	const [images, setImages] = useState<string[]>(note.images);
-	const {theme, toggleTheme, themeScheme} = usePersistentTheme()
+	const {theme} = usePersistentTheme()
 
 
 	const fetchImages = useCallback(async () => 
@@ -53,7 +53,7 @@ export default function NoteViewer({mangaTitle, note, onDelete, onEdit, style}: 
 						/>
 						:
 						<View style={styles.noImagesContainer}>
-							<ThemeText style={{color: theme.colors.onSurfaceDisabled}}>No images</ThemeText>
+							<ThemeText style={{color: theme['--color-onSurface']}}>No images</ThemeText>
 						</View>
 				}
 				<View style={{height: 100, flexDirection: "row"}}>
@@ -97,21 +97,21 @@ export default function NoteViewer({mangaTitle, note, onDelete, onEdit, style}: 
 					<ThemeButton style={styles.viewerButton}
 						onPress={() => {}}
 					>
-						<Ionicons name="share-social" size={16} color={themes[themeScheme]["--color-onPrimary"]}/>
+						<Ionicons name="share-social" size={16} color={theme["--color-onPrimary"]}/>
 						Share
 					</ThemeButton>
 					<ThemeButton
 						style={styles.viewerButton}
 						onPress={onEdit}
 					>
-						<Ionicons name="pencil" size={16} color={themes[themeScheme]["--color-onPrimary"]}/>
+						<Ionicons name="pencil" size={16} color={theme["--color-onPrimary"]}/>
 						Edit
 					</ThemeButton>
 					<ThemeButton
 						style={styles.viewerButton}
 						onPress={() => {}}
 					>
-						<Ionicons name="heart" size={16} color={themes[themeScheme]["--color-onPrimary"]}/>
+						<Ionicons name="heart" size={16} color={theme["--color-onPrimary"]}/>
 						Favorite
 					</ThemeButton>
 					<Menu

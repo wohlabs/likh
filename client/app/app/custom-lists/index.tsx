@@ -24,7 +24,7 @@ export default function CustomListsIndex()
 	return (
 		<>
 			<Stack.Screen options={{ title: "Custom Lists", headerTitleAlign: 'center' }} />
-			<View style={[styles.container, { backgroundColor: theme.colors.background }]}>                
+			<View style={[styles.container, { backgroundColor: theme['--color-background'] }]}>                
 				<FlatList
 					data={lists}
 					keyExtractor={(item) => item._id}

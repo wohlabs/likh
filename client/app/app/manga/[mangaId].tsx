@@ -9,6 +9,7 @@ import ThemeSearchbar from "@/components/ThemeSearchbar";
 import ThemeText from "@/components/ThemeText";
 import { blobToBase64 } from "@/components/util";
 import { AuthContext } from "@/context/AuthContext";
+import { usePersistentTheme } from "@/context/usePersistentTheme";
 import { API_URL } from "@/services/AxiosInstance";
 import { getMangaData, getMangaDetails } from "@/services/manga.service";
 import { deleteMangaNote } from "@/services/notes.service";
@@ -114,7 +115,6 @@ function TranslatableButtonContainer({
 
 export default function MangaDetails() 
 {
-	const theme = useTheme();
 	const { width } = useWindowDimensions();
 	const { mangaId, error } = useLocalSearchParams(); // <-- get from URL
 	const [manga, setManga] = useState<IMangaDetails>();
@@ -150,6 +150,7 @@ export default function MangaDetails()
 	const [newEndChapter, setNewEndChapter] = useState<string>("");
 	let dropZoneRootProps: any = null;
 	const [isDropActive, setIsDropActive] = useState(false);
+	const { theme } = usePersistentTheme();
 	const token = useContext(AuthContext).token;
 
 	const pasteImageFromClipboard = useCallback(async () => 
@@ -535,7 +536,7 @@ export default function MangaDetails()
 					<View
 						style={[
 							styles.addNoteContainer,
-							{ borderColor: theme.colors.outlineVariant },
+							{ borderColor: theme['--color-outlineVariant'] },
 						]}
 					>
 						{Platform.OS === "web" && isAddingNote && (
@@ -622,7 +623,7 @@ export default function MangaDetails()
 													resizeMode="cover"
 													style={[
 														styles.thumbnail,
-														{ borderColor: theme.colors.outlineVariant },
+														{ borderColor: theme['--color-outlineVariant'] },
 													]}
 												/>
 												<IconButton
@@ -820,7 +821,6 @@ export default function MangaDetails()
 					<Portal theme={theme}>
 						<Modal
 							visible={isViewingOverlay}
-							theme={theme}
 							contentContainerStyle={styles.noteModalContainer}
 							onDismiss={() => 
 							{
@@ -837,7 +837,7 @@ export default function MangaDetails()
 										mangaTitle={getMangaTitle(manga)}
 										style={[
 											styles.noteViewer,
-											{ backgroundColor: theme.colors.background },
+											{ backgroundColor: theme['--color-background'] },
 										]}
 										onDelete={() => onDelete(viewerNote.id)}
 										onEdit={() => 
