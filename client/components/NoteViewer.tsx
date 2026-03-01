@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { FlatList, Image, Pressable, ScrollView, StyleProp, StyleSheet, useColorScheme, View, ViewStyle } from "react-native";
+import { FlatList, Image, Pressable, ScrollView, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 import { Menu } from 'react-native-paper';
 import { INoteEntry } from "../types/INotes";
 import ThemeButton from "./ThemeButton";

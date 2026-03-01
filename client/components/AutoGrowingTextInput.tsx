@@ -1,7 +1,7 @@
 import { usePersistentTheme } from "@/context/usePersistentTheme";
 import React, { useRef, useState } from "react";
 import { StyleProp, StyleSheet, TextStyle, View } from "react-native";
-import { Text, TextInput } from "react-native-paper";
+import { TextInput } from "react-native-paper";
 import { Props } from "react-native-paper/lib/typescript/components/TextInput/TextInput";
 import ThemeText from "./ThemeText";
 
@@ -21,7 +21,6 @@ const AutoGrowingTextInput = ({
 {
 	const [height, setHeight] = useState(minHeight);
 	const [selection, setSelection] = useState({start: 0, end: 0});
-	const { theme } = usePersistentTheme();
 	
 	const inputRef = useRef(null);
 

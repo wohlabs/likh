@@ -2,23 +2,19 @@ import AdvancedSearchModal from "@/components/AdvancedSearchModal";
 import { LoadingScreen } from "@/components/LoadingScreen";
 import MangaCard from "@/components/MangaCard";
 import NewCustomListView from "@/components/NewCustomListView";
-import ThemeSearchbar from "@/components/ThemeSearchbar";
-import ThemeText from "@/components/ThemeText";
 import { formatData } from "@/components/util";
 import { usePersistentTheme } from "@/context/usePersistentTheme";
 import { getCustomLists } from "@/services/custom_lists";
-import { addMangaToLibrary, getLibraryMangaThumbnails, getMyListMangaIds, MangaProps, searchMangaByString } from "@/services/manga.service";
+import { getLibraryMangaThumbnails, getMyListMangaIds, MangaProps } from "@/services/manga.service";
 import { ICustomLists } from "@/types/ICustomList";
 import { getMangaTitle } from "@/types/IManga";
-import { Ionicons } from "@expo/vector-icons";
-import { Stack, useRouter } from "expo-router";
+import { Stack } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { FlatList, Image, Pressable, StyleSheet, useWindowDimensions, View } from "react-native";
+import { FlatList, useWindowDimensions, View } from "react-native";
 import { Modal, Portal } from "react-native-paper";
 
 export default function Index() 
 {
-	const router = useRouter();
 	const {theme} = usePersistentTheme()
 	const pageRef = useRef<View>(null);
 	const [mangaList, setMangaList] = useState<MangaProps[]>([]);
@@ -27,8 +23,6 @@ export default function Index()
 	const [isCreatingNewList, setCreatingNewList] = useState(false)
 	const [searchString, setSearchString] = useState("")
 	const [isAdvancedSearching, setIsAdvancedSearching] = useState(false)
-	const [newMangaList, setNewMangaList] = useState<MangaProps[]>([]);
-	const [newSearchString, setNewSearchString] = useState("")
 	const [allCustomLists, setAllCustomLists] = useState<ICustomLists>([])
 	const [loading, setLoading] = useState<boolean>(true)
 	const { width } = useWindowDimensions();
@@ -43,12 +37,6 @@ export default function Index()
 		setMangaList(mangaListResult.success ? mangaListResult.data : []);
 		return setLoading(false);
 	}, []);
-
-	const populateNewMangaList = useCallback(async () => 
-	{
-		const searchListResult = await searchMangaByString(newSearchString);
-		setNewMangaList(searchListResult.success ? searchListResult.data : []);
-	}, [newSearchString]);
 
 	const popupCreateNewListWindow = useCallback(async (mangaIdToAdd?: number) => 
 	{
@@ -124,13 +112,3 @@ export default function Index()
 		</>
 	);
 }
-
-const styles = StyleSheet.create({
-	searchBarContainer: { width: '90%', maxWidth: 600, flex: 1, flexDirection: 'column' },
-	addMangaModalContainer: {
-		padding: 0, margin: 'auto', width: "90%", height: "80%", borderRadius: 10
-	},
-	addMangaModalSearchBar: {margin: 10, borderRadius: 10},
-	addMangaContainer: { height: 150, width: "100%", flexDirection: "row", alignItems: "center", padding: 5 },
-	addMangaTitle: {flex: 1}
-});

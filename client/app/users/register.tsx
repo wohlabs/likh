@@ -4,8 +4,7 @@ import { usePersistentTheme } from "@/context/usePersistentTheme";
 import { registerUser } from "@/services/users.service";
 import { router } from "expo-router";
 import { useState } from "react";
-import { StyleSheet, View } from "react-native";
-import { TextInput } from "react-native";
+import { StyleSheet, View , TextInput } from "react-native";
 
 export default function UserRegister()
 {

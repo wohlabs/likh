@@ -1,5 +1,4 @@
 // usePersistentTheme.js
-import { modernDarkTheme, modernLightTheme } from "@/theme/modernTheme";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { vars } from "nativewind";
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";

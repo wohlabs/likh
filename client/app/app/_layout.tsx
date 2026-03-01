@@ -4,7 +4,7 @@ import ThemeText from "@/components/ThemeText";
 import { toastConfig } from "@/components/ThemeToast";
 import { AuthContext } from "@/context/AuthContext";
 import { ServerContext } from "@/context/ServerContext";
-import { themes, usePersistentTheme } from "@/context/usePersistentTheme";
+import { usePersistentTheme } from "@/context/usePersistentTheme";
 import api from "@/services/AxiosInstance";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
