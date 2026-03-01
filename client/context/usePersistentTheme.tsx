@@ -20,10 +20,10 @@ export type ThemeVars = {
 	'--color-tertiaryContainer': string;
 	'--color-onTertiary': string;
 	'--color-onTertiaryContainer': string;
-	'--color-error': string;
-	'--color-onError': string;
-	'--color-errorContainer': string;
-	'--color-onErrorContainer': string;
+	'--color-statusError': string;
+	'--color-onStatusError': string;
+	'--color-statusErrorContainer': string;
+	'--color-onStatusErrorContainer': string;
 	'--color-background': string;
 	'--color-onBackground': string;
 	'--color-surface': string;
@@ -56,10 +56,10 @@ export const themes: { light: ThemeVars, dark: ThemeVars} = {
 		'--color-tertiaryContainer': '#F0E8FF',
 		'--color-onTertiary': '#FFFFFF',
 		'--color-onTertiaryContainer': '#42275E',
-		'--color-error': '#C41E3A',
-		'--color-onError': '#FFFFFF',
-		'--color-errorContainer': '#F7D8DC',
-		'--color-onErrorContainer': '#630A0F',
+		'--color-statusError': '#C41E3A',
+		'--color-onStatusError': '#FFFFFF',
+		'--color-statusErrorContainer': '#F7D8DC',
+		'--color-onStatusErrorContainer': '#630A0F',
 		'--color-background': '#FAFBFC',
 		'--color-onBackground': '#1A202C',
 		'--color-surface': '#FFFFFF',
@@ -90,10 +90,10 @@ export const themes: { light: ThemeVars, dark: ThemeVars} = {
 		'--color-tertiaryContainer': '#5B21B6',
 		'--color-onTertiary': '#FFFFFF',
 		'--color-onTertiaryContainer': '#F3E8FF',
-		'--color-error': '#EF4444',
-		'--color-onError': '#7F1D1D',
-		'--color-errorContainer': '#7F1D1D',
-		'--color-onErrorContainer': '#FFEBEE',
+		'--color-statusError': '#EF4444',
+		'--color-onStatusError': '#7F1D1D',
+		'--color-statusErrorContainer': '#7F1D1D',
+		'--color-onStatusErrorContainer': '#FFEBEE',
 		'--color-background': '#0F172A',
 		'--color-onBackground': '#E2E8F0',
 		'--color-surface': '#1E293B',

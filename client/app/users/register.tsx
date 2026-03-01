@@ -47,7 +47,7 @@ export default function UserRegister()
 					<ThemeText className="text-md">Password</ThemeText>
 					<TextInput placeholder="password" className="bg-transparent w-full p-2 rounded-md text-md text-onBackground border-2 border-inverseSurface" value={password} onChangeText={setPassword} secureTextEntry />
 				</View>
-				{error ? <ThemeText style={styles.error}>{error}</ThemeText> : null}
+				<ThemeText className="text-statusError mb-2.5 w-full">{error}</ThemeText>
 				<ThemeButton onPress={register} className="text-sm w-full" mode="contained">Register</ThemeButton>
 				<ThemeButton onPress={() => router.navigate('/users/login')} className="text-sm w-full" mode="text">Already have an account?</ThemeButton>
 			</View>
@@ -58,5 +58,4 @@ export default function UserRegister()
 const styles = StyleSheet.create({
 	container: { flex: 1, justifyContent: 'center', padding: 20 },
 	formContainer: {maxWidth: 500, width: '90%', height: "80%", margin: 'auto', alignItems: 'center', justifyContent: 'center'},
-	error: { color: 'red', marginBottom: 10, width: '100%' },
 });

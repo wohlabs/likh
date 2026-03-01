@@ -17,10 +17,10 @@
   --color-tertiaryContainer: '#F0E8FF';
   --color-onTertiary: '#FFFFFF';
   --color-onTertiaryContainer: '#42275E';
-  --color-error: '#C41E3A';
-  --color-onError: '#FFFFFF';
-  --color-errorContainer: '#F7D8DC';
-  --color-onErrorContainer: '#630A0F';
+  --color-statusError: '#C41E3A';
+  --color-onStatusError: '#FFFFFF';
+  --color-statusErrorContainer: '#F7D8DC';
+  --color-onStatusErrorContainer: '#630A0F';
   --color-background: '#FAFBFC';
   --color-onBackground: '#1A202C';
   --color-surface: '#FFFFFF';
