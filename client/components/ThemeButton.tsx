@@ -5,7 +5,7 @@ interface ThemeButtonProps extends PressableProps {
   mode?: 'contained' | 'outlined' | 'text' | 'contained-tonal';
 }
 
-export default function ThemeButton({ className, children, mode = 'contained', disabled, ...props }: ThemeButtonProps)
+export default function ThemeButton({ className, children, mode = 'text', disabled, ...props }: ThemeButtonProps)
 {
 	const getModeClasses = () => 
 	{
@@ -41,7 +41,7 @@ export default function ThemeButton({ className, children, mode = 'contained', d
 
 	return (
 		<Pressable
-			className={`${getModeClasses()} ${getTextColorClass()} lowercase ${className}`}
+			className={`${getModeClasses()} ${getTextColorClass()} text-md lowercase ${className}`}
 			{...props}
 		>
 			{children}

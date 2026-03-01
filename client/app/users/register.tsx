@@ -5,7 +5,7 @@ import { registerUser } from "@/services/users.service";
 import { router } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
-import { TextInput, useTheme } from "react-native-paper";
+import { TextInput } from "react-native";
 
 export default function UserRegister()
 {
@@ -33,22 +33,23 @@ export default function UserRegister()
 		<View style={styles.container}>
 			<View style={styles.formContainer}>
 				<ThemeText
-					style={[{
-						fontWeight: "900",
-						letterSpacing: 2,
-						color: theme['--color-primary'],
-						marginBottom: 20
-					}]}
+					className="text-4xl text-primary font-extrabold tracking-wider mb-5"
 					onPress={() => router.navigate("/")}
 				>
 					likh
 				</ThemeText>
-				<ThemeText>Register</ThemeText>
-				<TextInput label='username' placeholder="username" value={username} onChangeText={setUsername} mode="outlined" style={styles.input} />
-				<TextInput label='password' placeholder="password" value={password} onChangeText={setPassword} mode="outlined" secureTextEntry style={styles.input} />
+				<ThemeText className="text-xl m-1 font-medium">Register</ThemeText>
+				<View className="w-full mb-2">
+					<ThemeText className="text-md">Username</ThemeText>
+					<TextInput placeholder="username" className="bg-transparent w-full p-2 rounded-md text-md text-onBackground border-2 border-inverseSurface" value={username} onChangeText={setUsername} />
+				</View>
+				<View className="w-full mb-2">
+					<ThemeText className="text-md">Password</ThemeText>
+					<TextInput placeholder="password" className="bg-transparent w-full p-2 rounded-md text-md text-onBackground border-2 border-inverseSurface" value={password} onChangeText={setPassword} secureTextEntry />
+				</View>
 				{error ? <ThemeText style={styles.error}>{error}</ThemeText> : null}
-				<ThemeButton onPress={register} mode="contained" style={{width: '100%'}}>Register</ThemeButton>
-				<ThemeButton onPress={() => router.navigate('/users/login')}>Already have an account?</ThemeButton>
+				<ThemeButton onPress={register} className="text-sm w-full" mode="contained">Register</ThemeButton>
+				<ThemeButton onPress={() => router.navigate('/users/login')} className="text-sm w-full" mode="text">Already have an account?</ThemeButton>
 			</View>
 		</View>
 	);
@@ -57,6 +58,5 @@ export default function UserRegister()
 const styles = StyleSheet.create({
 	container: { flex: 1, justifyContent: 'center', padding: 20 },
 	formContainer: {maxWidth: 500, width: '90%', height: "80%", margin: 'auto', alignItems: 'center', justifyContent: 'center'},
-	input: { marginBottom: 10, borderRadius: 5, width: '100%' },
 	error: { color: 'red', marginBottom: 10, width: '100%' },
 });
