@@ -31,6 +31,7 @@ import
 	ScrollView,
 	StyleProp,
 	StyleSheet,
+	TextInput,
 	useWindowDimensions,
 	View,
 	ViewStyle,
@@ -42,7 +43,6 @@ import
 {
 	Modal,
 	Portal,
-	TextInput,
 } from "react-native-paper";
 import Reanimated, {
 	SharedValue,
@@ -567,12 +567,10 @@ export default function MangaDetails()
 								<TextInput
 									multiline
 									numberOfLines={3}
-									label={"note"}
 									placeholder="write your note here..."
 									value={newText}
 									onChangeText={setNewText}
-									mode="outlined"
-									style={styles.addNoteTextInput}
+									className="rounded-lg p-3 text-base min-h-20 max-h-36 border-outlineVariant text-onBackground border-2"
 									autoFocus
 								/>
 								<View
@@ -584,26 +582,27 @@ export default function MangaDetails()
 								>
 									<TextInput
 										numberOfLines={1}
-										label={"start chapter"}
+										placeholder="start chapter"
 										editable
 										keyboardType="number-pad"
 										value={newStartChapter}
 										onChangeText={(text) => setNewStartChapter(text)}
-										placeholder={"start"}
-										style={styles.formInput}
-										mode="outlined"
+									className="flex-1 max-w-48 rounded-lg px-3 py-2 text-base"
+									style={{
+										borderWidth: 2,
+										borderColor: theme['--color-outlineVariant'],
+										color: theme['--color-onBackground'],
+									}}
 									/>
 									<ThemeText>&nbsp;-&nbsp;</ThemeText>
 									<TextInput
 										numberOfLines={1}
-										label={"end chapter (optional)"}
+										placeholder="end chapter (optional)"
 										editable
 										keyboardType="number-pad"
 										value={newEndChapter}
 										onChangeText={(text) => setNewEndChapter(text)}
-										placeholder={"end (optional)"}
-										style={styles.formInput}
-										mode="outlined"
+										className="flex-1 max-w-48 rounded-lg px-3 py-2 text-base border-2 border-outlineVariant text-onBackground"
 									/>
 								</View>
 								<View
