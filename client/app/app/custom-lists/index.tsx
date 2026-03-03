@@ -5,8 +5,7 @@ import { ICustomLists } from "@/types/ICustomList";
 import { Ionicons } from "@expo/vector-icons";
 import { Stack, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { FlatList, StyleSheet, View } from "react-native";
-import { Card } from "react-native-paper";
+import { FlatList, Pressable, StyleSheet, View } from "react-native";
 
 export default function CustomListsIndex()
 {
@@ -32,36 +31,35 @@ export default function CustomListsIndex()
 					keyExtractor={(item) => item._id}
 					contentContainerStyle={{ padding: 16, gap: 12 }}
 					renderItem={({ item }) => (
-						<Card style={[styles.card]} onPress={() => router.push({
-							pathname: `/app/custom-lists/[listId]`,
-							params: {
-								listId: item._id
-							}
-						})}> 
-							<Card.Content style={styles.cardContent}>
-								<View style={styles.cardLeft}>
-									<ThemeText>{item.name}</ThemeText>
-									<ThemeText style={{opacity: 0.6}}>{item.manga?.length ?? 0} manga</ThemeText>
-									<ThemeText style={{opacity: item.description ? 1 : 0.6}}>{item.description || "(No description)"}</ThemeText>
-								</View>
-								<Ionicons
-									name={"trash-sharp"}
-									className="icon-button"
-									size={20}
-									disabled={item.isFavorite}
-									onPress={async () => 
+						<Pressable
+							className="bg-surface rounded-xl p-5 flex-row items-center justify-between"
+							onPress={() => router.push({
+								pathname: `/app/custom-lists/[listId]`,
+								params: {
+									listId: item._id
+								}
+							})} 
+						>
+							<View className="flex-1">
+								<ThemeText>{item.name}</ThemeText>
+								<ThemeText style={{opacity: 0.6}}>{item.manga?.length ?? 0} manga</ThemeText>
+								<ThemeText style={{opacity: item.description ? 1 : 0.6}}>{item.description || "(No description)"}</ThemeText>
+							</View>
+							<Ionicons
+								name={"trash-sharp"}
+								className="icon-button-contained z-10"
+								size={20}
+								disabled={item.isFavorite}
+								onPress={async () => 
+								{
+									const result = await deleteCustomList(item._id)
+									if (result.success)
 									{
-										const result = await deleteCustomList(item._id)
-										if (result.success)
-										{
-											setLists(lists.filter((list) => list._id !== item._id))
-										}
-									}}
-									style={{position: 'absolute', right: 0, zIndex: 10}}
-									mode="contained"
-								/>
-							</Card.Content>
-						</Card>
+										setLists(lists.filter((list) => list._id !== item._id))
+									}
+								}}
+							/>
+						</Pressable>
 					)}
 				/>
 			</View>
@@ -71,8 +69,4 @@ export default function CustomListsIndex()
 
 const styles = StyleSheet.create({
 	container: { flex: 1 },
-	card: { borderRadius: 12, padding: 6 },
-	cardContent: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-	cardLeft: { flex: 1, paddingRight: 8 },
-	cardRight: { alignItems: 'flex-end', width: 96 }
 });

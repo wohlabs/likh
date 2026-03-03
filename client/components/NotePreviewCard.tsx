@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Image, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
+import { Image, Pressable, PressableProps, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 import { Card } from "react-native-paper";
 import { INoteEntry } from "../types/INotes";
 import ReadMore from "./ReadMore";
@@ -7,7 +7,7 @@ import ThemeText from "./ThemeText";
 import { getImageBase64 } from "./util";
 import { usePersistentTheme } from "@/context/usePersistentTheme";
 
-export default function NotePreviewCard({ note, style, onPress }: { note: INoteEntry, style?: StyleProp<ViewStyle>, onPress?: () => void }) 
+export default function NotePreviewCard({ note, style, className, onPress }: { note: INoteEntry, style?: StyleProp<ViewStyle>, onPress?: () => void } & PressableProps) 
 {
 	const [previews, setPreviews] = useState<string[]>(note.images);
 	const { theme } = usePersistentTheme()
@@ -32,12 +32,11 @@ export default function NotePreviewCard({ note, style, onPress }: { note: INoteE
 	}, [fetchImages])
 
 	return (
-		<Card
-			style={[{ flex: 1, margin: 5, borderRadius: 10}, style]}
+		<Pressable
+			className={`flex-1 m-1 rounded-lg bg-elevation-level1 flex-row p-0 shadow-lg ${className}`}
 			onPress={onPress}
 		>
-			<Card.Content style={{flexDirection: 'row', padding: 0, flex: 1}}>
-				<View style={{width: 60, backgroundColor: theme['--color-surfaceVariant'], borderTopLeftRadius: 10, borderBottomLeftRadius: 10, padding: 2, justifyContent: 'center', }}>
+				<View className="w-15 bg-surfaceVariant p-1 rounded-l-lg justify-center">
 					<ThemeText style={{textAlign: 'center', opacity: 0.6}}>
 						Chapter
 					</ThemeText>
@@ -73,8 +72,7 @@ export default function NotePreviewCard({ note, style, onPress }: { note: INoteE
 						</View>
 					</View>
 				</View>
-			</Card.Content>
-		</Card>
+		</Pressable>
 	);
 }
 

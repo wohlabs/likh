@@ -37,6 +37,8 @@
   --color-elevation-level5: '#E1E7FA';
   --color-inverseOnSurface: '#F2F4F9';
   --color-inverseSurface: '#1A202C';
+  --color-disabledBackground: '#e3e3e4';
+  --color-onDisabledBackground: '#989799';
 }
 
 .icon-button-contained {

@@ -11,7 +11,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import { FlatList, Image, Pressable, ScrollView, StyleSheet, View } from "react-native";
-import { Card } from "react-native-paper";
 
 export default function CustomListDetail()
 {
@@ -79,11 +78,11 @@ export default function CustomListDetail()
 				options={{ title: list?.name ?? "List", headerTitleAlign: "center" }}
 			/>
 			<ScrollView
-				style={[{ flex: 1, backgroundColor: theme['--color-background'] }]}
+				className="pb-5"
 			>
-				<View style={styles.header}>
-					<ThemeText style={{paddingHorizontal: 10}}>{list?.name}</ThemeText>
-					<ThemeText style={{opacity: 0.6, paddingHorizontal: 10}}>
+				<View className="gap-3 p-4">
+					<ThemeText className="text-xl px-2.5">{list?.name}</ThemeText>
+					<ThemeText className="opacity-60 px-2.5">
 						{list?.manga?.length ?? 0} manga
 					</ThemeText>
 					{
@@ -105,7 +104,11 @@ export default function CustomListDetail()
 									onHoverIn={() => setTextHovered(true)}
 								/>
 								<ThemeText
-									style={{ color: theme['--color-onSurfaceVariant'], flex: 1, backgroundColor: textHovered ? theme['--color-surface'] : theme['--color-background'], padding: 10, opacity: officialDescription ? 1 : 0.6 }}
+									className="text-onSurfaceVariant flex-1 p-2.5"
+									style={{
+										backgroundColor: textHovered ? theme['--color-surface'] : theme['--color-background'],
+										opacity: officialDescription ? 1 : 0.6
+									}}
 								>
 									{officialDescription || "(no description)"}
 								</ThemeText>
@@ -119,7 +122,9 @@ export default function CustomListDetail()
 									label={"Description"}
 									style={{zIndex: 1}}
 								/>
-								<View style={{flexDirection: 'row-reverse', padding: 0, paddingVertical: 4, gap: 4}}>
+								<View
+									className="flex-row-reverse py-1 gap-1"
+								>
 									<ThemeButton mode="contained"
 										onPress={onSaveDescription}
 									>
@@ -141,34 +146,35 @@ export default function CustomListDetail()
 					keyExtractor={(item) => item.id}
 					contentContainerStyle={{ padding: 16, paddingVertical: 2, gap: 12 }}
 					renderItem={({ item }: {item: MangaProps & {addedDate: Date}}) => (
-						<Card onPress={() => router.push(`/app/manga/${item.id}`)}>
-							<Card.Content style={styles.mangaRow}>
-								<Image
-									source={{ uri: item.coverImage?.large }}
-									style={styles.thumb}
-								/>
-								<View style={{ flex: 1 }}>
-									<ThemeText>
-										{getMangaTitle(item)}
-									</ThemeText>
-									<ThemeText style={{opacity: 0.6}}>added on: {new Date(item.addedDate).toLocaleString() || "date @ time"}</ThemeText>
-								</View>
-								<Ionicons
-									name={"trash-sharp"}
-									className="icon-button-contained"
-									color={theme['--color-onSurfaceVariant']}
-									size={20}
-									onPress={async () => 
+						<Pressable
+							onPress={() => router.push(`/app/manga/${item.id}`)}
+							className={`shadow-elevation-level1 shadow-md elevation-sm bg-surface flex-row items-center p-3 rounded-xl`}
+						>
+							<Image
+								source={{ uri: item.coverImage?.large }}
+								style={styles.thumb}
+							/>
+							<View className="flex-1">
+								<ThemeText>
+									{getMangaTitle(item)}
+								</ThemeText>
+								<ThemeText className="opacity-60">added on: {new Date(item.addedDate).toLocaleString() || "date @ time"}</ThemeText>
+							</View>
+							<Ionicons
+								name={"trash-sharp"}
+								className="icon-button-contained"
+								color={theme['--color-onSurfaceVariant']}
+								size={20}
+								onPress={async () => 
+								{
+									const result = await addToCustomList(listId, Number(item.id), false)
+									if (result.success)
 									{
-										const result = await addToCustomList(listId, Number(item.id), false)
-										if (result.success)
-										{
-											setMangas(mangas.filter((manga: MangaProps) => manga.id != item.id))
-										}
-									}}
-								/>
-							</Card.Content>
-						</Card>
+										setMangas(mangas.filter((manga: MangaProps) => manga.id != item.id))
+									}
+								}}
+							/>
+						</Pressable>
 					)}
 				/>
 			</ScrollView>

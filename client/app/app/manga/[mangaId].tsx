@@ -739,7 +739,7 @@ export default function MangaDetails()
 								keyExtractor={(item) => `NotePreview_${item.id}`}
 								key={`filteredNotes`}
 								numColumns={1}
-								contentContainerStyle={{ flexGrow: 0 }}
+								contentContainerStyle={{ flexGrow: 0, paddingBottom: 15, flex: 1 }}
 								scrollEnabled={true}
 								renderItem={({
 									item,

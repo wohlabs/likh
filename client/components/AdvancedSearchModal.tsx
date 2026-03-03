@@ -66,21 +66,18 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 
 	const handleMangaPress = (mangaId: number) => 
 	{
-		console.log("press manga")
 		onDismiss();
 		router.navigate(`/app/manga/${mangaId}`);
 	};
 
 	const handleNotePress = (mangaId: number) => 
 	{
-		console.log("press note")
 		onDismiss();
 		router.navigate(`/app/manga/${mangaId}`);
 	};
 
 	const handleListPress = (listId: string) => 
 	{
-		console.log("press list")
 		onDismiss();
 		router.navigate(`/app/custom-lists/${listId}`);
 	};
@@ -95,78 +92,71 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 	};
 
 	const renderMangaResult = ({ item }: { item: any }) => (
-		<Card
-			style={{ marginHorizontal: 10, marginBottom: 8, backgroundColor: theme['--color-surface'] }}
+		<Pressable
+			className='p-4 mx-2 mb-2 bg-surface flex-1 justify-center flex-row items-center rounded-xl'
 			onPress={() => handleMangaPress(item.id)}
 		>
-			<Card.Content style={[styles.resultContent, {flexDirection: 'row', alignItems: 'center'}]}>
-				<Image
-					source={{ uri: item.coverImage?.large }}
-					style={styles.mangaCover}
-					resizeMode="contain"
-				/>
-				<View style={{flex: 1}}>
-					<ThemeText numberOfLines={2}>
-						{getMangaTitle(item)}
-					</ThemeText>
-				</View>
-				<Ionicons
-					size={20}
-					name={"add"}
-					className='icon-button-contained'
-					disabled={item.inLibrary}
-					onPress={async (e) => 
-					{
-						setIsAdvancedSearching(true)
-						await addMangaToLibrary(item.id);
-						onMangaAdded();
-					}}
-				/>
-			</Card.Content>
-		</Card>
+			<Image
+				source={{ uri: item.coverImage?.large }}
+				style={styles.mangaCover}
+				resizeMode="contain"
+			/>
+			<View style={{flex: 1}}>
+				<ThemeText numberOfLines={2}>
+					{getMangaTitle(item)}
+				</ThemeText>
+			</View>
+			<Ionicons
+				size={20}
+				name={"add"}
+				className={`icon-button-contained ${item.inLibrary ? "bg-disabledBackground" : "bg-surfaceVariant"}`}
+				color={item.inLibrary ? theme['--color-onDisabledBackground'] : theme['--color-primary']}
+				disabled={item.inLibrary}
+				onPress={async (e) => 
+				{
+					setIsAdvancedSearching(true)
+					await addMangaToLibrary(item.id);
+					onMangaAdded();
+				}}
+			/>
+		</Pressable>
 	);
 
 	const renderNoteResult = ({ item }: { item: any }) => (
-		<Card
-			style={{ marginHorizontal: 10, marginBottom: 8, backgroundColor: theme['--color-surface'] }}
+		<Pressable
+			className='p-4 mx-2 mb-2 bg-surface flex-1 rounded-xl'
 			onPress={() => handleNotePress(item.manga._id)}
 		>
-			<Card.Content style={styles.resultContent}>
-				<ThemeText style={styles.noteTitle}>
-					{getMangaTitle(item.manga)} - Chapter {item.startChapter === -1 ? "All" : `${item.startChapter}${item.endChapter ? ` - ${item.endChapter}` : ''}`}
-				</ThemeText>
-				<ThemeText numberOfLines={2} style={styles.noteText}>
-					{item.text}
-				</ThemeText>
-			</Card.Content>
-		</Card>
+			<ThemeText className='mb-1'>
+				{getMangaTitle(item.manga)} - Chapter {item.startChapter === -1 ? "All" : `${item.startChapter}${item.endChapter ? ` - ${item.endChapter}` : ''}`}
+			</ThemeText>
+			<ThemeText numberOfLines={2} style={styles.noteText}>
+				{item.text}
+			</ThemeText>
+		</Pressable>
 	);
 
 	const renderListResult = ({ item }: { item: any }) => (
-		<Card
-			style={{ marginHorizontal: 10, marginBottom: 8, backgroundColor: theme['--color-surface'] }}
+		<Pressable
+			className='p-4 mx-2 mb-2 bg-surface flex-1 rounded-xl'
 			onPress={() => handleListPress(item.id)}
 		>
-			<Card.Content style={styles.resultContent}>
-				<View style={{flexDirection: 'row', alignContent: 'center'}}>
-					<ThemeText >
-						{item.name}
-					</ThemeText>
-					<ThemeText style={{opacity: 0.6}}>
-						&nbsp;• {item.manga.length} manga
-					</ThemeText>
-				</View>
-			</Card.Content>
-			<Card.Content style={styles.listMeta}>
-				<ThemeText numberOfLines={1}>
-					{
-						item.manga?.map((mangaItem: MangaProps, index: number) =>(
-							getMangaTitle(mangaItem) + (index === item.manga.length - 1 ? "" : " • ")
-						))
-					}
+			<View className='flex-row mb-1'>
+				<ThemeText>
+					{item.name}
 				</ThemeText>
-			</Card.Content>
-		</Card>
+				<ThemeText className='opacity-60'>
+					&nbsp;• {item.manga.length} manga
+				</ThemeText>
+			</View>
+			<ThemeText className='opacity-60'>
+				{
+					item.manga?.map((mangaItem: MangaProps, index: number) =>(
+						getMangaTitle(mangaItem) + (index === item.manga.length - 1 ? "" : " • ")
+					))
+				}
+			</ThemeText>
+		</Pressable>
 	);
 
 	return (

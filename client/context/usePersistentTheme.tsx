@@ -39,6 +39,8 @@ export type ThemeVars = {
 	'--color-elevation-level5': string;
 	'--color-inverseOnSurface': string;
 	'--color-inverseSurface': string;
+	'--color-disabledBackground': string;
+	'--color-onDisabledBackground': string;
 };
 
 export const themes: { light: ThemeVars, dark: ThemeVars} = {
@@ -75,6 +77,8 @@ export const themes: { light: ThemeVars, dark: ThemeVars} = {
 		'--color-elevation-level5': '#E1E7FA',
 		'--color-inverseOnSurface': '#F2F4F9',
 		'--color-inverseSurface': '#1A202C',
+		'--color-disabledBackground': '#e3e3e4',
+		'--color-onDisabledBackground': '#989799'
 	}) as ThemeVars,
 	dark: vars({
 		'--color-primary': '#A5B4FC', // Light indigo
@@ -109,6 +113,8 @@ export const themes: { light: ThemeVars, dark: ThemeVars} = {
 		'--color-elevation-level5': '#94A3B8',
 		'--color-inverseOnSurface': '#334155',
 		'--color-inverseSurface': '#E2E8F0',
+		'--color-disabledBackground': '#363f50',
+		'--color-onDisabledBackground': '#787d89'
 	}) as ThemeVars,
 }
 

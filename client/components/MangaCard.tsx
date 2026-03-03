@@ -1,5 +1,5 @@
 import ThemeText from "@/components/ThemeText";
-import { usePersistentTheme } from "@/context/usePersistentTheme";
+import { themes, usePersistentTheme } from "@/context/usePersistentTheme";
 import { addToCustomList, favoriteManga } from "@/services/custom_lists";
 import { MangaProps } from "@/services/manga.service";
 import { ICustomLists, MangaItem } from "@/types/ICustomList";
@@ -81,14 +81,14 @@ export default function MangaCard({item, style, allCustomLists, onCreateList } :
 					/>
 					{/* Gradient mask */}
 					<LinearGradient
-						colors={["transparent", theme['--color-background']]}
+						colors={["transparent", themes.dark["--color-elevation-level1"]]}
 						locations={[0.6, 1]}
 						style={StyleSheet.absoluteFill}
 						pointerEvents="none"
 					/>
 					<View style={styles.bottomContent}>
 						<View style={styles.textContainer}>
-							<ThemeText style={[styles.mangaTitle, {color: theme['--color-onBackground']}]} numberOfLines={2}>{getMangaTitle(item)}</ThemeText>
+							<ThemeText style={[styles.mangaTitle, {color: themes.dark["--color-onBackground"]}]} numberOfLines={2}>{getMangaTitle(item)}</ThemeText>
 						</View>
 					</View>
 					<View style={{position: "absolute", top: 0, width: "100%", flexDirection: "row-reverse"}}>
