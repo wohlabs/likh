@@ -238,7 +238,7 @@ export default function SearchCategoryPage()
 						/>
 					</View>
 					<ThemeSearchbar
-						className="flex-1"
+						className="flex-1 shadow-md"
 						placeholder={`Search ${getCategoryTitle().toLowerCase()}...`}
 						onChangeText={setSearchQuery}
 						onSubmitEditing={() => router.replace({ 

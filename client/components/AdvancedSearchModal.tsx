@@ -272,7 +272,7 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 				<ThemeSearchbar
 					key="library_search_bar"
 					placeholder="search manga, notes, lists..."
-					className='flex-1 w-full'
+					className='flex-1 w-full shadow-md'
 					onChangeText={(text) => 
 					{
 						setSearchQuery(text)
