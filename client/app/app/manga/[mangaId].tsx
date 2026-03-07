@@ -587,12 +587,12 @@ export default function MangaDetails()
 										keyboardType="number-pad"
 										value={newStartChapter}
 										onChangeText={(text) => setNewStartChapter(text)}
-									className="flex-1 max-w-48 rounded-lg px-3 py-2 text-base"
-									style={{
-										borderWidth: 2,
-										borderColor: theme['--color-outlineVariant'],
-										color: theme['--color-onBackground'],
-									}}
+										className="flex-1 max-w-48 rounded-lg px-3 py-2 text-base"
+										style={{
+											borderWidth: 2,
+											borderColor: theme['--color-outlineVariant'],
+											color: theme['--color-onBackground'],
+										}}
 									/>
 									<ThemeText>&nbsp;-&nbsp;</ThemeText>
 									<TextInput
@@ -857,12 +857,12 @@ export default function MangaDetails()
 				</ScrollView>
 			)}
 			<View style={styles.floatingContainer}>
-					<ThemeSearchbar
-						placeholder="search note"
-						onChangeText={setSearchString}
-						className="m-2.5 rounded-lg shadow-md z-10 w-[50%]"
-						value={searchString}
-					/>
+				<ThemeSearchbar
+					placeholder="search note"
+					onChangeText={setSearchString}
+					className="m-2.5 rounded-lg shadow-md z-10 w-[50%]"
+					value={searchString}
+				/>
 			</View>
 		</View>
 	);

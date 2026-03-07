@@ -1,6 +1,5 @@
 import ThemeButton from "@/components/ThemeButton";
 import ThemeText from "@/components/ThemeText";
-import { usePersistentTheme } from "@/context/usePersistentTheme";
 import { registerUser } from "@/services/users.service";
 import { router } from "expo-router";
 import { useState } from "react";
@@ -11,7 +10,6 @@ export default function UserRegister()
 	const [username, setUsername] = useState<string>('');
 	const [password, setPassword] = useState<string>('');
 	const [error, setError] = useState('');
-	const {theme} = usePersistentTheme()
 
 	const register = async () => 
 	{

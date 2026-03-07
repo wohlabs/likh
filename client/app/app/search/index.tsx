@@ -17,7 +17,6 @@ import
 	StyleSheet,
 	View,
 } from 'react-native';
-import { Card } from 'react-native-paper';
 
 export default function SearchCategoryPage() 
 {

@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import { Image, Pressable, PressableProps, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
-import { Card } from "react-native-paper";
 import { INoteEntry } from "../types/INotes";
 import ReadMore from "./ReadMore";
 import ThemeText from "./ThemeText";
@@ -36,42 +35,42 @@ export default function NotePreviewCard({ note, style, className, onPress }: { n
 			className={`flex-1 m-1 rounded-lg bg-elevation-level1 flex-row p-0 shadow-lg ${className}`}
 			onPress={onPress}
 		>
-				<View className="w-15 bg-surfaceVariant p-1 rounded-l-lg justify-center">
-					<ThemeText style={{textAlign: 'center', opacity: 0.6}}>
+			<View className="w-15 bg-surfaceVariant p-1 rounded-l-lg justify-center">
+				<ThemeText style={{textAlign: 'center', opacity: 0.6}}>
 						Chapter
-					</ThemeText>
-					<ThemeText style={{textAlign: 'center'}}>
-						{
-							note.startChapter === -1
-								? `Overall`
-								: `${note.startChapter}${note.endChapter ? " - " + note.endChapter : ""}`
-						}
-					</ThemeText>
-				</View>
-				<View style={{flexDirection: 'row', justifyContent: 'space-between', flex: 1, padding: 5}}>
-					<View style={{flexDirection: 'row', flex: 1, padding: 5, paddingHorizontal: 5, gap: 5}}>
-						{ previews[0] && 
+				</ThemeText>
+				<ThemeText style={{textAlign: 'center'}}>
+					{
+						note.startChapter === -1
+							? `Overall`
+							: `${note.startChapter}${note.endChapter ? " - " + note.endChapter : ""}`
+					}
+				</ThemeText>
+			</View>
+			<View style={{flexDirection: 'row', justifyContent: 'space-between', flex: 1, padding: 5}}>
+				<View style={{flexDirection: 'row', flex: 1, padding: 5, paddingHorizontal: 5, gap: 5}}>
+					{ previews[0] && 
 						<Image
 							source={{ uri: previews[0] }}
 							style={[styles.imagePreview, { opacity: previews.length > 0 ? 1 : 0 }]}
 							resizeMode="cover"
 						/>
-						}
-						<View style={{flex: 1}}>
-							<ReadMore
-								numberOfLines={3}
-								renderTruncatedFooter={() => {}}
-								renderRevealedFooter={() => {}}
-								onReady={() => {}}
-								textStyle={{color: theme['--color-onBackground'], opacity: note.text ? 1 : 0.6, minHeight: 20}}
-								style={{flex: 1}}
-							>
-								<ThemeText numberOfLines={3}>{note.text || "(No notes)"}</ThemeText>
-							</ReadMore>
-							<ThemeText style={{opacity: 0.6, textAlign: 'right'}}>{new Date(note.modifiedAt).toLocaleString() || "date @ time"}</ThemeText>
-						</View>
+					}
+					<View style={{flex: 1}}>
+						<ReadMore
+							numberOfLines={3}
+							renderTruncatedFooter={() => {}}
+							renderRevealedFooter={() => {}}
+							onReady={() => {}}
+							textStyle={{color: theme['--color-onBackground'], opacity: note.text ? 1 : 0.6, minHeight: 20}}
+							style={{flex: 1}}
+						>
+							<ThemeText numberOfLines={3}>{note.text || "(No notes)"}</ThemeText>
+						</ReadMore>
+						<ThemeText style={{opacity: 0.6, textAlign: 'right'}}>{new Date(note.modifiedAt).toLocaleString() || "date @ time"}</ThemeText>
 					</View>
 				</View>
+			</View>
 		</Pressable>
 	);
 }

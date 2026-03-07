@@ -1,7 +1,7 @@
 import React from 'react';
-import { ActivityIndicator, StyleProp, TextInput, TextInputProps, View, ViewStyle } from 'react-native';
+import { ActivityIndicator, TextInput, TextInputProps, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { usePersistentTheme, themes } from '@/context/usePersistentTheme';
+import { usePersistentTheme } from '@/context/usePersistentTheme';
 
 interface ThemeSearchbarProps extends TextInputProps {
 	value?: string;
@@ -29,12 +29,14 @@ export default function ThemeSearchbar({
 	style,
 	loading = false,
 	...props
-}: ThemeSearchbarProps) {
-	const { theme, themeScheme } = usePersistentTheme();
+}: ThemeSearchbarProps) 
+{
+	const { theme } = usePersistentTheme();
 	const inputRef = React.useRef<TextInput>(null);
 	const [isFocused, setIsFocused] = React.useState(false);
 
-	const handleClearPress = (e: any) => {
+	const handleClearPress = (e: any) => 
+	{
 		inputRef.current?.clear();
 		onChangeText?.('');
 		onClearIconPress?.(e);

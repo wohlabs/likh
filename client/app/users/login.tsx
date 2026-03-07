@@ -1,7 +1,6 @@
 import ThemeButton from "@/components/ThemeButton";
 import ThemeText from "@/components/ThemeText";
 import { AuthContext } from "@/context/AuthContext";
-import { usePersistentTheme } from "@/context/usePersistentTheme";
 import { loginUser } from "@/services/users.service";
 import { router } from "expo-router";
 import { useContext, useState } from "react";

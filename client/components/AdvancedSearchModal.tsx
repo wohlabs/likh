@@ -5,7 +5,7 @@ import { performAdvancedSearch, SearchResult } from '@/services/search.service';
 import { getMangaTitle } from '@/types/IManga';
 import { BlurView } from "expo-blur";
 import { useRouter } from 'expo-router';
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import
 {
 	FlatList,
@@ -13,12 +13,10 @@ import
 	Pressable,
 	StyleProp,
 	StyleSheet,
-	TextInput,
 	useWindowDimensions,
 	View,
 	ViewStyle,
 } from 'react-native';
-import { Card } from 'react-native-paper';
 import ThemeButton from './ThemeButton';
 import { hexToRgba } from './util';
 import { usePersistentTheme } from '@/context/usePersistentTheme';

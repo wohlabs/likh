@@ -24,8 +24,7 @@ import
 	StyleSheet,
 	TouchableWithoutFeedback,
 	View
-} from "react-native";
-import { TextInput } from "react-native";
+	, TextInput } from "react-native";
 import Toast from "react-native-toast-message";
 
 const KeyboardDismissWrapper = ({ children }: any) => 
@@ -59,7 +58,6 @@ export default function EditNoteScreen()
 	const [deletedImages, setDeletedImages] = useState<string[]>([]);
 	const [loading, setLoading] = useState<boolean>(true);
 	const token = useContext(AuthContext).token
-	const { theme } = usePersistentTheme()
 	
 	useEffect(() => 
 	{

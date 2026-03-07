@@ -1,4 +1,3 @@
-import { usePersistentTheme } from "@/context/usePersistentTheme";
 import React, { useRef, useState } from "react";
 import { StyleProp, StyleSheet, TextStyle, View } from "react-native";
 import { TextInput } from "react-native-paper";
