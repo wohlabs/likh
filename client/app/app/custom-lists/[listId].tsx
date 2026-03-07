@@ -10,7 +10,7 @@ import { getMangaTitle } from "@/types/IManga";
 import { Ionicons } from "@expo/vector-icons";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
-import { FlatList, Image, Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { FlatList, Image, Pressable, ScrollView, StyleSheet, TextInput, View } from "react-native";
 
 export default function CustomListDetail()
 {
@@ -119,8 +119,8 @@ export default function CustomListDetail()
 									value={description}
 									onChangeText={setDescription}
 									placeholder="Description of this list..."
-									label={"Description"}
-									style={{zIndex: 1}}
+									className="text-onBackground bg-background outline-2 outline-outline rounded-md p-2 z-10"
+									multiline
 								/>
 								<View
 									className="flex-row-reverse py-1 gap-1"
