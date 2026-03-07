@@ -45,7 +45,6 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 		lists: []
 	});
 	const [isLoading, setIsLoading] = useState(false);
-	const searchRef = useRef<TextInput>(null);
 
 	const handleSearch = useCallback(async () => 
 	{
@@ -182,13 +181,13 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 					<View style={{ backgroundColor: `${hexToRgba(theme['--color-elevation-level1'], 0.3)}`, height: '100%', width: '100%' }}/>
 				</BlurView>
 			}
-			<Pressable style={[styles.searchBarFloating]} onPress={(e) => e.stopPropagation()} pointerEvents='none'>
+			<Pressable style={[styles.searchBarFloating]} onPress={(e) => e.stopPropagation()} pointerEvents='auto'>
 				<View
+					className='rounded-t-2xl w-full -bottom-1'
 					style={[
-						styles.container,
+						// styles.container,
 						{ backgroundColor: theme['--color-background'], maxHeight: 0.7 * height, marginHorizontal: 10, display: isAdvancedSearching ? 'flex' : 'none' },
 					]}
-					pointerEvents={isAdvancedSearching ? 'auto' : 'none'}
 				>
 
 					{searchQuery.trim() === '' ? (
@@ -209,6 +208,7 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 								</View>
 							) : (
 								<FlatList
+									className='pb-1'
 									data={[
 										...(searchResults.manga.length > 0 ? [{ type: 'manga-header', label: 'Manga' } as any] : []),
 										...searchResults.manga.map((m, idx) => ({ type: 'manga', data: m, key: `manga-${idx}` } as any)),
@@ -272,9 +272,9 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 							)}
 				</View>
 				<ThemeSearchbar
-					ref={searchRef}
 					key="library_search_bar"
-					placeholder="Search manga, notes, lists..."
+					placeholder="search manga, notes, lists..."
+					className='flex-1 w-full'
 					onChangeText={(text) => 
 					{
 						setSearchQuery(text)

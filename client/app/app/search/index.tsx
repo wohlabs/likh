@@ -226,7 +226,7 @@ export default function SearchCategoryPage()
 	return (
 		<>
 			<View className="flex-1 bg-background pb-2.5">
-				<View style={[styles.searchBarContainer, {zIndex: 2}]}>
+				<View className="gap-1" style={[styles.searchBarContainer, {zIndex: 2}]}>
 					<View style={{height: '100%'}}>
 						<ThemeDropdown
 							value={categoryCB}
@@ -239,6 +239,7 @@ export default function SearchCategoryPage()
 						/>
 					</View>
 					<ThemeSearchbar
+						className="flex-1"
 						placeholder={`Search ${getCategoryTitle().toLowerCase()}...`}
 						onChangeText={setSearchQuery}
 						onSubmitEditing={() => router.replace({ 

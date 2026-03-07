@@ -857,21 +857,12 @@ export default function MangaDetails()
 				</ScrollView>
 			)}
 			<View style={styles.floatingContainer}>
-				<View style={styles.searchBarContainer}>
 					<ThemeSearchbar
 						placeholder="search note"
 						onChangeText={setSearchString}
-						style={styles.searchBar}
+						className="m-2.5 rounded-lg shadow-md z-10 w-[50%]"
 						value={searchString}
 					/>
-					<Ionicons
-						icon={"add"}
-						className='icon-button-contained'
-						size={30}
-						onPress={() => setIsAddingNote(!isAddingNote)}
-						style={styles.addButton}
-					/>
-				</View>
 			</View>
 		</View>
 	);
