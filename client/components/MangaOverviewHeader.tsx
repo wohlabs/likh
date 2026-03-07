@@ -4,8 +4,8 @@ import { getMangaStatus, updateMangaStatus } from "@/services/media_entry.servic
 import { ICustomList, ICustomLists, MangaItem } from "@/types/ICustomList";
 import { getMangaTitle, IMangaDetails } from "@/types/IManga";
 import { useCallback, useEffect, useState } from "react";
-import { GestureResponderEvent, Image, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
-import { ActivityIndicator, Menu, Modal, Portal } from "react-native-paper";
+import { GestureResponderEvent, Image, StyleProp, StyleSheet, View, ViewStyle, ActivityIndicator } from "react-native";
+import { Menu, Modal, Portal } from "react-native-paper";
 import Toast from "react-native-toast-message";
 import NewCustomListView from "./NewCustomListView";
 import ThemeButton from "./ThemeButton";

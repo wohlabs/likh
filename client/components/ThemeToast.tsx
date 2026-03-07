@@ -1,6 +1,7 @@
 import { View, Text } from "react-native";
-import { Surface, useTheme } from "react-native-paper";
+import { Surface } from "react-native-paper";
 import LoadingToast from "./LoadingToast";
+import { usePersistentTheme } from "@/context/usePersistentTheme";
 
 type Props = {
 	text1?: string;
@@ -15,11 +16,11 @@ export const toastConfig = {
 
 export function ThemeToast({ text1, text2, variant = "info" }: Props) 
 {
-	const theme = useTheme();
+	const { theme } = usePersistentTheme();
 
 	const indicatorColor =
 		variant === "error"
-			? theme.colors.error
+			? theme["--color-statusError"]
 			: variant === "success"
 				? theme['--color-primary']
 				: theme['--color-outline'];

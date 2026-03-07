@@ -1,5 +1,4 @@
-import { View } from "react-native";
-import { ActivityIndicator } from "react-native-paper";
+import { View, ActivityIndicator } from "react-native";
 import ThemeText from "./ThemeText";
 import { usePersistentTheme } from "@/context/usePersistentTheme";
 
