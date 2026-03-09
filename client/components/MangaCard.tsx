@@ -4,12 +4,12 @@ import { addToCustomList, favoriteManga } from "@/services/custom_lists";
 import { MangaProps } from "@/services/manga.service";
 import { ICustomLists, MangaItem } from "@/types/ICustomList";
 import { getMangaTitle } from "@/types/IManga";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import { Image, Pressable, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
-import { Menu } from "react-native-paper";
+import { ThemeMenu } from "@/components/ThemeMenu";
 
 export default function MangaCard({item, style, allCustomLists, onCreateList } : {item: MangaProps, style?: StyleProp<ViewStyle>, onCreateList?: (mangaIdToAdd?: number) => {}, allCustomLists: ICustomLists})
 {
@@ -92,7 +92,7 @@ export default function MangaCard({item, style, allCustomLists, onCreateList } :
 						</View>
 					</View>
 					<View style={{position: "absolute", top: 0, width: "100%", flexDirection: "row-reverse"}}>
-						<Menu
+						<ThemeMenu
 							visible={optionsVisible}
 							onDismiss={() =>
 							{
@@ -106,21 +106,24 @@ export default function MangaCard({item, style, allCustomLists, onCreateList } :
 								/>
 							}
 						>
-							<Menu.Item 
+							<ThemeMenu.Item 
 								title={'add to...'} leadingIcon={undefined}
 							/>
 							{
 								mangaCustomLists.map((list, number) => (
-									<Menu.Item 
+									<ThemeMenu.Item 
 										key={list._id ? `custom_list_${list._id}` : `custom_list_undefined_${number}`}
-										onPress={() => toggleList(list._id)} title={list.name} leadingIcon={list.isInList ? "bookmark" : "bookmark-outline"}
+										onPress={() => toggleList(list._id)} title={list.name} leadingIcon={<MaterialCommunityIcons name={list.isInList ? "bookmark" : "bookmark-outline"} size={24} />}
 									/>
 								))
 							}
-							<Menu.Item 
-								onPress={() => {setOptionsVisible(false); onCreateList && onCreateList(Number(item.id) ?? undefined);}} title={'new list'} leadingIcon={'plus'}
+							<ThemeMenu.Item 
+								onPress={() => {setOptionsVisible(false); onCreateList && onCreateList(Number(item.id) ?? undefined);}} title={'new list'}
+								leadingIcon={
+									<MaterialCommunityIcons name="plus" size={24}/>
+								}
 							/>
-						</Menu>
+						</ThemeMenu>
 						<Ionicons size={15} name={isFavorite ? "heart" : "heart-outline"}
 							className="icon-button-contained"
 							onPress={() => toggleFavorite()}
