@@ -227,7 +227,7 @@ export default function LandingPage()
 				{/* Footer */}
 				<View className="px-5 py-7.5 items-center border-t border-t-surfaceVariant bg-surface mb-5">
 					<ThemeText className="text-onSurface text-xs font-medium">
-						© <span>{year}</span> likh. crafted for manga readers.
+						©{year} likh. crafted for manga readers.
 					</ThemeText>
 				</View>
 			</ScrollView>
