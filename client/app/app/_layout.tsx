@@ -108,8 +108,27 @@ function Header()
 		setOptionsVisible(false);
 	}, [segments]);
 
+	const onTitleClicked = useCallback(() => 
+	{
+		const inAuthGroup = segments[0] === "users";
+		if (inAuthGroup)
+		{
+			router.navigate("/")
+		}
+		else
+		{
+			router.navigate("/app")
+		}
+	}, [segments, router]);
+
+
 	return (
-		<View className="flex flex-row items-center">
+	<View className="flex-row h-14 bg-surface justify-between px-2 shadow-md">
+		<ThemeText className="text-onBackground text-2xl font-extrabold tracking-wider self-center" style={{ marginLeft: 10 }} onPress={onTitleClicked}>
+			likh
+		</ThemeText>
+		<View className="flex flex-row items-center"
+		>
 			{
 				token &&
 				<Ionicons
@@ -159,6 +178,7 @@ function Header()
 				/>
 			</ThemeMenu>
 		</View>
+	</View>
 	)
 }
 
@@ -170,19 +190,6 @@ export default function AppLayout()
 	const { isAvailable } = useContext(ServerContext)
 	
 	
-	const onTitleClicked = useCallback(() => 
-	{
-		const inAuthGroup = segments[0] === "users";
-		if (inAuthGroup)
-		{
-			router.navigate("/")
-		}
-		else
-		{
-			router.navigate("/app")
-		}
-	}, [segments, router]);
-
 	if (segments[0] === "app" && !isAvailable)
 	{
 		return (
@@ -198,23 +205,10 @@ export default function AppLayout()
 						contentStyle: {backgroundColor: theme["--color-background"]},
 						headerStyle: {
 							backgroundColor: theme["--color-surface"],
-							borderWidth: 0,
-							shadowColor: "#000",
-							shadowOffset: { width: 0, height: 4 },
-							shadowOpacity: 0.15,
-							shadowRadius: 12,
-							elevation: 2,
-							boxShadow: `0 0 5px 1px ${theme['--color-elevation-level0']}`
 						},
 						headerTintColor: theme["--color-onSurface"],
-						headerLeft: () => (
-							<ThemeText className="text-onBackground text-2xl font-extrabold tracking-wider" style={{ marginLeft: 10 }} onPress={onTitleClicked}>
-								likh
-							</ThemeText>
-						),
 						headerTitleAlign: "center",
-						headerTitle: () => null,
-						headerRight: () => <Header />
+						header: () => <Header/>
 					}}
 				>
 				</Stack>
