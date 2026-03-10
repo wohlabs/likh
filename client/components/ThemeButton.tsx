@@ -1,8 +1,9 @@
 import React from 'react';
-import { Pressable, PressableProps } from 'react-native';
+import { Pressable, PressableProps, Text } from 'react-native';
 
 interface ThemeButtonProps extends PressableProps {
   mode?: 'contained' | 'outlined' | 'text' | 'contained-tonal';
+  children: React.ReactNode;
 }
 
 export default function ThemeButton({ className, children, mode = 'text', disabled, ...props }: ThemeButtonProps)
@@ -38,13 +39,28 @@ export default function ThemeButton({ className, children, mode = 'text', disabl
 			return 'text-onBackground';
 		}
 	};
+	
+	// Wrap any plain text children in <Text> so styling applies
+	const renderChildren = React.Children.map(children, (child) => {
+		if (typeof child === 'string' || typeof child === 'number') {
+			return (
+			<Text className={`${getTextColorClass()} text-md lowercase`}>
+			  {child}
+			</Text>
+		  );
+		}
+		return child; // leave React elements as-is
+	});
 
+	
 	return (
 		<Pressable
 			className={`${getModeClasses()} ${getTextColorClass()} text-md lowercase ${className}`}
 			{...props}
 		>
-			{children}
+			{
+				renderChildren
+			}
 		</Pressable>
 	);
 };
