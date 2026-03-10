@@ -1,5 +1,4 @@
 import { View, Text } from "react-native";
-import { Surface } from "react-native-paper";
 import LoadingToast from "./LoadingToast";
 import { usePersistentTheme } from "@/context/usePersistentTheme";
 
@@ -26,15 +25,8 @@ export function ThemeToast({ text1, text2, variant = "info" }: Props)
 				: theme['--color-outline'];
 
 	return (
-		<Surface
-			elevation={4}
-			style={{
-				flexDirection: "row",
-				borderRadius: 12,
-				overflow: "hidden", // 🔑 keeps bar clipped
-				minWidth: 280,
-				backgroundColor: theme['--color-surface'],
-			}}
+		<View
+			className="flex-row shadow-lg rounded-xl min-w-70 overflow-hidden bg-surface"
 		>
 			{/* LEFT INDICATOR BAR */}
 			<View
@@ -49,6 +41,6 @@ export function ThemeToast({ text1, text2, variant = "info" }: Props)
 				{text1 && <Text>{text1}</Text>}
 				{text2 && <Text>{text2}</Text>}
 			</View>
-		</Surface>
+		</View>
 	);
 }

@@ -8,18 +8,11 @@ export default function LoadingToast({ text1 }: { text1?: string })
 
 	return (
 		<View
-			style={{
-				flexDirection: "row",
-				padding: 12,
-				backgroundColor: theme['--color-surface'],
-				borderRadius: 8,
-				alignItems: "center",
-				elevation: 4,
-			}}
+			className="flex-row p-3 bg-surface rounded-lg items-center shadow-lg"
 		>
 			<ActivityIndicator size="small" color={theme['--color-primary']} />
 			{text1 && (
-				<Text style={{ marginLeft: 8, color: theme['--color-onSurface'] }}>
+				<Text className="ml-2 text-onSurface">
 					{text1}
 				</Text>
 			)}
