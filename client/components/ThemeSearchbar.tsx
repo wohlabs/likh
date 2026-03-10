@@ -33,7 +33,6 @@ export default function ThemeSearchbar({
 {
 	const { theme } = usePersistentTheme();
 	const inputRef = React.useRef<TextInput>(null);
-	const [isFocused, setIsFocused] = React.useState(false);
 
 	const handleClearPress = (e: any) => 
 	{
@@ -41,16 +40,6 @@ export default function ThemeSearchbar({
 		onChangeText?.('');
 		onClearIconPress?.(e);
 	};
-
-	// const handleFocus = () => {
-	// 	setIsFocused(true);
-	// 	onFocus?.();
-	// };
-
-	// const handleBlur = () => {
-	// 	setIsFocused(false);
-	// 	onBlur?.();
-	// };
 
 	const placeholderColor = theme['--color-onSurfaceVariant'];
 
@@ -77,7 +66,7 @@ export default function ThemeSearchbar({
 			{
 				loading && <ActivityIndicator size={18} color={theme['--color-primary']} />
 			}
-			{value && (
+			{value.length > 0 && (
 				<Ionicons
 					name="close-circle"
 					size={20}
