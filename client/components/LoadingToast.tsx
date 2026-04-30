@@ -1,25 +1,18 @@
 // components/LoadingToast.tsx
+import { usePersistentTheme } from "@/context/usePersistentTheme";
 import { ActivityIndicator, Text, View } from "react-native";
-import { useTheme } from "react-native-paper";
 
 export default function LoadingToast({ text1 }: { text1?: string }) 
 {
-	const theme = useTheme();
+	const { theme } = usePersistentTheme();
 
 	return (
 		<View
-			style={{
-				flexDirection: "row",
-				padding: 12,
-				backgroundColor: theme.colors.surface,
-				borderRadius: 8,
-				alignItems: "center",
-				elevation: 4,
-			}}
+			className="flex-row p-3 bg-surface rounded-lg items-center shadow-lg"
 		>
-			<ActivityIndicator size="small" color={theme.colors.primary} />
+			<ActivityIndicator size="small" color={theme['--color-primary']} />
 			{text1 && (
-				<Text style={{ marginLeft: 8, color: theme.colors.onSurface }}>
+				<Text className="ml-2 text-onSurface">
 					{text1}
 				</Text>
 			)}

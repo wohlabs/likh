@@ -1,18 +1,19 @@
 import ThemeText from "@/components/ThemeText";
+import { ThemeMenu, ThemeMenuItem } from "@/components/ThemeMenu";
+import { themes, usePersistentTheme } from "@/context/usePersistentTheme";
 import { addToCustomList, favoriteManga } from "@/services/custom_lists";
 import { MangaProps } from "@/services/manga.service";
-import { modernDarkTheme } from "@/theme/modernTheme";
 import { ICustomLists, MangaItem } from "@/types/ICustomList";
 import { getMangaTitle } from "@/types/IManga";
+import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import { Image, Pressable, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
-import { IconButton, Menu, useTheme } from "react-native-paper";
 
 export default function MangaCard({item, style, allCustomLists, onCreateList } : {item: MangaProps, style?: StyleProp<ViewStyle>, onCreateList?: (mangaIdToAdd?: number) => {}, allCustomLists: ICustomLists})
 {
-	const theme = useTheme();
+	const { theme } = usePersistentTheme();
 	const [optionsVisible, setOptionsVisible] = useState<boolean>(false);
 	const [mangaCustomLists, setMangaCustomLists] = useState<{ _id: string, name: string, isInList: boolean}[]>([]);
 	const [isFavorite, setFavorite] = useState<boolean>(false);
@@ -69,7 +70,7 @@ export default function MangaCard({item, style, allCustomLists, onCreateList } :
 						shadowOpacity: 0.08,
 						shadowRadius: 12,
 						elevation: 2,
-						boxShadow: `0 0 5px 1px ${theme.colors.backdrop}`
+						boxShadow: `0 0 5px 1px ${theme['--color-elevation-level1']}`
 					}]}
 					onPress={() => { router.navigate(`/app/manga/${item.id}`) }}
 				>
@@ -80,45 +81,48 @@ export default function MangaCard({item, style, allCustomLists, onCreateList } :
 					/>
 					{/* Gradient mask */}
 					<LinearGradient
-						colors={["transparent", modernDarkTheme.colors.background]}
+						colors={["transparent", themes.dark["--color-elevation-level1"]]}
 						locations={[0.6, 1]}
 						style={StyleSheet.absoluteFill}
 						pointerEvents="none"
 					/>
 					<View style={styles.bottomContent}>
 						<View style={styles.textContainer}>
-							<ThemeText variant="titleMedium" style={[styles.mangaTitle, {color: modernDarkTheme.colors.onBackground}]} numberOfLines={2}>{getMangaTitle(item)}</ThemeText>
+							<ThemeText style={[styles.mangaTitle, {color: themes.dark["--color-onBackground"]}]} numberOfLines={2}>{getMangaTitle(item)}</ThemeText>
 						</View>
 					</View>
 					<View style={{position: "absolute", top: 0, width: "100%", flexDirection: "row-reverse"}}>
-						<Menu
+						<ThemeMenu
 							visible={optionsVisible}
 							onDismiss={() =>
 							{
 								setOptionsVisible(false)
 							}}
 							anchor={
-								<IconButton size={15} icon={mangaCustomLists.reduce((accumulator, currentValue)=> accumulator || currentValue.isInList, false) ? 'bookmark' : 'bookmark-outline'} mode="contained"
+								<Ionicons size={15}
+									name={mangaCustomLists.reduce((accumulator, currentValue)=> accumulator || currentValue.isInList, false) ? 'bookmark' : 'bookmark-outline'}
+									className='icon-button-contained'
 									onPress={() => setOptionsVisible(true)}
 								/>
 							}
 						>
-							<Menu.Item 
+							<ThemeMenuItem 
 								title={'add to...'} leadingIcon={undefined}
 							/>
 							{
 								mangaCustomLists.map((list, number) => (
-									<Menu.Item 
+									<ThemeMenuItem 
 										key={list._id ? `custom_list_${list._id}` : `custom_list_undefined_${number}`}
 										onPress={() => toggleList(list._id)} title={list.name} leadingIcon={list.isInList ? "bookmark" : "bookmark-outline"}
 									/>
 								))
 							}
-							<Menu.Item 
+							<ThemeMenuItem 
 								onPress={() => {setOptionsVisible(false); onCreateList && onCreateList(Number(item.id) ?? undefined);}} title={'new list'} leadingIcon={'plus'}
 							/>
-						</Menu>
-						<IconButton size={15} icon={isFavorite ? "heart" : "heart-outline"} mode="contained"
+						</ThemeMenu>
+						<Ionicons size={15} name={isFavorite ? "heart" : "heart-outline"}
+							className="icon-button-contained"
 							onPress={() => toggleFavorite()}
 						/>
 					</View>

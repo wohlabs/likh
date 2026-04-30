@@ -1,6 +1,6 @@
-import { View } from "react-native";
-import { Surface, Text, useTheme } from "react-native-paper";
+import { View, Text } from "react-native";
 import LoadingToast from "./LoadingToast";
+import { usePersistentTheme } from "@/context/usePersistentTheme";
 
 type Props = {
 	text1?: string;
@@ -15,25 +15,18 @@ export const toastConfig = {
 
 export function ThemeToast({ text1, text2, variant = "info" }: Props) 
 {
-	const theme = useTheme();
+	const { theme } = usePersistentTheme();
 
 	const indicatorColor =
 		variant === "error"
-			? theme.colors.error
+			? theme["--color-statusError"]
 			: variant === "success"
-				? theme.colors.primary
-				: theme.colors.outline;
+				? theme['--color-primary']
+				: theme['--color-outline'];
 
 	return (
-		<Surface
-			elevation={4}
-			style={{
-				flexDirection: "row",
-				borderRadius: 12,
-				overflow: "hidden", // 🔑 keeps bar clipped
-				minWidth: 280,
-				backgroundColor: theme.colors.surface,
-			}}
+		<View
+			className="flex-row shadow-lg rounded-xl min-w-70 overflow-hidden bg-surface"
 		>
 			{/* LEFT INDICATOR BAR */}
 			<View
@@ -45,9 +38,9 @@ export function ThemeToast({ text1, text2, variant = "info" }: Props)
 
 			{/* CONTENT */}
 			<View style={{ padding: 16, flex: 1 }}>
-				{text1 && <Text variant="titleMedium">{text1}</Text>}
-				{text2 && <Text variant="bodyMedium">{text2}</Text>}
+				{text1 && <Text>{text1}</Text>}
+				{text2 && <Text>{text2}</Text>}
 			</View>
-		</Surface>
+		</View>
 	);
 }

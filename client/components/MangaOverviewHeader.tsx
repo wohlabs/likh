@@ -1,21 +1,24 @@
 import ReadMore from '@/components/ReadMore';
+import { ThemeMenu, ThemeMenuItem } from "@/components/ThemeMenu";
 import { addToCustomList, getCustomLists } from "@/services/custom_lists";
 import { getMangaStatus, updateMangaStatus } from "@/services/media_entry.service";
 import { ICustomList, ICustomLists, MangaItem } from "@/types/ICustomList";
 import { getMangaTitle, IMangaDetails } from "@/types/IManga";
 import { useCallback, useEffect, useState } from "react";
-import { GestureResponderEvent, Image, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
-import { ActivityIndicator, IconButton, Menu, Modal, Portal, useTheme } from "react-native-paper";
+import { GestureResponderEvent, Image, StyleProp, StyleSheet, View, ViewStyle, ActivityIndicator } from "react-native";
+import { Modal, Portal } from "react-native-paper";
 import Toast from "react-native-toast-message";
 import NewCustomListView from "./NewCustomListView";
 import ThemeButton from "./ThemeButton";
 import { ThemeDropdown } from "./ThemeDropdown";
 import ThemeText from "./ThemeText";
+import { usePersistentTheme } from '@/context/usePersistentTheme';
+import { Ionicons } from '@expo/vector-icons';
 
 
 export default function MangaOverviewHeader({ style, manga } : { style?: StyleProp<ViewStyle>, manga?: IMangaDetails })
 {
-	const theme = useTheme()
+	const { theme } = usePersistentTheme()
 	const [optionsVisible, setOptionsVisible] = useState(false)
 	const [isCreatingNewList, setCreatingNewList] = useState(false)
 	const [lists, setLists] = useState<(ICustomList & {isInList: boolean})[]>([])
@@ -125,7 +128,7 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 	const _renderTruncatedFooter = (handlePress : (event: GestureResponderEvent) => void) => 
 	{
 		return (
-			<ThemeText style={{color: theme.colors.primary}} onPress={handlePress}>
+			<ThemeText style={{color: theme['--color-primary']}} onPress={handlePress}>
 				Read more
 			</ThemeText>
 		);
@@ -134,7 +137,7 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 	const _renderRevealedFooter = (handlePress : (event: GestureResponderEvent) => void) => 
 	{
 		return (
-			<ThemeText style={{color: theme.colors.primary}} onPress={handlePress}>
+			<ThemeText style={{color: theme['--color-primary']}} onPress={handlePress}>
 				Show less
 			</ThemeText>
 		);
@@ -182,7 +185,7 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 								{
 									!status ? 
 										<ThemeButton mode="contained" onPress={handleCreateEntry} style={{minWidth:150, marginTop:6}}>
-								add to library
+											add to library
 										</ThemeButton>
 										:
 										<>
@@ -221,10 +224,10 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 													multiple={false}
 													listMode="FLATLIST"
 													maxHeight={300}
-													style={{minWidth: 100, backgroundColor: theme.colors.surfaceVariant, borderColor: theme.colors.outline}}
+													style={{minWidth: 100, backgroundColor: theme['--color-surfaceVariant'], borderColor: theme['--color-outline']}}
 												/>
 											</View>
-											<Menu
+											<ThemeMenu
 												visible={optionsVisible}
 												onDismiss={() =>
 												{
@@ -232,37 +235,38 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 												}}
 												anchorPosition="bottom"
 												anchor={
-													<IconButton
-														icon={lists.reduce((accumulator, currentValue)=> accumulator || currentValue.isInList, false) ? 'bookmark' : 'bookmark-outline'}
-														mode="contained"
+													<Ionicons
+														size={20}
+														name={lists.reduce((accumulator, currentValue)=> accumulator || currentValue.isInList, false) ? 'bookmark' : 'bookmark-outline'}
+														className='icon-button-contained'
 														style={{borderRadius: 10}}
 														onPress={() => setOptionsVisible(true)}
 													/>
 												}
 											>
-												<Menu.Item 
+												<ThemeMenuItem 
 													title={'add to...'} leadingIcon={undefined}
 												/>
 												{
 													lists.map((list, number) => (
-														<Menu.Item 
+														<ThemeMenuItem 
 															key={list._id ? `custom_list_${list._id}` : `custom_list_undefined_${number}`}
 															onPress={() => toggleList(list._id)} title={list.name}
 															leadingIcon={list.isInList ? (list.isFavorite ? "heart" : "bookmark") : (list.isFavorite ? "heart-outline" : "bookmark-outline")}
 														/>
 													))
 												}
-												<Menu.Item 
+												<ThemeMenuItem 
 													onPress={() => {setOptionsVisible(false);setCreatingNewList(true);}} title={'new list'} leadingIcon={'plus'}
 												/>
-											</Menu>
+											</ThemeMenu>
 										</>
 								}					
 							</View>
 						</View>
 						<View style={{ flex: 1, marginHorizontal: 10 }}>
 							<View style={styles.titleDetailsContainer}>
-								<ThemeText style={styles.title} variant="titleLarge">{getMangaTitle(manga)}</ThemeText>
+								<ThemeText style={styles.title}>{getMangaTitle(manga)}</ThemeText>
 							</View>
 							<ReadMore
 								numberOfLines={5}
@@ -270,9 +274,9 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 								renderRevealedFooter={_renderRevealedFooter}
 								onReady={() => {}}
 							>
-								<ThemeText variant="bodySmall">
+								<ThemeText>
 									{
-										htmlToPlainText(manga?.description)
+										htmlToPlainText(manga?.description || "")
 									}
 								</ThemeText>
 							</ReadMore>
@@ -281,7 +285,7 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 			}
 			<Portal>
 				<Modal visible={isCreatingNewList} onDismiss={() => setCreatingNewList(false)}
-					contentContainerStyle={{minWidth: 200, minHeight: 200, width: "30%", height: "50%", backgroundColor: theme.colors.background, borderRadius: 10, margin: 'auto', padding: 10, gap: 5}}
+					contentContainerStyle={{minWidth: 200, minHeight: 200, width: "30%", height: "50%", backgroundColor: theme['--color-background'], borderRadius: 10, margin: 'auto', padding: 10, gap: 5}}
 				>
 					<NewCustomListView mangaIdToAdd={Number(manga?.mangaId)} setAllCustomLists={() => null} onCustomListCreated={async () => setCreatingNewList(false)} />
 				</Modal>

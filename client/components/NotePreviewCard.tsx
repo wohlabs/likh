@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useState } from "react";
-import { Image, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
-import { Card, useTheme } from "react-native-paper";
+import { Image, Pressable, PressableProps, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 import { INoteEntry } from "../types/INotes";
 import ReadMore from "./ReadMore";
 import ThemeText from "./ThemeText";
 import { getImageBase64 } from "./util";
+import { usePersistentTheme } from "@/context/usePersistentTheme";
 
-export default function NotePreviewCard({ note, style, onPress }: { note: INoteEntry, style?: StyleProp<ViewStyle>, onPress?: () => void }) 
+export default function NotePreviewCard({ note, style, className, onPress }: { note: INoteEntry, style?: StyleProp<ViewStyle>, onPress?: () => void } & PressableProps) 
 {
 	const [previews, setPreviews] = useState<string[]>(note.images);
-	const theme = useTheme()
+	const { theme } = usePersistentTheme()
 
 	const fetchImages = useCallback(async () => 
 	{
@@ -31,49 +31,47 @@ export default function NotePreviewCard({ note, style, onPress }: { note: INoteE
 	}, [fetchImages])
 
 	return (
-		<Card
-			style={[{ flex: 1, margin: 5, borderRadius: 10}, style]}
+		<Pressable
+			className={`flex-1 m-1 rounded-lg bg-elevation-level1 flex-row p-0 shadow-lg ${className}`}
 			onPress={onPress}
 		>
-			<Card.Content style={{flexDirection: 'row', padding: 0, flex: 1}}>
-				<View style={{width: 60, backgroundColor: theme.colors.surfaceVariant, borderTopLeftRadius: 10, borderBottomLeftRadius: 10, padding: 2, justifyContent: 'center', }}>
-					<ThemeText variant="labelSmall" style={{textAlign: 'center', opacity: 0.6}}>
+			<View className="w-15 bg-surfaceVariant p-1 rounded-l-lg justify-center">
+				<ThemeText style={{textAlign: 'center', opacity: 0.6}}>
 						Chapter
-					</ThemeText>
-					<ThemeText variant="labelMedium" style={{textAlign: 'center'}}>
-						{
-							note.startChapter === -1
-								? `Overall`
-								: `${note.startChapter}${note.endChapter ? " - " + note.endChapter : ""}`
-						}
-					</ThemeText>
-				</View>
-				<View style={{flexDirection: 'row', justifyContent: 'space-between', flex: 1, padding: 5}}>
-					<View style={{flexDirection: 'row', flex: 1, padding: 5, paddingHorizontal: 5, gap: 5}}>
-						{ previews[0] && 
+				</ThemeText>
+				<ThemeText style={{textAlign: 'center'}}>
+					{
+						note.startChapter === -1
+							? `Overall`
+							: `${note.startChapter}${note.endChapter ? " - " + note.endChapter : ""}`
+					}
+				</ThemeText>
+			</View>
+			<View style={{flexDirection: 'row', justifyContent: 'space-between', flex: 1, padding: 5}}>
+				<View style={{flexDirection: 'row', flex: 1, padding: 5, paddingHorizontal: 5, gap: 5}}>
+					{ previews[0] && 
 						<Image
 							source={{ uri: previews[0] }}
 							style={[styles.imagePreview, { opacity: previews.length > 0 ? 1 : 0 }]}
 							resizeMode="cover"
 						/>
-						}
-						<View style={{flex: 1}}>
-							<ReadMore
-								numberOfLines={3}
-								renderTruncatedFooter={() => {}}
-								renderRevealedFooter={() => {}}
-								onReady={() => {}}
-								textStyle={{color: theme.colors.onBackground, opacity: note.text ? 1 : 0.6, minHeight: 20}}
-								style={{flex: 1}}
-							>
-								<ThemeText variant="bodyMedium" numberOfLines={3}>{note.text || "(No notes)"}</ThemeText>
-							</ReadMore>
-							<ThemeText variant="labelSmall" style={{opacity: 0.6, textAlign: 'right'}}>{new Date(note.modifiedAt).toLocaleString() || "date @ time"}</ThemeText>
-						</View>
+					}
+					<View style={{flex: 1}}>
+						<ReadMore
+							numberOfLines={3}
+							renderTruncatedFooter={() => {}}
+							renderRevealedFooter={() => {}}
+							onReady={() => {}}
+							textStyle={{color: theme['--color-onBackground'], opacity: note.text ? 1 : 0.6, minHeight: 20}}
+							style={{flex: 1}}
+						>
+							<ThemeText numberOfLines={3}>{note.text || "(No notes)"}</ThemeText>
+						</ReadMore>
+						<ThemeText style={{opacity: 0.6, textAlign: 'right'}}>{new Date(note.modifiedAt).toLocaleString() || "date @ time"}</ThemeText>
 					</View>
 				</View>
-			</Card.Content>
-		</Card>
+			</View>
+		</Pressable>
 	);
 }
 

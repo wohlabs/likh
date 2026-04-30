@@ -1,9 +1,11 @@
 import { ThemeDropdown } from "@/components/ThemeDropdown";
 import ThemeSearchbar from '@/components/ThemeSearchbar';
 import ThemeText from '@/components/ThemeText';
+import { usePersistentTheme } from "@/context/usePersistentTheme";
 import { addMangaToLibrary } from '@/services/manga.service';
 import { PaginatedSearchResult, searchCategory } from '@/services/search.service';
 import { getMangaTitle, IMangaDetails } from '@/types/IManga';
+import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import
@@ -11,14 +13,14 @@ import
 	ActivityIndicator,
 	FlatList,
 	Image,
+	Pressable,
 	StyleSheet,
 	View,
 } from 'react-native';
-import { Card, IconButton, useTheme } from 'react-native-paper';
 
 export default function SearchCategoryPage() 
 {
-	const theme = useTheme();
+	const { theme } = usePersistentTheme();
 	const router = useRouter();
 	const { category, query } = useLocalSearchParams();
 	const [results, setResults] = useState<any[]>([]);
@@ -122,81 +124,75 @@ export default function SearchCategoryPage()
 	};
 
 	const renderMangaResult = ({ item }: { item: any }) => (
-		<Card
-			style={{ marginHorizontal: 10, marginBottom: 8, backgroundColor: theme.colors.surface }}
+		<Pressable
+			className="flex-1 justify-center flex-row items-center p-4 mx-2.5 mb-2 bg-surface rounded-xl"
 			onPress={() => handleMangaPress(item.id)}
 		>
-			<Card.Content style={[styles.resultContent, { flexDirection: 'row', alignItems: 'center' }]}>
-				<Image
-					source={{ uri: item.coverImage?.large }}
-					style={styles.mangaCover}
-					resizeMode="contain"
-				/>
-				<View style={{ flex: 1 }}>
-					<ThemeText variant="titleSmall" numberOfLines={2}>
-						{getMangaTitle(item)}
-					</ThemeText>
-				</View>
-				<IconButton
-					icon="plus"
-					mode="contained"
-					disabled={item.inLibrary}
-					onPress={async (e) => 
-					{
-						e.stopPropagation();
-						await addMangaToLibrary(item.id);
-						setResults(prevResults =>
-							prevResults.map(result =>
-								result.id === item.id ? { ...result, inLibrary: true } : result
-							)
-						);
-					}}
-				/>
-			</Card.Content>
-		</Card>
+			<Image
+				source={{ uri: item.coverImage?.large }}
+				style={styles.mangaCover}
+				resizeMode="contain"
+			/>
+			<View style={{ flex: 1 }}>
+				<ThemeText numberOfLines={2}>
+					{getMangaTitle(item)}
+				</ThemeText>
+			</View>
+			<Ionicons
+				name="add"
+				size={24}
+				className={`icon-button-contained ${item.inLibrary ? 'bg-disabledBackground' : 'bg-surfaceVariant'}`}
+				disabled={item.inLibrary}
+				color={item.inLibrary ? theme["--color-onDisabledBackground"] : theme["--color-primary"]}
+				onPress={async (e) => 
+				{
+					e.stopPropagation();
+					await addMangaToLibrary(item.id);
+					setResults(prevResults =>
+						prevResults.map(result =>
+							result.id === item.id ? { ...result, inLibrary: true } : result
+						)
+					);
+				}}
+			/>
+		</Pressable>
 	);
 
 	const renderNoteResult = ({ item }: { item: any }) => (
-		<Card
-			style={{ marginHorizontal: 10, marginBottom: 8, backgroundColor: theme.colors.surface }}
+		<Pressable
+			className="flex-1 justify-center p-4 mx-2.5 mb-2 bg-surface rounded-xl"
 			onPress={() => handleNotePress(item.manga._id)}
 		>
-			<Card.Content style={styles.resultContent}>
-				<ThemeText variant="titleSmall" style={styles.noteTitle}>
-					{getMangaTitle(item.manga)} - Chapter {item.startChapter === -1 ? "All" : `${item.startChapter}${item.endChapter ? ` - ${item.endChapter}` : ''}`}
-				</ThemeText>
-				<ThemeText variant="bodySmall" numberOfLines={2} style={styles.noteText}>
-					{item.text}
-				</ThemeText>
-			</Card.Content>
-		</Card>
+			<ThemeText className="font-medium" style={styles.noteTitle}>
+				{getMangaTitle(item.manga)} - Chapter {item.startChapter === -1 ? "All" : `${item.startChapter}${item.endChapter ? ` - ${item.endChapter}` : ''}`}
+			</ThemeText>
+			<ThemeText numberOfLines={2} style={styles.noteText}>
+				{item.text}
+			</ThemeText>
+		</Pressable>
 	);
 
 	const renderListResult = ({ item }: { item: any }) => (
-		<Card
-			style={{ marginHorizontal: 10, marginBottom: 8, backgroundColor: theme.colors.surface }}
+		<Pressable
+			className="flex-1 justify-center p-4 mx-2.5 mb-2 bg-surface rounded-xl"
 			onPress={() => handleListPress(item.id)}
 		>
-			<Card.Content style={styles.resultContent}>
-				<View style={{flexDirection: 'row', alignContent: 'center'}}>
-					<ThemeText variant="titleSmall">
-						{item.name}
-					</ThemeText>
-					<ThemeText variant="titleSmall" style={{opacity: 0.6}}>
-						&nbsp;• {item.manga.length} manga
-					</ThemeText>
-				</View>
-			</Card.Content>
-			<Card.Content style={styles.listMeta}>
-				<ThemeText variant="titleSmall">
-					{
-						item.manga?.map((mangaItem: IMangaDetails, index: number) =>(
-							getMangaTitle(mangaItem) + (index === item.manga.length - 1 ? "" : " • ")
-						))
-					}
+			<View className="flex-row">
+				<ThemeText>
+					{item.name}
 				</ThemeText>
-			</Card.Content>
-		</Card>
+				<ThemeText className="opacity-60">
+					&nbsp;• {item.manga.length} manga
+				</ThemeText>
+			</View>
+			<ThemeText className="mt-1 opacity-60">
+				{
+					item.manga?.map((mangaItem: IMangaDetails, index: number) =>(
+						getMangaTitle(mangaItem) + (index === item.manga.length - 1 ? "" : " • ")
+					))
+				}
+			</ThemeText>
+		</Pressable>
 	);
 
 	const renderItem = ({ item }: { item: any }) => 
@@ -228,8 +224,8 @@ export default function SearchCategoryPage()
 
 	return (
 		<>
-			<View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-				<View style={[styles.searchBarContainer, {zIndex: 2}]}>
+			<View className="flex-1 bg-background pb-2.5">
+				<View className="gap-1" style={[styles.searchBarContainer, {zIndex: 2}]}>
 					<View style={{height: '100%'}}>
 						<ThemeDropdown
 							value={categoryCB}
@@ -242,6 +238,7 @@ export default function SearchCategoryPage()
 						/>
 					</View>
 					<ThemeSearchbar
+						className="flex-1 shadow-md"
 						placeholder={`Search ${getCategoryTitle().toLowerCase()}...`}
 						onChangeText={setSearchQuery}
 						onSubmitEditing={() => router.replace({ 
@@ -256,11 +253,11 @@ export default function SearchCategoryPage()
 
 				{isLoading && results.length === 0 ? (
 					<View style={styles.loaderContainer}>
-						<ActivityIndicator size="large" color={theme.colors.primary} />
+						<ActivityIndicator size="large" color={theme['--color-primary']} />
 					</View>
 				) : results.length === 0 ? (
 					<View style={styles.emptyContainer}>
-						<ThemeText variant="bodyMedium" style={styles.emptyText}>
+						<ThemeText style={styles.emptyText}>
 							No results found
 						</ThemeText>
 					</View>
@@ -275,7 +272,7 @@ export default function SearchCategoryPage()
 						ListFooterComponent={
 							isLoadingMore ? (
 								<View style={styles.footerLoader}>
-									<ActivityIndicator size="small" color={theme.colors.primary} />
+									<ActivityIndicator size="small" color={theme['--color-primary']} />
 								</View>
 							) : null
 						}

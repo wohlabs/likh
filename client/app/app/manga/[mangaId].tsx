@@ -9,11 +9,13 @@ import ThemeSearchbar from "@/components/ThemeSearchbar";
 import ThemeText from "@/components/ThemeText";
 import { blobToBase64 } from "@/components/util";
 import { AuthContext } from "@/context/AuthContext";
+import { usePersistentTheme } from "@/context/usePersistentTheme";
 import { API_URL } from "@/services/AxiosInstance";
 import { getMangaData, getMangaDetails } from "@/services/manga.service";
 import { deleteMangaNote } from "@/services/notes.service";
 import { getMangaTitle, IMangaDetails } from "@/types/IManga";
 import { IMangaNotes, INoteEntry } from "@/types/INotes";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
 import { File } from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
@@ -29,6 +31,7 @@ import
 	ScrollView,
 	StyleProp,
 	StyleSheet,
+	TextInput,
 	useWindowDimensions,
 	View,
 	ViewStyle,
@@ -38,11 +41,8 @@ import ReanimatedSwipeable, {
 } from "react-native-gesture-handler/ReanimatedSwipeable";
 import
 {
-	IconButton,
 	Modal,
 	Portal,
-	TextInput,
-	useTheme
 } from "react-native-paper";
 import Reanimated, {
 	SharedValue,
@@ -60,26 +60,26 @@ function NoteButtons({
 {
 	return (
 		<>
-			<IconButton
-				icon={"pencil-outline"}
+			<Ionicons
+				name={"pencil-outline"}
+				className="icon-button-contained"
 				size={20}
 				onPress={onEditPress}
 				style={styles.actionButton}
-				mode="contained"
 			/>
-			<IconButton
-				icon={"share-outline"}
+			<Ionicons
+				name={"share-outline"}
+				className="icon-button-contained"
 				size={20}
 				onPress={() => {}}
 				style={styles.actionButton}
-				mode="contained"
 			/>
-			<IconButton
-				icon={"trash-can-outline"}
+			<Ionicons
+				name={"trash-outline"}
+				className="icon-button-contained"
 				size={20}
 				onPress={onDeletePress}
 				style={styles.actionButton}
-				mode="contained"
 			/>
 		</>
 	);
@@ -114,7 +114,6 @@ function TranslatableButtonContainer({
 
 export default function MangaDetails() 
 {
-	const theme = useTheme();
 	const { width } = useWindowDimensions();
 	const { mangaId, error } = useLocalSearchParams(); // <-- get from URL
 	const [manga, setManga] = useState<IMangaDetails>();
@@ -150,6 +149,7 @@ export default function MangaDetails()
 	const [newEndChapter, setNewEndChapter] = useState<string>("");
 	let dropZoneRootProps: any = null;
 	const [isDropActive, setIsDropActive] = useState(false);
+	const { theme } = usePersistentTheme();
 	const token = useContext(AuthContext).token;
 
 	const pasteImageFromClipboard = useCallback(async () => 
@@ -325,7 +325,7 @@ export default function MangaDetails()
 				pasteImageFromClipboard as unknown as EventListener,
 			);
 		};
-	}, [addImages]);
+	}, [addImages, handleDrop, pasteImageFromClipboard]);
 
 	const pickAddImage = async () => 
 	{
@@ -535,7 +535,7 @@ export default function MangaDetails()
 					<View
 						style={[
 							styles.addNoteContainer,
-							{ borderColor: theme.colors.outlineVariant },
+							{ borderColor: theme['--color-outlineVariant'] },
 						]}
 					>
 						{Platform.OS === "web" && isAddingNote && (
@@ -560,19 +560,17 @@ export default function MangaDetails()
 								style={styles.addNoteCollapsed}
 								onPress={() => setIsAddingNote(true)}
 							>
-								<ThemeText variant="labelLarge">add a note...</ThemeText>
+								<ThemeText>add a note...</ThemeText>
 							</Pressable>
 						) : (
 							<>
 								<TextInput
 									multiline
 									numberOfLines={3}
-									label={"note"}
 									placeholder="write your note here..."
 									value={newText}
 									onChangeText={setNewText}
-									mode="outlined"
-									style={styles.addNoteTextInput}
+									className="rounded-lg p-3 text-base min-h-20 max-h-36 border-outlineVariant text-onBackground border-2"
 									autoFocus
 								/>
 								<View
@@ -584,26 +582,27 @@ export default function MangaDetails()
 								>
 									<TextInput
 										numberOfLines={1}
-										label={"start chapter"}
+										placeholder="start chapter"
 										editable
 										keyboardType="number-pad"
 										value={newStartChapter}
 										onChangeText={(text) => setNewStartChapter(text)}
-										placeholder={"start"}
-										style={styles.formInput}
-										mode="outlined"
+										className="flex-1 max-w-48 rounded-lg px-3 py-2 text-base"
+										style={{
+											borderWidth: 2,
+											borderColor: theme['--color-outlineVariant'],
+											color: theme['--color-onBackground'],
+										}}
 									/>
-									<ThemeText variant="labelLarge">&nbsp;-&nbsp;</ThemeText>
+									<ThemeText>&nbsp;-&nbsp;</ThemeText>
 									<TextInput
 										numberOfLines={1}
-										label={"end chapter (optional)"}
+										placeholder="end chapter (optional)"
 										editable
 										keyboardType="number-pad"
 										value={newEndChapter}
 										onChangeText={(text) => setNewEndChapter(text)}
-										placeholder={"end (optional)"}
-										style={styles.formInput}
-										mode="outlined"
+										className="flex-1 max-w-48 rounded-lg px-3 py-2 text-base border-2 border-outlineVariant text-onBackground"
 									/>
 								</View>
 								<View
@@ -622,15 +621,15 @@ export default function MangaDetails()
 													resizeMode="cover"
 													style={[
 														styles.thumbnail,
-														{ borderColor: theme.colors.outlineVariant },
+														{ borderColor: theme['--color-outlineVariant'] },
 													]}
 												/>
-												<IconButton
-													icon="trash-can-outline"
+												<Ionicons
+													name="trash-outline"
+													className="icon-button-contained"
 													size={18}
 													onPress={() => removeAddImage(index)}
 													style={{ position: "absolute", right: 0 }}
-													mode="contained"
 												/>
 											</Pressable>
 										)}
@@ -638,11 +637,11 @@ export default function MangaDetails()
 										style={{ flex: 1 }}
 										keyExtractor={(_, index) => index.toString()}
 									/>
-									<IconButton
-										icon={"plus"}
+									<Ionicons
+										name={"add"}
+										className="icon-button-contained"
 										size={26}
 										onPress={pickAddImage}
-										mode="contained"
 									/>
 								</View>
 								<View
@@ -677,7 +676,7 @@ export default function MangaDetails()
 							</>
 						)}
 					</View>
-					{filteredNotes.length == 0 ? (
+					{filteredNotes.length === 0 ? (
 						<View
 							style={{
 								flex: 1,
@@ -687,7 +686,6 @@ export default function MangaDetails()
 							}}
 						>
 							<ThemeText
-								variant="labelLarge"
 								style={{ flex: 1, margin: "auto" }}
 							>
 								No notes found. log a note for this manga
@@ -702,8 +700,10 @@ export default function MangaDetails()
 									zIndex: 2,
 								}}
 							>
-								<IconButton
-									icon={sortAscending ? "sort-ascending" : "sort-descending"}
+								<MaterialCommunityIcons
+									name={sortAscending ? "sort-ascending" : "sort-descending"}
+									size={22}
+									className="icon-button"
 									onPress={() => setSortAscending(!sortAscending)}
 								/>
 								<View>
@@ -729,7 +729,6 @@ export default function MangaDetails()
 									/>
 								</View>
 								<ThemeText
-									variant="labelLarge"
 									style={{ margin: 0, marginHorizontal: 5 }}
 								>
 									Sort by
@@ -740,7 +739,7 @@ export default function MangaDetails()
 								keyExtractor={(item) => `NotePreview_${item.id}`}
 								key={`filteredNotes`}
 								numColumns={1}
-								contentContainerStyle={{ flexGrow: 0 }}
+								contentContainerStyle={{ flexGrow: 0, paddingBottom: 15, flex: 1 }}
 								scrollEnabled={true}
 								renderItem={({
 									item,
@@ -822,7 +821,6 @@ export default function MangaDetails()
 					<Portal theme={theme}>
 						<Modal
 							visible={isViewingOverlay}
-							theme={theme}
 							contentContainerStyle={styles.noteModalContainer}
 							onDismiss={() => 
 							{
@@ -839,7 +837,7 @@ export default function MangaDetails()
 										mangaTitle={getMangaTitle(manga)}
 										style={[
 											styles.noteViewer,
-											{ backgroundColor: theme.colors.background },
+											{ backgroundColor: theme['--color-background'] },
 										]}
 										onDelete={() => onDelete(viewerNote.id)}
 										onEdit={() => 
@@ -859,21 +857,12 @@ export default function MangaDetails()
 				</ScrollView>
 			)}
 			<View style={styles.floatingContainer}>
-				<View style={styles.searchBarContainer}>
-					<ThemeSearchbar
-						placeholder="search note"
-						onChangeText={setSearchString}
-						style={styles.searchBar}
-						value={searchString}
-					/>
-					<IconButton
-						icon={"plus"}
-						size={30}
-						onPress={() => setIsAddingNote(!isAddingNote)}
-						style={styles.addButton}
-						mode="contained"
-					/>
-				</View>
+				<ThemeSearchbar
+					placeholder="search note"
+					onChangeText={setSearchString}
+					className="m-2.5 rounded-lg shadow-md z-10 w-[50%]"
+					value={searchString}
+				/>
 			</View>
 		</View>
 	);

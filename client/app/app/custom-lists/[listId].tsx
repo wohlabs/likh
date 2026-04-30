@@ -1,21 +1,22 @@
 import AutoGrowingTextInput from "@/components/AutoGrowingTextInput";
 import ThemeButton from "@/components/ThemeButton";
 import ThemeText from "@/components/ThemeText";
+import { usePersistentTheme } from "@/context/usePersistentTheme";
 import { addToCustomList, getCustomLists } from "@/services/custom_lists";
 import { editList } from "@/services/lists.service";
 import { getLibraryMangaThumbnails, MangaProps } from "@/services/manga.service";
 import { ICustomList, MangaItem } from "@/types/ICustomList";
 import { getMangaTitle } from "@/types/IManga";
+import { Ionicons } from "@expo/vector-icons";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
-import { FlatList, Image, Pressable, ScrollView, StyleSheet, View } from "react-native";
-import { Card, IconButton, useTheme } from "react-native-paper";
+import { FlatList, Image, Pressable, ScrollView, StyleSheet, TextInput, View } from "react-native";
 
 export default function CustomListDetail()
 {
 	const params = useLocalSearchParams();
 	const listId = params.listId as string;
-	const theme = useTheme();
+	const { theme } = usePersistentTheme();
 	const router = useRouter();
 	const [list, setList] = useState<ICustomList | null>(null);
 	const [mangas, setMangas] = useState<(MangaProps & {addedDate: Date})[]>([]);
@@ -69,7 +70,7 @@ export default function CustomListDetail()
 			setOfficialDescription(description)
 			setEditingDesc(false)
 		}
-	}, [description]);
+	}, [description, listId]);
 	
 	return (
 		<>
@@ -77,11 +78,11 @@ export default function CustomListDetail()
 				options={{ title: list?.name ?? "List", headerTitleAlign: "center" }}
 			/>
 			<ScrollView
-				style={[{ flex: 1, backgroundColor: theme.colors.background }]}
+				className="pb-5"
 			>
-				<View style={styles.header}>
-					<ThemeText variant="titleLarge" style={{paddingHorizontal: 10}}>{list?.name}</ThemeText>
-					<ThemeText variant="labelLarge" style={{opacity: 0.6, paddingHorizontal: 10}}>
+				<View className="gap-3 p-4">
+					<ThemeText className="text-xl px-2.5">{list?.name}</ThemeText>
+					<ThemeText className="opacity-60 px-2.5">
 						{list?.manga?.length ?? 0} manga
 					</ThemeText>
 					{
@@ -92,8 +93,9 @@ export default function CustomListDetail()
 								onHoverOut={() => setTextHovered(false)}
 								style={{cursor: 'auto'}}
 							>
-								<IconButton icon={"pencil"} size={15} mode="contained"
-									style={{display: textHovered ? 'flex' : 'none', position: 'absolute', top: -20, right: 0, zIndex: 2}}
+								<Ionicons name={"pencil-sharp"} size={16}
+									className={`${textHovered ? 'flex' : 'hidden'} icon-button-contained absolute z-10 right-0 -top-5`}
+									color={theme['--color-onSurfaceVariant']}
 									onPress={() => 
 									{
 										setEditingDesc(true)
@@ -102,8 +104,11 @@ export default function CustomListDetail()
 									onHoverIn={() => setTextHovered(true)}
 								/>
 								<ThemeText
-									variant="bodyMedium"
-									style={{ color: theme.colors.onSurfaceVariant, flex: 1, backgroundColor: textHovered ? theme.colors.surface : theme.colors.background, padding: 10, opacity: officialDescription ? 1 : 0.6 }}
+									className="text-onSurfaceVariant flex-1 p-2.5"
+									style={{
+										backgroundColor: textHovered ? theme['--color-surface'] : theme['--color-background'],
+										opacity: officialDescription ? 1 : 0.6
+									}}
 								>
 									{officialDescription || "(no description)"}
 								</ThemeText>
@@ -114,10 +119,12 @@ export default function CustomListDetail()
 									value={description}
 									onChangeText={setDescription}
 									placeholder="Description of this list..."
-									label={"Description"}
-									style={{zIndex: 1}}
+									className="text-onBackground bg-background outline-2 outline-outline rounded-md p-2 z-10"
+									multiline
 								/>
-								<View style={{flexDirection: 'row-reverse', padding: 0, paddingVertical: 4, gap: 4}}>
+								<View
+									className="flex-row-reverse py-1 gap-1"
+								>
 									<ThemeButton mode="contained"
 										onPress={onSaveDescription}
 									>
@@ -139,33 +146,35 @@ export default function CustomListDetail()
 					keyExtractor={(item) => item.id}
 					contentContainerStyle={{ padding: 16, paddingVertical: 2, gap: 12 }}
 					renderItem={({ item }: {item: MangaProps & {addedDate: Date}}) => (
-						<Card onPress={() => router.push(`/app/manga/${item.id}`)}>
-							<Card.Content style={styles.mangaRow}>
-								<Image
-									source={{ uri: item.coverImage?.large }}
-									style={styles.thumb}
-								/>
-								<View style={{ flex: 1 }}>
-									<ThemeText variant="titleMedium">
-										{getMangaTitle(item)}
-									</ThemeText>
-									<ThemeText variant="labelSmall" style={{opacity: 0.6}}>added on: {new Date(item.addedDate).toLocaleString() || "date @ time"}</ThemeText>
-								</View>
-								<IconButton
-									icon={"trash-can-outline"}
-									size={20}
-									onPress={async () => 
+						<Pressable
+							onPress={() => router.push(`/app/manga/${item.id}`)}
+							className={`shadow-elevation-level1 shadow-md elevation-sm bg-surface flex-row items-center p-3 rounded-xl`}
+						>
+							<Image
+								source={{ uri: item.coverImage?.large }}
+								style={styles.thumb}
+							/>
+							<View className="flex-1">
+								<ThemeText>
+									{getMangaTitle(item)}
+								</ThemeText>
+								<ThemeText className="opacity-60">added on: {new Date(item.addedDate).toLocaleString() || "date @ time"}</ThemeText>
+							</View>
+							<Ionicons
+								name={"trash-sharp"}
+								className="icon-button-contained"
+								color={theme['--color-onSurfaceVariant']}
+								size={20}
+								onPress={async () => 
+								{
+									const result = await addToCustomList(listId, Number(item.id), false)
+									if (result.success)
 									{
-										const result = await addToCustomList(listId, Number(item.id), false)
-										if (result.success)
-										{
-											setMangas(mangas.filter((manga: MangaProps) => manga.id != item.id))
-										}
-									}}
-									mode="contained"
-								/>
-							</Card.Content>
-						</Card>
+										setMangas(mangas.filter((manga: MangaProps) => manga.id != item.id))
+									}
+								}}
+							/>
+						</Pressable>
 					)}
 				/>
 			</ScrollView>

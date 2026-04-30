@@ -2,8 +2,9 @@ import { LoadingScreen } from "@/components/LoadingScreen";
 import { toastConfig } from "@/components/ThemeToast";
 import { AuthContext, AuthProvider } from "@/context/AuthContext";
 import { ServerContext, ServerProvider } from "@/context/ServerContext";
-import { usePersistentTheme } from "@/context/usePersistentTheme";
+import { ThemeProvider, themes, usePersistentTheme } from "@/context/usePersistentTheme";
 import { Stack, useSegments } from "expo-router";
+import { VariableContextProvider } from "nativewind";
 import { useContext, useEffect } from "react";
 import { KeyboardAvoidingView, Platform } from "react-native";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -16,12 +17,14 @@ export default function RootLayout()
 		<GestureHandlerRootView>
 			<ServerProvider>
 				<AuthProvider>
-					<KeyboardAvoidingView
-						style={{ flex: 1 }}
-						behavior={Platform.OS === "ios" ? "padding" : "height"}
-					>
-						<AppGate />
-					</KeyboardAvoidingView>
+					<ThemeProvider>
+						<KeyboardAvoidingView
+							style={{ flex: 1 }}
+							behavior={Platform.OS === "ios" ? "padding" : "height"}
+						>
+							<AppGate />
+						</KeyboardAvoidingView>
+					</ThemeProvider>
 				</AuthProvider>
 			</ServerProvider>
 		</GestureHandlerRootView>
@@ -31,7 +34,7 @@ export default function RootLayout()
 const AppGate = () => 
 {
 	const { loading } = useContext(AuthContext);
-	const { ready, theme } = usePersistentTheme();
+	const { ready, theme, themeScheme } = usePersistentTheme();
 	const { loading: isServerLoading } = useContext(ServerContext)
 	const segments = useSegments()
 
@@ -64,17 +67,19 @@ const AppGate = () =>
 	}
 
 	return (
-		<PaperProvider theme={theme}>
-			<Stack
-				screenOptions={{
-					contentStyle: {backgroundColor: theme.colors.background},
-					headerStyle: {backgroundColor: theme.colors.surfaceVariant},
-					headerTintColor: theme.colors.onSurface,
-					headerShown: false
-				}}
-			>
-			</Stack>
-			<Toast config={toastConfig}/>
-		</PaperProvider>
+		<VariableContextProvider value={themes[themeScheme]}>
+			<PaperProvider>
+				<Stack
+					screenOptions={{
+						contentStyle: {backgroundColor: theme['--color-background']},
+						headerStyle: {backgroundColor: theme['--color-surfaceVariant']},
+						headerTintColor: theme['--color-onSurface'],
+						headerShown: false
+					}}
+				>
+				</Stack>
+				<Toast config={toastConfig}/>
+			</PaperProvider>
+		</VariableContextProvider>
 	);
 };

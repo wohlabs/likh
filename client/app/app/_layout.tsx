@@ -2,21 +2,24 @@ import { LoadingScreen } from "@/components/LoadingScreen";
 import ThemeButton from "@/components/ThemeButton";
 import ThemeText from "@/components/ThemeText";
 import { toastConfig } from "@/components/ThemeToast";
+import { ThemeMenu, ThemeMenuItem } from "@/components/ThemeMenu";
 import { AuthContext } from "@/context/AuthContext";
 import { ServerContext } from "@/context/ServerContext";
 import { usePersistentTheme } from "@/context/usePersistentTheme";
 import api from "@/services/AxiosInstance";
+import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Stack, useRouter, useSegments } from "expo-router";
 import * as WebBrowser from 'expo-web-browser';
+import { VariableContextProvider } from "nativewind";
 import { useContext, useEffect, useState } from "react";
-import { Image, Linking, Platform, Pressable, StyleSheet } from "react-native";
-import { IconButton, Menu, PaperProvider } from "react-native-paper";
+import { Image, Linking, Platform } from "react-native";
+import { PaperProvider } from "react-native-paper";
 import Toast from "react-native-toast-message";
 
 export default function AppLayout()
 {
-	const {theme, toggleTheme, isDark} = usePersistentTheme()
+	const {theme, toggleTheme, themeScheme} = usePersistentTheme()
 	const {token, username, anilistToken, logout} = useContext(AuthContext);
 	const [optionsVisible, setOptionsVisible] = useState<boolean>(false);
 	const segments = useSegments();
@@ -103,49 +106,57 @@ export default function AppLayout()
 	}
 
 	return (
-		<PaperProvider theme={theme}>
-			<Stack
-				screenOptions={{
-					contentStyle: {backgroundColor: theme.colors.background},
-					headerStyle: {
-						backgroundColor: theme.colors.surface,
-						borderWidth: 0,
-						shadowColor: "#000",
-						shadowOffset: { width: 0, height: 4 },
-						shadowOpacity: 0.15,
-						shadowRadius: 12,
-						elevation: 2,
-						boxShadow: `0 0 5px 1px ${theme.colors.backdrop}`
-					},
-					headerTintColor: theme.colors.onSurface,
-					headerLeft: () => <Pressable onPress={onTitleClicked}><ThemeText style={{ fontWeight: "900", letterSpacing: 2, marginLeft: 10, color: theme.colors.primary }} variant="titleLarge">likh</ThemeText></Pressable>,
-					headerTitleAlign: "center",
-					headerTitle: () => null,
-					headerRight: () =>
-						(
-							<>
-								{
-									token &&
-							<IconButton
-								icon="bookmark-multiple"
-								onPress={() => router.push("/app/custom-lists")}
-								style={{ marginRight: 10 }}
-								iconColor={theme.colors.primary}
-							/>
-								}
-								<IconButton size={20} icon={isDark ? 'moon-waning-crescent' : 'white-balance-sunny'} onPress={toggleTheme} style={[Platform.OS === 'ios' && {margin: 'auto'}]} iconColor={theme.colors.primary} />
-								{
-									token
-										?
-										<Menu
+
+		<VariableContextProvider value={theme}>
+			<PaperProvider>
+				<Stack
+					screenOptions={{
+						contentStyle: {backgroundColor: theme["--color-background"]},
+						headerStyle: {
+							backgroundColor: theme["--color-surface"],
+						},
+						headerTintColor: theme["--color-onSurface"],
+						headerLeft: () => <ThemeText className="text-onBackground text-2xl font-extrabold tracking-wider" style={{ marginLeft: 10 }} onPress={onTitleClicked}>likh</ThemeText>,
+						headerTitleAlign: "center",
+						headerTitle: () => null,
+						headerRight: () =>
+							(
+								<>
+									{
+										token &&
+										<Ionicons
+											name="bookmarks-sharp"
+											size={24}
+											onPress={() => router.push("/app/custom-lists")}
+											style={{ margin: 10 }}
+											className="text-primary icon-button"
+										/>
+									}
+									<Ionicons
+										size={24}
+										name={themeScheme === "dark" ? 'moon-sharp' : 'sunny-sharp'}
+										onPress={toggleTheme}
+										style={[Platform.OS === 'ios' && {margin: 'auto'}]}
+										className="text-primary auto icon-button"
+									/>
+									{
+										<ThemeMenu
 											visible={optionsVisible}
 											onDismiss={() => setOptionsVisible(false)}
 											anchorPosition="bottom"
 											anchor={
-												<ThemeButton icon={'account'} onPress={() => setOptionsVisible(true)} mode="text" textColor={theme.colors.primary}>{username}</ThemeButton>
+												<ThemeButton
+													onPress={() => setOptionsVisible(true)}
+													mode="text"
+												>
+													<Ionicons name="person"
+														color={theme['--color-onBackground']} size={16}
+													/>
+													{username}
+												</ThemeButton>
 											}
 										>
-											<Menu.Item 
+											<ThemeMenuItem 
 												onPress={() => 
 												{
 													if (anilistToken == null || anilistToken === undefined || anilistToken === "undefined" || anilistToken === '')
@@ -158,12 +169,12 @@ export default function AppLayout()
 												leadingIcon={() => (
 													<Image
 														source={{ uri: 'https://docs.anilist.co/anilist.png' }}
-														style={styles.anilistIcon}
+														className="w-6 h-6 rounded"
 													/>
 												)}
 												title={anilistToken == null || anilistToken === undefined || anilistToken === "undefined" || anilistToken === '' ? "Link your Anilist account" : "Anilist linked"}
 											/>
-											<Menu.Item 
+											<ThemeMenuItem 
 												onPress={async () => 
 												{
 													setOptionsVisible(false);
@@ -171,21 +182,15 @@ export default function AppLayout()
 													router.navigate('/users/login') // may not be ideal to refresh
 												}} title="Logout" leadingIcon={"logout"}
 											/>
-										</Menu>
-										: <ThemeButton icon={'login'} onPress={() => router.navigate("/users/login")}>Login</ThemeButton>
-								}
-							</>
-						)
-				}}
-			>
-			</Stack>
-			<Toast config={toastConfig}/>
-		</PaperProvider>
+										</ThemeMenu>
+									}
+								</>
+							)
+					}}
+				>
+				</Stack>
+				<Toast config={toastConfig}/>
+			</PaperProvider>
+		</VariableContextProvider>
 	)
 }
-
-const styles = StyleSheet.create({
-	anilistIcon: {
-		width: 24, height: 24, borderRadius: 4
-	}
-});

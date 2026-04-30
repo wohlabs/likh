@@ -17,7 +17,7 @@ export default function UsersLayout()
 	useEffect(() => 
 	{
 		console.log(segments)
-		if (isServerLoading && segments[0] != "app")
+		if (isServerLoading && segments[0] !== "app")
 		{
 			Toast.show({
 				type: 'loading',
@@ -43,12 +43,12 @@ export default function UsersLayout()
 		}
 	}, [token, segments, router]);
 	return (
-		<PaperProvider theme={theme}>
+		<PaperProvider>
 			<Stack
 				screenOptions={{
-					contentStyle: {backgroundColor: theme.colors.background},
-					headerStyle: {backgroundColor: theme.colors.surfaceVariant},
-					headerTintColor: theme.colors.onSurface,
+					contentStyle: {backgroundColor: theme['--color-background']},
+					headerStyle: {backgroundColor: theme['--color-surfaceVariant']},
+					headerTintColor: theme['--color-onSurface'],
 					headerShown: false
 				}}
 			>

@@ -1,17 +1,19 @@
 import { useCallback, useEffect, useState } from "react";
 import { FlatList, Image, Pressable, ScrollView, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
-import { IconButton, Menu, useTheme } from 'react-native-paper';
 import { INoteEntry } from "../types/INotes";
 import ThemeButton from "./ThemeButton";
 import ThemeText from "./ThemeText";
+import { ThemeMenu, ThemeMenuItem } from "./ThemeMenu";
 import { getImageBase64 } from "./util";
+import { Ionicons } from "@expo/vector-icons";
+import { usePersistentTheme } from "@/context/usePersistentTheme";
 
 export default function NoteViewer({mangaTitle, note, onDelete, onEdit, style}: { mangaTitle?: string, note: INoteEntry, style?: StyleProp<ViewStyle>, onDelete?: () => void , onEdit?: () => void})
 {
 	const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
 	const [optionsVisible, setOptionsVisible] = useState<boolean>(false);
 	const [images, setImages] = useState<string[]>(note.images);
-	const theme = useTheme();
+	const {theme} = usePersistentTheme()
 
 
 	const fetchImages = useCallback(async () => 
@@ -51,7 +53,7 @@ export default function NoteViewer({mangaTitle, note, onDelete, onEdit, style}: 
 						/>
 						:
 						<View style={styles.noImagesContainer}>
-							<ThemeText variant="headlineSmall" style={{color: theme.colors.onSurfaceDisabled}}>No images</ThemeText>
+							<ThemeText style={{color: theme['--color-onSurface']}}>No images</ThemeText>
 						</View>
 				}
 				<View style={{height: 100, flexDirection: "row"}}>
@@ -74,54 +76,58 @@ export default function NoteViewer({mangaTitle, note, onDelete, onEdit, style}: 
 				</View>
 			</View>
 			<View style={{ flexDirection: "column", flex: 3}}>
-				<ThemeText variant="bodyLarge">Manhwa/Manga: {mangaTitle || "Unknown"}</ThemeText>
+				<ThemeText>Manhwa/Manga: {mangaTitle || "Unknown"}</ThemeText>
 				<View style={{ flexDirection: "row"}}>
 					{
 						note.startChapter === -1 ?
-							<ThemeText variant="bodyLarge">Chapter: All</ThemeText>
+							<ThemeText>Chapter: All</ThemeText>
 							:
 							note.endChapter
 								?
-								<ThemeText variant="bodyLarge">Chapter: {note.startChapter?.toString() || ""} - {note.endChapter?.toString() || ""}</ThemeText>
+								<ThemeText>Chapter: {note.startChapter?.toString() || ""} - {note.endChapter?.toString() || ""}</ThemeText>
 								:
-								<ThemeText variant="bodyLarge">Chapter: {note.startChapter?.toString() || ""}</ThemeText>
+								<ThemeText>Chapter: {note.startChapter?.toString() || ""}</ThemeText>
 					}
 				</View>
-				<ThemeText variant="bodyLarge" style={[{fontWeight: "bold"}]}>Note:</ThemeText>
+				<ThemeText style={[{fontWeight: "bold"}]}>Note:</ThemeText>
 				<ScrollView>
-					<ThemeText variant="bodyLarge" selectable={true}>{note.text}</ThemeText>
+					<ThemeText selectable={true}>{note.text}</ThemeText>
 				</ScrollView>
 				<View style={styles.viewerButtonsContainer}>
-					<ThemeButton icon={'share'} style={styles.viewerButton}
+					<ThemeButton style={styles.viewerButton}
 						onPress={() => {}}
 					>
+						<Ionicons name="share-social" size={16} color={theme["--color-primary"]}/>
 						Share
 					</ThemeButton>
-					<ThemeButton icon={"pencil"}
+					<ThemeButton
 						style={styles.viewerButton}
 						onPress={onEdit}
 					>
+						<Ionicons name="pencil" size={16} color={theme["--color-primary"]}/>
 						Edit
 					</ThemeButton>
-					<ThemeButton icon='heart'
+					<ThemeButton
 						style={styles.viewerButton}
 						onPress={() => {}}
 					>
+						<Ionicons name="heart" size={16} color={theme["--color-primary"]}/>
 						Favorite
 					</ThemeButton>
-					<Menu
+					<ThemeMenu
 						visible={optionsVisible}
 						onDismiss={() => setOptionsVisible(false)}
 						anchor={
-							<IconButton icon='dots-horizontal' onPress={() => setOptionsVisible(true)}
+							<Ionicons name='ellipsis-horizontal'
+								onPress={() => setOptionsVisible(true)}
 							/>
 						}
 						anchorPosition="bottom"
 					>
-						<Menu.Item 
+						<ThemeMenuItem 
 							onPress={onDelete} title="delete" leadingIcon={"delete"}
 						/>
-					</Menu>
+					</ThemeMenu>
 				</View>
 			</View>
 		</View>

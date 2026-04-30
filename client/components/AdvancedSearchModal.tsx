@@ -5,7 +5,7 @@ import { performAdvancedSearch, SearchResult } from '@/services/search.service';
 import { getMangaTitle } from '@/types/IManga';
 import { BlurView } from "expo-blur";
 import { useRouter } from 'expo-router';
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import
 {
 	FlatList,
@@ -13,14 +13,14 @@ import
 	Pressable,
 	StyleProp,
 	StyleSheet,
-	TextInput,
 	useWindowDimensions,
 	View,
 	ViewStyle,
 } from 'react-native';
-import { Card, IconButton, useTheme } from 'react-native-paper';
 import ThemeButton from './ThemeButton';
 import { hexToRgba } from './util';
+import { usePersistentTheme } from '@/context/usePersistentTheme';
+import { Ionicons } from '@expo/vector-icons';
 
 interface AdvancedSearchModalProps {
 	visible: boolean;
@@ -31,7 +31,7 @@ interface AdvancedSearchModalProps {
 
 export default function AdvancedSearchModal({ visible, onDismiss, style, onMangaAdded }: AdvancedSearchModalProps) 
 {
-	const theme = useTheme();
+	const { theme } = usePersistentTheme();
 	const router = useRouter();
 	const { height } = useWindowDimensions();
 	const [searchQuery, setSearchQuery] = useState('');
@@ -43,7 +43,6 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 		lists: []
 	});
 	const [isLoading, setIsLoading] = useState(false);
-	const searchRef = useRef<TextInput>(null);
 
 	const handleSearch = useCallback(async () => 
 	{
@@ -64,21 +63,18 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 
 	const handleMangaPress = (mangaId: number) => 
 	{
-		console.log("press manga")
 		onDismiss();
 		router.navigate(`/app/manga/${mangaId}`);
 	};
 
 	const handleNotePress = (mangaId: number) => 
 	{
-		console.log("press note")
 		onDismiss();
 		router.navigate(`/app/manga/${mangaId}`);
 	};
 
 	const handleListPress = (listId: string) => 
 	{
-		console.log("press list")
 		onDismiss();
 		router.navigate(`/app/custom-lists/${listId}`);
 	};
@@ -93,77 +89,71 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 	};
 
 	const renderMangaResult = ({ item }: { item: any }) => (
-		<Card
-			style={{ marginHorizontal: 10, marginBottom: 8, backgroundColor: theme.colors.surface }}
+		<Pressable
+			className='p-4 mx-2 mb-2 bg-surface flex-1 justify-center flex-row items-center rounded-xl'
 			onPress={() => handleMangaPress(item.id)}
 		>
-			<Card.Content style={[styles.resultContent, {flexDirection: 'row', alignItems: 'center'}]}>
-				<Image
-					source={{ uri: item.coverImage?.large }}
-					style={styles.mangaCover}
-					resizeMode="contain"
-				/>
-				<View style={{flex: 1}}>
-					<ThemeText variant="titleSmall" numberOfLines={2}>
-						{getMangaTitle(item)}
-					</ThemeText>
-				</View>
-				<IconButton
-					icon={"plus"}
-					mode="contained"
-					disabled={item.inLibrary}
-					onPress={async (e) => 
-					{
-						setIsAdvancedSearching(true)
-						await addMangaToLibrary(item.id);
-						onMangaAdded();
-					}}
-				/>
-			</Card.Content>
-		</Card>
+			<Image
+				source={{ uri: item.coverImage?.large }}
+				style={styles.mangaCover}
+				resizeMode="contain"
+			/>
+			<View style={{flex: 1}}>
+				<ThemeText numberOfLines={2}>
+					{getMangaTitle(item)}
+				</ThemeText>
+			</View>
+			<Ionicons
+				size={20}
+				name={"add"}
+				className={`icon-button-contained ${item.inLibrary ? "bg-disabledBackground" : "bg-surfaceVariant"}`}
+				color={item.inLibrary ? theme['--color-onDisabledBackground'] : theme['--color-primary']}
+				disabled={item.inLibrary}
+				onPress={async (e) => 
+				{
+					setIsAdvancedSearching(true)
+					await addMangaToLibrary(item.id);
+					onMangaAdded();
+				}}
+			/>
+		</Pressable>
 	);
 
 	const renderNoteResult = ({ item }: { item: any }) => (
-		<Card
-			style={{ marginHorizontal: 10, marginBottom: 8, backgroundColor: theme.colors.surface }}
+		<Pressable
+			className='p-4 mx-2 mb-2 bg-surface flex-1 rounded-xl'
 			onPress={() => handleNotePress(item.manga._id)}
 		>
-			<Card.Content style={styles.resultContent}>
-				<ThemeText variant="titleSmall" style={styles.noteTitle}>
-					{getMangaTitle(item.manga)} - Chapter {item.startChapter === -1 ? "All" : `${item.startChapter}${item.endChapter ? ` - ${item.endChapter}` : ''}`}
-				</ThemeText>
-				<ThemeText variant="bodySmall" numberOfLines={2} style={styles.noteText}>
-					{item.text}
-				</ThemeText>
-			</Card.Content>
-		</Card>
+			<ThemeText className='mb-1'>
+				{getMangaTitle(item.manga)} - Chapter {item.startChapter === -1 ? "All" : `${item.startChapter}${item.endChapter ? ` - ${item.endChapter}` : ''}`}
+			</ThemeText>
+			<ThemeText numberOfLines={2} style={styles.noteText}>
+				{item.text}
+			</ThemeText>
+		</Pressable>
 	);
 
 	const renderListResult = ({ item }: { item: any }) => (
-		<Card
-			style={{ marginHorizontal: 10, marginBottom: 8, backgroundColor: theme.colors.surface }}
+		<Pressable
+			className='p-4 mx-2 mb-2 bg-surface flex-1 rounded-xl'
 			onPress={() => handleListPress(item.id)}
 		>
-			<Card.Content style={styles.resultContent}>
-				<View style={{flexDirection: 'row', alignContent: 'center'}}>
-					<ThemeText variant="titleSmall">
-						{item.name}
-					</ThemeText>
-					<ThemeText variant="titleSmall" style={{opacity: 0.6}}>
-						&nbsp;• {item.manga.length} manga
-					</ThemeText>
-				</View>
-			</Card.Content>
-			<Card.Content style={styles.listMeta}>
-				<ThemeText variant="titleSmall" numberOfLines={1}>
-					{
-						item.manga?.map((mangaItem: MangaProps, index: number) =>(
-							getMangaTitle(mangaItem) + (index === item.manga.length - 1 ? "" : " • ")
-						))
-					}
+			<View className='flex-row mb-1'>
+				<ThemeText>
+					{item.name}
 				</ThemeText>
-			</Card.Content>
-		</Card>
+				<ThemeText className='opacity-60'>
+					&nbsp;• {item.manga.length} manga
+				</ThemeText>
+			</View>
+			<ThemeText className='opacity-60'>
+				{
+					item.manga?.map((mangaItem: MangaProps, index: number) =>(
+						getMangaTitle(mangaItem) + (index === item.manga.length - 1 ? "" : " • ")
+					))
+				}
+			</ThemeText>
+		</Pressable>
 	);
 
 	return (
@@ -186,16 +176,16 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 					tint='dark'
 					intensity={10}
 				>
-					<View style={{ backgroundColor: `${hexToRgba(theme.colors.backdrop, 0.3)}`, height: '100%', width: '100%' }}/>
+					<View style={{ backgroundColor: `${hexToRgba(theme['--color-elevation-level1'], 0.3)}`, height: '100%', width: '100%' }}/>
 				</BlurView>
 			}
-			<Pressable style={[styles.searchBarFloating]} onPress={(e) => e.stopPropagation()} pointerEvents='none'>
+			<Pressable style={[styles.searchBarFloating]} onPress={(e) => e.stopPropagation()} pointerEvents='auto'>
 				<View
+					className='rounded-t-2xl w-full -bottom-1'
 					style={[
-						styles.container,
-						{ backgroundColor: theme.colors.background, maxHeight: 0.7 * height, marginHorizontal: 10, display: isAdvancedSearching ? 'flex' : 'none' },
+						// styles.container,
+						{ backgroundColor: theme['--color-background'], maxHeight: 0.7 * height, marginHorizontal: 10, display: isAdvancedSearching ? 'flex' : 'none' },
 					]}
-					pointerEvents={isAdvancedSearching ? 'auto' : 'none'}
 				>
 
 					{searchQuery.trim() === '' ? (
@@ -204,18 +194,19 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 						:
 						isSearchDirty || isSearchDirty || isLoading ?
 							<View style={styles.emptyContainer}>
-								<ThemeText variant="bodyMedium" style={styles.emptyText}>
+								<ThemeText style={styles.emptyText}>
 							Search for: <ThemeText style={{fontWeight: "bold"}}>{searchQuery}</ThemeText>
 								</ThemeText>
 							</View>
 							: searchResults.manga.length === 0 && searchResults.notes.length === 0 && searchResults.lists.length === 0 ? (
 								<View style={styles.emptyContainer}>
-									<ThemeText variant="bodyMedium" style={styles.emptyText}>
+									<ThemeText style={styles.emptyText}>
 								No results found
 									</ThemeText>
 								</View>
 							) : (
 								<FlatList
+									className='pb-1'
 									data={[
 										...(searchResults.manga.length > 0 ? [{ type: 'manga-header', label: 'Manga' } as any] : []),
 										...searchResults.manga.map((m, idx) => ({ type: 'manga', data: m, key: `manga-${idx}` } as any)),
@@ -234,7 +225,7 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 										{
 											return (
 												<View style={[{cursor: 'auto'}]}>
-													<ThemeText variant="labelLarge" style={styles.categoryLabel}>
+													<ThemeText style={styles.categoryLabel}>
 														{item.label}
 													</ThemeText>
 													<View style={styles.categoryDivider} />
@@ -255,7 +246,7 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 													onPress={() => handleShowMore(categoryMap[item.type as keyof typeof categoryMap])}
 													style={styles.showMoreButton}
 												>
-											Show more
+													Show more
 												</ThemeButton>
 											);
 										}
@@ -279,9 +270,9 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 							)}
 				</View>
 				<ThemeSearchbar
-					ref={searchRef}
 					key="library_search_bar"
-					placeholder="Search manga, notes, lists..."
+					placeholder="search manga, notes, lists..."
+					className='flex-1 w-full shadow-md'
 					onChangeText={(text) => 
 					{
 						setSearchQuery(text)

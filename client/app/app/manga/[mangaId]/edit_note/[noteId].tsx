@@ -2,10 +2,12 @@ import ThemeButton from "@/components/ThemeButton";
 import ThemeText from "@/components/ThemeText";
 import { getImageBase64 } from "@/components/util";
 import { AuthContext } from "@/context/AuthContext";
+import { usePersistentTheme } from "@/context/usePersistentTheme";
 import { API_URL } from "@/services/AxiosInstance";
 import { getMangaDetails } from "@/services/manga.service";
 import { getNote } from "@/services/notes.service";
 import { getMangaTitle } from "@/types/IManga";
+import { Ionicons } from "@expo/vector-icons";
 import { File } from 'expo-file-system';
 import * as ImagePicker from "expo-image-picker";
 import { router, Stack, useLocalSearchParams } from "expo-router";
@@ -22,8 +24,7 @@ import
 	StyleSheet,
 	TouchableWithoutFeedback,
 	View
-} from "react-native";
-import { IconButton, TextInput, useTheme } from "react-native-paper";
+	, TextInput } from "react-native";
 import Toast from "react-native-toast-message";
 
 const KeyboardDismissWrapper = ({ children }: any) => 
@@ -57,7 +58,6 @@ export default function EditNoteScreen()
 	const [deletedImages, setDeletedImages] = useState<string[]>([]);
 	const [loading, setLoading] = useState<boolean>(true);
 	const token = useContext(AuthContext).token
-	const theme = useTheme()
 	
 	useEffect(() => 
 	{
@@ -231,7 +231,10 @@ export default function EditNoteScreen()
 			<View style={styles.mainLayout}>
 				<Stack.Screen options={{ title: "Edit note" }} />
 				<View style={styles.imageViewerContainer}>
-					<View style={[images.length > 0 ? styles.imageViewer : styles.noImageContainer, {borderColor: theme.colors.outlineVariant}]}>
+					<View
+						className="border-outlineVariant"
+						style={[images.length > 0 ? styles.imageViewer : styles.noImageContainer]}
+					>
 						{
 							images.length > 0 ? 
 								<>
@@ -243,10 +246,11 @@ export default function EditNoteScreen()
 											uri: images[currentImageIndex].uri || "https://static.thenounproject.com/png/187803-200.png"
 										}}
 										resizeMode="contain"
-										style={{flex: 1}}
+										className="flex-1"
 									/>
-									<IconButton
-										icon={"trash-can-outline"}
+									<Ionicons
+										name={"trash-outline"}
+										className="icon-button-contained absolute right-0 z-10"
 										size={20}
 										onPress={() => 
 										{
@@ -258,12 +262,12 @@ export default function EditNoteScreen()
 												setDeletedImages([...deletedImages, images[currentImageIndex].assetId]);
 											}
 										}}
-										style={{position: 'absolute', right: 0, zIndex: 10}}
-										mode="contained"
 									/>
 								</>
 								:
-								<ThemeText variant="headlineSmall" style={{color: theme.colors.onSurfaceDisabled}}>Add an image using the + icon</ThemeText>
+								<ThemeText
+									className="text-outline"
+								>Add an image using the + icon</ThemeText>
 						}
 						{
 							Platform.OS === 'web' && <div {...dropZoneRootProps()} style={{position: "absolute", width: "100%", height: "100%" }}/>
@@ -278,7 +282,8 @@ export default function EditNoteScreen()
 									<Image
 										source={{ uri: item.uri }}
 										resizeMode="cover"
-										style={[styles.thumbnail, {borderColor: theme.colors.outlineVariant}]}
+										className="border-outlineVariant"
+										style={[styles.thumbnail]}
 									/>
 								</Pressable>
 							)}
@@ -286,67 +291,61 @@ export default function EditNoteScreen()
 							style={styles.thumbnailList}
 							keyExtractor={(_, index) => index.toString()}
 						/>
-						<IconButton icon={"plus"} size={30} onPress={pickImage} style={{justifyContent: "center"}} mode="contained"/>
+						<Ionicons name={"add"} size={30}
+							className="icon-button-contained"
+							onPress={pickImage} style={{justifyContent: "center"}}
+						/>
 					</View>
 				</View>
 				<View style={{ flexDirection: "column", flex: 3}}>
 					<TextInput
 						numberOfLines={1}
-						label={"manhwa/manga name"}
-						editable
-						keyboardType="number-pad"
+						editable={false}
 						value={mangaName}
-						placeholder={"start"}
-						placeholderTextColor={"gray"}
-						mode="outlined"
-						outlineStyle={loading && {borderColor: theme.colors.onSurfaceDisabled}}
-						disabled={loading}
-						readOnly
+						placeholder="manhwa/manga name"
+						className="rounded-lg px-3 py-2 text-base border-2 border-outlineVariant text-onBackground"
+						style={{
+							opacity: loading ? 0.5 : 1,
+						}}
 					/>
 					<View style={{ flexDirection: "row", alignItems: "center"}}>
 						<TextInput
 							numberOfLines={1}
-							label={"start chapter"}
-							editable
+							editable={!loading}
 							keyboardType="number-pad"
 							value={startChapter}
 							onChangeText={(text) => setStartChapter(text)}
-							placeholder={"start"}
-							placeholderTextColor={"gray"}
-							style={styles.formInput}
-							outlineStyle={loading && {borderColor: theme.colors.onSurfaceDisabled}}
-							disabled={loading}
-							mode="outlined"
+							placeholder="start chapter"
+							className="flex-1 max-w-48 rounded-lg px-3 py-2 text-base border-2 border-outlineVariant text-onBackground mt-2 mb-2"
+							style={{
+								opacity: loading ? 0.5 : 1,
+							}}
 						/>
-						<ThemeText variant="labelLarge">&nbsp;-&nbsp;</ThemeText>
+						<ThemeText>&nbsp;-&nbsp;</ThemeText>
 						<TextInput
 							numberOfLines={1}
-							label={"end chapter (optional)"}
-							editable
+							editable={!loading}
 							keyboardType="number-pad"
 							value={endChapter}
 							onChangeText={(text) => setEndChapter(text)}
-							placeholder={"end (optional)"}
-							placeholderTextColor={"gray"}
-							style={styles.formInput}
-							outlineStyle={loading && {borderColor: theme.colors.onSurfaceDisabled}}
-							disabled={loading}
-							mode="outlined"
+							placeholder="end chapter (optional)"
+							className="flex-1 max-w-48 rounded-lg px-3 py-2 text-base border-2 border-outlineVariant text-onBackground mt-2 mb-2"
+							style={{
+								opacity: loading ? 0.5 : 1,
+							}}
 						/>
 					</View>
 					<TextInput
-						editable
+						editable={!loading}
 						multiline
 						numberOfLines={4}
-						label={"note"}
 						placeholder="your note here..."
 						value={text}
 						onChangeText={onChangeText}
-						mode="outlined"
-						style={[styles.noteInput]}
-						outlineStyle={loading && {borderColor: theme.colors.onSurfaceDisabled}}
-						disabled={loading}
-						activeOutlineColor={theme.colors.primary}
+						className="rounded-lg p-3 text-base min-h-24 border-outlineVariant text-onBackground border-2 flex-1 mb-2"
+						style={{
+							opacity: loading ? 0.5 : 1,
+						}}
 					/>
 					<View style={styles.buttonsContainer}>
 						<ThemeButton
@@ -398,9 +397,6 @@ const styles = StyleSheet.create({
 	formInput: {
 		flex: 1,
 		maxWidth: 200
-	},
-	noteInput: {
-		flex: 1
 	},
 	buttonsContainer: { flexDirection: "row", justifyContent: "space-evenly" },
 	button: {

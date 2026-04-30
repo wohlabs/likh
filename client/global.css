@@ -1,0 +1,113 @@
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css";
+ 
+@import "nativewind/theme";
+
+@theme {
+  --color-primary: '#5B7AFF';
+  --color-primaryContainer: '#E9EFFE';
+  --color-onPrimary: '#FFFFFF';
+  --color-onPrimaryContainer: '#2E3B9D';
+  --color-secondary: '#D54E7D';
+  --color-secondaryContainer: '#F8DDE8';
+  --color-onSecondary: '#FFFFFF';
+  --color-onSecondaryContainer: '#7D1B40';
+  --color-tertiary: '#7C5BA6';
+  --color-tertiaryContainer: '#F0E8FF';
+  --color-onTertiary: '#FFFFFF';
+  --color-onTertiaryContainer: '#42275E';
+  --color-statusError: '#C41E3A';
+  --color-onStatusError: '#FFFFFF';
+  --color-statusErrorContainer: '#F7D8DC';
+  --color-onStatusErrorContainer: '#630A0F';
+  --color-background: '#FAFBFC';
+  --color-onBackground: '#1A202C';
+  --color-surface: '#FFFFFF';
+  --color-onSurface: '#1A202C';
+  --color-surfaceVariant: '#F1F3FB';
+  --color-onSurfaceVariant: '#5A5F73';
+  --color-outline: '#C4C7D0';
+  --color-outlineVariant: '#E2E4EA';
+  --color-elevation-level0: 'transparent';
+  --color-elevation-level1: '#F7F9FE';
+  --color-elevation-level2: '#EFF3FD';
+  --color-elevation-level3: '#E8ECFC';
+  --color-elevation-level4: '#E5EAFC';
+  --color-elevation-level5: '#E1E7FA';
+  --color-inverseOnSurface: '#F2F4F9';
+  --color-inverseSurface: '#1A202C';
+  --color-disabledBackground: '#e3e3e4';
+  --color-onDisabledBackground: '#989799';
+}
+
+.icon-button-contained {
+  padding: 0.5rem;
+  margin: 0.5rem;
+  background-color: var(--color-surfaceVariant);
+  color: var(--color-onSurfaceVariant);
+  border-radius: 100%;
+}
+
+.icon-button-contained:hover {
+  filter: brightness(1.2); /* Increases brightness by 20% */
+  background-color: color-mix(in srgb, var(--color-surfaceVariant), white 10%);
+}
+
+.icon-button-contained:active {
+  filter: brightness(1.4); /* Even lighter when pressed */
+  background-color: color-mix(in srgb, var(--color-surfaceVariant), white 20%);
+}
+
+.icon-button {
+  padding: 0.5rem;
+  margin: 0.2rem;
+  background-color: var(--color-elevation-level0);
+  color: var(--color-onSurfaceVariant);
+  border-radius: 100%;
+}
+
+.icon-button:hover
+{
+  filter: brightness(1.2); /* Increases brightness by 20% */
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.icon-button:active {
+  filter: brightness(1.4); /* Even lighter when pressed */
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.theme-button.contained {
+  background-color: var(--color-primary);
+}
+
+.theme-button.contained-tonal {
+  background-color: var(--color-primaryContainer);
+}
+
+.theme-button.disabled {
+  background-color: var(--color-disabledBackground);
+  color: var(--color-onDisabledBackground);
+  pointer-events: none;
+}
+.theme-button.disabled:hover {
+  filter: inherit;
+}
+
+.theme-button.text:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.theme-button.text:active {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.theme-button:hover
+{
+  filter: brightness(1.2); /* Increases brightness by 20% */
+}
+
+.theme-button:active {
+  filter: brightness(1.4); /* Even lighter when pressed */
+}
