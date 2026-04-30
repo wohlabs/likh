@@ -13,7 +13,7 @@ import { Stack, useRouter, useSegments } from "expo-router";
 import * as WebBrowser from 'expo-web-browser';
 import { VariableContextProvider } from "nativewind";
 import { useContext, useEffect, useState } from "react";
-import { Image, Linking, Platform, Text } from "react-native";
+import { Image, Linking, Platform, Text, View } from "react-native";
 import { PaperProvider } from "react-native-paper";
 import Toast from "react-native-toast-message";
 
@@ -116,12 +116,12 @@ export default function AppLayout()
 							backgroundColor: theme["--color-surface"],
 						},
 						headerTintColor: theme["--color-onSurface"],
-						headerLeft: () => <ThemeText className="text-primary text-2xl font-extrabold tracking-wider" style={{ marginLeft: 10 }} onPress={onTitleClicked}>likh</ThemeText>,
+						headerLeft: () => <ThemeText className="text-primary text-2xl font-extrabold tracking-wider ml-2" onPress={onTitleClicked}>likh</ThemeText>,
 						headerTitleAlign: "center",
 						headerTitle: () => null,
 						headerRight: () =>
 							(
-								<>
+								<View className="mr-2 flex-row items-center">
 									{
 										token &&
 										<Ionicons
@@ -186,7 +186,7 @@ export default function AppLayout()
 											/>
 										</ThemeMenu>
 									}
-								</>
+								</View>
 							)
 					}}
 				>
