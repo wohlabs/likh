@@ -45,7 +45,7 @@ export default function ThemeSearchbar({
 
 	return (
 		<View
-			className={`flex-row items-center gap-2 px-2 py-2 rounded-lg bg-surfaceVariant pointer-events-auto ${className}`}
+			className={`flex-row items-center gap-2 px-3 py-3 rounded-lg bg-surfaceVariant pointer-events-auto ${className}`}
 		>
 			<Ionicons
 				name="search"
@@ -71,6 +71,7 @@ export default function ThemeSearchbar({
 					name="close-circle"
 					size={20}
 					className='text-onBackground z-30 icon-button'
+					style={{margin: 0, padding: 0}}
 					onPress={handleClearPress}
 					testID={`${testID}-clear-icon`}
 					accessibilityRole="button"

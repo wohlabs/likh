@@ -13,7 +13,7 @@ import { Stack, useRouter, useSegments } from "expo-router";
 import * as WebBrowser from 'expo-web-browser';
 import { VariableContextProvider } from "nativewind";
 import { useContext, useEffect, useState } from "react";
-import { Image, Linking, Platform } from "react-native";
+import { Image, Linking, Platform, Text } from "react-native";
 import { PaperProvider } from "react-native-paper";
 import Toast from "react-native-toast-message";
 
@@ -116,7 +116,7 @@ export default function AppLayout()
 							backgroundColor: theme["--color-surface"],
 						},
 						headerTintColor: theme["--color-onSurface"],
-						headerLeft: () => <ThemeText className="text-onBackground text-2xl font-extrabold tracking-wider" style={{ marginLeft: 10 }} onPress={onTitleClicked}>likh</ThemeText>,
+						headerLeft: () => <ThemeText className="text-primary text-2xl font-extrabold tracking-wider" style={{ marginLeft: 10 }} onPress={onTitleClicked}>likh</ThemeText>,
 						headerTitleAlign: "center",
 						headerTitle: () => null,
 						headerRight: () =>
@@ -150,9 +150,11 @@ export default function AppLayout()
 													mode="text"
 												>
 													<Ionicons name="person"
-														color={theme['--color-onBackground']} size={16}
+														color={theme['--color-onSurfaceVariant']} size={16}
 													/>
-													{username}
+													<Text
+														className="text-onSurfaceVariant"
+													>{username}</Text>
 												</ThemeButton>
 											}
 										>

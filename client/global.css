@@ -50,13 +50,11 @@
 }
 
 .icon-button-contained:hover {
-  filter: brightness(1.2); /* Increases brightness by 20% */
-  background-color: color-mix(in srgb, var(--color-surfaceVariant), white 10%);
+  background-color: color-mix(in srgb, var(--color-surfaceVariant), var(--color-elevation-level4));
 }
 
 .icon-button-contained:active {
-  filter: brightness(1.4); /* Even lighter when pressed */
-  background-color: color-mix(in srgb, var(--color-surfaceVariant), white 20%);
+  background-color: color-mix(in srgb, var(--color-surfaceVariant), var(--color-elevation-level4));
 }
 
 .icon-button {
@@ -69,13 +67,11 @@
 
 .icon-button:hover
 {
-  filter: brightness(1.2); /* Increases brightness by 20% */
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: var(--color-elevation-level2);
 }
 
 .icon-button:active {
-  filter: brightness(1.4); /* Even lighter when pressed */
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: var(--color-elevation-level3);
 }
 
 .theme-button.contained {
@@ -96,18 +92,9 @@
 }
 
 .theme-button.text:hover {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: var(--color-elevation-level2);
 }
 
 .theme-button.text:active {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.theme-button:hover
-{
-  filter: brightness(1.2); /* Increases brightness by 20% */
-}
-
-.theme-button:active {
-  filter: brightness(1.4); /* Even lighter when pressed */
+  background-color: var(--color-elevation-level3);
 }
