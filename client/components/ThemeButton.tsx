@@ -15,10 +15,11 @@ export default function ThemeButton({ className, children, mode = 'text', disabl
 		switch (mode) 
 		{
 		case 'contained':
-			return `px-4 py-2 ${baseClasses} ${disabled ? 'bg-surfaceVariant' : 'bg-primary'} ${className}`;
+			return `px-4 py-2 ${baseClasses} ${disabled && "disabled"} contained ${className}`;
 		case 'contained-tonal':
-			return `px-4 py-2 ${baseClasses} ${disabled ? 'bg-surfaceVariant' : 'bg-primaryContainer'} ${className}`;
+			return `px-4 py-2 ${baseClasses} ${disabled && "disabled"} contained-tonal ${className}`;
 		case 'text':
+			return `px-2 py-2 ${baseClasses} text ${className}`;
 		default:
 			return `px-2 py-2 ${baseClasses} ${className}`;
 		}

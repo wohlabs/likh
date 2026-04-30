@@ -51,10 +51,12 @@
 
 .icon-button-contained:hover {
   filter: brightness(1.2); /* Increases brightness by 20% */
+  background-color: color-mix(in srgb, var(--color-surfaceVariant), white 10%);
 }
 
 .icon-button-contained:active {
   filter: brightness(1.4); /* Even lighter when pressed */
+  background-color: color-mix(in srgb, var(--color-surfaceVariant), white 20%);
 }
 
 .icon-button {
@@ -68,10 +70,37 @@
 .icon-button:hover
 {
   filter: brightness(1.2); /* Increases brightness by 20% */
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
 .icon-button:active {
   filter: brightness(1.4); /* Even lighter when pressed */
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.theme-button.contained {
+  background-color: var(--color-primary);
+}
+
+.theme-button.contained-tonal {
+  background-color: var(--color-primaryContainer);
+}
+
+.theme-button.disabled {
+  background-color: var(--color-disabledBackground);
+  color: var(--color-onDisabledBackground);
+  pointer-events: none;
+}
+.theme-button.disabled:hover {
+  filter: inherit;
+}
+
+.theme-button.text:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.theme-button.text:active {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .theme-button:hover
