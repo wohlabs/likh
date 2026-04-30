@@ -48,9 +48,18 @@ export function ThemeMenuItem({
 					size={iconProps.size} 
 				/>
 			);
-		} else if (typeof leadingIcon === "function") {
+		}
+		else if (typeof leadingIcon === "function")
+		{
 			content = leadingIcon(iconProps.size);
-		} else {
+		}
+		else if (leadingIcon == null || leadingIcon == undefined)
+		{
+			console.log(leadingIcon)
+			return null
+		}
+		else
+		{
 			content = leadingIcon;
 		}
 
@@ -70,7 +79,7 @@ export function ThemeMenuItem({
 		<Menu.Item
 			{...props}
 			title={title}
-			leadingIcon={renderIcon}
+			leadingIcon={leadingIcon == undefined || leadingIcon == null ? leadingIcon : renderIcon }
 			titleStyle={{
 				color: theme["--color-onSurfaceVariant"],
 				fontSize: 14,
