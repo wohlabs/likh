@@ -5,15 +5,14 @@ import { ICustomList, ICustomLists, MangaItem } from "@/types/ICustomList";
 import { getMangaTitle, IMangaDetails } from "@/types/IManga";
 import { useCallback, useEffect, useState } from "react";
 import { GestureResponderEvent, Image, StyleProp, StyleSheet, View, ViewStyle, ActivityIndicator } from "react-native";
-import { Modal, Portal } from "react-native-paper";
+import { Menu, Modal, Portal } from "react-native-paper";
 import Toast from "react-native-toast-message";
 import NewCustomListView from "./NewCustomListView";
 import ThemeButton from "./ThemeButton";
-import { ThemeDropdown } from "@/components/ThemeDropdown";
-import { ThemeMenu } from "@/components/ThemeMenu";
+import { ThemeDropdown } from "./ThemeDropdown";
 import ThemeText from "./ThemeText";
 import { usePersistentTheme } from '@/context/usePersistentTheme';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
 
 export default function MangaOverviewHeader({ style, manga } : { style?: StyleProp<ViewStyle>, manga?: IMangaDetails })
@@ -227,7 +226,7 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 													style={{minWidth: 100, backgroundColor: theme['--color-surfaceVariant'], borderColor: theme['--color-outline']}}
 												/>
 											</View>
-											<ThemeMenu
+											<Menu
 												visible={optionsVisible}
 												onDismiss={() =>
 												{
@@ -244,26 +243,22 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 													/>
 												}
 											>
-												<ThemeMenu.Item 
+												<Menu.Item 
 													title={'add to...'} leadingIcon={undefined}
 												/>
 												{
 													lists.map((list, number) => (
-														<ThemeMenu.Item 
+														<Menu.Item 
 															key={list._id ? `custom_list_${list._id}` : `custom_list_undefined_${number}`}
 															onPress={() => toggleList(list._id)} title={list.name}
-															leadingIcon={
-																<MaterialCommunityIcons name={list.isInList ? (list.isFavorite ? "heart" : "bookmark") : (list.isFavorite ? "heart-outline" : "bookmark-outline")} size={24} />
-															}
+															leadingIcon={list.isInList ? (list.isFavorite ? "heart" : "bookmark") : (list.isFavorite ? "heart-outline" : "bookmark-outline")}
 														/>
 													))
 												}
-												<ThemeMenu.Item 
-													onPress={() => {setOptionsVisible(false);setCreatingNewList(true);}} title={'new list'} leadingIcon={
-														<MaterialCommunityIcons name='plus' size={24} />
-													}
+												<Menu.Item 
+													onPress={() => {setOptionsVisible(false);setCreatingNewList(true);}} title={'new list'} leadingIcon={'plus'}
 												/>
-											</ThemeMenu>
+											</Menu>
 										</>
 								}					
 							</View>
