@@ -1,4 +1,5 @@
 import ThemeText from "@/components/ThemeText";
+import { ThemeMenu, ThemeMenuItem } from "@/components/ThemeMenu";
 import { themes, usePersistentTheme } from "@/context/usePersistentTheme";
 import { addToCustomList, favoriteManga } from "@/services/custom_lists";
 import { MangaProps } from "@/services/manga.service";
@@ -9,7 +10,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { router } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import { Image, Pressable, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
-import { Menu } from "react-native-paper";
 
 export default function MangaCard({item, style, allCustomLists, onCreateList } : {item: MangaProps, style?: StyleProp<ViewStyle>, onCreateList?: (mangaIdToAdd?: number) => {}, allCustomLists: ICustomLists})
 {
@@ -92,7 +92,7 @@ export default function MangaCard({item, style, allCustomLists, onCreateList } :
 						</View>
 					</View>
 					<View style={{position: "absolute", top: 0, width: "100%", flexDirection: "row-reverse"}}>
-						<Menu
+						<ThemeMenu
 							visible={optionsVisible}
 							onDismiss={() =>
 							{
@@ -106,21 +106,21 @@ export default function MangaCard({item, style, allCustomLists, onCreateList } :
 								/>
 							}
 						>
-							<Menu.Item 
+							<ThemeMenuItem 
 								title={'add to...'} leadingIcon={undefined}
 							/>
 							{
 								mangaCustomLists.map((list, number) => (
-									<Menu.Item 
+									<ThemeMenuItem 
 										key={list._id ? `custom_list_${list._id}` : `custom_list_undefined_${number}`}
 										onPress={() => toggleList(list._id)} title={list.name} leadingIcon={list.isInList ? "bookmark" : "bookmark-outline"}
 									/>
 								))
 							}
-							<Menu.Item 
+							<ThemeMenuItem 
 								onPress={() => {setOptionsVisible(false); onCreateList && onCreateList(Number(item.id) ?? undefined);}} title={'new list'} leadingIcon={'plus'}
 							/>
-						</Menu>
+						</ThemeMenu>
 						<Ionicons size={15} name={isFavorite ? "heart" : "heart-outline"}
 							className="icon-button-contained"
 							onPress={() => toggleFavorite()}

@@ -2,6 +2,7 @@ import { LoadingScreen } from "@/components/LoadingScreen";
 import ThemeButton from "@/components/ThemeButton";
 import ThemeText from "@/components/ThemeText";
 import { toastConfig } from "@/components/ThemeToast";
+import { ThemeMenu, ThemeMenuItem } from "@/components/ThemeMenu";
 import { AuthContext } from "@/context/AuthContext";
 import { ServerContext } from "@/context/ServerContext";
 import { usePersistentTheme } from "@/context/usePersistentTheme";
@@ -13,7 +14,7 @@ import * as WebBrowser from 'expo-web-browser';
 import { VariableContextProvider } from "nativewind";
 import { useContext, useEffect, useState } from "react";
 import { Image, Linking, Platform } from "react-native";
-import { Menu, PaperProvider } from "react-native-paper";
+import { PaperProvider } from "react-native-paper";
 import Toast from "react-native-toast-message";
 
 export default function AppLayout()
@@ -139,7 +140,7 @@ export default function AppLayout()
 										className="text-primary auto"
 									/>
 									{
-										<Menu
+										<ThemeMenu
 											visible={optionsVisible}
 											onDismiss={() => setOptionsVisible(false)}
 											anchorPosition="bottom"
@@ -153,7 +154,7 @@ export default function AppLayout()
 												</ThemeButton>
 											}
 										>
-											<Menu.Item 
+											<ThemeMenuItem 
 												onPress={() => 
 												{
 													if (anilistToken == null || anilistToken === undefined || anilistToken === "undefined" || anilistToken === '')
@@ -171,7 +172,7 @@ export default function AppLayout()
 												)}
 												title={anilistToken == null || anilistToken === undefined || anilistToken === "undefined" || anilistToken === '' ? "Link your Anilist account" : "Anilist linked"}
 											/>
-											<Menu.Item 
+											<ThemeMenuItem 
 												onPress={async () => 
 												{
 													setOptionsVisible(false);
@@ -179,7 +180,7 @@ export default function AppLayout()
 													router.navigate('/users/login') // may not be ideal to refresh
 												}} title="Logout" leadingIcon={"logout"}
 											/>
-										</Menu>
+										</ThemeMenu>
 									}
 								</>
 							)

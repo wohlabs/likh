@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { FlatList, Image, Pressable, ScrollView, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
-import { Menu } from 'react-native-paper';
 import { INoteEntry } from "../types/INotes";
 import ThemeButton from "./ThemeButton";
 import ThemeText from "./ThemeText";
+import { ThemeMenu, ThemeMenuItem } from "./ThemeMenu";
 import { getImageBase64 } from "./util";
 import { Ionicons } from "@expo/vector-icons";
 import { usePersistentTheme } from "@/context/usePersistentTheme";
@@ -114,7 +114,7 @@ export default function NoteViewer({mangaTitle, note, onDelete, onEdit, style}: 
 						<Ionicons name="heart" size={16} color={theme["--color-onPrimary"]}/>
 						Favorite
 					</ThemeButton>
-					<Menu
+					<ThemeMenu
 						visible={optionsVisible}
 						onDismiss={() => setOptionsVisible(false)}
 						anchor={
@@ -124,10 +124,10 @@ export default function NoteViewer({mangaTitle, note, onDelete, onEdit, style}: 
 						}
 						anchorPosition="bottom"
 					>
-						<Menu.Item 
+						<ThemeMenuItem 
 							onPress={onDelete} title="delete" leadingIcon={"delete"}
 						/>
-					</Menu>
+					</ThemeMenu>
 				</View>
 			</View>
 		</View>

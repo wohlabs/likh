@@ -1,11 +1,12 @@
 import ReadMore from '@/components/ReadMore';
+import { ThemeMenu, ThemeMenuItem } from "@/components/ThemeMenu";
 import { addToCustomList, getCustomLists } from "@/services/custom_lists";
 import { getMangaStatus, updateMangaStatus } from "@/services/media_entry.service";
 import { ICustomList, ICustomLists, MangaItem } from "@/types/ICustomList";
 import { getMangaTitle, IMangaDetails } from "@/types/IManga";
 import { useCallback, useEffect, useState } from "react";
 import { GestureResponderEvent, Image, StyleProp, StyleSheet, View, ViewStyle, ActivityIndicator } from "react-native";
-import { Menu, Modal, Portal } from "react-native-paper";
+import { Modal, Portal } from "react-native-paper";
 import Toast from "react-native-toast-message";
 import NewCustomListView from "./NewCustomListView";
 import ThemeButton from "./ThemeButton";
@@ -226,7 +227,7 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 													style={{minWidth: 100, backgroundColor: theme['--color-surfaceVariant'], borderColor: theme['--color-outline']}}
 												/>
 											</View>
-											<Menu
+											<ThemeMenu
 												visible={optionsVisible}
 												onDismiss={() =>
 												{
@@ -243,22 +244,22 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 													/>
 												}
 											>
-												<Menu.Item 
+												<ThemeMenuItem 
 													title={'add to...'} leadingIcon={undefined}
 												/>
 												{
 													lists.map((list, number) => (
-														<Menu.Item 
+														<ThemeMenuItem 
 															key={list._id ? `custom_list_${list._id}` : `custom_list_undefined_${number}`}
 															onPress={() => toggleList(list._id)} title={list.name}
 															leadingIcon={list.isInList ? (list.isFavorite ? "heart" : "bookmark") : (list.isFavorite ? "heart-outline" : "bookmark-outline")}
 														/>
 													))
 												}
-												<Menu.Item 
+												<ThemeMenuItem 
 													onPress={() => {setOptionsVisible(false);setCreatingNewList(true);}} title={'new list'} leadingIcon={'plus'}
 												/>
-											</Menu>
+											</ThemeMenu>
 										</>
 								}					
 							</View>
