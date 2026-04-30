@@ -1,7 +1,6 @@
 import { AuthContext } from "@/context/AuthContext";
 import { ServerContext } from "@/context/ServerContext";
 import { usePersistentTheme } from "@/context/usePersistentTheme";
-import { modernLightTheme } from "@/theme/modernTheme";
 import { Stack, useRouter, useSegments } from "expo-router";
 import { useContext, useEffect } from "react";
 import { PaperProvider } from "react-native-paper";
@@ -44,7 +43,7 @@ export default function UsersLayout()
 		}
 	}, [token, segments, router]);
 	return (
-		<PaperProvider theme={modernLightTheme}>
+		<PaperProvider>
 			<Stack
 				screenOptions={{
 					contentStyle: {backgroundColor: theme['--color-background']},

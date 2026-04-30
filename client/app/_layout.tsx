@@ -3,7 +3,6 @@ import { toastConfig } from "@/components/ThemeToast";
 import { AuthContext, AuthProvider } from "@/context/AuthContext";
 import { ServerContext, ServerProvider } from "@/context/ServerContext";
 import { ThemeProvider, themes, usePersistentTheme } from "@/context/usePersistentTheme";
-import { modernLightTheme } from "@/theme/modernTheme";
 import { Stack, useSegments } from "expo-router";
 import { VariableContextProvider } from "nativewind";
 import { useContext, useEffect } from "react";
@@ -69,7 +68,7 @@ const AppGate = () =>
 
 	return (
 		<VariableContextProvider value={themes[themeScheme]}>
-			<PaperProvider theme={modernLightTheme}>
+			<PaperProvider>
 				<Stack
 					screenOptions={{
 						contentStyle: {backgroundColor: theme['--color-background']},
