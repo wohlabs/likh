@@ -129,7 +129,7 @@ export default function AppLayout()
 											size={24}
 											onPress={() => router.push("/app/custom-lists")}
 											style={{ margin: 10 }}
-											className="text-primary"
+											className="text-primary icon-button"
 										/>
 									}
 									<Ionicons
@@ -137,7 +137,7 @@ export default function AppLayout()
 										name={themeScheme === "dark" ? 'moon-sharp' : 'sunny-sharp'}
 										onPress={toggleTheme}
 										style={[Platform.OS === 'ios' && {margin: 'auto'}]}
-										className="text-primary auto"
+										className="text-primary auto icon-button"
 									/>
 									{
 										<ThemeMenu
@@ -149,7 +149,9 @@ export default function AppLayout()
 													onPress={() => setOptionsVisible(true)}
 													mode="text"
 												>
-													<Ionicons name="person" color={theme['--color-onBackground']} size={16}/>
+													<Ionicons name="person"
+														color={theme['--color-onBackground']} size={16}
+													/>
 													{username}
 												</ThemeButton>
 											}

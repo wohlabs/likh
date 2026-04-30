@@ -49,10 +49,36 @@
   border-radius: 100%;
 }
 
+.icon-button-contained:hover {
+  filter: brightness(1.2); /* Increases brightness by 20% */
+}
+
+.icon-button-contained:active {
+  filter: brightness(1.4); /* Even lighter when pressed */
+}
+
 .icon-button {
   padding: 0.5rem;
-  margin: 0.5rem;
+  margin: 0.2rem;
   background-color: var(--color-elevation-level0);
   color: var(--color-onSurfaceVariant);
   border-radius: 100%;
+}
+
+.icon-button:hover
+{
+  filter: brightness(1.2); /* Increases brightness by 20% */
+}
+
+.icon-button:active {
+  filter: brightness(1.4); /* Even lighter when pressed */
+}
+
+.theme-button:hover
+{
+  filter: brightness(1.2); /* Increases brightness by 20% */
+}
+
+.theme-button:active {
+  filter: brightness(1.4); /* Even lighter when pressed */
 }

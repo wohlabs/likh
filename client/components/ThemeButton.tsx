@@ -55,7 +55,7 @@ export default function ThemeButton({ className, children, mode = 'text', disabl
 	
 	return (
 		<Pressable
-			className={`${getModeClasses()} ${getTextColorClass()} text-md lowercase ${className}`}
+			className={`${getModeClasses()} ${getTextColorClass()} text-md lowercase ${className} theme-button`}
 			{...props}
 		>
 			{

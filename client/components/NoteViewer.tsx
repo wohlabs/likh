@@ -97,21 +97,21 @@ export default function NoteViewer({mangaTitle, note, onDelete, onEdit, style}: 
 					<ThemeButton style={styles.viewerButton}
 						onPress={() => {}}
 					>
-						<Ionicons name="share-social" size={16} color={theme["--color-onPrimary"]}/>
+						<Ionicons name="share-social" size={16} color={theme["--color-primary"]}/>
 						Share
 					</ThemeButton>
 					<ThemeButton
 						style={styles.viewerButton}
 						onPress={onEdit}
 					>
-						<Ionicons name="pencil" size={16} color={theme["--color-onPrimary"]}/>
+						<Ionicons name="pencil" size={16} color={theme["--color-primary"]}/>
 						Edit
 					</ThemeButton>
 					<ThemeButton
 						style={styles.viewerButton}
 						onPress={() => {}}
 					>
-						<Ionicons name="heart" size={16} color={theme["--color-onPrimary"]}/>
+						<Ionicons name="heart" size={16} color={theme["--color-primary"]}/>
 						Favorite
 					</ThemeButton>
 					<ThemeMenu

@@ -70,7 +70,7 @@ export default function ThemeSearchbar({
 				<Ionicons
 					name="close-circle"
 					size={20}
-					className='text-onBackground z-30'
+					className='text-onBackground z-30 icon-button'
 					onPress={handleClearPress}
 					testID={`${testID}-clear-icon`}
 					accessibilityRole="button"
