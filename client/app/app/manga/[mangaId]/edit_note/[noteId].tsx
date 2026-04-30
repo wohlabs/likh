@@ -316,7 +316,7 @@ export default function EditNoteScreen()
 							value={startChapter}
 							onChangeText={(text) => setStartChapter(text)}
 							placeholder="start chapter"
-							className="flex-1 max-w-48 rounded-lg px-3 py-2 text-base border-2 border-outlineVariant text-onBackground"
+							className="flex-1 max-w-48 rounded-lg px-3 py-2 text-base border-2 border-outlineVariant text-onBackground mt-2 mb-2"
 							style={{
 								opacity: loading ? 0.5 : 1,
 							}}
@@ -329,7 +329,7 @@ export default function EditNoteScreen()
 							value={endChapter}
 							onChangeText={(text) => setEndChapter(text)}
 							placeholder="end chapter (optional)"
-							className="flex-1 max-w-48 rounded-lg px-3 py-2 text-base border-2 border-outlineVariant text-onBackground"
+							className="flex-1 max-w-48 rounded-lg px-3 py-2 text-base border-2 border-outlineVariant text-onBackground mt-2 mb-2"
 							style={{
 								opacity: loading ? 0.5 : 1,
 							}}
@@ -342,7 +342,7 @@ export default function EditNoteScreen()
 						placeholder="your note here..."
 						value={text}
 						onChangeText={onChangeText}
-						className="rounded-lg p-3 text-base min-h-24 border-outlineVariant text-onBackground border-2 flex-1"
+						className="rounded-lg p-3 text-base min-h-24 border-outlineVariant text-onBackground border-2 flex-1 mb-2"
 						style={{
 							opacity: loading ? 0.5 : 1,
 						}}
