@@ -10,7 +10,7 @@ import { getMangaTitle } from "@/types/IManga";
 import { Ionicons } from "@expo/vector-icons";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
-import { FlatList, Image, Pressable, ScrollView, StyleSheet, TextInput, View } from "react-native";
+import { FlatList, Image, Pressable, ScrollView, StyleSheet, View } from "react-native";
 
 export default function CustomListDetail()
 {
@@ -33,7 +33,7 @@ export default function CustomListDetail()
 		{
 			const addedDataList: any[] = result.data.map((item: any) => 
 			{
-				item.addedDate = mangaList.find((m) => m.mangaId == Number(item.id))?.addedAt;
+				item.addedDate = mangaList.find((m) => Number(m.mangaId) === Number(item.id))?.addedAt;
 				return item;
 			})
 			return addedDataList

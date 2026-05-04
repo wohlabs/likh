@@ -2,15 +2,13 @@ import ThemeButton from "@/components/ThemeButton";
 import ThemeText from "@/components/ThemeText";
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { ScrollView, View } from "react-native";
 import Reanimated, { Extrapolate, interpolate, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
 import "../global.css"
 
 export default function LandingPage() 
 {
-	const [scrollPosition, setScrollPosition] = useState(0);
-
 	// Animation values
 	const floatingAnim = useSharedValue(0);
 	const rotateAnim = useSharedValue(0);
@@ -83,12 +81,6 @@ export default function LandingPage()
 			};
 		});
 
-
-	const handleScroll = (event: any) => 
-	{
-		setScrollPosition(event.nativeEvent.contentOffset.y);
-	};
-
 	const year = new Date().getFullYear();
 
 	return (
@@ -96,7 +88,6 @@ export default function LandingPage()
 			<ScrollView 
 				className="flex-1 bg-background"
 				showsVerticalScrollIndicator={false}
-				onScroll={handleScroll}
 				scrollEventThrottle={16}
 			>
 				{/* Header */}

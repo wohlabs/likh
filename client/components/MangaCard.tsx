@@ -11,7 +11,7 @@ import { router } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import { Image, Pressable, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 
-export default function MangaCard({item, style, allCustomLists, onCreateList } : {item: MangaProps, style?: StyleProp<ViewStyle>, onCreateList?: (mangaIdToAdd?: number) => {}, allCustomLists: ICustomLists})
+export default function MangaCard({item, style, allCustomLists, onCreateList } : {item: MangaProps, style?: StyleProp<ViewStyle>, onCreateList?: (mangaIdToAdd?: number) => {mangaIdToAdd: undefined}, allCustomLists: ICustomLists})
 {
 	const { theme } = usePersistentTheme();
 	const [optionsVisible, setOptionsVisible] = useState<boolean>(false);

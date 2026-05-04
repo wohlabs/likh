@@ -2,7 +2,6 @@ import ThemeButton from "@/components/ThemeButton";
 import ThemeText from "@/components/ThemeText";
 import { getImageBase64 } from "@/components/util";
 import { AuthContext } from "@/context/AuthContext";
-import { usePersistentTheme } from "@/context/usePersistentTheme";
 import { API_URL } from "@/services/AxiosInstance";
 import { getMangaDetails } from "@/services/manga.service";
 import { getNote } from "@/services/notes.service";
