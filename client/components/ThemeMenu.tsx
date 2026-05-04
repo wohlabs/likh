@@ -8,7 +8,8 @@ interface ThemeMenuProps extends Omit<MenuProps, "contentStyle"> {
 	children: ReactNode;
 }
 
-export function ThemeMenu({ children, ...props }: ThemeMenuProps) {
+export function ThemeMenu({ children, ...props }: ThemeMenuProps) 
+{
 	const { theme } = usePersistentTheme();
 
 	return (
@@ -34,12 +35,15 @@ export function ThemeMenuItem({
 	title,
 	leadingIcon,
 	...props
-}: ThemeMenuItemProps) {
+}: ThemeMenuItemProps) 
+{
 	const { theme } = usePersistentTheme();
-	const renderIcon = (iconProps: { size: number; color: string }) => {
+	const renderIcon = (iconProps: { size: number; color: string }) => 
+	{
 		let content: React.ReactNode;
 
-		if (typeof leadingIcon === "string") {
+		if (typeof leadingIcon === "string") 
+		{
 			content = (
 				<MaterialCommunityIcons 
 					name={leadingIcon as any} 

@@ -42,12 +42,14 @@ export default function ThemeButton({ className, children, mode = 'text', disabl
 	};
 	
 	// Wrap any plain text children in <Text> so styling applies
-	const renderChildren = React.Children.map(children, (child) => {
-		if (typeof child === 'string' || typeof child === 'number') {
+	const renderChildren = React.Children.map(children, (child) => 
+	{
+		if (typeof child === 'string' || typeof child === 'number') 
+		{
 			return (
-			<Text className={`${getTextColorClass()} text-md lowercase`}>
+				<Text className={`${getTextColorClass()} text-md lowercase`}>
 			  {child}
-			</Text>
+				</Text>
 		  );
 		}
 		return child; // leave React elements as-is
