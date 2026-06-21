@@ -828,29 +828,22 @@ export default function MangaDetails()
 								setIsViewingOverlay(false);
 							}}
 						>
-							<ThemeCarousel
-								data={filteredNotes}
-								width={width}
-								defaultIndex={viewerNoteIndex}
-								carouselRenderItem={(item) => (
-									<NoteViewer
-										note={item.item}
-										mangaTitle={getMangaTitle(manga)}
-										style={[
-											styles.noteViewer,
-											{ backgroundColor: theme['--color-background'] },
-										]}
-										onDelete={() => onDelete(viewerNote.id)}
-										onEdit={() => 
-										{
-											router.navigate(
-												`/app/manga/${mangaId}/edit_note/${viewerNote.id}`,
-											);
-											setIsViewingOverlay(false);
-										}}
-										key={`NoteViewer_${viewerNote?.id}`}
-									/>
-								)}
+							<NoteViewer
+								note={filteredNotes[viewerNoteIndex]}
+								mangaTitle={getMangaTitle(manga)}
+								style={[
+									styles.noteViewer,
+									{ backgroundColor: theme['--color-background'] },
+								]}
+								onDelete={() => onDelete(viewerNote.id)}
+								onEdit={() => 
+								{
+									router.navigate(
+										`/app/manga/${mangaId}/edit_note/${viewerNote.id}`,
+									);
+									setIsViewingOverlay(false);
+								}}
+								key={`NoteViewer_${viewerNote?.id}`}
 							/>
 						</Modal>
 					</Portal>
@@ -895,7 +888,7 @@ const styles = StyleSheet.create({
 	noteViewer: {
 		borderRadius: 10,
 		flex: 1,
-		marginHorizontal: 30,
+		marginHorizontal: 60,
 		boxShadow: "0px 4px 5px rgba(0,0,0,0.3)",
 	},
 	// Add-note (inline) styles
