@@ -726,6 +726,7 @@ export default function MangaDetails()
 											},
 										]}
 										setValue={setSortByValue}
+										className="shadow-sm rounded-lg"
 									/>
 								</View>
 								<ThemeText

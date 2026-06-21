@@ -224,7 +224,8 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 													multiple={false}
 													listMode="FLATLIST"
 													maxHeight={300}
-													style={{minWidth: 100, backgroundColor: theme['--color-surfaceVariant'], borderColor: theme['--color-outline']}}
+													style={{minWidth: 100}}
+													className="shadow-sm rounded-lg"
 												/>
 											</View>
 											<ThemeMenu
@@ -236,10 +237,10 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 												anchorPosition="bottom"
 												anchor={
 													<Ionicons
-														size={20}
+														size={22}
 														name={lists.reduce((accumulator, currentValue)=> accumulator || currentValue.isInList, false) ? 'bookmark' : 'bookmark-outline'}
-														className='icon-button-contained'
-														style={{borderRadius: 10}}
+														className='icon-button-contained shadow-sm'
+														style={{borderRadius: 8, width: 50, height: 50, justifyContent: 'center', alignItems: 'center', alignContent: 'center', textAlign: 'center'}}
 														onPress={() => setOptionsVisible(true)}
 													/>
 												}
