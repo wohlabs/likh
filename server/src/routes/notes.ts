@@ -207,6 +207,66 @@ router.get(`/:id`, async (req: Request, res: Response) =>
 	}
 })
 
+// add tag to note
+router.post(`/:id/tags`, AuthenticateMiddleware, async (req: Request, res: Response) =>
+{
+	try
+	{
+		const noteId = req.params.id;
+		const { tag } = req.body;
+
+		if (!tag || typeof tag !== 'string' || tag.trim() === '') {
+			return res.status(400).json({ error: "Tag must be a non-empty string" });
+		}
+
+		const note = await Note.findById(noteId).exec();
+		if (!note) {
+			return res.status(404).json({ error: "Note not found" });
+		}
+
+		const trimmedTag = tag.trim();
+		if (!note.tags.includes(trimmedTag)) {
+			note.tags.push(trimmedTag);
+			note.modifiedAt = new Date();
+			await note.save();
+		}
+
+		res.json(note);
+	}
+	catch (err: unknown)
+	{
+		res.status(500).json({ error: getErrorMessage(err) });
+	}
+})
+
+// remove tag from note
+router.delete(`/:id/tags/:tag`, AuthenticateMiddleware, async (req: Request, res: Response) =>
+{
+	try
+	{
+		const noteId = req.params.id;
+		const tag = decodeURIComponent(req.params.tag);
+
+		const note = await Note.findById(noteId).exec();
+		if (!note) {
+			return res.status(404).json({ error: "Note not found" });
+		}
+
+		const tagIndex = note.tags.indexOf(tag);
+		if (tagIndex > -1) {
+			note.tags.splice(tagIndex, 1);
+			note.modifiedAt = new Date();
+			await note.save();
+		}
+
+		res.json(note);
+	}
+	catch (err: unknown)
+	{
+		res.status(500).json({ error: getErrorMessage(err) });
+	}
+})
+
 router.delete(`/:id`, async (req: Request, res: Response) =>
 {
 	try

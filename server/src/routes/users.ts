@@ -111,6 +111,7 @@ export async function getMangaInLibrary(userId: string) : Promise<Array<number>>
 // get manga from user's collection
 router.get(`/me/manga`, AuthenticateMiddleware, async (req: Request, res: Response) =>
 {
+	// console.log(userId)
 	const userId = req.user?.id
 	if (!userId)
 	{
