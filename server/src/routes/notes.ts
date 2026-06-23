@@ -21,7 +21,7 @@ router.use(express.json())
 router.post(`/`, upload.array('images', 10), AuthenticateMiddleware, async (req: Request, res: Response) =>
 {
 	const userId = req.user?.id;
-	const { mangaId, startChapter, endChapter, text } = req.body
+	const { mangaId, startChapter, endChapter, text, tags } = req.body
 
 	if (!userId) return res.status(400).json('Invalid request')
 	const user: IUser | null = await User.findById(userId).exec();
@@ -73,6 +73,9 @@ router.post(`/`, upload.array('images', 10), AuthenticateMiddleware, async (req:
 		return res.status(500).json({ error: getErrorMessage(err) })
 	}
 
+	// Deduplicate tags
+	const uniqueTags = tags ? [...new Set(tags as string[])] : [];
+
 	const newNote: INote = new Note(
 		{
 			userId,
@@ -80,7 +83,8 @@ router.post(`/`, upload.array('images', 10), AuthenticateMiddleware, async (req:
 			startChapter,
 			endChapter,
 			images: imageIds,
-			text
+			text,
+			tags: uniqueTags
 		}
 	);
 	await newNote.save()
@@ -92,7 +96,7 @@ router.patch(`/:id`, upload.array('images', 10), AuthenticateMiddleware, async (
 {
 	const userId = req.user?.id;
 	const noteId = req.params?.id;
-	const { mangaId, startChapter, endChapter, text, deletedImageIds } = req.body
+	const { mangaId, startChapter, endChapter, text, tags, deletedImageIds } = req.body
 	const deletedImageObjectIds = (JSON.parse(deletedImageIds) as string[]).map(id => new Types.ObjectId(id));
 
 	const newImageIds: Types.ObjectId[] = [];
@@ -146,6 +150,7 @@ router.patch(`/:id`, upload.array('images', 10), AuthenticateMiddleware, async (
 		note.endChapter = endChapter;
 		note.text = text;
 		note.modifiedAt = new Date();
+		note.tags = tags ? [...new Set(tags as string[])] : [];
 
 		if ((!note.images || note.images.length === 0) && (!note.text || note.text.length === 0)) return res.status(400).json('Invalid note')
 

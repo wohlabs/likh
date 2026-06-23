@@ -10,6 +10,7 @@ export interface INote extends Document
 	endChapter?: number;
 	images: Types.ObjectId[]; // could be an empty array
 	text?: string
+	tags: string[]; // array of unique tags
 }
 
 const NoteSchema = new Schema<INote>({
@@ -20,7 +21,8 @@ const NoteSchema = new Schema<INote>({
 	startChapter: { type: Number, required: true },
 	endChapter: { type: Number, required: false },
 	images: { type: [Schema.ObjectId], default: [], ref: 'uploads.files' },
-	text: { type: String, default: "" }
+	text: { type: String, default: "" },
+	tags: { type: [String], default: [] }
 });
 
 export const Note = model<INote>('Note', NoteSchema);
