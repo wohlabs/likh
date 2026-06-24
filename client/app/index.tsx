@@ -4,7 +4,7 @@ import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useEffect } from "react";
 import { ScrollView, View } from "react-native";
-import Reanimated, { Extrapolate, interpolate, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
+import Reanimated, { Extrapolate, interpolate, useAnimatedReaction, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
 import "../global.css"
 
 export default function LandingPage() 
@@ -16,28 +16,40 @@ export default function LandingPage()
 	const activeIndex = useSharedValue(0);
 
 	const ITEM_COUNT = 3;
-	
-	useEffect(() => 
-	{
-		const runPulse = () => 
-		{
-			pulse.value = 0;
 
+	useEffect(() => {
+		const runPulse = () => {
 			pulse.value = withSequence(
 				withTiming(1, { duration: 3000 }),
-				withTiming(0, { duration: 3000 }, (finished) => 
-				{
-					if (finished) 
-					{
+				withTiming(0, { duration: 3000 }, (finished) => {
+					if (finished) {
+						// Safe UI thread incrementing, no recursion crash
 						activeIndex.value = (activeIndex.value + 1) % ITEM_COUNT;
-						runPulse();
 					}
 				})
 			);
 		};
 
-	  runPulse();
-	}, [activeIndex, pulse]);
+		runPulse();
+	}, [pulse]); // Remove activeIndex from here
+
+	// 2. React to changes safely if you need to trigger a loop restart
+	useAnimatedReaction(
+		() => activeIndex.value,
+		(nextIndex, prevIndex) => {
+			if (nextIndex !== prevIndex) {
+				pulse.value = 0; // Reset
+				pulse.value = withSequence(
+					withTiming(1, { duration: 3000 }),
+					withTiming(0, { duration: 3000 }, (finished) => {
+						if (finished) {
+							activeIndex.value = (activeIndex.value + 1) % ITEM_COUNT;
+						}
+					})
+				);
+			}
+		}
+	);
 
 	useEffect(() => 
 	{
