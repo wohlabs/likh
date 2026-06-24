@@ -880,15 +880,15 @@ const styles = StyleSheet.create({
 	},
 	noteModalContainer: {
 		borderRadius: 10,
-		width: "100%",
+		width: "95%",
 		height: "85%",
 		maxHeight: 700,
 		padding: 0,
+		alignSelf: "center"
 	},
 	noteViewer: {
 		borderRadius: 10,
 		flex: 1,
-		marginHorizontal: 60,
 		boxShadow: "0px 4px 5px rgba(0,0,0,0.3)",
 	},
 	// Add-note (inline) styles
