@@ -5,6 +5,7 @@ import ReadMore from "./ReadMore";
 import ThemeText from "./ThemeText";
 import { getImageBase64 } from "./util";
 import { usePersistentTheme } from "@/context/usePersistentTheme";
+import ThemeBadge from "./ThemeBadge";
 
 export default function NotePreviewCard({ note, style, className, onPress }: { note: INoteEntry, style?: StyleProp<ViewStyle>, onPress?: () => void } & PressableProps) 
 {
@@ -67,7 +68,16 @@ export default function NotePreviewCard({ note, style, className, onPress }: { n
 						>
 							<ThemeText numberOfLines={3}>{note.text || "(No notes)"}</ThemeText>
 						</ReadMore>
-						<ThemeText style={{opacity: 0.6, textAlign: 'right'}}>{new Date(note.modifiedAt).toLocaleString() || "date @ time"}</ThemeText>
+						<View className="flex-row gap-1 justify-between">
+							<View className="flex-row justify-end gap-1">
+							{
+								note.tags?.map((value) => (
+									<ThemeBadge className="border-2 p-0.5!" labelForColor={value}>{value}</ThemeBadge>
+								))
+							}
+							</View>
+							<ThemeText style={{opacity: 0.6, textAlign: 'right', alignSelf: 'flex-end'}}>{new Date(note.modifiedAt).toLocaleString() || "date @ time"}</ThemeText>
+						</View>
 					</View>
 				</View>
 			</View>

@@ -624,7 +624,7 @@ export default function MangaDetails()
 									/>
 								</View>
 								<View className="flex-1 flex-row items-center py-2 gap-1">
-									<Text>Tags: </Text>
+									<ThemeText>Tags: </ThemeText>
 									<ThemeBadge onPress={(e) => { setIsTagFocused(true);}} textColor={"green"} className="border-2 p-1!">
 										{
 											isTagFocused
