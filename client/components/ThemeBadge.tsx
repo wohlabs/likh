@@ -3,6 +3,7 @@ import ThemeButton from "./ThemeButton";
 import { ColorValue, PressableProps, processColor, Text, TextInput } from "react-native";
 import ThemeText from "./ThemeText";
 import { Ionicons } from "@expo/vector-icons";
+import { usePersistentTheme } from "@/context/usePersistentTheme";
 
 interface ThemeBadgeProps extends PressableProps {
     textColor?: ColorValue;
@@ -12,6 +13,7 @@ interface ThemeBadgeProps extends PressableProps {
 
 export const alterColorOpacity = (color: ColorValue, opacity: number): string => {
     const processed = processColor(color);
+    const { themeScheme } = usePersistentTheme();
 
     if (processed === null || processed === undefined) {
         // Fallback if the color couldn't be parsed
@@ -20,7 +22,7 @@ export const alterColorOpacity = (color: ColorValue, opacity: number): string =>
 
     // Ensure we have a numeric value for bitwise operations
     const numeric = Number(processed);
-    const mixAmount = 0.7
+    const mixAmount = themeScheme === "light" ? 0.7 : 0.3;
     // React Native normalizes colors to 0xAARRGGBB or 0xRRGGBBAA depending on host platform,
     // but processColor yields standard integer representations.
     const r = (numeric >> 16) & 255;
@@ -34,29 +36,28 @@ export const alterColorOpacity = (color: ColorValue, opacity: number): string =>
     return `rgba(${newR}, ${newG}, ${newB}, ${opacity})`;
 };
 
-function wordToColor(word: string) : ColorValue {
+function adaptColor(word: string): string
+{
+    const { themeScheme } = usePersistentTheme();
     let hash = 0;
-    
-    // Step 1: Generate a unique hash number from the string
-    for (let i = 0; i < word.length; i++) {
-        // A bitwise shift creates a more varied distribution of numbers
+    for (let i = 0; i < word.length; i++)
+    {
         hash = word.charCodeAt(i) + ((hash << 5) - hash);
     }
-    
-    // Step 2 & 3: Convert the hash to a 6-digit hex code
-    let color = '#';
-    for (let i = 0; i < 3; i++) {
-        // Extract 8 bits at a time to get R, G, and B values
-        const value = (hash >> (i * 8)) & 0xFF;
-        // Convert to hex and pad with a leading zero if it's a single digit
-        color += ('00' + value.toString(16)).slice(-2);
-    }
-    return color;
+
+    // Force Hue between 0 and 360
+    const hue = Math.abs(hash) % 360;
+
+    // adjust saturation and lightness to adapt to current color theme
+    const saturation = themeScheme === "light" ? 75 : 80; 
+    const lightness = themeScheme === "light" ? 40 : 60; 
+
+    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 }
 
 export default function ThemeBadge({ textColor = undefined, children, className, labelForColor, ...props }: ThemeBadgeProps)
 {
-    const renderColor = textColor ?? (labelForColor !== undefined ? wordToColor(labelForColor) : "transparent")
+    const renderColor = textColor ?? (labelForColor !== undefined ? adaptColor(labelForColor) : "transparent")
     // Wrap any plain text children in <Text> so styling applies
     const renderChildren = React.Children.map(children, (child: React.ReactNode) => 
     {
