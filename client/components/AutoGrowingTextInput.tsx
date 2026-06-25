@@ -4,10 +4,12 @@ import { TextInput, TextInputProps } from "react-native";
 // this is a PATCH solution for TextInput to handle autogrowing size - however it does not shrink
 const AutoGrowingTextInput = ({
 	className,
+	ref,
 	minHeight = 75,
 	...props
 }: TextInputProps & {
 	className: string,
+	ref?: React.Ref<TextInput>,
 	minHeight?: number
 }) => 
 {
@@ -15,6 +17,7 @@ const AutoGrowingTextInput = ({
 	
 	return (
 		<TextInput
+			ref={ref}
 			className={`text-md ${className}`}
 			multiline
 			autoFocus
