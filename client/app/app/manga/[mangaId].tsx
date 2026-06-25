@@ -2,6 +2,7 @@ import { LoadingScreen } from "@/components/LoadingScreen";
 import MangaOverviewHeader from "@/components/MangaOverviewHeader";
 import NotePreviewCard from "@/components/NotePreviewCard";
 import NoteViewer from "@/components/NoteViewer";
+import ThemeBadge from "@/components/ThemeBadge";
 import ThemeButton from "@/components/ThemeButton";
 import ThemeCarousel from "@/components/ThemeCarousel";
 import { ThemeDropdown } from "@/components/ThemeDropdown";
@@ -20,7 +21,7 @@ import * as Clipboard from "expo-clipboard";
 import { File } from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
 import { router, useLocalSearchParams } from "expo-router";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import
 {
@@ -31,6 +32,7 @@ import
 	ScrollView,
 	StyleProp,
 	StyleSheet,
+	Text,
 	TextInput,
 	useWindowDimensions,
 	View,
@@ -121,6 +123,10 @@ export default function MangaDetails()
 	const [filteredNotes, setFilteredNotes] = useState<IMangaNotes>([]);
 	const [searchString, setSearchString] = useState<string>("");
 	const [isViewingOverlay, setIsViewingOverlay] = useState<boolean>(false);
+	const [isTagFocused, setIsTagFocused] = useState<boolean>(false);
+	const tagTextInputFocus = useRef<TextInput>(null);
+	const tagAddRef = useRef<Text>(null);
+	const [addTagWidth, setAddTagWidth] = useState<number>(0);
 	const [viewerNote, setViewerNote] = useState<INoteEntry>({
 		id: "",
 		text: "",
@@ -461,6 +467,10 @@ export default function MangaDetails()
 			console.error("Could not delete note");
 		}
 	};
+	
+	useEffect(() => {
+		tagTextInputFocus.current?.focus()
+	}, [isTagFocused])
 
 	useEffect(() => 
 	{
@@ -604,6 +614,31 @@ export default function MangaDetails()
 										onChangeText={(text) => setNewEndChapter(text)}
 										className="flex-1 max-w-48 rounded-lg px-3 py-2 text-base border-2 border-outlineVariant text-onBackground"
 									/>
+								</View>
+								<View className="flex-1 flex-row items-center py-2 gap-1">
+									<Text>Tags: </Text>
+									<ThemeBadge onPress={(e) => { setIsTagFocused(true);}} textColor={"green"} className="border-2 p-1!">
+										{
+											isTagFocused
+											? <TextInput style={{
+												minWidth: addTagWidth,
+												maxWidth: addTagWidth + 50
+											}} ref={tagTextInputFocus}  onBlur={() => setIsTagFocused(false)} className="outline-none" />
+											: <ThemeText ref={tagAddRef} onLayout={(e) => setAddTagWidth(e.nativeEvent.layout.width)}>tag +</ThemeText>
+										}
+									</ThemeBadge>
+									<ThemeBadge labelForColor="gl" className="border-2 p-1!">
+										gl
+										<Ionicons name="close" className="hover:bg-gray-300 rounded-sm"/>
+									</ThemeBadge>
+									<ThemeBadge className="border-2 p-1!" labelForColor="romantic">
+										romantic
+										<Ionicons name="close" className="hover:bg-gray-300 rounded-sm"/>
+									</ThemeBadge>
+									<ThemeBadge textColor={"blue"} className="border-2 p-1!" labelForColor="funni">
+										funni
+										<Ionicons name="close" className="hover:bg-gray-300 rounded-sm"/>
+									</ThemeBadge>
 								</View>
 								<View
 									style={{

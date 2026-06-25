@@ -1,10 +1,13 @@
 import React from "react";
 import ThemeButton from "./ThemeButton";
-import { ColorValue, PressableProps, processColor, Text } from "react-native";
+import { ColorValue, PressableProps, processColor, Text, TextInput } from "react-native";
+import ThemeText from "./ThemeText";
+import { Ionicons } from "@expo/vector-icons";
 
 interface ThemeBadgeProps extends PressableProps {
     textColor?: ColorValue;
     children: React.ReactNode;
+    labelForColor?: string;
 }
 
 export const alterColorOpacity = (color: ColorValue, opacity: number): string => {
@@ -31,32 +34,80 @@ export const alterColorOpacity = (color: ColorValue, opacity: number): string =>
     return `rgba(${newR}, ${newG}, ${newB}, ${opacity})`;
 };
 
-export default function ThemeBadge({ textColor = "transparent", children, className, ...props }: ThemeBadgeProps)
+function wordToColor(word: string) : ColorValue {
+    let hash = 0;
+    
+    // Step 1: Generate a unique hash number from the string
+    for (let i = 0; i < word.length; i++) {
+        // A bitwise shift creates a more varied distribution of numbers
+        hash = word.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    
+    // Step 2 & 3: Convert the hash to a 6-digit hex code
+    let color = '#';
+    for (let i = 0; i < 3; i++) {
+        // Extract 8 bits at a time to get R, G, and B values
+        const value = (hash >> (i * 8)) & 0xFF;
+        // Convert to hex and pad with a leading zero if it's a single digit
+        color += ('00' + value.toString(16)).slice(-2);
+    }
+    console.log(color)
+    
+    return color;
+}
+
+export default function ThemeBadge({ textColor = undefined, children, className, labelForColor, ...props }: ThemeBadgeProps)
 {
+    const renderColor = textColor ?? (labelForColor !== undefined ? wordToColor(labelForColor) : "transparent")
     // Wrap any plain text children in <Text> so styling applies
-    const renderChildren = React.Children.map(children, (child) => 
+    const renderChildren = React.Children.map(children, (child: React.ReactNode) => 
     {
         if (typeof child === 'string' || typeof child === 'number') 
         {
             return (
                 <Text className={`text-md lowercase`}
                     style={{
-                        color: textColor
+                        color: renderColor
                     }}
                 >
                     {child}
                 </Text>
             );
         }
-        return child; // leave React elements as-is
+
+        if (!React.isValidElement(child)) return child;
+
+        if (child.type === TextInput)
+        {
+            const typedChild = child as React.ReactElement<{ style?: any }>;
+            return React.cloneElement(typedChild, {
+                style: [{ color: renderColor }, typedChild.props?.style], // Combines original styles with your random ones
+            });
+        }
+        else if (child.type === ThemeText)
+        {
+            const typedChild = child as React.ReactElement<{ style?: any }>;
+            return React.cloneElement(typedChild, {
+                style: [{ color: renderColor }, typedChild.props?.style], // Combines original styles with your random ones
+            });
+        }
+        else if (child.type === Ionicons)
+        {
+            const typedChild = child as React.ReactElement<{ color?: any }>;
+            return React.cloneElement(typedChild, {
+                color: typedChild.props?.color ?? renderColor
+            });
+        }
+
+        return child;
     });
 
     return (
         <ThemeButton
             className={`text ${className}`}
             style={({hovered}) => [{
-                backgroundColor: hovered ? alterColorOpacity(textColor, 0.4) : alterColorOpacity(textColor, 0.1),
-                borderColor: textColor
+                backgroundColor: hovered ? alterColorOpacity(renderColor, 0.4) : alterColorOpacity(renderColor, 0.1),
+                borderColor: renderColor
             }]}
             {...props}
         >
