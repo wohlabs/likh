@@ -136,6 +136,7 @@ export default function MangaDetails()
 		createdAt: "",
 		modifiedAt: "",
 		fromAnilist: false,
+		tags: []
 	});
 	const [viewerNoteIndex, setViewerNoteIndex] = useState<number>(0);
 	const [loading, setLoading] = useState<boolean>(true);
@@ -146,6 +147,8 @@ export default function MangaDetails()
 
 	// Inline add-note UI state
 	const [isAddingNote, setIsAddingNote] = useState<boolean>(false);
+	const [newTag, setNewTag] = useState<string>("");
+	const [newTags, setNewTags] = useState<string[]>([]);
 	const [newText, setNewText] = useState<string>("");
 	const [addImages, setAddImages] = useState<ImagePicker.ImagePickerAsset[]>(
 		[],
@@ -162,7 +165,6 @@ export default function MangaDetails()
 	{
 		try 
 		{
-			console.log("pasting");
 			const pastedImage = await Clipboard.getImageAsync({
 				format: "png",
 				jpegQuality: 1,
@@ -368,6 +370,12 @@ export default function MangaDetails()
 			newStartChapter ? newStartChapter : String(-1),
 		);
 		if (newEndChapter) formData.append("endChapter", newEndChapter);
+		if (newTags)
+		{
+			newTags.forEach((tag) => {
+				formData.append('tags[]', tag);
+			});
+		}
 		if (newText && newText.trim().length > 0) formData.append("text", newText);
 		for (const image of addImages) 
 		{
@@ -623,22 +631,26 @@ export default function MangaDetails()
 											? <TextInput style={{
 												minWidth: addTagWidth,
 												maxWidth: addTagWidth + 50
-											}} ref={tagTextInputFocus}  onBlur={() => setIsTagFocused(false)} className="outline-none" />
+											}} ref={tagTextInputFocus}
+											 onBlur={() => setIsTagFocused(false)}
+											 onChangeText={setNewTag}
+											 value={newTag}
+											 onSubmitEditing={() => {
+												setNewTag("")
+												setNewTags([...(new Set([newTag, ...newTags]))])
+											 }}
+											 className="outline-none" />
 											: <ThemeText ref={tagAddRef} onLayout={(e) => setAddTagWidth(e.nativeEvent.layout.width)}>tag +</ThemeText>
 										}
 									</ThemeBadge>
-									<ThemeBadge labelForColor="gl" className="border-2 p-1!">
-										gl
-										<Ionicons name="close" className="hover:bg-gray-300 rounded-sm"/>
-									</ThemeBadge>
-									<ThemeBadge className="border-2 p-1!" labelForColor="romantic">
-										romantic
-										<Ionicons name="close" className="hover:bg-gray-300 rounded-sm"/>
-									</ThemeBadge>
-									<ThemeBadge textColor={"blue"} className="border-2 p-1!" labelForColor="funni">
-										funni
-										<Ionicons name="close" className="hover:bg-gray-300 rounded-sm"/>
-									</ThemeBadge>
+									{
+										newTags.map((value) => 
+											<ThemeBadge labelForColor={value} className="border-2 p-1!">
+												{value}
+												<Ionicons name="close" className="hover:bg-gray-300 rounded-sm" onPress={() => { setNewTags(newTags.filter(tag => tag !== value)) }}/>
+											</ThemeBadge>
+										)
+									}
 								</View>
 								<View
 									style={{

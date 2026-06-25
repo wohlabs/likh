@@ -7,6 +7,7 @@ export type INoteEntry = {
 	images: string[]; // could be an empty array
 	text?: string
 	fromAnilist: boolean;
+	tags: string[];
 };
 
 export type IMangaNotes = INoteEntry[]

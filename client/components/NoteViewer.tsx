@@ -91,8 +91,11 @@ export default function NoteViewer({mangaTitle, note, onDelete, onEdit, style}: 
 					}
 				</View>
 				<View className="flex-row gap-1">
-					<ThemeBadge textColor={"red"} className="border-2 p-1!">romantic</ThemeBadge>
-					<ThemeBadge textColor={"green"} className="border-2 p-1!">funni</ThemeBadge>
+				{
+					note.tags.map((value) => (
+						<ThemeBadge className="border-2 p-1!" labelForColor={value}>{value}</ThemeBadge>
+					))
+				}
 				</View>
 				<ThemeText style={[{fontWeight: "bold"}]}>Note:</ThemeText>
 				<ScrollView>

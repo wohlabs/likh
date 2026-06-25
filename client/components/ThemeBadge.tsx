@@ -51,8 +51,6 @@ function wordToColor(word: string) : ColorValue {
         // Convert to hex and pad with a leading zero if it's a single digit
         color += ('00' + value.toString(16)).slice(-2);
     }
-    console.log(color)
-    
     return color;
 }
 
