@@ -7,6 +7,7 @@ import { ThemeMenu, ThemeMenuItem } from "./ThemeMenu";
 import { getImageBase64 } from "./util";
 import { Ionicons } from "@expo/vector-icons";
 import { usePersistentTheme } from "@/context/usePersistentTheme";
+import ThemeBadge from "./ThemeBadge";
 
 export default function NoteViewer({mangaTitle, note, onDelete, onEdit, style}: { mangaTitle?: string, note: INoteEntry, style?: StyleProp<ViewStyle>, onDelete?: () => void , onEdit?: () => void})
 {
@@ -88,6 +89,10 @@ export default function NoteViewer({mangaTitle, note, onDelete, onEdit, style}: 
 								:
 								<ThemeText>Chapter: {note.startChapter?.toString() || ""}</ThemeText>
 					}
+				</View>
+				<View className="flex-row gap-1">
+					<ThemeBadge textColor={"red"} className="border-2 p-1!">romantic</ThemeBadge>
+					<ThemeBadge textColor={"green"} className="border-2 p-1!">funni</ThemeBadge>
 				</View>
 				<ThemeText style={[{fontWeight: "bold"}]}>Note:</ThemeText>
 				<ScrollView>
