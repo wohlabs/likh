@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
-export const API_URL = "https://likh-note.onrender.com"; // Fallback to localhost if not defined. The fallback is important to avoid webpack from optimizing away the environment variable
+export const API_URL = process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:3000"; // Fallback to localhost if not defined. The fallback is important to avoid webpack from optimizing away the environment variable
 
 const api = axios.create({
 	baseURL: API_URL, // Replace with your backend URL
