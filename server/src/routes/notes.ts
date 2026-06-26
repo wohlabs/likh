@@ -9,10 +9,13 @@ import { INote, Note } from '../models/note.model';
 import { IUser, User } from '../models/user.model';
 import { getAnilistNote } from './anilist';
 import { addMangaToLibrary } from './users';
+import {GoogleGenAI} from '@google/genai';
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
+const ai = new GoogleGenAI({apiKey: GEMINI_API_KEY});
 const router: Router = Router();
 
 router.use(express.json())
@@ -302,5 +305,70 @@ router.delete(`/:id`, async (req: Request, res: Response) =>
 		return res.sendStatus(404)
 	}
 })
+
+router.post('/summary', AuthenticateMiddleware, async (req: Request, res: Response) => {
+	const userId = req.user?.id;
+	const { mangaId } = req.query
+
+	if (userId && mangaId)
+	{
+		const likhNotes = await Note.find({ userId, mangaId });
+		likhNotes.map((note: INote | any) => {
+			return { ...note, fromAnilist: false};
+		})
+		const user = await User.findById(userId);
+		if (user && user.anilist_token)
+		{
+			const anilistNote: any = user.anilist_token ? await getAnilistNote(mangaId.toString(), user.anilist_token) : null;
+			if (anilistNote)
+			{
+				likhNotes.push({ ...anilistNote, fromAnilist: true})
+			}
+		}
+
+		const items = likhNotes.map((note, i) => {
+			const tags = Array.isArray(note.tags) ? note.tags.join(', ') : (note.tags ?? '');
+			return `Note ${i + 1}:
+				Chapter: ${note.startChapter == -1 ? "Overall" : note.startChapter}${note.endChapter ? " - " + note.endChapter : ""}
+				Tags: ${tags}
+				Text: ${note.text}`;
+			}
+		).join('\n\n---\n\n');
+	
+		const systemPrompt = `You are an assistant that summarizes user notes for a manga. Use the provided notes (text), their tags, and chapter numbers to produce a concise and useful summary. Output a short summary (3-4 sentences) and a structured list of key points grouped by chapter where applicable and in a concise way. The key points should be 1 bullet point per chapter group. Treat each note the same regardless of whether it is tagged or note. Prefer clarity and brevity. Please response in a regular text format. Use a dash to start each bullet point.`;
+		const userPrompt = `Notes:\n${items}\n\nPlease produce a text of a brief summary of all the notes provided.`;
+
+		const modelPriorityList: string[] = [
+			'gemini-3.5-flash',
+			'gemini-3.1-flash-lite',
+			'gemini-3.0-flash',
+			'gemini-2.5-flash',
+			'gemini-2.5-flash-lite',
+			'gemini-2.0-flash'
+		];
+		for (const model of modelPriorityList)
+		{
+			try
+			{
+				const response = await ai.interactions.create({
+					model: model,
+					input: userPrompt,
+					system_instruction: systemPrompt
+				})
+				if (response.output_text)
+				{
+					return res.send(response.output_text);
+				}
+				throw new Error("Empty response received");
+			}
+			catch (error: any)
+			{
+			}
+		}
+
+		return res.sendStatus(500) // could just be because not enough token left
+	}
+})
+
 
 export default router;

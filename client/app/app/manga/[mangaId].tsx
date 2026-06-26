@@ -12,7 +12,7 @@ import { blobToBase64 } from "@/components/util";
 import { AuthContext } from "@/context/AuthContext";
 import { usePersistentTheme } from "@/context/usePersistentTheme";
 import { API_URL } from "@/services/AxiosInstance";
-import { getMangaData, getMangaDetails } from "@/services/manga.service";
+import { getMangaData, getMangaDetails, getNoteSummary } from "@/services/manga.service";
 import { deleteMangaNote } from "@/services/notes.service";
 import { getMangaTitle, IMangaDetails } from "@/types/IManga";
 import { IMangaNotes, INoteEntry } from "@/types/INotes";
@@ -25,6 +25,7 @@ import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import
 {
+	ActivityIndicator,
 	FlatList,
 	Image,
 	Platform,
@@ -127,6 +128,8 @@ export default function MangaDetails()
 	const tagTextInputFocus = useRef<TextInput>(null);
 	const tagAddRef = useRef<Text>(null);
 	const [addTagWidth, setAddTagWidth] = useState<number>(0);
+	const [summaryLoading, setSummaryLoading] = useState<boolean>(true)
+	const [summary, setSummary] = useState<string>("No summary available.")
 	const [viewerNote, setViewerNote] = useState<INoteEntry>({
 		id: "",
 		text: "",
@@ -457,6 +460,18 @@ export default function MangaDetails()
 		setData(DATA);
 	}, [mangaId, anilist_token]);
 
+	const fetchSummary = useCallback(async () => 
+	{
+		const summary = await getNoteSummary(mangaId.toString());
+		setSummary(summary)
+		setSummaryLoading(false)
+	}, [mangaId]);
+
+	useEffect(() => 
+	{
+		fetchSummary();
+	}, [fetchSummary]);
+
 	useEffect(() => 
 	{
 		fetchData();
@@ -647,7 +662,7 @@ export default function MangaDetails()
 										newTags.map((value) => 
 											<ThemeBadge labelForColor={value} className="border-2 p-1!">
 												{value}
-												<Ionicons name="close" className="hover:bg-outlineVariant rounded-sm" onPress={() => { setNewTags(newTags.filter(tag => tag !== value)) }}/>
+												<Ionicons name="close-circle" className="hover:bg-outlineVariant rounded-sm" onPress={() => { setNewTags(newTags.filter(tag => tag !== value)) }}/>
 											</ThemeBadge>
 										)
 									}
@@ -722,6 +737,27 @@ export default function MangaDetails()
 								</View>
 							</>
 						)}
+					</View>
+					<View
+						style={{
+							marginVertical: 10,
+							maxWidth: 1000,
+							width: "100%",
+							margin: "auto",
+						}}
+						className="bg-surfaceVariant rounded-md p-2"
+					>
+						<ThemeText className="font-medium text-onSurfaceVariant">
+							<Ionicons name="sparkles" />
+							&nbsp;AI Summary{"\n\n"}
+						</ThemeText>
+						<ThemeText className="text-onSurfaceVariant">
+							{
+								summaryLoading ?
+								<ActivityIndicator color={theme['--color-primary']}/>
+								: summary
+							}
+						</ThemeText>
 					</View>
 					{filteredNotes.length === 0 ? (
 						<View

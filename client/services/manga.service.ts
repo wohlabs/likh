@@ -91,6 +91,23 @@ export const getMangaData = async (mangaId: string, access_token?: string) : Pro
 	}
 };
 
+export const getNoteSummary = async (mangaId: string) : Promise<string> => 
+{
+	try 
+	{
+		const response = await api.post(`/notes/summary?mangaId=${mangaId}`, undefined, {
+			timeout: 30000
+		});
+		return response.data;
+	}
+	catch (err: any) 
+	{
+		console.error(err.response?.data || err.message);
+		// error reading value
+		return "";
+	}
+};
+
 export const addMangaToLibrary = async (mangaId: string) : Promise<boolean> => 
 {
 	try 
