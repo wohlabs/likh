@@ -659,7 +659,7 @@ export default function MangaDetails()
 										}
 									</ThemeBadge>
 									{
-										newTags.map((value) => 
+										newTags?.map((value) => 
 											<ThemeBadge labelForColor={value} className="border-2 p-1!">
 												{value}
 												<Ionicons name="close-circle" className="hover:bg-outlineVariant rounded-sm" onPress={() => { setNewTags(newTags.filter(tag => tag !== value)) }}/>

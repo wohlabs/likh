@@ -92,7 +92,7 @@ export default function NoteViewer({mangaTitle, note, onDelete, onEdit, style}: 
 				</View>
 				<View className="flex-row gap-1">
 				{
-					note.tags.map((value) => (
+					note.tags?.map((value) => (
 						<ThemeBadge className="border-2 p-1!" labelForColor={value}>{value}</ThemeBadge>
 					))
 				}
