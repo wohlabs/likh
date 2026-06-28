@@ -76,7 +76,7 @@ export default function NotePreviewCard({ note, style, className, onPress }: { n
 								))
 							}
 							</View>
-							<ThemeText style={{opacity: 0.6, textAlign: 'right', alignSelf: 'flex-end'}}>{new Date(note.modifiedAt).toLocaleString() || "date @ time"}</ThemeText>
+							<ThemeText style={{opacity: 0.6, textAlign: 'right', alignSelf: 'flex-end'}}>{note.fromAnilist && "from anilist - "}{new Date(note.modifiedAt).toLocaleString() || "date @ time"}</ThemeText>
 						</View>
 					</View>
 				</View>

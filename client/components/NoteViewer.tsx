@@ -103,23 +103,26 @@ export default function NoteViewer({mangaTitle, note, onDelete, onEdit, style}: 
 				</ScrollView>
 				<View style={styles.viewerButtonsContainer}>
 					<ThemeButton style={styles.viewerButton}
+						disabled={note.fromAnilist}
 						onPress={() => {}}
 					>
-						<Ionicons name="share-social" size={16} color={theme["--color-primary"]}/>
+						<Ionicons name="share-social" size={16} color={note.fromAnilist ? theme["--color-onDisabledBackground"] : theme["--color-primary"]}/>
 						Share
 					</ThemeButton>
 					<ThemeButton
+						disabled={note.fromAnilist}
 						style={styles.viewerButton}
 						onPress={onEdit}
 					>
-						<Ionicons name="pencil" size={16} color={theme["--color-primary"]}/>
+						<Ionicons name="pencil" size={16} color={note.fromAnilist ? theme["--color-onDisabledBackground"] : theme["--color-primary"]}/>
 						Edit
 					</ThemeButton>
 					<ThemeButton
+						disabled={note.fromAnilist}
 						style={styles.viewerButton}
 						onPress={() => {}}
 					>
-						<Ionicons name="heart" size={16} color={theme["--color-primary"]}/>
+						<Ionicons name="heart" size={16} color={note.fromAnilist ? theme["--color-onDisabledBackground"] : theme["--color-primary"]}/>
 						Favorite
 					</ThemeButton>
 					<ThemeMenu

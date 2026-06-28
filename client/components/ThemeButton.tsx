@@ -77,6 +77,7 @@ export default function ThemeButton({ className, children, mode = 'text', disabl
 			default:
 				color = theme['--color-onSurface'];
 			}
+			if (disabled) color = theme['--color-onDisabledBackground'];
             const typedChild = child as React.ReactElement<{ color?: any }>;
             return React.cloneElement(typedChild, {
                 color: typedChild.props?.color ?? color
