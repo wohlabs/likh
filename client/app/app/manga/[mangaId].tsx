@@ -106,7 +106,7 @@ function TranslatableButtonContainer({
 	const swipeLeftAnimation = useAnimatedStyle(() => 
 	{
 		return {
-			transform: [{ translateX: translation.value + 140 }],
+			transform: [{ translateX: translation.value + 150 }],
 		};
 	});
 
@@ -861,7 +861,7 @@ export default function MangaDetails()
 									) : (
 										<ReanimatedSwipeable
 											containerStyle={styles.noteContainer}
-											childrenContainerStyle={{ flex: 1 }}
+											childrenContainerStyle={{ flex: 1, paddingHorizontal: 0 }}
 											friction={2}
 											renderRightActions={(
 												progress: SharedValue<number>,
@@ -873,9 +873,9 @@ export default function MangaDetails()
 													progress={progress}
 													translation={translation}
 													swipeableMethods={swipeableMethods}
-													style={{ flexDirection: "row", alignItems: "center" }}
+													style={{ flexDirection: "row", alignItems: "center"}}
 												>
-														<NoteButtons
+													<NoteButtons
 														onEditPress={() =>
 															router.navigate(
 																`/app/manga/${mangaId}/edit_note/${item.id}`,
@@ -956,7 +956,8 @@ const styles = StyleSheet.create({
 	},
 	actionButton: { boxShadow: "0px 4px 5px rgba(0,0,0,0.3)" },
 	noteContainer: {
-		marginHorizontal: 5,
+		marginHorizontal: 0,
+		padding: 0,
 		flexDirection: "row",
 		alignItems: "center",
 		overflow: "hidden",
