@@ -64,7 +64,7 @@ export default function ThemeBadge({ textColor = undefined, children, className,
         if (typeof child === 'string' || typeof child === 'number') 
         {
             return (
-                <Text className={`text-md lowercase`}
+                <Text className={`text-md lowercase align-middle justify-center`}
                     style={{
                         color: renderColor
                     }}
