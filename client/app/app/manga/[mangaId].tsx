@@ -56,30 +56,32 @@ import Toast from "react-native-toast-message";
 function NoteButtons({
 	onEditPress,
 	onDeletePress,
+	disabled = false
 }: {
 	onEditPress?: () => void;
 	onDeletePress?: () => void;
+	disabled?: boolean
 }) 
 {
 	return (
 		<>
 			<Ionicons
 				name={"pencil-outline"}
-				className="icon-button-contained"
+				className={`icon-button-contained ${disabled && "disabled"}`}
 				size={20}
 				onPress={onEditPress}
 				style={styles.actionButton}
 			/>
 			<Ionicons
 				name={"share-outline"}
-				className="icon-button-contained"
+				className={`icon-button-contained ${disabled && "disabled"}`}
 				size={20}
 				onPress={() => {}}
 				style={styles.actionButton}
 			/>
 			<Ionicons
 				name={"trash-outline"}
-				className="icon-button-contained"
+				className={`icon-button-contained ${disabled && "disabled"}`}
 				size={20}
 				onPress={onDeletePress}
 				style={styles.actionButton}
@@ -128,8 +130,8 @@ export default function MangaDetails()
 	const tagTextInputFocus = useRef<TextInput>(null);
 	const tagAddRef = useRef<Text>(null);
 	const [addTagWidth, setAddTagWidth] = useState<number>(0);
-	const [summaryLoading, setSummaryLoading] = useState<boolean>(true)
-	const [summary, setSummary] = useState<string>("No summary available.")
+	const [summaryLoading, setSummaryLoading] = useState<boolean>(false)
+	const [summary, setSummary] = useState<string>("")
 	const [viewerNote, setViewerNote] = useState<INoteEntry>({
 		id: "",
 		text: "",
@@ -462,15 +464,11 @@ export default function MangaDetails()
 
 	const fetchSummary = useCallback(async () => 
 	{
+		setSummaryLoading(true)
 		const summary = await getNoteSummary(mangaId.toString());
 		setSummary(summary)
 		setSummaryLoading(false)
 	}, [mangaId]);
-
-	useEffect(() => 
-	{
-		fetchSummary();
-	}, [fetchSummary]);
 
 	useEffect(() => 
 	{
@@ -747,17 +745,18 @@ export default function MangaDetails()
 						}}
 						className="bg-surfaceVariant rounded-md p-2"
 					>
-						<ThemeText className="font-medium text-onSurfaceVariant">
-							<Ionicons name="sparkles" />
-							&nbsp;AI Summary{"\n\n"}
+						<ThemeText className="font-bold text-onSurfaceVariant">
+							&nbsp;AI Summary
 						</ThemeText>
-						<ThemeText className="text-onSurfaceVariant">
+						<ThemeText className="mt-1 mb-1">
 							{
-								summaryLoading ?
-								<ActivityIndicator color={theme['--color-primary']}/>
-								: summary
+								summaryLoading ? <ThemeText> generating... <ActivityIndicator /></ThemeText> : summary
 							}
 						</ThemeText>
+						<ThemeButton mode="outlined" onPress={fetchSummary}>
+							<Ionicons name="sparkles"/>
+							Generate
+						</ThemeButton>
 					</View>
 					{filteredNotes.length === 0 ? (
 						<View
@@ -849,6 +848,7 @@ export default function MangaDetails()
 												}}
 											/>
 											<NoteButtons
+												disabled={item.fromAnilist}
 												onEditPress={() =>
 													router.navigate(
 														`/app/manga/${mangaId}/edit_note/${item.id}`,
@@ -875,7 +875,7 @@ export default function MangaDetails()
 													swipeableMethods={swipeableMethods}
 													style={{ flexDirection: "row", alignItems: "center" }}
 												>
-													<NoteButtons
+														<NoteButtons
 														onEditPress={() =>
 															router.navigate(
 																`/app/manga/${mangaId}/edit_note/${item.id}`,
