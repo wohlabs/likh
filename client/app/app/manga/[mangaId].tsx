@@ -876,6 +876,7 @@ export default function MangaDetails()
 													style={{ flexDirection: "row", alignItems: "center"}}
 												>
 													<NoteButtons
+														disabled={item.fromAnilist}
 														onEditPress={() =>
 															router.navigate(
 																`/app/manga/${mangaId}/edit_note/${item.id}`,
