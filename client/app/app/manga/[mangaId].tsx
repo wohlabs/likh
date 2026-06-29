@@ -751,8 +751,8 @@ export default function MangaDetails()
 						<ThemeText className="mt-1 mb-1">
 							{ summary }
 						</ThemeText>
-						<ThemeButton mode="outlined" onPress={fetchSummary} className="text-center justify-center items-center self-center content-center text-sm" disabled={summaryLoading}>
-							<Ionicons name="sparkles" />
+						<ThemeButton mode="outlined" onPress={fetchSummary} className="text-sm" disabled={summaryLoading}>
+							<Ionicons name="sparkles" color={summaryLoading ? theme["--color-onDisabledBackground"] : theme["--color-onSurface"]} />
 							{
 								summaryLoading
 								?
