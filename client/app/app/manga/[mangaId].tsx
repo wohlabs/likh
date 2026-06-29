@@ -749,13 +749,21 @@ export default function MangaDetails()
 							&nbsp;AI Summary
 						</ThemeText>
 						<ThemeText className="mt-1 mb-1">
-							{
-								summaryLoading ? <ThemeText> generating... <ActivityIndicator /></ThemeText> : summary
-							}
+							{ summary }
 						</ThemeText>
-						<ThemeButton mode="outlined" onPress={fetchSummary}>
-							<Ionicons name="sparkles"/>
-							Generate
+						<ThemeButton mode="outlined" onPress={fetchSummary} className="text-center justify-center items-center self-center content-center text-sm" disabled={summaryLoading}>
+							<Ionicons name="sparkles" />
+							{
+								summaryLoading
+								?
+								<ThemeText style={{ color: theme["--color-onDisabledBackground"]}}>
+									generating...
+								</ThemeText>
+								:
+								<ThemeText style={{ color: theme["--color-onSurface"] }}>
+									Generate
+								</ThemeText>
+							}
 						</ThemeButton>
 					</View>
 					{filteredNotes.length === 0 ? (
