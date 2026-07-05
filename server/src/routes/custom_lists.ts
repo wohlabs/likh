@@ -188,6 +188,23 @@ router.post(`/:listId/manga`, AuthenticateMiddleware, async (req: Request, res: 
 	{
 		list.manga = list.manga.filter((elem) => elem.mangaId !== numMangaId)
 	}
+	if (list.isFavorite == true)
+	{
+		const user = await User.findById(userId);
+		let anilistFavs: any[] = []
+		if (user && user.anilist_token)
+		{
+			anilistFavs = (await getAnilistFavoritesManga(user.anilist_token, true))
+		}
+		if (user && user.anilist_token)
+		{
+			if (isIncluded != anilistFavs.includes(mangaId)) // if different, then toggle. if not, leave it be
+			{
+				const res = await anilistAuthenticatedRequest(TOGGLE_ANILIST_FAV, { mangaId: numMangaId}, user.anilist_token, 600, true)
+				console.log(res)
+			}
+		}
+	}
 	list.save()
 	res.sendStatus(200)
 })
