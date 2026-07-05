@@ -2,7 +2,8 @@ import express, { Request, Response, Router } from 'express';
 import AuthenticateMiddleware from '../middleware/Authentication';
 import { CustomList, ICustomList, MangaItem } from '../models/custom_list.model';
 import { User } from '../models/user.model';
-import { getAnilistFavoritesManga } from './anilist';
+import { getAnilistFavoritesManga, TOGGLE_ANILIST_FAV } from './anilist';
+import { anilistAuthenticatedRequest } from '../Utility';
 
 const router: Router = Router();
 
@@ -88,6 +89,20 @@ router.post(`/favorite/manga`, AuthenticateMiddleware, async (req: Request, res:
 	else if (!isFav && list.manga.some((item: MangaItem) => item.mangaId === numMangaId))
 	{
 		list.manga = list.manga.filter((elem) => elem.mangaId !== numMangaId)
+	}
+
+	const user = await User.findById(userId);
+	let anilistFavs: any[] = []
+	if (user && user.anilist_token)
+	{
+		anilistFavs = (await getAnilistFavoritesManga(user.anilist_token, true))
+	}
+	if (user && user.anilist_token)
+	{
+		if (isFav != anilistFavs.includes(mangaId)) // if different, then toggle. if not, leave it be
+		{
+			const res = await anilistAuthenticatedRequest(TOGGLE_ANILIST_FAV, { mangaId: numMangaId}, user.anilist_token, 600, true)
+		}
 	}
 	list.save()
 	res.sendStatus(200)

@@ -74,15 +74,18 @@ export async function anilistAuthenticatedRequest(
   query: string,
   variables: Record<string, any> = {},
   access_token?: string,
-  ttl: number = 600 // default TTL 10 minutes
+  ttl: number = 600, // default TTL 10 minutes
+  skipCache = false
 ): Promise<any>
 {
 	const key = makeCacheKey(query, variables, access_token);
-
-	// Check MongoDB cache first
-	const cached = await getCache(query, variables, access_token);
-	if (cached) {
-		return cached.data;
+	if (!skipCache)
+	{
+		// Check MongoDB cache first
+		const cached = await getCache(query, variables, access_token);
+		if (cached) {
+			return cached.data;
+		}
 	}
 
 	const headers: HeadersInit = {

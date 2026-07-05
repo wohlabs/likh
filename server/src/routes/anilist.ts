@@ -7,6 +7,20 @@ import { anilistAuthenticatedRequest, anilistRequest } from "../Utility";
 const router = express.Router();
 router.use(express.json())
 
+export const TOGGLE_ANILIST_FAV = `
+	mutation Mutation($mangaId: Int) {
+		ToggleFavourite(mangaId: $mangaId) {
+			manga {
+				nodes {
+					title {
+						userPreferred
+					}
+				}
+			}
+		}
+	}
+`
+
 export const getUserIdFromToken = (accessToken: string) : number | null => 
 {
 	if (accessToken.length === 0) return null
@@ -128,7 +142,7 @@ export const getAnilistNote = async (mangaId: string, access_token: string) : Pr
 	}
 }
 
-export const getAnilistFavoritesManga = async (access_token: string) : Promise<Array<number>> =>
+export const getAnilistFavoritesManga = async (access_token: string, skipCache: boolean = false) : Promise<Array<number>> =>
 {
 	const MANGA_FAVORITES = `
 	query {
@@ -150,7 +164,7 @@ export const getAnilistFavoritesManga = async (access_token: string) : Promise<A
 
 	try
 	{
-		const data = await anilistAuthenticatedRequest(MANGA_FAVORITES, {}, access_token);
+		const data = await anilistAuthenticatedRequest(MANGA_FAVORITES, {}, access_token, 600, skipCache);
 		const items = data.data.Viewer.favourites.manga.nodes
 		if (!items) return []
 		return items.map((item: any) => item.id);
