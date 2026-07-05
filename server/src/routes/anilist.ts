@@ -128,4 +128,37 @@ export const getAnilistNote = async (mangaId: string, access_token: string) : Pr
 	}
 }
 
+export const getAnilistFavoritesManga = async (access_token: string) : Promise<Array<number>> =>
+{
+	const MANGA_FAVORITES = `
+	query {
+		Viewer {
+			favourites {
+				manga {
+					nodes {
+						id
+						title {
+							userPreferred
+						}
+						description
+					}
+				}
+			}
+		}
+	}
+	`
+
+	try
+	{
+		const data = await anilistAuthenticatedRequest(MANGA_FAVORITES, {}, access_token);
+		const items = data.data.Viewer.favourites.manga.nodes
+		if (!items) return []
+		return items.map((item: any) => item.id);
+	}
+	catch (err: any)
+	{
+		return []
+	}
+}
+
 export default router;

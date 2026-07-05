@@ -1,10 +1,17 @@
 import express, { Request, Response, Router } from 'express';
 import AuthenticateMiddleware from '../middleware/Authentication';
-import { CustomList, MangaItem } from '../models/custom_list.model';
+import { CustomList, ICustomList, MangaItem } from '../models/custom_list.model';
+import { User } from '../models/user.model';
+import { getAnilistFavoritesManga } from './anilist';
 
 const router: Router = Router();
 
 router.use(express.json())
+
+function isMangaIdInList(list: ICustomList, mangaId: number)
+{
+	return list.manga.findIndex((manga: any) => manga.mangaId == mangaId) != -1
+}
 
 // get manga lists of current user /custom-lists?mangaId=12345
 router.get(`/`, AuthenticateMiddleware, async (req: Request, res: Response) =>
@@ -24,7 +31,16 @@ router.get(`/`, AuthenticateMiddleware, async (req: Request, res: Response) =>
 			findOptions['manga.mangaId'] = mangaId
 		}
 	}
-	const lists = (await CustomList.find(findOptions).select('name manga isFavorite description'))
+	let lists: any[] = (await CustomList.find(findOptions).select('name manga isFavorite description').lean())
+	let favList = lists.find((value) => value.isFavorite == true)
+	const user = await User.findById(userId);
+	let anilistFavs: any[] = []
+	if (user && user.anilist_token)
+	{
+		anilistFavs = (await getAnilistFavoritesManga(user.anilist_token))
+		anilistFavs = anilistFavs.filter((val: number) => !isMangaIdInList(favList, val)).map((value) => ({mangaId: value})) // remove manga that is already inside my current fav list
+	}
+	lists = lists.map((list) => (list.isFavorite ? ({...list, manga: [...list.manga, ...anilistFavs]}) : list))
 	return res.status(200).json(lists)
 })
 
