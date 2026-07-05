@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import { jwtDecode } from "jwt-decode";
 import { INote } from "../models/note.model";
 import { User } from '../models/user.model';
-import { anilistAuthenticatedRequest, anilistRequest } from "../Utility";
+import { anilistAuthenticatedRequest, anilistRequest, deleteAnilistCache } from "../Utility";
 
 const router = express.Router();
 router.use(express.json())
@@ -20,6 +20,24 @@ export const TOGGLE_ANILIST_FAV = `
 		}
 	}
 `
+
+export const MANGA_FAVORITES = `
+	query {
+		Viewer {
+			favourites {
+				manga {
+					nodes {
+						id
+						title {
+							userPreferred
+						}
+						description
+					}
+				}
+			}
+		}
+	}
+	`
 
 export const getUserIdFromToken = (accessToken: string) : number | null => 
 {
@@ -144,24 +162,6 @@ export const getAnilistNote = async (mangaId: string, access_token: string) : Pr
 
 export const getAnilistFavoritesManga = async (access_token: string, skipCache: boolean = false) : Promise<Array<number>> =>
 {
-	const MANGA_FAVORITES = `
-	query {
-		Viewer {
-			favourites {
-				manga {
-					nodes {
-						id
-						title {
-							userPreferred
-						}
-						description
-					}
-				}
-			}
-		}
-	}
-	`
-
 	try
 	{
 		const data = await anilistAuthenticatedRequest(MANGA_FAVORITES, {}, access_token, 600, skipCache);
@@ -172,6 +172,17 @@ export const getAnilistFavoritesManga = async (access_token: string, skipCache: 
 	catch (err: any)
 	{
 		return []
+	}
+}
+
+export const deleteAnilistFavoritesMangaCache = async (access_token: string) : Promise<void> =>
+{
+	try
+	{
+		await deleteAnilistCache(MANGA_FAVORITES, {}, access_token)
+	}
+	catch (err: any)
+	{
 	}
 }
 

@@ -121,3 +121,13 @@ export async function anilistAuthenticatedRequest(
 
 	return data;
 }
+
+export async function deleteAnilistCache(
+  query: string,
+  variables: Record<string, any> = {},
+  access_token?: string,
+)
+{
+	const key = makeCacheKey(query, variables, access_token);
+	await ApiCache.deleteOne({key});
+}

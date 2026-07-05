@@ -2,8 +2,8 @@ import express, { Request, Response, Router } from 'express';
 import AuthenticateMiddleware from '../middleware/Authentication';
 import { CustomList, ICustomList, MangaItem } from '../models/custom_list.model';
 import { User } from '../models/user.model';
-import { getAnilistFavoritesManga, TOGGLE_ANILIST_FAV } from './anilist';
-import { anilistAuthenticatedRequest } from '../Utility';
+import { deleteAnilistFavoritesMangaCache, getAnilistFavoritesManga, TOGGLE_ANILIST_FAV } from './anilist';
+import { anilistAuthenticatedRequest, deleteAnilistCache } from '../Utility';
 
 const router: Router = Router();
 
@@ -95,13 +95,14 @@ router.post(`/favorite/manga`, AuthenticateMiddleware, async (req: Request, res:
 	let anilistFavs: any[] = []
 	if (user && user.anilist_token)
 	{
-		anilistFavs = (await getAnilistFavoritesManga(user.anilist_token, true))
+		anilistFavs = (await getAnilistFavoritesManga(user.anilist_token))
 	}
 	if (user && user.anilist_token)
 	{
 		if (isFav != anilistFavs.includes(mangaId)) // if different, then toggle. if not, leave it be
 		{
-			const res = await anilistAuthenticatedRequest(TOGGLE_ANILIST_FAV, { mangaId: numMangaId}, user.anilist_token, 600, true)
+			await anilistAuthenticatedRequest(TOGGLE_ANILIST_FAV, { mangaId: numMangaId}, user.anilist_token, 0, true)
+			deleteAnilistFavoritesMangaCache(user.anilist_token)
 		}
 	}
 	list.save()
@@ -200,8 +201,8 @@ router.post(`/:listId/manga`, AuthenticateMiddleware, async (req: Request, res: 
 		{
 			if (isIncluded != anilistFavs.includes(mangaId)) // if different, then toggle. if not, leave it be
 			{
-				const res = await anilistAuthenticatedRequest(TOGGLE_ANILIST_FAV, { mangaId: numMangaId}, user.anilist_token, 600, true)
-				console.log(res)
+				await anilistAuthenticatedRequest(TOGGLE_ANILIST_FAV, { mangaId: numMangaId}, user.anilist_token, 0, true)
+				deleteAnilistFavoritesMangaCache(user.anilist_token)
 			}
 		}
 	}
