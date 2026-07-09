@@ -245,6 +245,7 @@ export default function AdvancedSearchModal({ visible, onDismiss, style, onManga
 													mode='text'
 													onPress={() => handleShowMore(categoryMap[item.type as keyof typeof categoryMap])}
 													style={styles.showMoreButton}
+													className='mx-2 rounded-lg mb-2'
 												>
 													Show more
 												</ThemeButton>
@@ -375,8 +376,4 @@ const styles = StyleSheet.create({
 		marginTop: 4,
 		opacity: 0.6
 	},
-	showMoreButton: {
-		marginHorizontal: 10,
-		borderRadius: 8,
-	}
 });
