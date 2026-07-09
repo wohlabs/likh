@@ -32,7 +32,7 @@ export default function CustomListsIndex()
 					contentContainerStyle={{ padding: 16, gap: 12 }}
 					renderItem={({ item }) => (
 						<Pressable
-							className="bg-surface rounded-xl p-5 flex-row items-center justify-between"
+							className="bg-surface rounded-xl p-5 flex-row items-center justify-between border border-surfaceVariant"
 							onPress={() => router.push({
 								pathname: `/app/custom-lists/[listId]`,
 								params: {

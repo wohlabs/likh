@@ -148,7 +148,7 @@ export default function CustomListDetail()
 					renderItem={({ item }: {item: MangaProps & {addedDate: Date}}) => (
 						<Pressable
 							onPress={() => router.push(`/app/manga/${item.id}`)}
-							className={`shadow-elevation-level1 shadow-md elevation-sm bg-surface flex-row items-center p-3 rounded-xl`}
+							className={`shadow-elevation-level1 shadow-md elevation-sm bg-surface flex-row items-center p-3 rounded-xl border border-surfaceVariant`}
 						>
 							<Image
 								source={{ uri: item.coverImage?.large }}
