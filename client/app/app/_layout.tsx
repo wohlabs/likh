@@ -179,6 +179,12 @@ export default function AppLayout()
 											<ThemeMenuItem 
 												onPress={async () => 
 												{
+													router.navigate('/app/settings')
+												}} title="Settings" leadingIcon={"cog"}
+											/>
+											<ThemeMenuItem 
+												onPress={async () => 
+												{
 													setOptionsVisible(false);
 													await logout();
 													router.navigate('/users/login') // may not be ideal to refresh

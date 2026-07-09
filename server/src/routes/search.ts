@@ -5,6 +5,7 @@ import { Note } from '../models/note.model';
 import { anilistRequest } from '../Utility';
 import { getMangaData } from './anilist';
 import { getMangaInLibrary } from './users';
+import { User } from '../models/user.model';
 
 const router: Router = Router();
 
@@ -97,7 +98,7 @@ const searchLists = async (userId: string, query: string, limit: number = 50, pa
 // GET /search?query=<search_term>
 router.get('/', AuthenticateMiddleware, async (req: Request, res: Response) => {
 	const userId = req.user?.id;
-	const { query } = req.query;
+	const { query, isAdult } = req.query;
 	
 	if (!userId)
 	{
@@ -117,9 +118,9 @@ router.get('/', AuthenticateMiddleware, async (req: Request, res: Response) => {
 
 		// Search manga from AniList
 		const MANGA_SEARCH_QUERY = `
-			query ($search: String, $page: Int, $perPage: Int) {
+			query ($search: String, $page: Int, $perPage: Int, $isAdult: Boolean) {
 				Page (page: $page, perPage: $perPage) {
-					media (search: $search, type: MANGA) {
+					media (search: $search, type: MANGA, isAdult: $isAdult) {
 						id
 						title {
 							userPreferred
@@ -136,6 +137,7 @@ router.get('/', AuthenticateMiddleware, async (req: Request, res: Response) => {
 		try {
 			const mangaData = await anilistRequest(MANGA_SEARCH_QUERY, {
 				search: query,
+				isAdult: isAdult ??  (await User.findById(userId))?.allowsAdultContent ?? false, // filter out adult content by default
 				page: 1,
 				perPage: 2
 			}, 3600);
@@ -198,7 +200,7 @@ router.get('/', AuthenticateMiddleware, async (req: Request, res: Response) => {
 // GET /search/lists?query=<search_term>&page=<page>&pageSize=<pageSize>
 router.get('/:category', AuthenticateMiddleware, async (req: Request, res: Response) => {
 	const userId = req.user?.id;
-	const { query, page = '1', pageSize = '20' } = req.query;
+	const { query, page = '1', pageSize = '20', isAdult } = req.query;
 	const category = req.params.category;
 
 	if (!userId) {
@@ -221,7 +223,7 @@ router.get('/:category', AuthenticateMiddleware, async (req: Request, res: Respo
 		if (category === 'manga') {
 			// Search manga from AniList with pagination
 			const MANGA_SEARCH_QUERY = `
-				query ($search: String, $page: Int, $perPage: Int) {
+				query ($search: String, $page: Int, $perPage: Int, $isAdult: Boolean) {
 					Page (page: $page, perPage: $perPage) {
 						pageInfo {
 							total
@@ -229,7 +231,7 @@ router.get('/:category', AuthenticateMiddleware, async (req: Request, res: Respo
 							lastPage
 							hasNextPage
 						}
-						media (search: $search, type: MANGA) {
+						media (search: $search, type: MANGA, isAdult: $isAdult) {
 							id
 							title {
 								userPreferred
@@ -245,6 +247,7 @@ router.get('/:category', AuthenticateMiddleware, async (req: Request, res: Respo
 
 			const mangaData = await anilistRequest(MANGA_SEARCH_QUERY, {
 				search: query,
+				isAdult: isAdult ?? (await User.findById(userId))?.allowsAdultContent ?? false, // filter out adult content by default
 				page: pageNum,
 				perPage: pageSizeNum
 			}, 3600);

@@ -195,4 +195,53 @@ router.post(`/me/manga`, AuthenticateMiddleware, async (req: Request, res: Respo
 	}
 })
 
+// get manga from user's collection
+router.get(`/me/settings`, AuthenticateMiddleware, async (req: Request, res: Response) =>
+{
+	// console.log(userId)
+	const userId = req.user?.id
+	if (!userId)
+	{
+		return res.status(400).json("User")
+	}
+	try
+	{
+		const user = await User.findById(userId);
+		if (!user)
+		{
+			throw Error("User not found")
+		}
+		return res.status(200).json({allowsAdultContent: user?.allowsAdultContent})
+	}
+	catch
+	{
+		return res.sendStatus(400)
+	}
+})
+
+// get manga from user's collection
+router.put(`/me/settings`, AuthenticateMiddleware, async (req: Request, res: Response) =>
+{
+	const userId = req.user?.id
+	if (!userId)
+	{
+		return res.status(400).json("User not found")
+	}
+	try
+	{
+		const user = await User.findById(userId);
+		if (!user)
+		{
+			throw Error("User not found")
+		}
+		user.allowsAdultContent = req.body.allowsAdultContent
+		user.save()
+		return res.status(200).json({allowsAdultContent: user?.allowsAdultContent})
+	}
+	catch
+	{
+		return res.sendStatus(400)
+	}
+})
+
 export default router;

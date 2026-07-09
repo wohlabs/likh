@@ -7,6 +7,7 @@ export interface IUser extends Document
 	manga: string[];
 	anilist_token?: string; // optional Anilist OAuth token - lasted forever
 	manga_lists: Types.ObjectId[]; // custom manga lists
+	allowsAdultContent?: boolean; // custom manga lists
 }
 
 const UserSchema = new Schema<IUser>({
@@ -14,7 +15,8 @@ const UserSchema = new Schema<IUser>({
 	password: { type: String, required: true },
 	manga: { type: [String], default: [] },
 	anilist_token: { type: String, required: false, unique: false },
-	manga_lists: { type: [Schema.ObjectId], required: true, default: []}
+	manga_lists: { type: [Schema.ObjectId], required: true, default: []},
+	allowsAdultContent: { type: Boolean, required: false, default: false}
 });
 
 export const User = model<IUser>('User', UserSchema);
