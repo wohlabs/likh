@@ -179,6 +179,7 @@ export default function AppLayout()
 											<ThemeMenuItem 
 												onPress={async () => 
 												{
+													setOptionsVisible(false);
 													router.navigate('/app/settings')
 												}} title="Settings" leadingIcon={"cog"}
 											/>

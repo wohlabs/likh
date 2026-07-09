@@ -84,6 +84,7 @@ export function ThemeMenuItem({
 			{...props}
 			title={title}
 			leadingIcon={leadingIcon == undefined || leadingIcon == null ? leadingIcon : renderIcon }
+			rippleColor={theme["--color-onSurfaceVariant"] + "20"}
 			titleStyle={{
 				color: theme["--color-onSurfaceVariant"],
 				fontSize: 14,
