@@ -83,7 +83,7 @@ export function ThemeMenuItem({
 		<Menu.Item
 			{...props}
 			title={title}
-			leadingIcon={leadingIcon == undefined || leadingIcon == null ? leadingIcon : renderIcon }
+			leadingIcon={leadingIcon == undefined || leadingIcon == null ? undefined : renderIcon }
 			rippleColor={Platform.OS === "ios" ? undefined : theme["--color-onSurfaceVariant"] + "20"}
 			titleStyle={{
 				color: theme["--color-onSurfaceVariant"],
