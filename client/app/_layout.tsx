@@ -20,7 +20,7 @@ export default function RootLayout()
 					<ThemeProvider>
 						<KeyboardAvoidingView
 							style={{ flex: 1 }}
-							behavior={Platform.OS === "ios" ? "padding" : "height"}
+							// behavior={Platform.OS === "ios" ? "padding" : "height"}
 						>
 							<AppGate />
 						</KeyboardAvoidingView>

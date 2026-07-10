@@ -23,6 +23,7 @@ import * as ImagePicker from "expo-image-picker";
 import { router, useLocalSearchParams } from "expo-router";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import { Dimensions } from 'react-native';
 import
 {
 	ActivityIndicator,
@@ -119,13 +120,13 @@ function TranslatableButtonContainer({
 
 export default function MangaDetails() 
 {
-	const { width } = useWindowDimensions();
-	const { mangaId, error } = useLocalSearchParams(); // <-- get from URL
+	const { width, height } = Dimensions.get('screen');
+	const { mangaId, error } = useLocalSearchParams<{mangaId: string, error: string}>(); // <-- get from URL
 	const [manga, setManga] = useState<IMangaDetails>();
 	const [data, setData] = useState<IMangaNotes>([]);
 	const [filteredNotes, setFilteredNotes] = useState<IMangaNotes>([]);
 	const [searchString, setSearchString] = useState<string>("");
-	const [isViewingOverlay, setIsViewingOverlay] = useState<boolean>(false);
+	const [isViewingOverlay, setIsViewingOverlay] = useState(false);
 	const [isTagFocused, setIsTagFocused] = useState<boolean>(false);
 	const tagTextInputFocus = useRef<TextInput>(null);
 	const tagAddRef = useRef<Text>(null);
@@ -301,19 +302,20 @@ export default function MangaDetails()
 		[addImages, handleDroppedImageAsString]
 	);
 
-	const { getRootProps } = useDropzone({
+	const { getRootProps } = Platform.OS === 'web' ? useDropzone({
 		accept: { "image/*": [] },
 		multiple: true,
 		noClick: true,
 		useFsAccessApi: true,
 		noKeyboard: true,
 		disabled: Platform.OS !== 'web'
-	});
+	}) : { getRootProps: null};
 	dropZoneRootProps = getRootProps;
 
 	// Detect dragging over the window to activate the overlay so it can receive the drop
 	useEffect(() => 
 	{
+		if (Platform.OS !== 'web') return; // not supported outside of web
 		const onWindowDrop = async (e: DragEvent) => 
 		{
 			e.preventDefault();
@@ -495,7 +497,7 @@ export default function MangaDetails()
 
 	useEffect(() => 
 	{
-		let tempData =
+		let tempData: INoteEntry[] =
 			searchString.trim().length === 0
 				? data
 				: data.filter(
@@ -503,7 +505,7 @@ export default function MangaDetails()
 						note.text &&
 							note.text.toLowerCase().includes(searchString.toLowerCase()),
 				);
-		tempData = tempData.toSorted((a: INoteEntry, b: INoteEntry) => 
+		tempData = [...tempData].sort((a: INoteEntry, b: INoteEntry) => 
 		{
 			if (sortByValue === "date modified") 
 			{
