@@ -1,7 +1,7 @@
 import { usePersistentTheme } from "@/context/usePersistentTheme";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { ReactNode } from "react";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 import { Menu, MenuProps, MenuItemProps } from "react-native-paper";
 
 interface ThemeMenuProps extends Omit<MenuProps, "contentStyle"> {
@@ -84,7 +84,7 @@ export function ThemeMenuItem({
 			{...props}
 			title={title}
 			leadingIcon={leadingIcon == undefined || leadingIcon == null ? leadingIcon : renderIcon }
-			rippleColor={theme["--color-onSurfaceVariant"] + "20"}
+			rippleColor={Platform.OS === "ios" ? undefined : theme["--color-onSurfaceVariant"] + "20"}
 			titleStyle={{
 				color: theme["--color-onSurfaceVariant"],
 				fontSize: 14,
