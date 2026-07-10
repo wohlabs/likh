@@ -2,6 +2,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { vars } from "nativewind";
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import { Appearance } from "react-native";
 
 const STORAGE_KEY = "APP_THEME"; // "light" | "dark"
 
@@ -135,9 +136,10 @@ interface ThemeProviderProps {
 
 export function ThemeProvider({ children }: ThemeProviderProps) 
 {
+	const defaultColorScheme = Appearance.getColorScheme() ?? "light";
 	const [ready, setReady] = useState(false);
-	const [theme, setTheme] = useState<ThemeVars>(themes['light']);
-	const [themeScheme, setThemeScheme] = useState<ThemeScheme>('light');
+	const [theme, setTheme] = useState<ThemeVars>(themes[defaultColorScheme]);
+	const [themeScheme, setThemeScheme] = useState<ThemeScheme>(defaultColorScheme);
 
 	// Load saved theme
 	useEffect(() => 
