@@ -848,6 +848,7 @@ export default function MangaDetails()
 												flexDirection: "row",
 												alignItems: "center",
 											}}
+											key={`NotePreviewCardView_${item.id}`}
 										>
 											<NotePreviewCard
 												note={item}
@@ -856,6 +857,7 @@ export default function MangaDetails()
 													setViewerNoteIndex(index);
 													setIsViewingOverlay(true);
 												}}
+												key={`NotePreviewCard_${item.id}`}
 											/>
 											<NoteButtons
 												disabled={item.fromAnilist}
@@ -865,7 +867,7 @@ export default function MangaDetails()
 													)
 												}
 												onDeletePress={() => onDelete(item.id)}
-												key={`NotePreviewCard_${item.id}`}
+												key={`NotePreviewButtons_${item.id}`}
 											/>
 										</View>
 									) : (
