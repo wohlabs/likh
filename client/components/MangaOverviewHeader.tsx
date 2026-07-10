@@ -5,7 +5,7 @@ import { getMangaStatus, updateMangaStatus } from "@/services/media_entry.servic
 import { ICustomList, ICustomLists, MangaItem } from "@/types/ICustomList";
 import { getMangaTitle, IMangaDetails } from "@/types/IManga";
 import { useCallback, useEffect, useState } from "react";
-import { GestureResponderEvent, Image, StyleProp, StyleSheet, View, ViewStyle, ActivityIndicator } from "react-native";
+import { GestureResponderEvent, Image, StyleProp, StyleSheet, View, ViewStyle, ActivityIndicator, Pressable } from "react-native";
 import { Modal, Portal } from "react-native-paper";
 import Toast from "react-native-toast-message";
 import NewCustomListView from "./NewCustomListView";
@@ -230,19 +230,21 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 											</View>
 											<ThemeMenu
 												visible={optionsVisible}
-												onDismiss={() =>
-												{
-													setOptionsVisible(false)
-												}}
+												onDismiss={() => setOptionsVisible(false)}
 												anchorPosition="bottom"
 												anchor={
-													<Ionicons
-														size={22}
-														name={lists.reduce((accumulator, currentValue)=> accumulator || currentValue.isInList, false) ? 'bookmark' : 'bookmark-outline'}
-														className='icon-button-contained shadow-sm'
-														style={{borderRadius: 8, width: 50, height: 50, justifyContent: 'center', alignItems: 'center', alignContent: 'center', textAlign: 'center'}}
+													<Pressable
+														className='icon-button-contained shadow-sm justify-center items-center w-[50] h-[50] self-center flex'
+														style={{ borderRadius: 8, justifyContent: 'center', alignItems: 'center' }}
 														onPress={() => setOptionsVisible(true)}
-													/>
+													>
+														<Ionicons
+															size={22}
+															name={lists.reduce((acc, curr) => acc || curr.isInList, false) ? 'bookmark' : 'bookmark-outline'}
+															// Move color/styling here if needed
+															className='text-center'
+														/>
+													</Pressable>
 												}
 											>
 												<ThemeMenuItem 

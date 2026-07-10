@@ -567,9 +567,9 @@ export default function MangaDetails()
 					{/* Inline add-note / status input (social-media style) */}
 					<View
 						style={[
-							styles.addNoteContainer,
-							{ borderColor: theme['--color-outlineVariant'] },
+							styles.addNoteContainer
 						]}
+						className="border-outlineVariant"
 					>
 						{Platform.OS === "web" && isAddingNote && (
 							<div
@@ -620,7 +620,7 @@ export default function MangaDetails()
 										keyboardType="number-pad"
 										value={newStartChapter}
 										onChangeText={(text) => setNewStartChapter(text)}
-										className="flex-1 max-w-48 rounded-lg px-3 py-2 text-base"
+										className="flex-1 max-w-48 rounded-lg px-3 py-2 text-base border-outlineVariant text-onBackground"
 										style={{
 											borderWidth: 2,
 											borderColor: theme['--color-outlineVariant'],
@@ -640,7 +640,7 @@ export default function MangaDetails()
 								</View>
 								<View className="flex-1 flex-row items-center py-2 gap-1">
 									<ThemeText>Tags: </ThemeText>
-									<ThemeBadge onPress={(e) => { setIsTagFocused(true);}} textColor={"green"} className="border-2 p-1!">
+									<ThemeBadge onPress={(e) => { setIsTagFocused(true);}} textColor={"green"} className="border-2 p-1! border-outlineVariant">
 										{
 											isTagFocused
 											? <TextInput style={{
