@@ -72,7 +72,7 @@ export default function Index()
 					title: "Library"
 				}}
 			/>
-			<View ref={pageRef} style={{flex: 1}}>
+			<View ref={pageRef} className="bg-background flex-1">
 				{
 					loading ?
 						<LoadingScreen />

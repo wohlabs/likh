@@ -558,7 +558,7 @@ export default function MangaDetails()
 	}, [filteredNotes, viewerNoteIndex]);
 
 	return (
-		<View style={{ flex: 1 }}>
+		<View className="bg-background flex-1">
 			{loading ? (
 				<LoadingScreen />
 			) : (
