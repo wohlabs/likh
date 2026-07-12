@@ -150,7 +150,7 @@ export default function AppLayout()
 													mode="text"
 												>
 													<Ionicons name="person"
-														color={theme['--color-onSurfaceVariant']} size={16}
+														className="color-onSurfaceVariant"
 													/>
 													<Text
 														className="text-onSurfaceVariant"

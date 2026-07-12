@@ -242,7 +242,7 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 															size={22}
 															name={lists.reduce((acc, curr) => acc || curr.isInList, false) ? 'bookmark' : 'bookmark-outline'}
 															// Move color/styling here if needed
-															className='text-center'
+															className='text-center text-onSurfaceVariant'
 														/>
 													</Pressable>
 												}

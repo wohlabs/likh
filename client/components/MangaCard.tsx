@@ -9,7 +9,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
-import { Image, Pressable, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
+import { Image, Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from "react-native";
 
 export default function MangaCard({item, style, allCustomLists, onCreateList } : {item: MangaProps, style?: StyleProp<ViewStyle>, onCreateList?: (mangaIdToAdd?: number) => {mangaIdToAdd: undefined}, allCustomLists: ICustomLists})
 {
@@ -64,7 +64,9 @@ export default function MangaCard({item, style, allCustomLists, onCreateList } :
 		<>
 			<View style={style}>
 				<Pressable 
-					style={[styles.mangaCardContainer, {
+					className="w-full rounded-lg overflow-hidden relative"
+					style={[{
+						aspectRatio: 0.8,
 						shadowColor: "#000",
 						shadowOffset: { width: 0, height: 4 },
 						shadowOpacity: 0.08,
@@ -77,7 +79,8 @@ export default function MangaCard({item, style, allCustomLists, onCreateList } :
 					<Image
 						source={{ uri: item.coverImage?.large }}
 						resizeMode="cover"
-						style={styles.mangaCoverImage}
+						className="w-full overflow-hidden rounded-lg"
+						style={{ aspectRatio: 0.8 }}
 					/>
 					{/* Gradient mask */}
 					<LinearGradient
@@ -86,12 +89,19 @@ export default function MangaCard({item, style, allCustomLists, onCreateList } :
 						style={StyleSheet.absoluteFill}
 						pointerEvents="none"
 					/>
-					<View style={styles.bottomContent}>
-						<View style={styles.textContainer}>
-							<ThemeText style={[styles.mangaTitle, {color: themes.dark["--color-onBackground"]}]} numberOfLines={2}>{getMangaTitle(item)}</ThemeText>
+					<View className="flex-1 justify-between items-center absolute w-full rounded-t-md bottom-0">
+						<View className="flex w-full text-left">
+							<Text
+								className="text-left m-1 text-gray-100 lowercase"
+								numberOfLines={2}
+							>
+								{getMangaTitle(item)}
+							</Text>
 						</View>
 					</View>
-					<View style={{position: "absolute", top: 0, width: "100%", flexDirection: "row-reverse"}}>
+					<View
+						className="absolute top-0 w-full flex-row-reverse"
+					>
 						<ThemeMenu
 							visible={optionsVisible}
 							onDismiss={() =>
@@ -131,25 +141,3 @@ export default function MangaCard({item, style, allCustomLists, onCreateList } :
 		</>
 	);
 }
-
-const styles = StyleSheet.create({
-	mangaTitle: {textAlign: 'left', margin: 5},
-	mangaCoverImage: { width: '100%', aspectRatio: '0.8', overflow: 'hidden', borderRadius: 10 },
-	mangaCardContainer: { width: '100%', aspectRatio: '0.8', borderRadius: 10, overflow: 'hidden', position: 'relative' },
-	bottomContent: {
-		flex: 1,
-		justifyContent: 'space-between',
-		alignItems: 'center',
-		// padding: 10,
-		position: "absolute",
-		bottom: 0,
-		width: "100%",
-		borderTopLeftRadius: 5,
-		borderTopRightRadius: 5
-	},
-	textContainer: {
-		flex: 1,
-		width: '100%',
-		textAlign: 'left'
-	},
-});

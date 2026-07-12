@@ -50,7 +50,7 @@ export default function ThemeSearchbar({
 			<Ionicons
 				name="search"
 				size={20}
-				color={placeholderColor}
+				className='color-onSurfaceVariant'
 			/>
 			<TextInput
 				ref={inputRef}
