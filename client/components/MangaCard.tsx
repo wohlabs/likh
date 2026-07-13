@@ -64,16 +64,7 @@ export default function MangaCard({item, style, allCustomLists, onCreateList } :
 		<>
 			<View style={style}>
 				<Pressable 
-					className="w-full rounded-lg overflow-hidden relative"
-					style={[{
-						aspectRatio: 0.8,
-						shadowColor: "#000",
-						shadowOffset: { width: 0, height: 4 },
-						shadowOpacity: 0.08,
-						shadowRadius: 12,
-						elevation: 2,
-						boxShadow: `0 0 5px 1px ${theme['--color-elevation-level1']}`
-					}]}
+					className="w-full rounded-lg overflow-hidden relative shadow-elevation-level1 shadow-md"
 					onPress={() => { router.navigate(`/app/manga/${item.id}`) }}
 				>
 					<Image
@@ -84,7 +75,7 @@ export default function MangaCard({item, style, allCustomLists, onCreateList } :
 					/>
 					{/* Gradient mask */}
 					<LinearGradient
-						colors={["transparent", themes.dark["--color-elevation-level1"]]}
+						colors={["transparent", "#1E293B"]} // elevation-level-1
 						locations={[0.6, 1]}
 						style={StyleSheet.absoluteFill}
 						pointerEvents="none"
