@@ -55,7 +55,7 @@ export default function NoteViewer({mangaTitle, note, onDelete, onEdit, style}: 
 								uri: images[currentImageIndex] || "https://static.thenounproject.com/png/187803-200.png"
 							}}
 							resizeMode="contain"
-							className="flex flex-1 w-full rounded-lg border-2 border-onSurfaceVariant"
+							className="flex flex-1 w-full rounded-lg border-2 border-outlineVariant"
 						/>
 						:
 						<View className="flex-1 justify-center items-center border-2 rounded-lg border-dashed">
@@ -71,7 +71,7 @@ export default function NoteViewer({mangaTitle, note, onDelete, onEdit, style}: 
 								<Image
 									source={{ uri: item }}
 									resizeMode="cover"
-									className="h-full aspect-square border-2 border-onSurfaceVariant rounded-lg mr-1.5"
+									className="h-full aspect-square border-2 border-outlineVariant rounded-lg mr-1.5"
 								/>
 							</Pressable>
 						)}
