@@ -287,27 +287,26 @@ export default function EditNoteScreen()
 							Platform.OS === 'web' && <div {...dropZoneRootProps()} style={{position: "absolute", width: "100%", height: "100%" }}/>
 						}
 					</View>
-					<View style={styles.thumbnailsContainer}>
+					<View className="h-25 flex-row w-full">
 						<FlatList
 							data={images}
 							key={`images_${Date.now()}`}
 							renderItem={({ item, index }) => (
-								<Pressable onPress={() => {setCurrentImageIndex(index)}}>
+								<Pressable onPress={() => {setCurrentImageIndex(index)}} className="w-20 h-20">
 									<Image
 										source={{ uri: item.uri }}
 										resizeMode="cover"
-										className="border-outlineVariant"
-										style={[styles.thumbnail]}
+										className="h-full aspect-square border-2 border-outlineVariant rounded-lg mr-1.5"
 									/>
 								</Pressable>
 							)}
 							horizontal
-							style={styles.thumbnailList}
+							className="flex-1 mr-2 mt-2 flex-row"
 							keyExtractor={(_, index) => index.toString()}
 						/>
 						<Ionicons name={"add"} size={30}
-							className="icon-button-contained"
-							onPress={pickImage} style={{justifyContent: "center"}}
+							className="icon-button-contained self-center"
+							onPress={pickImage}
 						/>
 					</View>
 				</View>
