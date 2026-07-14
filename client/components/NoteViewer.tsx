@@ -119,8 +119,9 @@ export default function NoteViewer({mangaTitle, note, onDelete, onEdit, style}: 
 						disabled={note.fromAnilist}
 						className="flex-row justify-center items-center flex-1"
 						onPress={onEdit}
+						mode="contained-tonal"
 					>
-						<Ionicons name="pencil" size={16} color={note.fromAnilist ? theme["--color-onDisabledBackground"] : theme["--color-primary"]}/>
+						<Ionicons name="pencil" size={16} color={note.fromAnilist ? theme["--color-onDisabledBackground"] : theme["--color-onPrimaryContainer"]}/>
 						Edit
 					</ThemeButton>
 					{/* <ThemeButton

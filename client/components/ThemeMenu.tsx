@@ -47,7 +47,7 @@ export function ThemeMenuItem({
 			content = (
 				<MaterialCommunityIcons 
 					name={leadingIcon as any} 
-					color={theme['--color-onSurfaceVariant']} 
+					color={props.rippleColor ?? theme['--color-onSurfaceVariant']} 
 					// Using iconProps.size ensures it stays consistent with RNP
 					size={iconProps.size} 
 				/>
@@ -84,7 +84,7 @@ export function ThemeMenuItem({
 			{...props}
 			title={title}
 			leadingIcon={leadingIcon == undefined || leadingIcon == null ? undefined : renderIcon }
-			rippleColor={Platform.OS === "ios" ? undefined : theme["--color-onSurfaceVariant"] + "20"}
+			rippleColor={props.rippleColor ?? Platform.OS === "ios" ? undefined : theme["--color-onSurfaceVariant"] + "20"}
 			titleStyle={{
 				color: theme["--color-onSurfaceVariant"],
 				fontSize: 14,
