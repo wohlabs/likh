@@ -316,10 +316,7 @@ export default function EditNoteScreen()
 						editable={false}
 						value={mangaName}
 						placeholder="manhwa/manga name"
-						className="rounded-lg px-3 py-2 text-base border-2 border-outlineVariant text-onBackground"
-						style={{
-							opacity: loading ? 0.5 : 1,
-						}}
+						className={`rounded-lg px-3 py-2 text-base border-2 opacity-50 border-outlineVariant text-onDisabledBackground`}
 					/>
 					<View style={{ flexDirection: "row", alignItems: "center"}}>
 						<TextInput
@@ -416,7 +413,7 @@ export default function EditNoteScreen()
 
 const styles = StyleSheet.create({
 	mainLayout: { flex: 1, padding: 10, flexDirection: "row" },
-	imageViewerContainer: { flex: 2, margin: 10, flexDirection: "column" },
+	imageViewerContainer: { flex: 2, marginHorizontal: 10, flexDirection: "column" },
 	imageViewer: {
 		flex: 1,
 		width: "100%",
