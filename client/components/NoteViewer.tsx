@@ -38,8 +38,13 @@ export default function NoteViewer({mangaTitle, note, onDelete, onEdit, style}: 
 
 	return (
 		note &&
-		<View style={[styles.viewerContainer, style]}>
-			<View style={styles.imagesViewer}>
+		<View
+			className="flex-1 p-2 flex-row"
+			style={style}
+		>
+			<View
+				className="flex-2 mb-2 ml-2 mr-2 flex-col"
+			>
 				{
 					images?.length > 0 ? 
 						<Image
@@ -50,28 +55,28 @@ export default function NoteViewer({mangaTitle, note, onDelete, onEdit, style}: 
 								uri: images[currentImageIndex] || "https://static.thenounproject.com/png/187803-200.png"
 							}}
 							resizeMode="contain"
-							style={styles.imageContainer}
+							className="flex flex-1 w-full rounded-lg border-2 border-onSurfaceVariant"
 						/>
 						:
-						<View style={styles.noImagesContainer}>
-							<ThemeText style={{color: theme['--color-onSurface']}}>No images</ThemeText>
+						<View className="flex-1 justify-center items-center border-2 rounded-lg border-dashed">
+							<ThemeText className="text-onSurface">No images</ThemeText>
 						</View>
 				}
-				<View style={{height: 100, flexDirection: "row"}}>
+				<View className="h-25 flex-row w-full">
 					<FlatList
 						data={images}
 						key={`images_${Date.now()}`}
 						renderItem={({ item, index }) => (
-							<Pressable onPress={() => {setCurrentImageIndex(index)}}>
+							<Pressable onPress={() => {setCurrentImageIndex(index)}} className="w-20 h-20">
 								<Image
 									source={{ uri: item }}
 									resizeMode="cover"
-									style={styles.thumbnailImage}
+									className="h-full aspect-square border-2 border-onSurfaceVariant rounded-lg mr-1.5"
 								/>
 							</Pressable>
 						)}
 						horizontal
-						style={{ flex: 1, marginTop: 10 }}
+						className="flex-1 mr-2 mt-2 flex-row"
 						keyExtractor={(_, index) => index?.toString() || ""}
 					/>
 				</View>
@@ -97,13 +102,14 @@ export default function NoteViewer({mangaTitle, note, onDelete, onEdit, style}: 
 					))
 				}
 				</View>
-				<ThemeText style={[{fontWeight: "bold"}]}>Note:</ThemeText>
+				<ThemeText className="font-bold">Note:</ThemeText>
 				<ScrollView>
 					<ThemeText selectable={true}>{note.text}</ThemeText>
 				</ScrollView>
-				<View style={styles.viewerButtonsContainer}>
-					{/* <ThemeButton style={styles.viewerButton}
+				<View className="flex-row items-center">
+					{/* <ThemeButton
 						disabled={note.fromAnilist}
+						className="flex-row justify-center items-center flex-1"
 						onPress={() => {}}
 					>
 						<Ionicons name="share-social" size={16} color={note.fromAnilist ? theme["--color-onDisabledBackground"] : theme["--color-primary"]}/>
@@ -111,7 +117,7 @@ export default function NoteViewer({mangaTitle, note, onDelete, onEdit, style}: 
 					</ThemeButton> */}
 					<ThemeButton
 						disabled={note.fromAnilist}
-						style={styles.viewerButton}
+						className="flex-row justify-center items-center flex-1"
 						onPress={onEdit}
 					>
 						<Ionicons name="pencil" size={16} color={note.fromAnilist ? theme["--color-onDisabledBackground"] : theme["--color-primary"]}/>
@@ -130,6 +136,7 @@ export default function NoteViewer({mangaTitle, note, onDelete, onEdit, style}: 
 						onDismiss={() => setOptionsVisible(false)}
 						anchor={
 							<Ionicons name='ellipsis-horizontal'
+								className="icon-button m-auto"
 								onPress={() => setOptionsVisible(true)}
 							/>
 						}
@@ -146,33 +153,7 @@ export default function NoteViewer({mangaTitle, note, onDelete, onEdit, style}: 
 }
 
 const styles = StyleSheet.create({
-	viewerContainer: {
-		flex: 1, padding: 10, flexDirection: "row"
-	},
-	imagesViewer: {
-		flex: 2, margin: 10, flexDirection: "column" 
-	},
-	noImagesContainer: {
-		flex: 1, justifyContent: "center", alignItems: "center", borderWidth: 2, borderRadius: 10, borderStyle:"dashed"
-	},
-	imageContainer: {
-		flex: 1,
-		width: "100%",
-		borderRadius: 10,
-		borderWidth: 2,
-	},
-	thumbnailImage: {
-		height: "100%",
-		aspectRatio: 1,
-		borderRadius: 10,
-		borderColor: "black",
-		borderWidth: 2,
-		marginRight: 5
-	},
 	viewerButton: {
 		flexDirection: "row", justifyContent: "center", alignItems: "center", flex: 1  
 	},
-	viewerButtonsContainer: {
-		flexDirection: "row", alignItems: "center"
-	}
 });
