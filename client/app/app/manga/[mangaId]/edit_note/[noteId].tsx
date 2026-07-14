@@ -1,3 +1,4 @@
+import ThemeBadge from "@/components/ThemeBadge";
 import ThemeButton from "@/components/ThemeButton";
 import ThemeText from "@/components/ThemeText";
 import { getImageBase64 } from "@/components/util";
@@ -11,7 +12,7 @@ import { File } from 'expo-file-system';
 import * as ImagePicker from "expo-image-picker";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { fetch } from 'expo/fetch';
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { DropEvent, useDropzone } from "react-dropzone";
 import
 {
@@ -57,6 +58,13 @@ export default function EditNoteScreen()
 	const [deletedImages, setDeletedImages] = useState<string[]>([]);
 	const [loading, setLoading] = useState<boolean>(true);
 	const token = useContext(AuthContext).token
+
+	const tagTextInputFocus = useRef<TextInput>(null);
+	const tagAddRef = useRef<Text>(null);
+	const [tags, setTags] = useState<string[]>([]);
+	const [isTagFocused, setIsTagFocused] = useState<boolean>(false);
+	const [addTagWidth, setAddTagWidth] = useState<number>(0);
+	const [newTag, setNewTag] = useState<string>("");
 	
 	useEffect(() => 
 	{
@@ -125,6 +133,7 @@ export default function EditNoteScreen()
 			const note = noteResult.data;
 			setStartChapter(note.startChapter != -1 ? note.startChapter.toString() : "");
 			setEndChapter(note.endChapter?.toString());
+			setTags(note.tags);
 			onChangeText(note.text?? "");
 
 			const imageAssets: ImagePicker.ImagePickerAsset[] = []
@@ -181,6 +190,12 @@ export default function EditNoteScreen()
 		formData.append('deletedImageIds', JSON.stringify(deletedImages))
 		formData.append('startChapter', startChapter ? startChapter : String(-1))
 		if (endChapter) formData.append('endChapter', endChapter)
+		if (tags)
+		{
+			tags.forEach((tag) => {
+				formData.append('tags[]', tag);
+			});
+		}
 		if (text && text.trim().length > 0) formData.append('text', text)
 
 		for (const image of addedImages)
@@ -333,6 +348,34 @@ export default function EditNoteScreen()
 								opacity: loading ? 0.5 : 1,
 							}}
 						/>
+					</View>
+					<View className="flex-row items-center mb-2 gap-1">
+						<ThemeBadge onPress={(e) => { setIsTagFocused(true);}} textColor={"green"} className="border-2 p-1! border-outlineVariant">
+							{
+								isTagFocused
+								? <TextInput style={{
+									minWidth: addTagWidth,
+									maxWidth: addTagWidth + 50
+								}} ref={tagTextInputFocus}
+									onBlur={() => setIsTagFocused(false)}
+									onChangeText={setNewTag}
+									value={newTag}
+									onSubmitEditing={() => {
+									setNewTag("")
+									setTags([...(new Set([newTag, ...tags]))])
+									}}
+									className="outline-none" />
+								: <ThemeText ref={tagAddRef} onLayout={(e) => setAddTagWidth(e.nativeEvent.layout.width)}>tag +</ThemeText>
+							}
+						</ThemeBadge>
+						{
+							tags?.map((value) => 
+								<ThemeBadge labelForColor={value} className="border-2 p-1!">
+									{value}
+									<Ionicons name="close-circle" className="hover:bg-outlineVariant rounded-sm" onPress={() => { setTags(tags.filter(tag => tag !== value)) }}/>
+								</ThemeBadge>
+							)
+						}
 					</View>
 					<TextInput
 						editable={!loading}
