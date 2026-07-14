@@ -74,13 +74,6 @@ function NoteButtons({
 				style={styles.actionButton}
 			/>
 			<Ionicons
-				name={"share-outline"}
-				className={`icon-button-contained ${disabled && "disabled"}`}
-				size={20}
-				onPress={() => {}}
-				style={styles.actionButton}
-			/>
-			<Ionicons
 				name={"trash-outline"}
 				className={`icon-button-contained ${disabled && "disabled"}`}
 				size={20}
@@ -107,7 +100,7 @@ function TranslatableButtonContainer({
 	const swipeLeftAnimation = useAnimatedStyle(() => 
 	{
 		return {
-			transform: [{ translateX: translation.value + 150 }],
+			transform: [{ translateX: translation.value + 95 }],
 		};
 	});
 

@@ -102,13 +102,13 @@ export default function NoteViewer({mangaTitle, note, onDelete, onEdit, style}: 
 					<ThemeText selectable={true}>{note.text}</ThemeText>
 				</ScrollView>
 				<View style={styles.viewerButtonsContainer}>
-					<ThemeButton style={styles.viewerButton}
+					{/* <ThemeButton style={styles.viewerButton}
 						disabled={note.fromAnilist}
 						onPress={() => {}}
 					>
 						<Ionicons name="share-social" size={16} color={note.fromAnilist ? theme["--color-onDisabledBackground"] : theme["--color-primary"]}/>
 						Share
-					</ThemeButton>
+					</ThemeButton> */}
 					<ThemeButton
 						disabled={note.fromAnilist}
 						style={styles.viewerButton}
@@ -117,14 +117,14 @@ export default function NoteViewer({mangaTitle, note, onDelete, onEdit, style}: 
 						<Ionicons name="pencil" size={16} color={note.fromAnilist ? theme["--color-onDisabledBackground"] : theme["--color-primary"]}/>
 						Edit
 					</ThemeButton>
-					<ThemeButton
+					{/* <ThemeButton
 						disabled={note.fromAnilist}
 						style={styles.viewerButton}
 						onPress={() => {}}
 					>
 						<Ionicons name="heart" size={16} color={note.fromAnilist ? theme["--color-onDisabledBackground"] : theme["--color-primary"]}/>
 						Favorite
-					</ThemeButton>
+					</ThemeButton> */}
 					<ThemeMenu
 						visible={optionsVisible}
 						onDismiss={() => setOptionsVisible(false)}
