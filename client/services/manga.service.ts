@@ -91,7 +91,7 @@ export const getMangaData = async (mangaId: string, access_token?: string) : Pro
 	}
 };
 
-export const getNoteSummary = async (mangaId: string) : Promise<string> => 
+export const getNoteSummary = async (mangaId: string) : Promise<{ summary: string, key_points_by_chapter: Array<{chapter_group: string, point: string}>}> => 
 {
 	try 
 	{
@@ -104,7 +104,7 @@ export const getNoteSummary = async (mangaId: string) : Promise<string> =>
 	{
 		console.error(err.response?.data || err.message);
 		// error reading value
-		return "";
+		return {summary: "Failed to get summary.", key_points_by_chapter: []};
 	}
 };
 

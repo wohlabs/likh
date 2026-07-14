@@ -335,8 +335,19 @@ router.post('/summary', AuthenticateMiddleware, async (req: Request, res: Respon
 			}
 		).join('\n\n---\n\n');
 	
-		const systemPrompt = `You are an assistant that summarizes user notes for a manga. Use the provided notes (text), their tags, and chapter numbers to produce a concise and useful summary. Output a short summary (3-4 sentences) and a structured list of key points grouped by chapter where applicable and in a concise way. The key points should be 1 bullet point per chapter group. Treat each note the same regardless of whether it is tagged or note. Prefer clarity and brevity. Please response in a regular text format. Use a dash to start each bullet point.`;
-		const userPrompt = `Notes:\n${items}\n\nPlease produce a text of a brief summary of all the notes provided.`;
+		const systemPrompt = `You are an assistant that summarizes user notes for a manga. Use the provided notes (text), their tags, and chapter numbers to produce a concise and useful summary. 
+		Return your response strictly in JSON format using the following schema:
+		{
+			"summary": "A concise 3-4 sentence summary of all provided notes.",
+			"key_points_by_chapter": [
+				{
+					"chapter_group": "e.g., Chapter 1-5",
+					"point": "A single, concise bullet point summarizing the main event for this range."
+				}
+			]
+		}
+		Ensure the output is valid JSON and contains no additional text outside the JSON object.`;
+		const userPrompt = `Notes:\n${items}\n\nPlease analyze these notes and provide the summary in the required JSON format.`;
 
 		const modelPriorityList: string[] = [
 			'gemini-3.5-flash',

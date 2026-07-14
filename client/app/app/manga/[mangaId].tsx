@@ -468,7 +468,7 @@ export default function MangaDetails()
 	{
 		setSummaryLoading(true)
 		const summary = await getNoteSummary(mangaId.toString());
-		setSummary(summary)
+		setSummary(summary.summary + "\n\nKey points:\n" + (summary.key_points_by_chapter.map(({chapter_group, point})=> `- ${chapter_group}: ${point}`).join("\n")))
 		setSummaryLoading(false)
 	}, [mangaId]);
 
