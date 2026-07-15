@@ -100,7 +100,7 @@ function TranslatableButtonContainer({
 	const swipeLeftAnimation = useAnimatedStyle(() => 
 	{
 		return {
-			transform: [{ translateX: translation.value + 90 }],
+			transform: [{ translateX: translation.value + 100 }],
 		};
 	});
 

@@ -58,8 +58,8 @@ export default function NoteViewer({mangaTitle, note, onDelete, onEdit, style}: 
 							className="flex flex-1 w-full rounded-lg border-2 border-outlineVariant"
 						/>
 						:
-						<View className="flex-1 justify-center items-center border-2 rounded-lg border-dashed">
-							<ThemeText className="text-onSurface">No images</ThemeText>
+						<View className="flex-1 justify-center items-center border-2 rounded-lg border-dashed border-onDisabledBackground">
+							<ThemeText className="text-onDisabledBackground">No images</ThemeText>
 						</View>
 				}
 				<View className="h-25 flex-row w-full">
