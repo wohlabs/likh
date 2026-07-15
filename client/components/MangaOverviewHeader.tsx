@@ -290,7 +290,7 @@ export default function MangaOverviewHeader({ style, manga } : { style?: StylePr
 				<Modal visible={isCreatingNewList} onDismiss={() => setCreatingNewList(false)}
 					contentContainerStyle={{minWidth: 200, minHeight: 200, width: "30%", height: "50%", backgroundColor: theme['--color-background'], borderRadius: 10, margin: 'auto', padding: 10, gap: 5}}
 				>
-					<NewCustomListView mangaIdToAdd={Number(manga?.mangaId)} setAllCustomLists={() => null} onCustomListCreated={async () => setCreatingNewList(false)} />
+					<NewCustomListView mangaIdToAdd={Number(manga?.mangaId)} setAllCustomLists={() => null} onCustomListCreated={async () => setCreatingNewList(false)} onCanceled={() => setCreatingNewList(false)} />
 				</Modal>
 			</Portal>
 		</View>

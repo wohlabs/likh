@@ -6,7 +6,7 @@ import ThemeButton from "./ThemeButton";
 import ThemeText from "./ThemeText";
 import { usePersistentTheme } from "@/context/usePersistentTheme";
 
-export default function NewCustomListView({mangaIdToAdd, setAllCustomLists, onCustomListCreated} : {mangaIdToAdd?: number, setAllCustomLists?: React.Dispatch<React.SetStateAction<ICustomLists>>, onCustomListCreated: () => void})
+export default function NewCustomListView({mangaIdToAdd, setAllCustomLists, onCustomListCreated, onCanceled} : {mangaIdToAdd?: number, setAllCustomLists?: React.Dispatch<React.SetStateAction<ICustomLists>>, onCustomListCreated: () => void, onCanceled: () => void})
 {
 	const [title, setTitle] = useState<string>("")
 	const [description, setDescription] = useState<string>("")
@@ -47,8 +47,8 @@ export default function NewCustomListView({mangaIdToAdd, setAllCustomLists, onCu
 				placeholderTextColor={theme["--color-onDisabledBackground"]}
 				className="flex-1 outline-2 outline-outline rounded-md p-2 text-onBackground"
 			/>
-			<View style={{flexDirection: "row", gap: 5}}>
-				<ThemeButton className="flex-1" mode="contained-tonal">Cancel</ThemeButton>
+			<View style={{flexDirection: "row", gap: 5}} className="pt-1">
+				<ThemeButton className="flex-1" mode="contained-tonal" onPress={onCanceled}>Cancel</ThemeButton>
 				<ThemeButton className="flex-1" mode="contained" onPress={createNewCustomList}>Create</ThemeButton>
 			</View>
 		</View>
