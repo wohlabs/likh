@@ -82,7 +82,7 @@ export default function Index()
 							keyExtractor={(item) => item.id}
 							key={`filteredMangaList_${listColNum}`}
 							numColumns={listColNum}
-							style={{flex: 1}}
+							style={{flex: 1, paddingBottom: 80}}
 							renderItem={({ item }) => (
 								item?.id ?
 									<MangaCard item={item} style={{ flex:1, padding: 10 }} allCustomLists={allCustomLists} onCreateList={popupCreateNewListWindow}/>

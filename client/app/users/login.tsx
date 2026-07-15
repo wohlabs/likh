@@ -49,7 +49,7 @@ export default function UserLogin()
 					<TextInput placeholder="password" className="bg-transparent w-full p-2 rounded-md text-md text-onBackground border-2 border-inverseSurface"  value={password} onChangeText={setPassword} secureTextEntry />
 				</View>
 				<ThemeText className="text-statusError mb-2.5 w-full text-center">{error}</ThemeText>
-				<ThemeButton onPress={userLogin} className="text-sm w-full" mode="contained">Login</ThemeButton>
+				<ThemeButton onPress={userLogin} className="text-sm w-full mb-2.5" mode="contained">Login</ThemeButton>
 				<ThemeButton onPress={() => router.navigate('/users/register')} className="text-sm w-full" >Create new account</ThemeButton>
 			</View>
 		</View>
