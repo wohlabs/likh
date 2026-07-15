@@ -32,7 +32,7 @@ export default function ThemeButton({ className, children, mode = 'text', disabl
 
 	const getTextColorClass = () => 
 	{
-		if (disabled) return 'text-onSurfaceVariant';
+		if (disabled) return 'text-onDisabledBackground';
 		
 		switch (mode) 
 		{
