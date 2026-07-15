@@ -47,9 +47,10 @@ export default function CustomListsIndex()
 							</View>
 							<Ionicons
 								name={"trash-sharp"}
-								className="icon-button-contained z-10"
+								className={`icon-button-contained z-10 ${item.isFavorite && "pointer-events-none"}`}
 								size={20}
 								disabled={item.isFavorite}
+								color={!item.isFavorite ? 'var(--color-onSurfaceVariant)' : 'var(--color-onDisabledBackground)'}
 								onPress={async () => 
 								{
 									const result = await deleteCustomList(item._id)
