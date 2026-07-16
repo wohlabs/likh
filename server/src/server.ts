@@ -53,6 +53,12 @@ app.get('/images/:id', AuthenticateMiddleware, async (req: Request, res: Respons
 		if (file.metadata.userId !== userId) return res.status(401).json('Unauthorized')
 		res.set('Content-Type', file.metadata.mimeType)
 		res.set('Content-Disposition', `inline; filename="${file.filename}"`)
+		// Inject OCR text into custom headers (Base64 encode to safely handle non-ASCII characters)
+		if (file.metadata?.ocrText)
+		{
+			res.set('X-OCR-Text', encodeURIComponent(file.metadata.ocrText));
+			res.set('Access-Control-Expose-Headers', 'X-OCR-Text');
+		}
 		const downloadStream = getGFSBucket()?.openDownloadStream(file._id)
 		downloadStream?.pipe(res);
 	}

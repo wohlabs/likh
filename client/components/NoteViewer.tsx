@@ -4,7 +4,7 @@ import { INoteEntry } from "../types/INotes";
 import ThemeButton from "./ThemeButton";
 import ThemeText from "./ThemeText";
 import { ThemeMenu, ThemeMenuItem } from "./ThemeMenu";
-import { getImageBase64 } from "./util";
+import { getImageBase64, getImageBase64WithOcr } from "./util";
 import { Ionicons } from "@expo/vector-icons";
 import { usePersistentTheme } from "@/context/usePersistentTheme";
 import ThemeBadge from "./ThemeBadge";
@@ -21,7 +21,7 @@ export default function NoteViewer({mangaTitle, note, onDelete, onEdit, style}: 
 	{
 		note.images.map(async (imageId, index) => 
 		{
-			const image = await getImageBase64(imageId)
+			const image = await (await getImageBase64WithOcr(imageId)).image
 			setImages(prev => 
 			{
 				const updated = [...prev];

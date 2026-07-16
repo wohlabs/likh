@@ -3,7 +3,7 @@ import { Image, Pressable, PressableProps, StyleProp, StyleSheet, View, ViewStyl
 import { INoteEntry } from "../types/INotes";
 import ReadMore from "./ReadMore";
 import ThemeText from "./ThemeText";
-import { getImageBase64 } from "./util";
+import { getImageBase64, getImageBase64WithOcr } from "./util";
 import { usePersistentTheme } from "@/context/usePersistentTheme";
 import ThemeBadge from "./ThemeBadge";
 
@@ -16,7 +16,7 @@ export default function NotePreviewCard({ note, style, className, onPress }: { n
 	{
 		note.images.map(async (imageId, index) => 
 		{
-			const image = await getImageBase64(imageId)
+			const image = await (await getImageBase64WithOcr(imageId)).image
 			setPreviews(prev => 
 			{
 				const updated = [...prev];

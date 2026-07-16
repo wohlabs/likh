@@ -63,3 +63,34 @@ export const getImageBase64 = async (imageId: string) : Promise<string> =>
 		return ""
 	}
 }
+
+export const getImageBase64WithOcr = async (imageId: string) : Promise<{image: string, ocrText: string}> => 
+{
+	try
+	{
+		const data = (await api.get(`/images/${imageId}`, {
+			responseType: 'blob',
+		}))
+		const blob = data?.data
+		// headers type can vary; safely access possible get method or direct header fields
+		const headers: any = data?.headers;
+		let encodedOcr: string | undefined;
+		if (headers)
+		{
+			encodedOcr = headers.get('X-OCR-Text');
+		}
+		let ocrText = "";
+		if (encodedOcr)
+		{
+			ocrText = decodeURIComponent(encodedOcr);
+		}
+		const imageBase64 = await blobToBase64(blob)
+		if (imageBase64 instanceof ArrayBuffer) return {image: "", ocrText: ocrText}
+		if (imageBase64 === null) return { image: "", ocrText: ocrText }
+		else return { image: imageBase64, ocrText: ocrText }
+	}
+	catch
+	{
+		return ""
+	}
+}

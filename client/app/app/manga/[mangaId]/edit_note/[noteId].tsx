@@ -1,7 +1,7 @@
 import ThemeBadge from "@/components/ThemeBadge";
 import ThemeButton from "@/components/ThemeButton";
 import ThemeText from "@/components/ThemeText";
-import { getImageBase64 } from "@/components/util";
+import { getImageBase64WithOcr } from "@/components/util";
 import { AuthContext } from "@/context/AuthContext";
 import { API_URL } from "@/services/AxiosInstance";
 import { getMangaDetails } from "@/services/manga.service";
@@ -140,7 +140,7 @@ export default function EditNoteScreen()
 			for (const imageId of note.images)
 			{
 				imageAssets.push({
-					uri: await getImageBase64(imageId),
+					uri: (await getImageBase64WithOcr(imageId)).image,
 					assetId: imageId,
 					fileName: imageId
 				} as ImagePicker.ImagePickerAsset)
