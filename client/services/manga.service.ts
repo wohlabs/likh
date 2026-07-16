@@ -77,24 +77,10 @@ export const getMangaData = async (mangaId: string, access_token?: string) : Pro
 	{
 		const response = await api.get(`/notes?mangaId=${mangaId}`);
 
-		const notesPromise = response.data.map(async (item: any): Promise<INoteEntry> => {
-			// 2. Fetch all OCR texts for this item in parallel
-			const ocrPromises = item.images.map(async (image: string) => {
-				const res = await api.get(`/images/${image}/metadata`);
-				return res.data.ocrText;
-			});
-			
-			// 3. Wait for all OCR fetches for this item to finish
-			const ocrResults = await Promise.all(ocrPromises);
-
-			// 4. Return the fully constructed object
-			return {
-				...item,
-				ocrText: ocrResults.join("\n"),
-				id: item._id
-			};
-		});
-		const notes: INoteEntry[] = await Promise.all(notesPromise);
+		const notes: IMangaNotes = response.data.map((item: any): INoteEntry => ({
+			...item,
+			id: item._id
+		}))
 		await AsyncStorage.setItem('manga_' + mangaId.toString(), JSON.stringify(notes));
 		return notes || JSON.parse("[]");
 	}

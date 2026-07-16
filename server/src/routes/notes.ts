@@ -1,5 +1,5 @@
 import express, { Request, Response, Router } from 'express';
-import { Types } from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import multer from 'multer';
 import { Readable } from 'stream';
 import { getErrorMessage } from '../Utility';
@@ -219,10 +219,24 @@ router.get(`/`, AuthenticateMiddleware, async (req: Request, res: Response) =>
 	const { mangaId } = req.query
 	if (userId && mangaId)
 	{
-		const likhNotes = await Note.find({ userId, mangaId });
-		likhNotes.map((note: INote | any) => {
-			return { ...note, fromAnilist: false};
-		})
+		const likhDBNotes = await Note.find({ userId, mangaId }).lean();
+		const likhNotes = await Promise.all(likhDBNotes.map(async (note: any) => {
+			
+			const ocrPromises = note.images.map(async (imageId: string) => {
+				const file = await mongoose.connection.db?.collection('images.files')
+					.findOne({ _id: new Types.ObjectId(imageId) });
+				return file?.metadata?.ocrText || "";
+			});
+
+			const ocrResults = await Promise.all(ocrPromises);
+
+			return { 
+				...note, 
+				ocrText: ocrResults.join("\n"), 
+				fromAnilist: false,
+				id: note._id // Assuming you want to keep the ID mapping
+			};
+		}));
 		const user = await User.findById(userId);
 		if (user && user.anilist_token)
 		{
