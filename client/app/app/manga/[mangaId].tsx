@@ -24,6 +24,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { Dimensions } from 'react-native';
+import Fuse from 'fuse.js';
 import
 {
 	ActivityIndicator,
@@ -490,18 +491,14 @@ export default function MangaDetails()
 
 	useEffect(() => 
 	{
+		let fuse = new Fuse(data, {
+			keys: ['text', 'ocrText'],
+			threshold: 0.3
+		})
 		let tempData: INoteEntry[] =
 			searchString.trim().length === 0
 				? data
-				: data.filter(
-					(note: INoteEntry) =>
-						(
-							note.text && note.text.toLowerCase().includes(searchString.toLowerCase())
-							|| 
-							(note.ocrText && note.ocrText.toLowerCase().includes(searchString.toLowerCase())
-						)
-					),
-				);
+				: fuse.search(searchString.trim()).map(result => result.item);
 		tempData = [...tempData].sort((a: INoteEntry, b: INoteEntry) => 
 		{
 			if (sortByValue === "date modified") 
