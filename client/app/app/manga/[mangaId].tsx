@@ -493,7 +493,9 @@ export default function MangaDetails()
 	{
 		let fuse = new Fuse(data, {
 			keys: ['text', 'ocrText'],
-			threshold: 0.3
+			ignoreLocation: true,
+			threshold: 0.3,
+			minMatchCharLength: 3
 		})
 		let tempData: INoteEntry[] =
 			searchString.trim().length === 0

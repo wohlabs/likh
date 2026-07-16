@@ -232,7 +232,7 @@ router.get(`/`, AuthenticateMiddleware, async (req: Request, res: Response) =>
 
 			return { 
 				...note, 
-				ocrText: ocrResults.join("\n"), 
+				ocrText: ocrResults, 
 				fromAnilist: false,
 				id: note._id // Assuming you want to keep the ID mapping
 			};
