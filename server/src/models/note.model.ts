@@ -11,7 +11,6 @@ export interface INote extends Document
 	images: Types.ObjectId[]; // could be an empty array
 	text?: string;
 	tags: string[]; // array of unique tags
-	ocrText?: string;
 }
 
 const NoteSchema = new Schema<INote>({
@@ -24,7 +23,6 @@ const NoteSchema = new Schema<INote>({
 	images: { type: [Schema.ObjectId], default: [], ref: 'uploads.files' },
 	text: { type: String, default: "" },
 	tags: { type: [String], default: [] },
-	ocrText: { type: String, default: "", required: false }
 });
 
 export const Note = model<INote>('Note', NoteSchema);

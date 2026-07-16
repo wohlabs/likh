@@ -43,7 +43,6 @@ router.post(`/`, upload.array('images', 10), AuthenticateMiddleware, async (req:
 	await addMangaToLibrary(userId, mangaId);
 
 	const imageIds: Types.ObjectId[] = [];
-	let ocrRes: String[] = []
 	try
 	{
 		const files = req.files as Express.Multer.File[]; // type assertion
@@ -57,10 +56,14 @@ router.post(`/`, upload.array('images', 10), AuthenticateMiddleware, async (req:
 				const readableStream = new Readable()
 				readableStream.push(file.buffer)
 				readableStream.push(null)
+				const arrayBuffer = file.buffer.buffer
+				const result = await service.recognize(arrayBuffer as ArrayBuffer);
 				const uploadStream = bucket?.openUploadStream(`${Date.now()}_${file.originalname}`, {
 					metadata: {
 						userId,
-						mimeType: file.mimetype
+						mimeType: file.mimetype,
+						ocrText: result.text,
+						ocrProcessedAt: new Date()
 					}
 				});
 				if (uploadStream)
@@ -77,9 +80,6 @@ router.post(`/`, upload.array('images', 10), AuthenticateMiddleware, async (req:
 						});
 						uploadStream.on('error', reject);
 					})
-					const arrayBuffer = file.buffer.buffer
-					const result = await service.recognize(arrayBuffer as ArrayBuffer);
-					ocrRes.push(result.text)
 				}
 			}
 		}
@@ -100,8 +100,7 @@ router.post(`/`, upload.array('images', 10), AuthenticateMiddleware, async (req:
 			endChapter,
 			images: imageIds,
 			text,
-			tags: uniqueTags,
-			ocrText: ocrRes.join("\n")
+			tags: uniqueTags
 		}
 	);
 	await newNote.save()
@@ -156,10 +155,14 @@ router.patch(`/:id`, upload.array('images', 10), AuthenticateMiddleware, async (
 				const readableStream = new Readable()
 				readableStream.push(file.buffer)
 				readableStream.push(null)
+				const arrayBuffer = file.buffer.buffer
+				const result = await service.recognize(arrayBuffer as ArrayBuffer);
 				const uploadStream = bucket?.openUploadStream(`${Date.now()}_${file.originalname}`, {
 					metadata: {
 						userId,
-						mimeType: file.mimetype
+						mimeType: file.mimetype,
+						ocrText: result.text,
+						ocrProcessedAt: new Date()
 					}
 				});
 				if (uploadStream)
