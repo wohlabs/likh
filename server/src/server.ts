@@ -68,6 +68,29 @@ app.get('/images/:id', AuthenticateMiddleware, async (req: Request, res: Respons
 	}
 })
 
+app.get('/images/:id/metadata', AuthenticateMiddleware, async (req: Request, res: Response) =>
+{
+	const id = new Types.ObjectId(req.params.id);
+	const userId = req.user?.id
+	try
+	{
+		const file = await mongoose.connection.db?.collection('images.files').findOne({ _id: id });
+		if (!file) return res.status(404).json('Image not found');
+		if (file.metadata.userId !== userId) return res.status(401).json('Unauthorized')
+
+		res.json({
+			id: file._id,
+			mimeType: file.metadata.mimeType,
+			filename: file.filename,
+			ocrText: file.metadata?.ocrText
+		})
+	}
+	catch (err: unknown)
+	{
+		res.status(500).json(getErrorMessage(err));
+	}
+})
+
 app.listen(PORT, () =>
 	console.log(`
 🚀 Server ready at: http://localhost:${PORT}
