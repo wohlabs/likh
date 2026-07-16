@@ -91,6 +91,6 @@ export const getImageBase64WithOcr = async (imageId: string) : Promise<{image: s
 	}
 	catch
 	{
-		return ""
+		return { image: "", ocrText: "" }
 	}
 }

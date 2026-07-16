@@ -12,7 +12,7 @@ import NoteRoutes from './routes/notes'
 import SearchRoutes from './routes/search'
 import UserRoutes from './routes/users'
 import { getErrorMessage } from './Utility'
-import { addTagsToNotes } from './migrations/addTagsToNotes'
+// import { addOCRToImages, addTagsToNotes } from './migrations/addTagsToNotes'
 
 dotenv.config()
 
@@ -28,7 +28,8 @@ const app = express()
 app.use(cors())
 
 // Run migration to add tags to existing notes
-addTagsToNotes().catch(err => console.error('Failed to run migration:', err));
+// addTagsToNotes().catch(err => console.error('Failed to run migration:', err));
+// addOCRToImages().catch(err => console.error('Failed to run migration:', err));
 
 // Mount routes
 app.use('/users', UserRoutes);
