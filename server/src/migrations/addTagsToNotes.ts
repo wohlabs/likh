@@ -108,7 +108,9 @@ export async function addOCRToImages() {
 				}
 			);
 	
-		} catch (error) {
+		}
+		catch (error: any)
+		{
 			console.error(`Failed to process image ${image._id}:`, error.message);
 		}
 	}
