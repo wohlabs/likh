@@ -47,6 +47,8 @@
     "nativewind": "^5.0.0-preview.2",
     "ngrok": "^5.0.0-beta.2",
     "node-fetch": "^3.3.2",
-    "npm": "^11.17.0"
+    "npm": "^11.17.0",
+    "onnxruntime-node": "^1.27.0",
+    "ppu-paddle-ocr": "^6.1.0"
   }
 }

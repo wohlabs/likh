@@ -495,8 +495,12 @@ export default function MangaDetails()
 				? data
 				: data.filter(
 					(note: INoteEntry) =>
-						note.text &&
-							note.text.toLowerCase().includes(searchString.toLowerCase()),
+						(
+							note.text && note.text.toLowerCase().includes(searchString.toLowerCase())
+							|| 
+							(note.ocrText && note.ocrText.toLowerCase().includes(searchString.toLowerCase())
+						)
+					),
 				);
 		tempData = [...tempData].sort((a: INoteEntry, b: INoteEntry) => 
 		{

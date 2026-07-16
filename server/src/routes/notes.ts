@@ -10,6 +10,14 @@ import { IUser, User } from '../models/user.model';
 import { getAnilistNote } from './anilist';
 import { addMangaToLibrary } from './users';
 import {GoogleGenAI} from '@google/genai';
+import { PaddleOcrService } from 'ppu-paddle-ocr';
+
+const service = new PaddleOcrService({
+  debugging: {
+    debug: false,
+    verbose: false,
+  },
+});
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
@@ -35,11 +43,13 @@ router.post(`/`, upload.array('images', 10), AuthenticateMiddleware, async (req:
 	await addMangaToLibrary(userId, mangaId);
 
 	const imageIds: Types.ObjectId[] = [];
+	let ocrRes: String[] = []
 	try
 	{
 		const files = req.files as Express.Multer.File[]; // type assertion
 		if (files && files.length > 0)
 		{
+			await service.initialize();
 			const uploadedFiles = [];
 			const bucket = getGFSBucket();
 			for (const file of files)
@@ -67,6 +77,9 @@ router.post(`/`, upload.array('images', 10), AuthenticateMiddleware, async (req:
 						});
 						uploadStream.on('error', reject);
 					})
+					const arrayBuffer = file.buffer.buffer
+					const result = await service.recognize(arrayBuffer as ArrayBuffer);
+					ocrRes.push(result.text)
 				}
 			}
 		}
@@ -87,11 +100,39 @@ router.post(`/`, upload.array('images', 10), AuthenticateMiddleware, async (req:
 			endChapter,
 			images: imageIds,
 			text,
-			tags: uniqueTags
+			tags: uniqueTags,
+			ocrText: ocrRes.join("\n")
 		}
 	);
 	await newNote.save()
 	return res.json(newNote)
+})
+
+router.post(`/ocr`, upload.array('images', 1), AuthenticateMiddleware, async (req: Request, res: Response) =>
+{
+	try
+	{
+		await service.initialize();
+
+		let ocrRes = ""
+		const files = req.files as Express.Multer.File[]; // type assertion
+		if (files && files.length > 0)
+		{
+			for (const file of files)
+			{
+				// Convert Node Buffer to ArrayBuffer for PaddleOcrService.recognize
+				const arrayBuffer = file.buffer.buffer
+				const result = await service.recognize(arrayBuffer as ArrayBuffer);
+				ocrRes = result.text
+			}
+		}
+		await service.destroy();
+		return res.json(ocrRes)
+	}
+	catch (err: unknown)
+	{
+		return res.status(500).json({ error: getErrorMessage(err) })
+	}
 })
 
 // edit note
