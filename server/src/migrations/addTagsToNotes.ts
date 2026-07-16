@@ -1,5 +1,4 @@
 import mongoose, { Types } from 'mongoose';
-import 'sharp'
 import { Note } from '../models/note.model';
 import { PaddleOcrService } from 'ppu-paddle-ocr';
 import { GridFSBucket } from 'mongodb';
