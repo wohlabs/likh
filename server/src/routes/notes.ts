@@ -11,6 +11,7 @@ import { getAnilistNote } from './anilist';
 import { addMangaToLibrary } from './users';
 import {GoogleGenAI} from '@google/genai';
 import { PaddleOcrService } from 'ppu-paddle-ocr';
+import fs from 'fs'
 
 const service = new PaddleOcrService({
   debugging: {
@@ -19,7 +20,7 @@ const service = new PaddleOcrService({
   },
 });
 
-const storage = multer.memoryStorage();
+const storage = multer.diskStorage({ destination: '/tmp'});
 const upload = multer({ storage });
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
@@ -51,12 +52,13 @@ router.post(`/`, upload.array('images', 10), AuthenticateMiddleware, async (req:
 			await service.initialize();
 			const uploadedFiles = [];
 			const bucket = getGFSBucket();
+			if (!bucket) return res.status(500).json('GridFS bucket is not initialized')
+
 			for (const file of files)
 			{
-				const readableStream = new Readable()
-				readableStream.push(file.buffer)
-				readableStream.push(null)
-				const arrayBuffer = file.buffer.buffer
+				let buffer: Buffer | null = fs.readFileSync(file.path); // Read into RAM
+				const arrayBuffer = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
+
 				const result = await service.recognize(arrayBuffer as ArrayBuffer);
 				const uploadStream = bucket?.openUploadStream(`${Date.now()}_${file.originalname}`, {
 					metadata: {
@@ -66,22 +68,12 @@ router.post(`/`, upload.array('images', 10), AuthenticateMiddleware, async (req:
 						ocrProcessedAt: new Date()
 					}
 				});
-				if (uploadStream)
-				{
-					readableStream.pipe(uploadStream);
-					// Wait for upload to finish before pushing fileId
-					await new Promise((resolve, reject) =>
-					{
-						uploadStream.on('finish', () =>
-						{
-							uploadedFiles.push({ fileName: file.originalname, fileId: uploadStream.id, });
-							imageIds.push(uploadStream.id)
-							resolve(null);
-						});
-						uploadStream.on('error', reject);
-					})
-				}
+				const readStream = fs.createReadStream(file.path);
+				readStream.pipe(uploadStream);
+				uploadedFiles.push({ fileName: file.originalname, fileId: uploadStream.id })
+				imageIds.push(uploadStream.id)
 			}
+			await service.destroy()
 		}
 	}
 	catch (err: unknown)
@@ -148,15 +140,16 @@ router.patch(`/:id`, upload.array('images', 10), AuthenticateMiddleware, async (
 		const files = req.files as Express.Multer.File[]; // type assertion
 		if (files && files.length > 0)
 		{
+			await service.initialize();
 			const uploadedFiles = [];
 			const bucket = getGFSBucket();
+			if (!bucket) return res.status(500).json('GridFS bucket is not initialized')
+
 			for (const file of files)
 			{
-				await service.initialize();
-				const readableStream = new Readable()
-				readableStream.push(file.buffer)
-				readableStream.push(null)
-				const arrayBuffer = file.buffer.buffer
+				let buffer: Buffer | null = fs.readFileSync(file.path); // Read into RAM
+				const arrayBuffer = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
+
 				const result = await service.recognize(arrayBuffer as ArrayBuffer);
 				const uploadStream = bucket?.openUploadStream(`${Date.now()}_${file.originalname}`, {
 					metadata: {
@@ -166,23 +159,12 @@ router.patch(`/:id`, upload.array('images', 10), AuthenticateMiddleware, async (
 						ocrProcessedAt: new Date()
 					}
 				});
-				if (uploadStream)
-				{
-					readableStream.pipe(uploadStream);
-					// Wait for upload to finish before pushing fileId
-					await new Promise((resolve, reject) =>
-					{
-						uploadStream.on('finish', () =>
-						{
-							uploadedFiles.push({ fileName: file.originalname, fileId: uploadStream.id, });
-							newImageIds.push(uploadStream.id)
-							resolve(null);
-						});
-						uploadStream.on('error', reject);
-					})
-				}
-				await service.destroy();
+				const readStream = fs.createReadStream(file.path);
+				readStream.pipe(uploadStream);
+				uploadedFiles.push({ fileName: file.originalname, fileId: uploadStream.id })
+				newImageIds.push(uploadStream.id)
 			}
+			await service.destroy()
 		}
 	}
 	catch (err: unknown)
