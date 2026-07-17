@@ -12,6 +12,7 @@ import { addMangaToLibrary } from './users';
 import {GoogleGenAI} from '@google/genai';
 import { PaddleOcrService } from 'ppu-paddle-ocr';
 import fs from 'fs'
+import sharp from 'sharp';
 
 const service = new PaddleOcrService({
   debugging: {
@@ -32,6 +33,24 @@ const ai = new GoogleGenAI({apiKey: GEMINI_API_KEY});
 const router: Router = Router();
 
 router.use(express.json())
+
+
+/**
+ * Pre-processes an image buffer to fit inside max dimensions safely.
+ * This drops memory footprint before hitting the OCR engine.
+ */
+async function scaleDownBuffer(filePath: string, maxSide: number = 1024): Promise<Buffer> {
+  // We use the 'resize' method with 'fit: inside' to ensure the image 
+  // maintains its aspect ratio while not exceeding the max dimensions.
+  return await sharp(filePath)
+    .resize({
+      width: maxSide,
+      height: maxSide,
+      fit: 'inside',
+      withoutEnlargement: true // Prevents upscaling if the image is already small
+    })
+    .toBuffer();
+}
 
 // create new note
 router.post(`/`, upload.array('images', 10), AuthenticateMiddleware, async (req: Request, res: Response) =>
@@ -61,10 +80,13 @@ router.post(`/`, upload.array('images', 10), AuthenticateMiddleware, async (req:
 
 			for (const file of files)
 			{
-				let buffer: Buffer | null = fs.readFileSync(file.path); // Read into RAM
-				const arrayBuffer = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
+				const imageBuffer = await scaleDownBuffer(file.path);
+				// Convert Buffer to ArrayBuffer
+				const arrayBuffer = imageBuffer.buffer.slice(
+					imageBuffer.byteOffset,
+					imageBuffer.byteOffset + imageBuffer.byteLength
+				);
 				const result = await service.recognize(arrayBuffer as ArrayBuffer);
-				buffer = null;
 				const uploadStream = bucket?.openUploadStream(`${Date.now()}_${file.originalname}`, {
 					metadata: {
 						userId,
@@ -159,10 +181,13 @@ router.patch(`/:id`, upload.array('images', 10), AuthenticateMiddleware, async (
 
 			for (const file of files)
 			{
-				let buffer: Buffer | null = fs.readFileSync(file.path); // Read into RAM
-				const arrayBuffer = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
+				const imageBuffer = await scaleDownBuffer(file.path);
+				// Convert Buffer to ArrayBuffer
+				const arrayBuffer = imageBuffer.buffer.slice(
+					imageBuffer.byteOffset,
+					imageBuffer.byteOffset + imageBuffer.byteLength
+				);
 				const result = await service.recognize(arrayBuffer as ArrayBuffer);
-				buffer = null;
 				const uploadStream = bucket?.openUploadStream(`${Date.now()}_${file.originalname}`, {
 					metadata: {
 						userId,
