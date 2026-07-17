@@ -923,7 +923,9 @@ export default function MangaDetails()
 								setIsViewingOverlay(false);
 							}}
 						>
-							<NoteViewer
+							{
+							filteredNotes[viewerNoteIndex]
+							&& <NoteViewer
 								note={filteredNotes[viewerNoteIndex]}
 								mangaTitle={getMangaTitle(manga)}
 								style={[
@@ -939,7 +941,7 @@ export default function MangaDetails()
 									setIsViewingOverlay(false);
 								}}
 								key={`NoteViewer_${viewerNote?.id}`}
-							/>
+							/>}
 						</Modal>
 					</Portal>
 					<View style={{ height: 85 }} />
