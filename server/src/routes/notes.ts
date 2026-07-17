@@ -44,6 +44,7 @@ router.post(`/`, upload.array('images', 10), AuthenticateMiddleware, async (req:
 	await addMangaToLibrary(userId, mangaId);
 
 	const imageIds: Types.ObjectId[] = [];
+	const ocrText = []
 	try
 	{
 		const files = req.files as Express.Multer.File[]; // type assertion
@@ -68,10 +69,16 @@ router.post(`/`, upload.array('images', 10), AuthenticateMiddleware, async (req:
 						ocrProcessedAt: new Date()
 					}
 				});
+				ocrText.push(result.text)
 				const readStream = fs.createReadStream(file.path);
 				readStream.pipe(uploadStream);
 				uploadedFiles.push({ fileName: file.originalname, fileId: uploadStream.id })
 				imageIds.push(uploadStream.id)
+				uploadStream.on('finish', () => {
+					fs.unlink(file.path, (err) => {
+						if (err) console.error(`Failed to delete temporary file: ${file.path}`, err);
+					});
+				});
 			}
 			await service.destroy()
 		}
@@ -96,7 +103,7 @@ router.post(`/`, upload.array('images', 10), AuthenticateMiddleware, async (req:
 		}
 	);
 	await newNote.save()
-	return res.json(newNote)
+	return res.json({...newNote, ocrText: ocrText})
 })
 
 router.post(`/ocr`, upload.array('images', 1), AuthenticateMiddleware, async (req: Request, res: Response) =>
@@ -135,6 +142,7 @@ router.patch(`/:id`, upload.array('images', 10), AuthenticateMiddleware, async (
 	const deletedImageObjectIds = (JSON.parse(deletedImageIds) as string[]).map(id => new Types.ObjectId(id));
 
 	const newImageIds: Types.ObjectId[] = [];
+	const ocrText = []
 	try
 	{
 		const files = req.files as Express.Multer.File[]; // type assertion
@@ -159,10 +167,16 @@ router.patch(`/:id`, upload.array('images', 10), AuthenticateMiddleware, async (
 						ocrProcessedAt: new Date()
 					}
 				});
+				ocrText.push(result.text)
 				const readStream = fs.createReadStream(file.path);
 				readStream.pipe(uploadStream);
 				uploadedFiles.push({ fileName: file.originalname, fileId: uploadStream.id })
 				newImageIds.push(uploadStream.id)
+				uploadStream.on('finish', () => {
+					fs.unlink(file.path, (err) => {
+						if (err) console.error(`Failed to delete temporary file: ${file.path}`, err);
+					});
+				});
 			}
 			await service.destroy()
 		}
@@ -190,7 +204,7 @@ router.patch(`/:id`, upload.array('images', 10), AuthenticateMiddleware, async (
 			getGFSBucket()?.delete(objId);
 		}
 		await note.save()
-		return res.json(note);
+		return res.json({...note, ocrText: ocrText});
 	}
 
 	return res.sendStatus(404)
