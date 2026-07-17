@@ -152,6 +152,7 @@ router.patch(`/:id`, upload.array('images', 10), AuthenticateMiddleware, async (
 			const bucket = getGFSBucket();
 			for (const file of files)
 			{
+				await service.initialize();
 				const readableStream = new Readable()
 				readableStream.push(file.buffer)
 				readableStream.push(null)
@@ -180,6 +181,7 @@ router.patch(`/:id`, upload.array('images', 10), AuthenticateMiddleware, async (
 						uploadStream.on('error', reject);
 					})
 				}
+				await service.destroy();
 			}
 		}
 	}
