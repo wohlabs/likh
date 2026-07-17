@@ -18,6 +18,10 @@ const service = new PaddleOcrService({
     debug: false,
     verbose: false,
   },
+  session: {
+	enableCpuMemArena: false,
+	enableMemPattern: false
+  }
 });
 
 const storage = multer.diskStorage({ destination: '/tmp'});
@@ -59,8 +63,8 @@ router.post(`/`, upload.array('images', 10), AuthenticateMiddleware, async (req:
 			{
 				let buffer: Buffer | null = fs.readFileSync(file.path); // Read into RAM
 				const arrayBuffer = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
-
 				const result = await service.recognize(arrayBuffer as ArrayBuffer);
+				buffer = null;
 				const uploadStream = bucket?.openUploadStream(`${Date.now()}_${file.originalname}`, {
 					metadata: {
 						userId,
@@ -157,8 +161,8 @@ router.patch(`/:id`, upload.array('images', 10), AuthenticateMiddleware, async (
 			{
 				let buffer: Buffer | null = fs.readFileSync(file.path); // Read into RAM
 				const arrayBuffer = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
-
 				const result = await service.recognize(arrayBuffer as ArrayBuffer);
+				buffer = null;
 				const uploadStream = bucket?.openUploadStream(`${Date.now()}_${file.originalname}`, {
 					metadata: {
 						userId,
