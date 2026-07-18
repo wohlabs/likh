@@ -19,6 +19,9 @@ const service = new PaddleOcrService({
     debug: false,
     verbose: false,
   },
+  detection: {
+	maxSideLength: 512
+  },
   session: {
 	enableCpuMemArena: false,
 	enableMemPattern: false
