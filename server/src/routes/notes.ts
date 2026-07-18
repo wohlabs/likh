@@ -39,7 +39,7 @@ router.use(express.json())
  * Pre-processes an image buffer to fit inside max dimensions safely.
  * This drops memory footprint before hitting the OCR engine.
  */
-async function scaleDownBuffer(filePath: string, maxSide: number = 1024): Promise<Buffer> {
+async function scaleDownBuffer(filePath: string, maxSide: number = 512): Promise<Buffer> {
   // We use the 'resize' method with 'fit: inside' to ensure the image 
   // maintains its aspect ratio while not exceeding the max dimensions.
   return await sharp(filePath)
