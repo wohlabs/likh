@@ -54,6 +54,7 @@ import Reanimated, {
 	useAnimatedStyle,
 } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
+import { createWorker, PSM } from 'tesseract.js';
 
 function NoteButtons({
 	onEditPress,
@@ -150,9 +151,8 @@ export default function MangaDetails()
 	const [newTag, setNewTag] = useState<string>("");
 	const [newTags, setNewTags] = useState<string[]>([]);
 	const [newText, setNewText] = useState<string>("");
-	const [addImages, setAddImages] = useState<ImagePicker.ImagePickerAsset[]>(
-		[],
-	);
+	const [addImages, setAddImages] = useState<ImagePicker.ImagePickerAsset[]>([]);
+	const [imageOcrTexts, setImageOcrTexts] = useState<Map<string, string>>(new Map<string, string>()); // { <uri>: <text> }
 	const [addCurrentImageIndex, setAddCurrentImageIndex] = useState<number>(0);
 	const [newStartChapter, setNewStartChapter] = useState<string>("");
 	const [newEndChapter, setNewEndChapter] = useState<string>("");
@@ -344,7 +344,21 @@ export default function MangaDetails()
 			quality: 1,
 			allowsMultipleSelection: true,
 		});
+		result.assets?.map((asset) => { 
+			asset.fileName = `${(Date.now())}_${asset.fileName}`;
+			return asset;
+		})
 
+		if (result && result.assets && result.assets[0].fileName)
+		{
+			const worker = await createWorker('eng');
+			worker.setParameters({
+				tessedit_pageseg_mode: PSM.SPARSE_TEXT
+			})
+			const ocr = await worker.recognize(result.assets[0].uri);
+			setImageOcrTexts(prev => new Map(prev).set(result.assets[0].fileName!, ocr.data.text.replace(/\n+/g, '\n').trim()));
+			await worker.terminate();
+		}
 		if (!result.canceled) 
 		{
 			let newImgs = [...addImages, ...result.assets];
@@ -387,7 +401,7 @@ export default function MangaDetails()
 				formData.append(
 					"images",
 					blob,
-					image.fileName || Date.now().toString(),
+					image.fileName || Date.now().toString()
 				);
 			}
 			else 
@@ -400,6 +414,7 @@ export default function MangaDetails()
 				);
 			}
 		}
+		formData.append('ocrTexts', JSON.stringify(Object.fromEntries(imageOcrTexts)));
 		await fetch(`${API_URL}/notes`, {
 			method: "POST",
 			body: formData,
@@ -413,6 +428,8 @@ export default function MangaDetails()
 			setAddImages([]);
 			setNewStartChapter("");
 			setNewEndChapter("");
+			setNewTags([])
+			setImageOcrTexts(new Map<string, string>())
 			await fetchData();
 		});
 	};

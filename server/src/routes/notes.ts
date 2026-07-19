@@ -28,7 +28,13 @@ const service = new PaddleOcrService({
   }
 });
 
-const storage = multer.diskStorage({ destination: '/tmp'});
+const storage = multer.diskStorage({
+	destination: '/tmp',
+	filename: function (req, file, cb) {
+		// This uses the original name provided by the client
+		cb(null, file.originalname);
+	}
+});
 const upload = multer({ storage });
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
@@ -59,7 +65,8 @@ async function scaleDownBuffer(filePath: string, maxSide: number = 512): Promise
 router.post(`/`, upload.array('images', 10), AuthenticateMiddleware, async (req: Request, res: Response) =>
 {
 	const userId = req.user?.id;
-	const { mangaId, startChapter, endChapter, text, tags } = req.body
+	const { mangaId, startChapter, endChapter, text, tags, ocrTexts } = req.body
+	const ocrTextsObj = JSON.parse(ocrTexts)
 
 	if (!userId) return res.status(400).json('Invalid request')
 	const user: IUser | null = await User.findById(userId).exec();
@@ -69,8 +76,8 @@ router.post(`/`, upload.array('images', 10), AuthenticateMiddleware, async (req:
 
 	await addMangaToLibrary(userId, mangaId);
 
+	const returnOcrTexts: string[] = []
 	const imageIds: Types.ObjectId[] = [];
-	const ocrText = []
 	try
 	{
 		const files = req.files as Express.Multer.File[]; // type assertion
@@ -83,30 +90,24 @@ router.post(`/`, upload.array('images', 10), AuthenticateMiddleware, async (req:
 
 			for (const file of files)
 			{
-				const imageBuffer = await scaleDownBuffer(file.path);
-				// Convert Buffer to ArrayBuffer
-				const arrayBuffer = imageBuffer.buffer.slice(
-					imageBuffer.byteOffset,
-					imageBuffer.byteOffset + imageBuffer.byteLength
-				);
-				const result = await service.recognize(arrayBuffer as ArrayBuffer);
 				const uploadStream = bucket?.openUploadStream(`${Date.now()}_${file.originalname}`, {
 					metadata: {
 						userId,
 						mimeType: file.mimetype,
-						ocrText: result.text,
+						ocrText: ocrTextsObj[file.originalname],
 						ocrProcessedAt: new Date()
 					}
 				});
-				ocrText.push(result.text)
+				returnOcrTexts.push(ocrTextsObj[file.originalname])
 				const readStream = fs.createReadStream(file.path);
 				readStream.pipe(uploadStream);
 				uploadedFiles.push({ fileName: file.originalname, fileId: uploadStream.id })
 				imageIds.push(uploadStream.id)
-				uploadStream.on('finish', () => {
-					fs.unlink(file.path, (err) => {
-						if (err) console.error(`Failed to delete temporary file: ${file.path}`, err);
-					});
+				await new Promise((resolve, reject) => {
+					uploadStream.on('finish', resolve);
+				});
+				fs.unlink(file.path, (err) => {
+					if (err) console.error(`Failed to delete temporary file: ${file.path}`, err);
 				});
 			}
 			await service.destroy()
@@ -132,7 +133,7 @@ router.post(`/`, upload.array('images', 10), AuthenticateMiddleware, async (req:
 		}
 	);
 	await newNote.save()
-	return res.json({...newNote, ocrText: ocrText})
+	return res.status(200).json({...newNote, ocrText: returnOcrTexts})
 })
 
 router.post(`/ocr`, upload.array('images', 1), AuthenticateMiddleware, async (req: Request, res: Response) =>
@@ -276,7 +277,7 @@ router.get(`/`, AuthenticateMiddleware, async (req: Request, res: Response) =>
 				likhNotes.push({ ...anilistNote, fromAnilist: true})
 			}
 		}
-		return res.json(likhNotes)
+		return res.status(200).json(likhNotes)
 	}
 	return res.sendStatus(400)
 })
