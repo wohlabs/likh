@@ -516,7 +516,8 @@ export default function MangaDetails()
 			keys: ['text', 'ocrText'],
 			ignoreLocation: true,
 			threshold: 0.3,
-			minMatchCharLength: 3
+			minMatchCharLength: 3,
+			useExtendedSearch: true
 		})
 		let tempData: INoteEntry[] =
 			searchString.trim().length === 0
