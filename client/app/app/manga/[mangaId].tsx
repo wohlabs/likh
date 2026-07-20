@@ -55,6 +55,7 @@ import Reanimated, {
 } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import { createWorker, PSM } from 'tesseract.js';
+import { toastConfig } from "@/components/ThemeToast";
 
 function NoteButtons({
 	onEditPress,
@@ -142,6 +143,7 @@ export default function MangaDetails()
 	});
 	const [viewerNoteIndex, setViewerNoteIndex] = useState<number>(0);
 	const [loading, setLoading] = useState<boolean>(true);
+	const [addNoteLoading, setAddNoteLoading] = useState<boolean>(false);
 	const [sortByValue, setSortByValue] = useState<string>("chapter");
 	const [sortAscending, setSortAscending] = useState<boolean>(true);
 	const [sortOpen, setSortOpen] = useState(false);
@@ -419,7 +421,7 @@ export default function MangaDetails()
 			}
 		}
 		formData.append('ocrTexts', JSON.stringify(Object.fromEntries(imageOcrTexts)));
-		await fetch(`${API_URL}/notes`, {
+		const fetching = fetch(`${API_URL}/notes`, {
 			method: "POST",
 			body: formData,
 			headers: {
@@ -436,6 +438,9 @@ export default function MangaDetails()
 			setImageOcrTexts(new Map<string, string>())
 			await fetchData();
 		});
+		setAddNoteLoading(true)
+		await fetching;
+		setAddNoteLoading(false)
 	};
 
 	// Optional: Clear the error from the URL so it doesn't persist on refresh
@@ -457,6 +462,23 @@ export default function MangaDetails()
 			}, 50);
 		}
 	}, [error, mangaId]);
+
+	useEffect(() => 
+	{
+		if (addNoteLoading)
+		{
+			Toast.show({
+				type: 'loading',
+				text1: 'adding note...',
+				position: 'top',
+				autoHide: false,
+			})
+		}
+		else
+		{
+			Toast.hide()
+		}
+	}, [addNoteLoading]);
 
 	const populateMangaData = useCallback(async () => 
 	{
@@ -623,6 +645,7 @@ export default function MangaDetails()
 									onChangeText={setNewText}
 									className="rounded-lg p-3 text-base min-h-20 max-h-36 border-outlineVariant text-onBackground border-2"
 									autoFocus
+									editable={!addNoteLoading}
 								/>
 								<View
 									style={{
@@ -634,7 +657,7 @@ export default function MangaDetails()
 									<TextInput
 										numberOfLines={1}
 										placeholder="start chapter"
-										editable
+										editable={!addNoteLoading}
 										keyboardType="number-pad"
 										value={newStartChapter}
 										onChangeText={(text) => setNewStartChapter(text)}
@@ -649,7 +672,7 @@ export default function MangaDetails()
 									<TextInput
 										numberOfLines={1}
 										placeholder="end chapter (optional)"
-										editable
+										editable={!addNoteLoading}
 										keyboardType="number-pad"
 										value={newEndChapter}
 										onChangeText={(text) => setNewEndChapter(text)}
@@ -658,7 +681,9 @@ export default function MangaDetails()
 								</View>
 								<View className="flex-1 flex-row items-center py-2 gap-1">
 									<ThemeText>Tags: </ThemeText>
-									<ThemeBadge onPress={(e) => { setIsTagFocused(true);}} textColor={"green"} className="border-2 p-1! border-outlineVariant">
+									<ThemeBadge onPress={(e) => { setIsTagFocused(true);}} textColor={"green"} className="border-2 p-1! border-outlineVariant"
+										disabled={addNoteLoading}
+									>
 										{
 											isTagFocused
 											? <TextInput style={{
@@ -678,7 +703,9 @@ export default function MangaDetails()
 									</ThemeBadge>
 									{
 										newTags?.map((value) => 
-											<ThemeBadge labelForColor={value} className="border-2 p-1!">
+											<ThemeBadge labelForColor={value} className="border-2 p-1!"
+												disabled={addNoteLoading}
+											>
 												{value}
 												<Ionicons name="close-circle" className="hover:bg-outlineVariant rounded-sm" onPress={() => { setNewTags(newTags.filter(tag => tag !== value)) }}/>
 											</ThemeBadge>
@@ -706,7 +733,7 @@ export default function MangaDetails()
 												/>
 												<Ionicons
 													name="trash-outline"
-													className="icon-button-contained"
+													className={`icon-button-contained ${addNoteLoading && "disabled"}`}
 													size={18}
 													onPress={() => removeAddImage(index)}
 													style={{ position: "absolute", right: 0 }}
@@ -719,9 +746,10 @@ export default function MangaDetails()
 									/>
 									<Ionicons
 										name={"add"}
-										className="icon-button-contained"
+										className={`icon-button-contained ${addNoteLoading && "disabled"}`}
 										size={26}
 										onPress={pickAddImage}
+										disabled={addNoteLoading}
 									/>
 								</View>
 								<View
@@ -734,6 +762,7 @@ export default function MangaDetails()
 									<ThemeButton
 										style={styles.button}
 										mode="contained-tonal"
+										disabled={addNoteLoading}
 										onPress={() => 
 										{
 											setIsAddingNote(false);
@@ -749,6 +778,7 @@ export default function MangaDetails()
 										style={styles.button}
 										mode="contained"
 										onPress={submitInlineNote}
+										disabled={addNoteLoading}
 									>
 										Add
 									</ThemeButton>
