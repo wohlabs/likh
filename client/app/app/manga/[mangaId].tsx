@@ -144,6 +144,7 @@ export default function MangaDetails()
 	const [viewerNoteIndex, setViewerNoteIndex] = useState<number>(0);
 	const [loading, setLoading] = useState<boolean>(true);
 	const [addNoteLoading, setAddNoteLoading] = useState<boolean>(false);
+	const [ocrProcessing, setOcrProcessing] = useState<boolean>(false);
 	const [sortByValue, setSortByValue] = useState<string>("chapter");
 	const [sortAscending, setSortAscending] = useState<boolean>(true);
 	const [sortOpen, setSortOpen] = useState(false);
@@ -354,6 +355,7 @@ export default function MangaDetails()
 
 		if (!result.canceled) 
 		{
+			setOcrProcessing(true)
 			if (result && result.assets)
 			{
 				for (const asset of result.assets)
@@ -367,6 +369,7 @@ export default function MangaDetails()
 					await worker.terminate();
 				}
 			}
+			setOcrProcessing(false)
 			let newImgs = [...addImages, ...result.assets];
 			setAddImages(newImgs);
 			setAddCurrentImageIndex(newImgs.length - 1);
@@ -465,11 +468,11 @@ export default function MangaDetails()
 
 	useEffect(() => 
 	{
-		if (addNoteLoading)
+		if (addNoteLoading || ocrProcessing)
 		{
 			Toast.show({
 				type: 'loading',
-				text1: 'adding note...',
+				text1: addNoteLoading ? 'adding note...' : ocrProcessing ? "processing images..." : "",
 				position: 'top',
 				autoHide: false,
 			})
@@ -478,7 +481,7 @@ export default function MangaDetails()
 		{
 			Toast.hide()
 		}
-	}, [addNoteLoading]);
+	}, [addNoteLoading, ocrProcessing]);
 
 	const populateMangaData = useCallback(async () => 
 	{
@@ -733,7 +736,7 @@ export default function MangaDetails()
 												/>
 												<Ionicons
 													name="trash-outline"
-													className={`icon-button-contained ${addNoteLoading && "disabled"}`}
+													className={`icon-button-contained ${(addNoteLoading || ocrProcessing) && "disabled"}`}
 													size={18}
 													onPress={() => removeAddImage(index)}
 													style={{ position: "absolute", right: 0 }}
@@ -746,10 +749,10 @@ export default function MangaDetails()
 									/>
 									<Ionicons
 										name={"add"}
-										className={`icon-button-contained ${addNoteLoading && "disabled"}`}
+										className={`icon-button-contained ${(addNoteLoading || ocrProcessing) && "disabled"}`}
 										size={26}
 										onPress={pickAddImage}
-										disabled={addNoteLoading}
+										disabled={addNoteLoading || ocrProcessing}
 									/>
 								</View>
 								<View
@@ -762,7 +765,7 @@ export default function MangaDetails()
 									<ThemeButton
 										style={styles.button}
 										mode="contained-tonal"
-										disabled={addNoteLoading}
+										disabled={addNoteLoading || ocrProcessing}
 										onPress={() => 
 										{
 											setIsAddingNote(false);
@@ -778,7 +781,7 @@ export default function MangaDetails()
 										style={styles.button}
 										mode="contained"
 										onPress={submitInlineNote}
-										disabled={addNoteLoading}
+										disabled={addNoteLoading || ocrProcessing}
 									>
 										Add
 									</ThemeButton>
