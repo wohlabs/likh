@@ -8,7 +8,7 @@ import ThemeCarousel from "@/components/ThemeCarousel";
 import { ThemeDropdown } from "@/components/ThemeDropdown";
 import ThemeSearchbar from "@/components/ThemeSearchbar";
 import ThemeText from "@/components/ThemeText";
-import { blobToBase64 } from "@/components/util";
+import { blobToBase64, sanitizeFilename } from "@/components/util";
 import { AuthContext } from "@/context/AuthContext";
 import { usePersistentTheme } from "@/context/usePersistentTheme";
 import { API_URL } from "@/services/AxiosInstance";
@@ -137,7 +137,8 @@ export default function MangaDetails()
 		createdAt: "",
 		modifiedAt: "",
 		fromAnilist: false,
-		tags: []
+		tags: [],
+		ocrText: []
 	});
 	const [viewerNoteIndex, setViewerNoteIndex] = useState<number>(0);
 	const [loading, setLoading] = useState<boolean>(true);
@@ -345,22 +346,25 @@ export default function MangaDetails()
 			allowsMultipleSelection: true,
 		});
 		result.assets?.map((asset) => { 
-			asset.fileName = `${(Date.now())}_${asset.fileName}`;
+			asset.fileName = `${(Date.now())}_${sanitizeFilename(asset.fileName!)}`;
 			return asset;
 		})
 
-		if (result && result.assets && result.assets[0].fileName)
-		{
-			const worker = await createWorker('eng');
-			worker.setParameters({
-				tessedit_pageseg_mode: PSM.SPARSE_TEXT
-			})
-			const ocr = await worker.recognize(result.assets[0].uri);
-			setImageOcrTexts(prev => new Map(prev).set(result.assets[0].fileName!, ocr.data.text.replace(/\n+/g, '\n').trim()));
-			await worker.terminate();
-		}
 		if (!result.canceled) 
 		{
+			if (result && result.assets)
+			{
+				for (const asset of result.assets)
+				{
+					const worker = await createWorker('eng');
+					worker.setParameters({
+						tessedit_pageseg_mode: PSM.SPARSE_TEXT
+					})
+					const ocr = await worker.recognize(asset.uri);
+					setImageOcrTexts(prev => new Map(prev).set(asset.fileName!, ocr.data.text.replace(/\n+/g, '\n').trim()));
+					await worker.terminate();
+				}
+			}
 			let newImgs = [...addImages, ...result.assets];
 			setAddImages(newImgs);
 			setAddCurrentImageIndex(newImgs.length - 1);

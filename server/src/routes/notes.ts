@@ -168,11 +168,12 @@ router.patch(`/:id`, upload.array('images', 10), AuthenticateMiddleware, async (
 {
 	const userId = req.user?.id;
 	const noteId = req.params?.id;
-	const { mangaId, startChapter, endChapter, text, tags, deletedImageIds } = req.body
+	const { mangaId, startChapter, endChapter, text, tags, deletedImageIds, ocrTexts } = req.body
 	const deletedImageObjectIds = (JSON.parse(deletedImageIds) as string[]).map(id => new Types.ObjectId(id));
+	const ocrTextsObj = JSON.parse(ocrTexts)
 
 	const newImageIds: Types.ObjectId[] = [];
-	const ocrText = []
+	const ocrText: string[] = []
 	try
 	{
 		const files = req.files as Express.Multer.File[]; // type assertion
@@ -185,22 +186,15 @@ router.patch(`/:id`, upload.array('images', 10), AuthenticateMiddleware, async (
 
 			for (const file of files)
 			{
-				const imageBuffer = await scaleDownBuffer(file.path);
-				// Convert Buffer to ArrayBuffer
-				const arrayBuffer = imageBuffer.buffer.slice(
-					imageBuffer.byteOffset,
-					imageBuffer.byteOffset + imageBuffer.byteLength
-				);
-				const result = await service.recognize(arrayBuffer as ArrayBuffer);
 				const uploadStream = bucket?.openUploadStream(`${Date.now()}_${file.originalname}`, {
 					metadata: {
 						userId,
 						mimeType: file.mimetype,
-						ocrText: result.text,
+						ocrText: ocrTextsObj[file.originalname],
 						ocrProcessedAt: new Date()
 					}
 				});
-				ocrText.push(result.text)
+				ocrText.push(ocrTextsObj[file.originalname])
 				const readStream = fs.createReadStream(file.path);
 				readStream.pipe(uploadStream);
 				uploadedFiles.push({ fileName: file.originalname, fileId: uploadStream.id })

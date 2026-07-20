@@ -1,7 +1,7 @@
 import ThemeBadge from "@/components/ThemeBadge";
 import ThemeButton from "@/components/ThemeButton";
 import ThemeText from "@/components/ThemeText";
-import { getImageBase64WithOcr } from "@/components/util";
+import { getImageBase64WithOcr, sanitizeFilename } from "@/components/util";
 import { AuthContext } from "@/context/AuthContext";
 import { API_URL } from "@/services/AxiosInstance";
 import { getMangaDetails } from "@/services/manga.service";
@@ -26,6 +26,7 @@ import
 	View
 	, TextInput } from "react-native";
 import Toast from "react-native-toast-message";
+import { createWorker, PSM } from "tesseract.js";
 
 const KeyboardDismissWrapper = ({ children }: any) => 
 {
@@ -55,6 +56,7 @@ export default function EditNoteScreen()
 	const { mangaId, noteId } = useLocalSearchParams(); // <-- get from URL
 	const [mangaName, setMangaName] = useState<string>("Fetching...");
 	const [addedImages, setAddedImages] = useState<ImagePicker.ImagePickerAsset[]>([]);
+	const [imageOcrTexts, setImageOcrTexts] = useState<Map<string, string>>(new Map<string, string>()); // { <uri>: <text> }
 	const [deletedImages, setDeletedImages] = useState<string[]>([]);
 	const [loading, setLoading] = useState<boolean>(true);
 	const token = useContext(AuthContext).token
@@ -171,8 +173,25 @@ export default function EditNoteScreen()
 			quality: 1,
 			allowsMultipleSelection: true
 		});
+		result.assets?.map((asset) => { 
+			asset.fileName = `${(Date.now())}_${sanitizeFilename(asset.fileName!)}`;
+			return asset;
+		})
 		if (!result.canceled) 
 		{
+			if (result && result.assets)
+			{
+				for (const asset of result.assets)
+				{
+					const worker = await createWorker('eng');
+					worker.setParameters({
+						tessedit_pageseg_mode: PSM.SPARSE_TEXT
+					})
+					const ocr = await worker.recognize(asset.uri);
+					setImageOcrTexts(prev => new Map(prev).set(asset.fileName!, ocr.data.text.replace(/\n+/g, '\n').trim()));
+					await worker.terminate();
+				}
+			}
 			let newImages = [...images, ...result.assets]
 			setImages(newImages);
 			setCurrentImageIndex(newImages.length - 1); // set to last image
@@ -189,6 +208,7 @@ export default function EditNoteScreen()
 		formData.append('mangaId', mangaId.toString())
 		formData.append('deletedImageIds', JSON.stringify(deletedImages))
 		formData.append('startChapter', startChapter ? startChapter : String(-1))
+		formData.append('ocrTexts', JSON.stringify(Object.fromEntries(imageOcrTexts)))
 		if (endChapter) formData.append('endChapter', endChapter)
 		if (tags)
 		{

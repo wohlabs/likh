@@ -8,7 +8,7 @@ export type INoteEntry = {
 	text?: string
 	fromAnilist: boolean;
 	tags: string[];
-	ocrText?: string;
+	ocrText?: string[];
 };
 
 export type IMangaNotes = INoteEntry[]

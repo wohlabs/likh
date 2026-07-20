@@ -9,6 +9,14 @@ export const getUserIdFromToken = (accessToken: string) : number | null =>
 	return userId;
 }
 
+export const sanitizeFilename = (name: string) => {
+	return name
+		.normalize("NFD") // Decompose combined characters
+		.replace(/[\u0300-\u036f]/g, "") // Remove accent marks
+		.replace(/[^\x00-\x7F]/g, "_")   // Replace any non-ASCII character with an underscore
+		.replace(/\s+/g, "_");          // Replace spaces with underscores
+};
+
 export const hexToRgba = (hex: string, alpha = 1) => 
 {
 	const cleanHex = hex.replace('#', '');
