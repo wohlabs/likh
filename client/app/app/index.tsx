@@ -2,6 +2,7 @@ import AdvancedSearchModal from "@/components/AdvancedSearchModal";
 import { LoadingScreen } from "@/components/LoadingScreen";
 import MangaCard from "@/components/MangaCard";
 import NewCustomListView from "@/components/NewCustomListView";
+import ThemeText from "@/components/ThemeText";
 import { formatData } from "@/components/util";
 import { usePersistentTheme } from "@/context/usePersistentTheme";
 import { getCustomLists } from "@/services/custom_lists";
@@ -76,6 +77,16 @@ export default function Index()
 				{
 					loading ?
 						<LoadingScreen />
+						:
+						filteredMangaList.length == 0 ?
+						<View className="text-center justify-center flex-1 text-onSurface">
+							<ThemeText className="text-center text-xl">
+								Your library is looking a bit empty.
+							</ThemeText>
+							<ThemeText className="text-center text-xl">
+								Use the search bar to find and add your first manga or note.
+							</ThemeText>
+						</View>
 						:
 						<FlatList
 							data={formatData(filteredMangaList, listColNum)}
