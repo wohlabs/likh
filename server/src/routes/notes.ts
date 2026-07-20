@@ -199,10 +199,11 @@ router.patch(`/:id`, upload.array('images', 10), AuthenticateMiddleware, async (
 				readStream.pipe(uploadStream);
 				uploadedFiles.push({ fileName: file.originalname, fileId: uploadStream.id })
 				newImageIds.push(uploadStream.id)
-				uploadStream.on('finish', () => {
-					fs.unlink(file.path, (err) => {
-						if (err) console.error(`Failed to delete temporary file: ${file.path}`, err);
-					});
+				await new Promise((resolve, reject) => {
+					uploadStream.on('finish', resolve);
+				});
+				fs.unlink(file.path, (err) => {
+					if (err) console.error(`Failed to delete temporary file: ${file.path}`, err);
 				});
 			}
 			await service.destroy()
