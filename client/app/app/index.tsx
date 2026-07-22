@@ -20,9 +20,7 @@ export default function Index()
 	const pageRef = useRef<View>(null);
 	const [mangaList, setMangaList] = useState<MangaProps[]>([]);
 	const [mangaIdToAdd, setMangaIdToAdd] = useState<number | undefined>(undefined);
-	const [filteredMangaList, setFilteredMangaList] = useState<MangaProps[]>([]);
 	const [isCreatingNewList, setCreatingNewList] = useState(false)
-	const [searchString, setSearchString] = useState("")
 	const [isAdvancedSearching, setIsAdvancedSearching] = useState(false)
 	const [allCustomLists, setAllCustomLists] = useState<ICustomLists>([])
 	const [loading, setLoading] = useState<boolean>(true)
@@ -61,10 +59,6 @@ export default function Index()
 		populateMangaList()
 	}, [populateMangaList]);
 
-	useEffect(() => 
-	{
-		setFilteredMangaList(mangaList.filter((manga) => getMangaTitle(manga).toLowerCase().includes(searchString.toLowerCase())))
-	}, [mangaList, searchString]);
 
 	return (
 		<>
@@ -78,7 +72,7 @@ export default function Index()
 					loading ?
 						<LoadingScreen />
 						:
-						filteredMangaList.length == 0 ?
+						mangaList.length == 0 ?
 						<View className="text-center justify-center flex-1 text-onSurface">
 							<ThemeText className="text-center text-xl">
 								Your library is looking a bit empty.
@@ -89,7 +83,7 @@ export default function Index()
 						</View>
 						:
 						<FlatList
-							data={formatData(filteredMangaList, listColNum)}
+							data={formatData(mangaList, listColNum)}
 							keyExtractor={(item) => item.id}
 							key={`filteredMangaList_${listColNum}`}
 							numColumns={listColNum}
@@ -106,7 +100,6 @@ export default function Index()
 					onDismiss={() => 
 					{
 						setIsAdvancedSearching(false);
-						setSearchString('');
 					}} 
 					onMangaAdded={async () => 
 					{
