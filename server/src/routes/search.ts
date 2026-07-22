@@ -137,7 +137,7 @@ router.get('/', AuthenticateMiddleware, async (req: Request, res: Response) => {
 		try {
 			const mangaData = await anilistRequest(MANGA_SEARCH_QUERY, {
 				search: query,
-				isAdult: isAdult ??  (await User.findById(userId))?.allowsAdultContent ?? false, // filter out adult content by default
+				isAdult: (isAdult ??  (await User.findById(userId))?.allowsAdultContent ?? false) == true ? undefined : false, // filter out adult content by default
 				page: 1,
 				perPage: 2
 			}, 3600);
@@ -247,7 +247,7 @@ router.get('/:category', AuthenticateMiddleware, async (req: Request, res: Respo
 
 			const mangaData = await anilistRequest(MANGA_SEARCH_QUERY, {
 				search: query,
-				isAdult: isAdult ?? (await User.findById(userId))?.allowsAdultContent ?? false, // filter out adult content by default
+				isAdult: (isAdult ??  (await User.findById(userId))?.allowsAdultContent ?? false) == true ? undefined : false, // filter out adult content by default
 				page: pageNum,
 				perPage: pageSizeNum
 			}, 3600);
