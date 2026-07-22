@@ -15,6 +15,7 @@ query ($search: String, $page: Int, $perPage: Int) {
 			}
 			coverImage {
 				large
+				medium
 			}
 		}
 	}
@@ -32,6 +33,7 @@ const MANGA_SEARCH_TREND_QUERY = `
 				}
 				coverImage {
 					large
+					medium
 				}
 			}
 		}
@@ -52,6 +54,7 @@ const LIBRARY_MANGA_QUERY = `
 				}
 				coverImage {
 					large
+					medium
 				}
 			}
 		}

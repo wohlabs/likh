@@ -11,6 +11,7 @@ router.use(express.json())
 
 function isMangaIdInList(list: ICustomList, mangaId: number)
 {
+	if (!list.manga) return false;
 	return list.manga.findIndex((manga: any) => manga.mangaId == mangaId) != -1
 }
 
