@@ -1,8 +1,9 @@
 import ThemeButton from "@/components/ThemeButton";
 import ThemeText from "@/components/ThemeText";
+import { AuthContext } from "@/context/AuthContext";
 import { registerUser } from "@/services/users.service";
-import { router } from "expo-router";
-import { useState } from "react";
+import { router, Stack } from "expo-router";
+import { useContext, useEffect, useState } from "react";
 import { StyleSheet, View , TextInput } from "react-native";
 
 export default function UserRegister()
@@ -10,6 +11,7 @@ export default function UserRegister()
 	const [username, setUsername] = useState<string>('');
 	const [password, setPassword] = useState<string>('');
 	const [error, setError] = useState('');
+	const {login, token} = useContext(AuthContext);
 
 	const register = async () => 
 	{
@@ -17,17 +19,29 @@ export default function UserRegister()
 
 		if (result.success)
 		{
-			router.navigate("/users/login")
+			router.navigate("/app/users/login")
 		}
 		else
 		{
 			setError(result.error);
 			return;
 		}
-	};
+	}
+
+	useEffect(() => 
+	{
+		// 🚫 Not logged in → block app routes
+		if (token) 
+		{
+			router.replace("/app");
+			return;
+		}
+	}, [token, router]);
+
 
 	return (
 		<View style={styles.container}>
+			<Stack.Screen options={{headerShown: false}} />
 			<View style={styles.formContainer}>
 				<ThemeText
 					className="text-4xl text-primary font-extrabold tracking-wider mb-5"
@@ -46,7 +60,7 @@ export default function UserRegister()
 				</View>
 				<ThemeText className="text-statusError mb-2.5 w-full">{error}</ThemeText>
 				<ThemeButton onPress={register} className="text-sm w-full" mode="contained">Register</ThemeButton>
-				<ThemeButton onPress={() => router.navigate('/users/login')} className="text-sm w-full" mode="text">Already have an account?</ThemeButton>
+				<ThemeButton onPress={() => router.navigate('/app/users/login')} className="text-sm w-full" mode="text">Already have an account?</ThemeButton>
 			</View>
 		</View>
 	);

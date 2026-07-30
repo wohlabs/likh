@@ -2,8 +2,8 @@ import ThemeButton from "@/components/ThemeButton";
 import ThemeText from "@/components/ThemeText";
 import { AuthContext } from "@/context/AuthContext";
 import { loginUser } from "@/services/users.service";
-import { router } from "expo-router";
-import { useContext, useState } from "react";
+import { router, Stack } from "expo-router";
+import { useContext, useEffect, useState } from "react";
 import { StyleSheet, View , TextInput } from "react-native";
 
 export default function UserLogin() 
@@ -11,7 +11,7 @@ export default function UserLogin()
 	const [username, setUsername] = useState<string>('');
 	const [password, setPassword] = useState<string>('');
 	const [error, setError] = useState('');
-	const {login} = useContext(AuthContext);
+	const {login, token} = useContext(AuthContext);
 
 	const userLogin = async () => 
 	{
@@ -25,14 +25,20 @@ export default function UserLogin()
 		await login(result.data)
 	};
 
+	useEffect(() => 
+	{
+		// 🚫 Not logged in → block app routes
+		if (token) 
+		{
+			router.replace("/app");
+			return;
+		}
+	}, [token, router]);
+
 	return (
 		<View style={styles.container}>
+			<Stack.Screen options={{headerShown: false}} />
 			<View style={styles.formContainer}>
-				{/* <Image
-					source={require("../../assets/images/likh.png")}
-					contentFit='contain'
-					style={{height: 200, aspectRatio: 1}}
-				/> */}
 				<ThemeText
 					className="text-4xl text-primary font-extrabold tracking-wider mb-5"
 					onPress={() => router.navigate("/")}
@@ -50,7 +56,7 @@ export default function UserLogin()
 				</View>
 				<ThemeText className="text-statusError mb-2.5 w-full text-center">{error}</ThemeText>
 				<ThemeButton onPress={userLogin} className="text-sm w-full mb-2.5" mode="contained">Login</ThemeButton>
-				<ThemeButton onPress={() => router.navigate('/users/register')} className="text-sm w-full" >Create new account</ThemeButton>
+				<ThemeButton onPress={() => router.navigate('/app/users/register')} className="text-sm w-full" >Create new account</ThemeButton>
 			</View>
 		</View>
 	);

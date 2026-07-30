@@ -108,7 +108,7 @@ export default function LandingPage()
 					<ThemeButton 
 						className="text-md font-medium"
 						mode="text" 
-						onPress={() => router.push('/users/login')}
+						onPress={() => router.push('/app/users/login')}
 					>
 						login
 					</ThemeButton>
@@ -134,7 +134,7 @@ export default function LandingPage()
 						<View className="flex-row gap-3 justify-center flex-wrap">
 							<ThemeButton 
 								mode="contained" 
-								onPress={() => router.push('/users/login')}
+								onPress={() => router.push('/app/users/login')}
 								className="min-w-40 rounded-2xl"
 
 							>
@@ -220,7 +220,7 @@ export default function LandingPage()
 					</ThemeText>
 					<ThemeButton 
 						mode="contained" 
-						onPress={() => router.push('/users/register')}
+						onPress={() => router.push('/app/users/register')}
 						className="min-w-50 rounded-2xl"
 					>
 						Begin Now

@@ -69,24 +69,24 @@ export default function AppLayout()
 
 	useEffect(() => 
 	{
-		// 🚫 Not logged in → block app routes
-		if (!token) 
+		const inAuthGroup = segments[0] === "app" && segments[1] === "users";
+		if (!inAuthGroup && !token) 
 		{
-			router.replace("/users/login");
+			router.replace("/app/users/login");
 			return;
 		}
 	}, [token, segments, router]);
 	
 	const onTitleClicked = () => 
 	{
-		const inAuthGroup = segments[0] === "users";
+		const inAuthGroup = segments[0] === "app" && segments[1] === "users";
 		if (inAuthGroup)
 		{
 			router.navigate("/")
 		}
 		else
 		{
-			router.navigate("/app")
+			router.navigate("/app/users/login")
 		}
 	}
 
@@ -188,7 +188,7 @@ export default function AppLayout()
 												{
 													setOptionsVisible(false);
 													await logout();
-													router.navigate('/users/login') // may not be ideal to refresh
+													router.navigate('/app/users/login') // may not be ideal to refresh
 												}} title="Logout" leadingIcon={"logout"}
 											/>
 										</ThemeMenu>
