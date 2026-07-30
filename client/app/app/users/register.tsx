@@ -58,8 +58,8 @@ export default function UserRegister()
 					<ThemeText className="text-md">Password</ThemeText>
 					<TextInput placeholder="password" className="bg-transparent w-full p-2 rounded-md text-md text-onBackground border-2 border-inverseSurface" value={password} onChangeText={setPassword} secureTextEntry />
 				</View>
-				<ThemeText className="text-statusError mb-2.5 w-full">{error}</ThemeText>
-				<ThemeButton onPress={register} className="text-sm w-full" mode="contained">Register</ThemeButton>
+				<ThemeText className="text-statusError mb-2.5 w-full text-center">{error}</ThemeText>
+				<ThemeButton onPress={register} className="text-sm w-full mb-2.5" mode="contained">Register</ThemeButton>
 				<ThemeButton onPress={() => router.navigate('/app/users/login')} className="text-sm w-full" mode="text">Already have an account?</ThemeButton>
 			</View>
 		</View>
