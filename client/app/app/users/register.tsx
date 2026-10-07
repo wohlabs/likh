@@ -52,11 +52,11 @@ export default function UserRegister()
 				<ThemeText className="text-xl m-1 font-medium">Register</ThemeText>
 				<View className="w-full mb-2">
 					<ThemeText className="text-md">Username</ThemeText>
-					<TextInput placeholder="username" className="bg-transparent w-full p-2 rounded-md text-md text-onBackground border-2 border-inverseSurface" value={username} onChangeText={setUsername} />
+					<TextInput placeholder="username" className="bg-transparent w-full p-2 rounded-md text-md text-onBackground border-2 border-inverseSurface" value={username} onChangeText={setUsername} onSubmitEditing={register} returnKeyType="done" />
 				</View>
 				<View className="w-full mb-2">
 					<ThemeText className="text-md">Password</ThemeText>
-					<TextInput placeholder="password" className="bg-transparent w-full p-2 rounded-md text-md text-onBackground border-2 border-inverseSurface" value={password} onChangeText={setPassword} secureTextEntry />
+					<TextInput placeholder="password" className="bg-transparent w-full p-2 rounded-md text-md text-onBackground border-2 border-inverseSurface" value={password} onChangeText={setPassword} onSubmitEditing={register} returnKeyType="done" secureTextEntry />
 				</View>
 				<ThemeText className="text-statusError mb-2.5 w-full text-center">{error}</ThemeText>
 				<ThemeButton onPress={register} className="text-sm w-full mb-2.5" mode="contained">Register</ThemeButton>
